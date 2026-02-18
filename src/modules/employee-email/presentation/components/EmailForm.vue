@@ -1,50 +1,56 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import {
-  EmailModel,
-  EmailParams,
-  EmailType,
-} from "@/modules/employee-email";
+import { EmailModel, EmailParams, EmailType } from "@/modules/employee-email";
+import TitleInterface from "@/base/Data/Models/titleInterface";
+import CustomSelectInput from "@/shared/FormInputs/CustomSelectInput.vue";
 
 const emit = defineEmits<{
   updateData: [params: EmailParams];
 }>();
 
 const props = defineProps<{
-  email?: EmailModel
+  email?: EmailModel;
 }>();
 
 const email = props.email;
 
 // Form state
 const formEmail = ref("");
-const formType = ref<EmailType>(EmailType.EMPLOYEE);
+const formType = ref<TitleInterface<EmailType> | null>(null);
 const isEditing = ref(false);
 const editingId = ref<number | null>(null);
+
+const emailTypes: TitleInterface<EmailType>[] = [
+  new TitleInterface({ id: EmailType.EMPLOYEE, title: "Employee" }),
+  new TitleInterface({ id: EmailType.PERSONAL, title: "Personal" }),
+];
 
 watch(
   () => email,
   (newEmail) => {
     if (newEmail) {
       formEmail.value = newEmail.email;
-      formType.value = newEmail.type;
+      formType.value = emailTypes.find((t) => t.id === newEmail.type) ?? null;
       editingId.value = newEmail.id ?? null;
       isEditing.value = true;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
+
+const updateType = (type: TitleInterface<EmailType>) => {
+  formType.value = type;
+};
 
 const updateData = () => {
   const params = new EmailParams(
     formEmail.value,
-    formType.value,
-    editingId.value || undefined
+    formType.value?.id as EmailType,
+    editingId.value || undefined,
   );
   emit("updateData", params);
 };
 </script>
-
 
 <template>
   <div class="email-crud-example">
@@ -56,17 +62,16 @@ const updateData = () => {
         @input="updateData"
         placeholder="Enter email address"
       />
-      <select v-model="formType" @change="updateData">
-        <option :value="EmailType.EMPLOYEE">Employee</option>
-        <option :value="EmailType.PERSONAL">Personal</option>
-        <option :value="EmailType.WORK">Work</option>
-        <option :value="EmailType.OTHER">Other</option>
-      </select>
+      <CustomSelectInput
+        v-model="formType"
+        :staticOptions="emailTypes"
+        :placeholder="$t('select_email_type')"
+        :required="true"
+        :id="'email-type'"
+        @update:modelValue="updateType"
+      />
     </div>
-   
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

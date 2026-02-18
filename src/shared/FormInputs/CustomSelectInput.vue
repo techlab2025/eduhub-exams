@@ -1,21 +1,21 @@
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends string | number">
 import MultiSelect from "primevue/multiselect";
 import Select from "primevue/select";
 import { computed, ref, watch, toRefs, type Component, useSlots } from "vue";
-import TitleInterface from "@/base/Data/Models/title_interface";
-import type { SelectControllerInterface } from "@/base/Presentation/Controller/select_controller_interface";
 import type Params from "@/base/Core/Params/params";
 import ValidationService from "@/base/Presentation/Utils/validationService";
 import IconBackStage from "@/shared/icons/IconBackStage.vue";
 import PlusIcon from "../icons/PlusIcon.vue";
+import type { SelectControllerInterface } from "@/base/Presentation/Controller/selectControllerInterface";
+import TitleInterface from "@/base/Data/Models/titleInterface";
 
 export type ComponentType = "select" | "multiselect";
 
 interface Props {
   label?: string;
-  options?: TitleInterface[];
-  staticOptions?: TitleInterface[] | null;
-  modelValue: TitleInterface | TitleInterface[] | null;
+  options?: TitleInterface<T>[];
+  staticOptions?: TitleInterface<T>[] | null;
+  modelValue: TitleInterface<T> | TitleInterface<T>[] | null;
   placeholder: string;
   controller?: SelectControllerInterface<any>;
   params?: Params;
@@ -56,7 +56,7 @@ const {
 const loading = ref(false);
 const message = ref("No Data Found");
 const localValue = ref(props.modelValue);
-const dynamicOptions = ref<TitleInterface[]>([]);
+const dynamicOptions = ref<TitleInterface<T>[]>([]);
 
 // Computed properties
 const isMultiselect = computed(() => Number(type.value) === 2);
@@ -90,11 +90,11 @@ watch([params, controller], handleOptionUpdates, { immediate: true });
 syncLocalValue(props.modelValue);
 
 // Methods
-function ensureArray(value: unknown): TitleInterface[] {
+function ensureArray(value: unknown): TitleInterface<T>[] {
   return Array.isArray(value) ? value : [];
 }
 
-function ensureSingle(value: unknown): TitleInterface | null {
+function ensureSingle(value: unknown): TitleInterface<T> | null {
   // console.log(value , "single");
   return value instanceof TitleInterface ? value : null;
 }
@@ -145,9 +145,11 @@ function updateControllerState(): void {
   }
 }
 
-function handleAutoFill(options: TitleInterface[]): void {
+function handleAutoFill(options: TitleInterface<T>[]): void {
   if (autoFill?.value && options.length === 1) {
-    normalizedValue.value = isMultiselect.value ? [options[0]] : options[0];
+    normalizedValue.value = (
+      isMultiselect.value ? [options[0]] : options[0]
+    ) as any;
   }
 }
 

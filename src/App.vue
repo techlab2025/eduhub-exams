@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import MainDialog from './base/Presentation/Dialogs/MainDialogs/MainDialog.vue';
+import UnifiedDialog from "@/base/Presentation/Dialogs/UnifiedDialog.vue";
 </script>
 
 <template>
   <div>
-    <MainDialog />  
+    <UnifiedDialog />
     <RouterView />
   </div>
 </template>

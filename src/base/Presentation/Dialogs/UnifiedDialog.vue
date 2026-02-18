@@ -42,6 +42,10 @@ const dialogIcon = computed(() => {
   return currentDialog.value?.icon || DIALOG_ICONS[dialogType.value];
 });
 
+const dialogImage = computed(() => {
+  return currentDialog.value?.image;
+});
+
 const dialogColor = computed(() => {
   return DIALOG_COLORS[dialogType.value];
 });
@@ -218,8 +222,18 @@ function getActionClass(type?: string): string {
                 ×
               </button>
 
+              <!-- Image -->
+              <div v-if="dialogImage" class="dialog-image-container">
+                <img
+                  :src="dialogImage"
+                  alt="Dialog Image"
+                  class="dialog-image"
+                />
+              </div>
+
               <!-- Icon -->
               <div
+                v-else
                 class="dialog-icon"
                 :style="{ backgroundColor: dialogColor }"
               >
@@ -352,6 +366,15 @@ function getActionClass(type?: string): string {
   border-radius: 50%;
   font-size: 2rem;
   color: white;
+}
+
+/* Image */
+.dialog-image {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  display: block;
+  object-fit: contain;
 }
 
 /* Title */

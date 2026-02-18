@@ -1,6 +1,5 @@
 import { ref } from "vue";
-import DialogSelector from "@/base/Presentation/Dialogs/dialog_selector";
-import errorImage from "@/assets/images/error.png";
+import { dialogManager } from "@/base/Presentation/Dialogs/dialog.manager";
 
 class ValidationService {
   isOpen = ref(false);
@@ -66,13 +65,8 @@ class ValidationService {
     if (mode === "dialog") {
       if (errors && Object.values(errors).length > 0) {
         this.message.value = Object.values(errors)[0];
+        dialogManager.error(this.message.value);
       }
-      DialogSelector.instance.failedDialog.openDialog({
-        dialogName: "dialog",
-        titleContent: this.message.value,
-        imageElement: errorImage,
-        messageContent: null,
-      });
       this.isOpen.value = true;
     } else if (mode === "inline") {
       this.inlineErrors.value = errors;
@@ -83,13 +77,8 @@ class ValidationService {
     } else {
       if (errors && Object.values(errors).length > 0) {
         this.message.value = Object.values(errors)[0];
+        dialogManager.error(this.message.value);
       }
-      DialogSelector.instance.failedDialog.openDialog({
-        dialogName: "dialog",
-        titleContent: this.message.value,
-        imageElement: errorImage,
-        messageContent: null,
-      });
       this.isOpen.value = true;
       this.inlineErrors.value = errors;
       Object.keys(errors).forEach((field) => {

@@ -1,4 +1,4 @@
-import DialogService from "@/base/Presentation/Dialogs/dialog_service";
+import DialogService from "@/base/Presentation/Dialogs/dialog.service";
 
 export default class ShowFailedDialog extends DialogService {
   private static _instance: ShowFailedDialog;

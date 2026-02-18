@@ -1,4 +1,4 @@
-import DialogSelector from "../Dialogs/dialog_selector";
+import DialogSelector from "../Dialogs/dialog.selector";
 import warning from "@/assets/images/dialogs/warning.png";
 
 // class_validation.ts
