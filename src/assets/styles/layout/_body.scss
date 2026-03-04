@@ -1,0 +1,61 @@
+@use "../variables" as *;
+@use "../mixins/flex" as *;
+
+body {
+  background-color: #f8f9fb;
+  color: $Black;
+
+  scrollbar-width: thin;
+  --webkit-scrollbar-width: thin;
+  scrollbar-color: $PrimaryColor $Gray-1;
+  --moz-scrollbar-color: $PrimaryColor $Gray-1;
+
+  // &.minmize {
+  // max-width: 85%;
+  // margin: 0 auto;
+  // }
+}
+
+$minimizeScreen: false;
+.content {
+  @include flex(row, flex-start, stretch);
+  gap: $XlSize3;
+  //padding: $MdSize;
+  width: 100%;
+  font-family: "Regular";
+
+  .content-wrapper {
+    flex: 1;
+    @include flex-column();
+    gap: $MdSize;
+    width: 100%;
+    overflow: hidden;
+    @if $minimizeScreen== true {
+      max-width: 1440px;
+      margin: 0 auto;
+      @media (max-width: 768px) {
+        max-width: 100%;
+      }
+    }
+  }
+  .p-accordioncontent-content {
+    margin-inline: 19px;
+  }
+  .p-accordionpanel.active-panel-out {
+    margin-inline: 19px;
+  }
+
+  .main-content {
+    background-color: $White;
+    padding: $MdSize;
+    border-radius: $XlSize;
+    overflow: hidden;
+    z-index: 999;
+    position: relative;
+    // &.minmize {
+    //   max-width: 85%;
+    //   margin: 0 auto;
+    // }
+    min-height: 82vh;
+  }
+}

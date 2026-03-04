@@ -1,0 +1,19 @@
+@import '../variables';
+@import '../mixins/flex';
+.btn-cancel {
+  font-family: 'Light';
+  background-color: #e235351a;
+  color: #e23535;
+  padding-inline: calc($XlSize + 2px);
+  padding-block: $XsSize3;
+  font-size: $MdSize;
+  font-weight: $BaseFontWeightBold;
+  border-radius: calc($XlSize3 + 16px);
+  transition: all 0.3s linear;
+
+  &:hover {
+    color: white;
+    background-color: #e23535;
+    border: 1px solid red;
+  }
+}

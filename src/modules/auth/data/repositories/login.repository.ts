@@ -1,0 +1,50 @@
+import BaseRepository, {
+  type RepositoryConfig,
+} from "@/base/Domain/Repositories/baseRepository";
+import LoginModel from "../../core/models/login.model";
+import LoginApiService from "../api/login.api-service";
+
+/**
+ * Email Repository for API data operations
+ *
+ * This repository handles all data access for employee emails,
+ * including parsing API responses and error handling.
+ */
+export default class LoginRepository extends BaseRepository<
+  LoginModel,
+  LoginModel[]
+> {
+  private static instance: LoginRepository;
+
+  protected get apiService() {
+    return LoginApiService.getInstance();
+  }
+
+  protected get config(): RepositoryConfig {
+    return {
+      hasPagination: true,
+      dataKey: "data",
+      paginationKey: "meta",
+    };
+  }
+
+  /**
+   * Get singleton instance
+   * @returns EmailRepository instance
+   */
+  static getInstance(): LoginRepository {
+    if (!LoginRepository.instance) {
+      LoginRepository.instance = new LoginRepository();
+    }
+    return LoginRepository.instance;
+  }
+
+  protected parseItem(data: any): LoginModel {
+    return LoginModel.fromJson(data);
+  }
+
+  protected parseList(data: any): LoginModel[] {
+    if (!Array.isArray(data)) return [];
+    return data.map((item) => this.parseItem(item));
+  }
+}

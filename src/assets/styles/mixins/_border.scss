@@ -1,0 +1,73 @@
+@use "../variables" as *;
+
+@mixin border(
+  $width: $BaseBorderWidth,
+  $color: $TextGray5,
+  $style: solid,
+  $radius: 0px,
+) {
+  border: $width $style $color;
+  border-radius: $radius;
+}
+
+
+
+@mixin border-top(
+  $width: $BaseBorderWidth,
+  $color: $TextGray5,
+  $style: solid,
+  $radius: 0px,
+) {
+  border-top: $width $style $color;
+  border-radius: $radius;
+}
+
+@mixin border-bottom(
+  $width: $BaseBorderWidth,
+  $color: $TextGray5,
+  $style: solid,
+  $radius: 0px,
+) {
+  border-bottom: $width $style $color;
+  border-radius: $radius;
+}
+
+@mixin border-left(
+  $width: $BaseBorderWidth,
+  $color: $TextGray5,
+  $style: solid,
+  $radius: 0px,
+) {
+  border-left: $width $style $color;
+  border-radius: $radius;
+}
+
+@mixin border-right(
+  $width: $BaseBorderWidth,
+  $color: $TextGray5,
+  $style: solid,
+  $radius: 0px,
+) {
+  border-right: $width $style $color;
+  border-radius: $radius;
+}
+
+@mixin border-end(
+  $width: $BaseBorderWidth,
+  $color: $TextGray5,
+  $style: solid,
+  $radius: 0px
+) {
+  border-inline-end: $width $style $color;
+  border-radius: $radius;
+}
+
+@mixin border-start(
+  $width: $BaseBorderWidth,
+  $color: $TextGray5,
+  $style: solid,
+  $radius: 0px
+) {
+  border-inline-start: $width $style $color;
+  border-radius: $radius;
+}

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { OrganizationTypeEnum } from '@/features/auth/Core/Enum/organization_type'
-import OrganizationSidebar from './OrganizationSidebar.vue'
 import AdminSidebar from './AdminSidebar.vue'
 import BackIcon from '../icons/BackIcon.vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -32,12 +30,7 @@ const RouterBack = () => {
       </button>
 
       <div class="links">
-        <template v-if="user?.user?.type === OrganizationTypeEnum?.ADMIN">
-          <AdminSidebar />
-        </template>
-        <template v-if="user?.user?.type === OrganizationTypeEnum?.ORGANIZATION">
-          <OrganizationSidebar />
-        </template>
+        <AdminSidebar />
       </div>
     </div>
   </aside>
