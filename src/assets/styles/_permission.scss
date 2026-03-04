@@ -1,0 +1,234 @@
+@import './mixins/grid';
+@import './mixins/flex';
+
+.permission {
+  width: 100%;
+
+  .tabs {
+    width: 100%;
+    @include grid(3, 1fr, 10px);
+    gap: 10px;
+
+    .tab {
+      padding: 10px;
+      background-color: #f6f9ff;
+      width: 100%;
+      position: relative;
+
+      input {
+        position: absolute;
+        top: 14px;
+        width: 15px;
+        height: 15px;
+        left: 10px;
+      }
+
+      label {
+        @include flex(row, wrap, space-around, center);
+
+        .card-content {
+          @include flex(column, wrap, start, start);
+          margin-top: 1rem;
+          gap: 5px;
+
+          h4 {
+            color: #121212;
+            font-size: 22px;
+            font-weight: 600;
+          }
+
+          p {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+  .premission-cards {
+    .header {
+      width: 100%;
+      background-color: #f6f8fb;
+      padding: 20px 15px;
+      margin-block: 1rem;
+      font-size: var(--md-size-2);
+      font-family: 'Bold';
+      color: var(--PrimaryColor);
+      gap: 5px;
+      .select_all {
+        @include flex(row, wrap, flex-end, center);
+
+        gap: 5px;
+
+        input {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          width: 0;
+          height: 0;
+          position: absolute;
+          opacity: 0;
+        }
+
+        .checkmark {
+          width: 18px;
+          height: 18px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          display: inline-block;
+          position: relative;
+          transition: all 0.2s ease;
+
+          &::after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+          }
+        }
+
+        input:checked + .checkmark {
+          background-color: var(--PrimaryColor);
+          border-color: var(--PrimaryColor);
+
+          &::after {
+            display: block;
+          }
+        }
+      }
+    }
+
+    .tab-content {
+      @include grid(3, 1fr, 10px);
+      gap: 10px;
+      height: 50vh;
+      overflow-y: auto;
+
+      @media screen and (max-width: 1350px) {
+        @include grid(2, 1fr, 10px);
+        gap: 10px;
+      }
+
+      @media screen and (max-width: 900px) {
+        @include grid(1, 1fr, 10px);
+        gap: 10px;
+      }
+
+      .card {
+        border-radius: 24px;
+        background: #f8f9fb;
+        padding: 12px;
+        @include flex(column, wrap, start, start);
+        width: 100%;
+        gap: 8px;
+
+        .card-header {
+          width: 100%;
+          @include flex(row, wrap, space-between, center);
+          border-bottom: 1px solid #e2e8f7;
+
+          h5 {
+            color: #121212;
+            font-family: 'Bold';
+            font-size: var(--xl-size-base);
+          }
+
+          .select_all {
+            @include flex(row-reverse, wrap, center, center);
+            gap: 8px;
+
+            span {
+              color: #9ca3af;
+              font-family: 'Bold';
+              font-size: var(--xs-size);
+            }
+
+            input {
+              appearance: none;
+              -webkit-appearance: none;
+              -moz-appearance: none;
+              width: 0;
+              height: 0;
+              position: absolute;
+              opacity: 0;
+            }
+
+            .checkmark {
+              width: 18px;
+              height: 18px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              display: inline-block;
+              position: relative;
+              transition: all 0.2s ease;
+
+              &::after {
+                content: '';
+                position: absolute;
+                display: none;
+                left: 5px;
+                top: 2px;
+                width: 5px;
+                height: 10px;
+                border: solid white;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+              }
+            }
+
+            input:checked + .checkmark {
+              background-color: var(--PrimaryColor);
+              border-color: var(--PrimaryColor);
+
+              &::after {
+                display: block;
+              }
+            }
+          }
+        }
+
+        .card-body {
+          width: 100%;
+          @include grid(3, 1fr);
+
+          @media screen and (max-width: 900px) {
+            @include grid(2, 1fr);
+          }
+
+          gap: 7px;
+
+          label {
+            @include flex(row, wrap, center, center);
+            width: 100%;
+            text-align: center;
+
+            span {
+              background-color: var(--BgWhite);
+              border-radius: 50rem;
+              padding: 6px 10px;
+              width: 100%;
+              transition: all 0.2s ease;
+            }
+
+            input {
+              display: none;
+
+              &:checked + span {
+                background-color: var(--PrimaryColor);
+                color: var(--BgWhite);
+                border: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

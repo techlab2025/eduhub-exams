@@ -1,0 +1,13 @@
+@import '../variables';
+@import '../mixins/flex';
+.switch-btn {
+  @include flex-row(nowrap, center, center);
+  gap: 6px;
+  font-family: "Light";
+  .title{
+    color: #202020;
+    font-size: $MdSize;
+    font-weight: $BaseFontSemiBoldWeight;
+  }
+
+}

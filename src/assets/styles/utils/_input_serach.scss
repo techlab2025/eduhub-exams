@@ -1,0 +1,40 @@
+@import '../variables';
+@import '../mixins/flex';
+
+.input-search {
+  position: relative;
+
+
+  input {
+    width: 100%;
+
+    border: 1px solid $MainBorder;
+    @include flex-row(nowrap, flex-start, center);
+    padding: $XsSize $MdSize;
+    border-radius: calc($XlSize3 + 10px);
+    font-family: "Regular";
+    padding-inline-start: calc(#{$MdSize} + calc(#{$XlSize3} - 4px));
+
+    &:focus {
+      border-color: $PrimaryColor;
+    }
+  }
+
+  .icon-remove {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: $MdSize;
+    cursor: pointer;
+
+
+  }
+}
+
+
+html[dir="rtl"] .input-search {
+  .icon-remove {
+    left: auto;
+    right: $MdSize;
+  }
+}

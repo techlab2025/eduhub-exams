@@ -1,0 +1,198 @@
+@use "./variables" as *;
+// @use "./login/login";
+//@use "./normalize";
+
+/*<editor-fold desc="utils">*/
+@use "./utils/container";
+@use "./utils/_button";
+@use "./utils/_primary_btn";
+@use "./utils/_third_btn";
+@use "./utils/_secondary_btn";
+@use "./utils/input_serach";
+@use "./utils/data_empty";
+@use "./utils/popover";
+@use "./utils/btn_add";
+@use "./utils/btn_cancel";
+@use "./utils/breadCrumb";
+@use "./utils/tabs_selections";
+@use "./utils/custom_checkbox";
+//@use "./utils/_explore_btn";
+@use "./normalize";
+@use "./permission";
+@use "./crop";
+
+//@use "./utils/_section_title";
+//@use "./utils/_fonts";
+//@use "./utils/input_filter";
+//@use "./utils/_section_title";
+@use "./utils/danger_btn";
+/*</editor-fold>*/
+
+/*<editor-fold desc="layout">*/
+@use "./layout/layout_imports";
+/*</editor-fold>*/
+
+/*<editor-fold desc="components">*/
+// @use "./components/drop_menu";
+// @use "./components/search_input";
+// @use "./components/date_picker";
+
+// @use "./components/dialog";
+
+// @use "./components/checkbox";
+
+// @use "./components/swiper";
+/*</editor-fold>*/
+
+/*<editor-fold desc="error">*/
+@use "Dialogs/imports";
+/*</editor-fold>*/
+
+/*<editor-fold desc="fonts">*/
+@use "./fonts";
+/*</editor-fold>*/
+/*<editor-fold desc="file_upload">*/
+@use "./FileUpload/file_upload";
+/*</editor-fold>*/
+
+/*<editor-fold desc="custom_select">*/
+@use "./utils/custom_select";
+/*</editor-fold>*/
+
+/*<editor-fold desc="main_table">*/
+@use "./tables/main_table";
+/*</editor-fold>*/
+/*<editor-fold desc="list">*/
+// @use "./Lists/lists";
+/*</editor-fold>*/
+
+/*<editor-fold desc="pagination">*/
+@use "./Pagination/pagination";
+/*</editor-fold>*/
+/*<editor-fold desc="pagination">*/
+@use "./skeleton/skeleton";
+/*</editor-fold>*/
+/*<editor-fold desc="SingleInput">*/
+@use "./utils/single_file_input";
+/*</editor-fold>*/
+
+/*<editor-fold desc="Actions">*/
+@use "./ActionsButtons/actions_buttons";
+/*</editor-fold>*/
+
+/*<editor-fold desc="Switchbtn">*/
+@use "./utils/switch_input";
+/*</editor-fold>*/
+
+/*<editor-fold desc="home breadcrump">*/
+@use "./HomeBreadCrump/breadcrump";
+/*</editor-fold>*/
+
+@use "./layout/body";
+@use "./login/login";
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+
+  > section {
+    scroll-snap-align: start;
+  }
+}
+
+body {
+  font-family: "Regular", sans-serif;
+  color: black;
+  overflow-x: hidden;
+  p,
+  span,
+  div {
+    text-transform: capitalize;
+  }
+}
+
+.p-accordionheader {
+  background: transparent !important;
+}
+
+.p-accordioncontent-content {
+  background: transparent !important;
+  color: $Gray-3 !important;
+}
+
+.p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader,
+.p-accordionpanel:not(.p-accordionpanel-active):not(.p-disabled)
+  > .p-accordionheader:hover {
+  color: $PrimaryColor !important;
+
+  svg {
+    path {
+      fill: $PrimaryColor !important;
+    }
+  }
+}
+
+.p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
+  background-color: $PrimaryColor !important;
+}
+
+.icon-lng-nav {
+  width: 25px !important;
+  height: 25px !important;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: black;
+}
+
+// for garrery
+.p-galleria-indicator-list {
+  .p-galleria-indicator {
+    button {
+      transition: all 0.5s ease-in-out;
+    }
+  }
+}
+
+.p-galleria {
+  border: none !important;
+  outline: none !important;
+}
+
+.p-galleria-indicator-active {
+  button {
+    background-color: $PrimaryColor !important;
+    width: 30px !important;
+    height: 8px !important;
+    border-radius: 50px !important;
+  }
+}
+.p-radiobutton-box {
+  border: 1px solid #8c8c8c59 !important;
+}
+
+.factor-item .p-radiobutton-checked .p-radiobutton-box {
+  border: none !important;
+}
+
+.pt-15 {
+  padding-top: 15px !important;
+}
+.sidebar .links ul {
+  border: none !important;
+}
+.p-accordioncontent-content {
+  border: none !important;
+}
+.p-accordionheader {
+  padding: 15px !important;
+}
+body {
+  font-family: "Regular";
+}

@@ -1,0 +1,102 @@
+@import '../variables';
+@import '../mixins/flex';
+@import '../mixins/grid';
+
+.tabs-selction-container {
+  @include flex-column(nowrap, flex-start, flex-start);
+  gap: $SmSize;
+  font-family: 'Regular';
+  width: 100%;
+
+  .tabs-selction-header {
+    width: 100%;
+    @include flex-row(nowrap, space-between, center);
+
+    .title {
+      color: #170f49;
+      font-size: $XlSize;
+      font-weight: $BaseFontWeightBold;
+    }
+    .subtitle {
+      color: #afb2bb;
+      font-size: $MdSize;
+      font-weight: $BaseFontMediumWeight;
+      span {
+        color: $PrimaryColor;
+        font-size: $XlSize;
+        font-weight: $BaseFontWeightBold;
+      }
+    }
+  }
+  .tabs-selction-content {
+    .select-container {
+      @include flex-row(wrap, flex-start, center);
+      gap: $XlSize;
+      .select-item {
+        border-radius: $XlSize;
+        background-color: #fafbfc;
+        position: relative;
+        border-radius: $XlSize;
+        overflow: hidden;
+        border-radius: $SmSize;
+
+        .left-back-img {
+          position: absolute;
+          left: -200px;
+          transition: 0.3s all linear;
+          @include flex-center();
+        }
+        .right-back-img {
+          position: absolute;
+          right: -200px;
+          transition: 0.3s all linear;
+          @include flex-center();
+        }
+        &.active {
+          .left-back-img {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            opacity: 0.3;
+            .left-yellow {
+              top: -20px;
+              position: relative;
+            }
+          }
+          .right-back-img {
+            display: block;
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            rotate: 180deg;
+            opacity: 0.3;
+            .right-yellow {
+              top: -20px;
+              position: relative;
+            }
+          }
+          .item {
+            color: $PrimaryColor;
+          }
+        }
+        input {
+          display: none;
+        }
+        .item {
+          @include flex-row(nowrap, flex-start, center);
+          gap: $XsSize;
+          color: #9ca3af;
+          font-size: $MdSize;
+          font-weight: $BaseFontSemiBoldWeight;
+          transition: 0.3s all linear;
+          cursor: pointer;
+          padding: $XsSize2 calc($XlSize3 + 5px);
+          border-radius: $SmSize;
+        }
+      }
+    }
+  }
+}

@@ -5,16 +5,15 @@ import { useRoute, useRouter } from 'vue-router'
 // import IconMenu from '@/shared/icons/IconMenu.vue'
 import IconLogout from '@/shared/icons/IconLogout.vue'
 import IconArrowDownNav from '@/shared/icons/IconArrowDownNav.vue'
-import { setDefaultImage } from '@/base/Presentation/Utils/set_default_image'
+// import { setDefaultImage } from '@/base/Presentation/Utils/set_default_image'
 // import { setDefaultImage } from "@/base/Presentation/Utils/set_default_image";
 // import { useUserStore } from "@/stores/user";
 // import defaultImage from "@/assets/images/user.png";
-import ChangeLanguage from './ChangeLanguage.vue'
+// import ChangeLanguage from './ChangeLanguage.vue'
 import Notification from '../icons/Notification.vue'
 import SearchIcon from '../icons/SearchIcon.vue'
 import { useUserStore } from '@/stores/user'
-import { OrganizationTypeEnum } from '@/features/auth/Core/Enum/organization_type'
-import defaultLogo from '@/assets/images/logo.svg'
+// import defaultLogo from '@/assets/images/logo.svg'
 
 const route = useRoute()
 // console.log(route.name)
@@ -35,17 +34,10 @@ const router = useRouter()
 // const userStore = useUserStore();
 
 const logout = () => {
-  if (user?.type == OrganizationTypeEnum.ADMIN) {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    window.location.href = '/login/admin'
-  }
-  else if (user?.type == OrganizationTypeEnum.ORGANIZATION) {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    window.location.href = '/login/organization'
-  }
-  // router.push("/login");
+  localStorage.removeItem('user')
+  localStorage.removeItem('token')
+  window.location.href = '/login/admin'
+
 }
 
 const isDropMenuOpen = ref(false)
@@ -75,10 +67,9 @@ const { user } = useUserStore()
           </h1>
           <p class="route-name">{{ $t(typeof route?.name === 'string' ? route.name : '') }} /</p>
         </div> -->
-        <router-link class="flex items-center gap-2"
-          :to="user?.type == OrganizationTypeEnum?.ADMIN ? '/admin' : '/organization'">
-          <img :src="defaultLogo" alt="logo-img">
-          <p class="logo">HSE.Cloud.Ai </p>
+        <router-link class="flex items-center gap-2" :to="'/'">
+          <!-- <img :src="defaultLogo" alt="logo-img"> -->
+          <p class="logo">logo </p>
         </router-link>
       </div>
 
@@ -88,7 +79,7 @@ const { user } = useUserStore()
       </div>
 
       <div class="setting">
-        <ChangeLanguage class="countery-icon" />
+        <!-- <ChangeLanguage class="countery-icon" /> -->
 
         <div class="notification cursor-pointer" @click="toggleFullScreen">
           <Notification />
@@ -98,7 +89,7 @@ const { user } = useUserStore()
           <IconArrowDownNav class="drop-icon" />
           <div class="profile-data">
             <span>{{ user?.name.split(' ')[0] }}</span>
-            <span>{{ user?.type == OrganizationTypeEnum.ADMIN ? 'Admin' : 'Organization' }}</span>
+            <!-- <span>{{ user?.type == OrganizationTypeEnum.ADMIN ? 'Admin' : 'Organization' }}</span> -->
           </div>
 
           <img alt="user" src="../../assets/images/travel.png" />
