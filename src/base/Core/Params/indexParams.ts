@@ -27,9 +27,9 @@ export default class IndexParams implements Params {
   toMap(): Record<string, string | number | number[] | null> {
     const data: Record<string, string | number | number[] | null> = {};
     if (this.word) data["word"] = this.word;
-    data["paginate"] = this.withPage;
+    data["with_pagination"] = this.withPage;
     data["page"] = this.pageNumber;
-    data["limit"] = this.perPage;
+    data["per_page"] = this.perPage;
     return data;
   }
 

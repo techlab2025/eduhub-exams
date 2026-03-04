@@ -9,7 +9,7 @@ export default class DeleteParams implements Params {
 
 
    public static readonly validation = new ClassValidation().setRules({
-    employeeId: { required: true, minLength: 2, maxLength: 100 },
+    employeeId: { required: true, minLength: 1, maxLength: 100 },
   });
     
 

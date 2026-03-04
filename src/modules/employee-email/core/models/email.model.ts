@@ -23,18 +23,8 @@ export default class EmailModel {
         createdAt?: string;
         updatedAt?: string;
     }) {
-        // Validate email format
-        if (!data.email) {
-            throw new Error("Email is required");
-        }
-
-        const normalizedEmail = normalizeEmail(data.email);
-        if (!isValidEmail(normalizedEmail)) {
-            throw new Error(`Invalid email format: ${data.email}`);
-        }
-
         this.id = data.id;
-        this.email = normalizedEmail;
+        this.email = data.email;
         this.type = data.type || EmailType.EMPLOYEE;
         this.employeeId = data.employeeId;
         this.createdAt = data.createdAt;

@@ -1,53 +1,98 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-import {
-  EmailController,
-  getEmailTypeName,
-} from "@/modules/employee-email";
+import { onMounted, ref } from "vue";
+import { EmailController, getEmailTypeName } from "@/modules/employee-email";
+import DataStatusBuilder from "@/shared/DataStatues/DataStatusBuilder.vue";
+import AppTable, {
+  type TableHeader,
+} from "@/shared/HelpersComponents/AppTable.vue";
+import type EmailModel from "@/modules/employee-email/core/models/email.model";
+import FilterEmailParams from "../../core/params/filter.email.params";
+import Pagination from "@/shared/HelpersComponents/Pagination.vue";
 
 // Controller instance
 const controller = EmailController.getInstance();
 
+// Table headers
+const headers: TableHeader[] = [
+  { key: "email", label: "Email", width: "50%", sortable: true },
+  { key: "type", label: "Type", width: "30%" },
+];
 
+// Pagination state
+const perPage = ref(10);
+
+const fetchEmails = async (page: number = 1) => {
+  await controller.fetchList(new FilterEmailParams("", page, perPage.value));
+};
+
+const onPageChange = (page: number) => {
+  fetchEmails(page);
+};
+
+const onPerPageChange = (count: number) => {
+  perPage.value = count;
+  fetchEmails(1);
+};
 
 // Fetch emails on component mount
 onMounted(async () => {
-  await controller.fetchList();
+  await fetchEmails();
 });
 
+const editEmail = (email: EmailModel) => {
+  console.log("Edit email:", email);
+};
 
+const deleteEmail = (id: number) => {
+  console.log("Delete email:", id);
+};
 </script>
 
 <template>
   <div class="email-crud-example">
     <h2>Employee Email Management</h2>
 
-    <!-- List of Emails -->
-    <div class="email-list" v-if="!controller.isListLoading()">
-      <div v-if="controller.listData.value && controller.listData.value.length > 0">
-        <div v-for="email in controller.listData.value" :key="email.id" class="email-item">
-          <span>{{ email.email }}</span>
-          <span class="email-type">{{ getEmailTypeName(email.type) }}</span>
-          <div class="actions">
-            <!-- <button @click="ShowEditForm = email.id">Edit</button>
-            <button @click="deleteEmail(email.id!)">Delete</button> -->
-          </div>
-          <!-- <EmailEdit v-if="email.id == ShowEditForm" /> -->
-        </div>
-      </div>
-      <div v-else>
+    <DataStatusBuilder
+      :controller="controller.listState.value"
+      :on-retry="
+        async () => {
+          await fetchEmails();
+        }
+      "
+    >
+      <template #success="{ data }">
+        <AppTable
+          :headers="headers"
+          :items="data as EmailModel[]"
+          selectable
+          show-index
+          hoverable
+          striped
+        >
+          <template #cell-type="{ item }">
+            <span class="email-type">{{ getEmailTypeName(item.type) }}</span>
+          </template>
+
+          <template #actions="{ item }">
+            <button @click="editEmail(item)">Edit</button>
+            <button @click="deleteEmail(item.id!)">Delete</button>
+          </template>
+        </AppTable>
+
+        <!-- Pagination -->
+        <Pagination
+          :pagination="controller.pagination.value"
+          @change-page="onPageChange"
+          @count-per-page="onPerPageChange"
+        />
+      </template>
+
+      <template #empty>
         <p>No emails found</p>
-      </div>
-    </div>
-
-    <div v-else>
-      <p>Loading emails...</p>
-    </div>
-
-    
+      </template>
+    </DataStatusBuilder>
   </div>
 </template>
-
 
 <style scoped>
 .email-crud-example {

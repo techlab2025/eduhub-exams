@@ -9,7 +9,7 @@ export default class ShowEmailParams implements Params {
   public id: number;
 
   public static readonly validation = new ClassValidation().setRules({
-    id: { required: true, minLength: 2, maxLength: 100 },
+    id: { required: true, minLength: 1, maxLength: 100 },
   });
 
   constructor(id: number) {

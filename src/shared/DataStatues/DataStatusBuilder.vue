@@ -18,7 +18,7 @@ import {
   DataCancelled,
   DataProgress,
   DataRateLimited,
-} from "@/base/Core/NetworkStructure/Resources/dataState/data_state";
+} from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
 import { computed, type PropType } from "vue";
 
 // Import state components
@@ -71,14 +71,14 @@ const emit = defineEmits<{
 
 // Use controller prop, fallback to status for backwards compatibility
 const currentState = computed(
-  () => props.controller ?? props.status ?? new DataInitial()
+  () => props.controller ?? props.status ?? new DataInitial(),
 );
 
 // State type checks
 const isSuccess = computed(
   () =>
     currentState.value instanceof DataSuccess ||
-    currentState.value instanceof DataDump
+    currentState.value instanceof DataDump,
 );
 
 const isValid = computed(() => currentState.value instanceof DataValid);
@@ -100,7 +100,7 @@ const isCancelled = computed(() => currentState.value instanceof DataCancelled);
 const isProgress = computed(() => currentState.value instanceof DataProgress);
 
 const isRateLimited = computed(
-  () => currentState.value instanceof DataRateLimited
+  () => currentState.value instanceof DataRateLimited,
 );
 
 // Error state (any error condition)
@@ -109,7 +109,7 @@ const isError = computed(
     isFailed.value ||
     isTimeout.value ||
     isNoNetwork.value ||
-    isRateLimited.value
+    isRateLimited.value,
 );
 
 // Get retry function from state or props
@@ -118,13 +118,19 @@ const retryFn = computed(() => {
 
   const state = currentState.value;
   if (state instanceof DataTimeout && state.retryFn) {
-    return () => state.retryFn!();
+    return async () => {
+      await state.retryFn!();
+    };
   }
   if (state instanceof DataNoNetwork && state.retryFn) {
-    return () => state.retryFn!();
+    return async () => {
+      await state.retryFn!();
+    };
   }
   if (state instanceof DataRateLimited && state.retryFn) {
-    return () => state.retryAfterDelay();
+    return async () => {
+      await state.retryAfterDelay();
+    };
   }
 
   return undefined;
