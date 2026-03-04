@@ -1,12 +1,13 @@
-@import '../variables';
-@import '../mixins/flex';
+@import "../variables";
+@import "../mixins/flex";
 .breadcrump-container {
   @include flex-column(nowrap, flex-start, center);
   background-color: #f8f9fb;
   border-radius: $XlSize;
-  font-family: 'Regular';
+  font-family: "Regular";
   width: 100%;
   margin-bottom: 12px;
+  padding: 10px;
 
   .breadcrump {
     width: 100%;
@@ -42,6 +43,7 @@
         @include flex-row(nowrap, center, center);
         width: 100%;
         background-color: #f8f9fb;
+        gap: 12px;
         .p-breadcrumb-item {
           .p-breadcrumb-item-link {
             .p-breadcrumb-item-label {

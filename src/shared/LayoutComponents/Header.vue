@@ -81,9 +81,9 @@ const { user } = useUserStore()
       <div class="setting">
         <!-- <ChangeLanguage class="countery-icon" /> -->
 
-        <div class="notification cursor-pointer" @click="toggleFullScreen">
+        <!-- <div class="notification cursor-pointer" @click="toggleFullScreen">
           <Notification />
-        </div>
+        </div> -->
 
         <div class="user cursor-pointer dropdown-trigger" @click="toggleDropMenu">
           <IconArrowDownNav class="drop-icon" />

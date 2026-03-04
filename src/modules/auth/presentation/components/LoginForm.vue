@@ -1,31 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import LoginController from '@/features/auth/presentation/controllers/login_controller'
-// import LoginParams from '@/features/auth/Core/Params/login_params'
 import { useRouter } from 'vue-router'
-import { OrganizationTypeEnum } from '../../Core/Enum/organization_type'
-// import Email from '@/shared/icons/email.vue'
-// import Lock from '@/shared/icons/lock.vue'
-// import CloseEye from '@/shared/icons/closeEye.vue'
-// import Loca from '@/shared/icons/loca.vue'
-// import EyeIcon from '@/shared/icons/EyeIcon.vue'
+import LoginController from '../controllers/login.controller'
+import LoginParams from '../../core/params/login.params'
 
-const router = useRouter()
+
 const email = ref('')
 const password = ref('')
 
-// const activeTab = ref(OrganizationTypeEnum.ADMIN)
 
-// const changeTab = (tab: OrganizationTypeEnum) => {
-//   activeTab.value = tab
-// }
+const controller = LoginController.getInstance();
 
-const login = () => {
-  // LoginController.getInstance().login(
-  //   new LoginParams(email.value, password.value),
-  //   router,
-  //   OrganizationTypeEnum.ADMIN,
-  // )
+const login = async () => {
+  const params = ref<LoginParams | null>(new LoginParams(email.value, password.value));
+  await controller.create(params.value);
 }
 
 const isPasswordVisible = ref()
