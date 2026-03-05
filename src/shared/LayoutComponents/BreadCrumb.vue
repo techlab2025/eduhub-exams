@@ -3,7 +3,7 @@ import Breadcrumb from 'primevue/breadcrumb'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import BackIcon from '../icons/BackIcon.vue'
-import FastRoutes from './FastrRoutes/FastRoutes.vue'
+// import FastRoutes from './FastrRoutes/FastRoutes.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -162,6 +162,6 @@ const IsHome = computed(() => route.path === '/organization' || route.path === '
       </button>
       <Breadcrumb :model="items" />
     </div>
-    <FastRoutes />
+    <!-- <FastRoutes /> -->
   </div>
 </template>

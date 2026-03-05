@@ -1,0 +1,221 @@
+@import '../mixins/grid';
+@import '../mixins/flex';
+@import '../variables';
+
+.login {
+  @include grid(2, 1fr, 10px);
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(247.48deg, #1d4ed8 -32.76%, #163ca5 61.38%, #0f2972 99.86%);
+
+  @media screen and (max-width: 1179px) {
+    @include flex(column-reverse, wrap, center, center);
+    gap: $MdSize;
+    padding: $MdSize;
+  }
+
+  .images {
+    @include flex(row, wrap, center, center);
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    @media screen and (max-width: 1179px) {
+      display: none;
+    }
+
+    .login-image {
+      @include flex(row, wrap, center, center);
+      position: relative;
+      width: 100%;
+      height: 100%;
+
+      .top-glass-card,
+      .bottom-glass-card {
+        @include flex(column, nowrap, flex-start, flex-start);
+        position: absolute;
+        width: 272px;
+        padding: $XsSize3 $MdSize;
+        gap: $XsSize2;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+
+        p {
+          color: var(--BgWhite);
+          font-size: $MdSize;
+          // width: 90%;
+          @media screen and (min-width: 1101px) and (max-width: 1350px) {
+            width: 80%;
+          }
+        }
+
+        span {
+          color: #c4cbd7;
+          font-family: 'Light';
+        }
+      }
+
+      .top-glass-card {
+        top: 13%;
+        transform: translateX(-48%);
+        p {
+          font-family: 'Regular';
+          @media screen and (min-width: 1101px) and (max-width: 1440px) {
+            width: 80%;
+          }
+        }
+      }
+
+      .bottom-glass-card {
+        bottom: 10%;
+        left: 68%;
+        transform: translateX(-48%);
+        p {
+          font-family: 'Regular';
+          @media screen and (min-width: 1101px) and (max-width: 1440px) {
+            width: 80%;
+          }
+        }
+      }
+
+      img {
+        @media screen and (min-width: 1101px) and (max-width: 1350px) {
+          width: 100%;
+          height: 55%;
+        }
+      }
+    }
+
+    svg {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+    }
+  }
+
+  .login-form {
+    @include flex(column, wrap, center, center);
+    width: 100%;
+    padding: $MdSize;
+    background-color: white;
+    border-radius: 50px 0 0 50px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    @media screen and (max-width: 1179px) {
+      @include flex(column, wrap, center, center);
+      gap: $MdSize;
+      border-radius: 5px;
+      width: 70%;
+    }
+
+    @media screen and (max-width: 600px) {
+      width: 100%;
+    }
+
+    /* ---------- Title ---------- */
+    .title {
+      @include flex(column, wrap, center, center);
+      gap: 5rem;
+
+      @media screen and (max-width: 1179px) {
+        gap: 2rem;
+      }
+
+      .logo {
+        @include flex(row, wrap, center, center);
+        gap: $XsSize3;
+
+        h2 {
+          font-size: var(--xl-size-1);
+          font-family: 'Bold', sans-serif;
+        }
+      }
+
+      .text {
+        @include flex(column, wrap, center, center);
+        width: 100%;
+        text-align: center;
+
+        p {
+          font-family: 'Bold', sans-serif;
+          font-size: var(--xl-size-base);
+        }
+
+        span {
+          font-family: 'Regular', sans-serif;
+          font-size: var(--md-size-base);
+          color: #9ca3af;
+        }
+      }
+    }
+
+    .tabs {
+      @include flex(row, wrap, center, center);
+      width: 100%;
+      gap: 1rem;
+      margin-block: 2rem;
+
+      .tab {
+        padding: 0.5rem 1rem;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-bottom: 2px solid var(--PrimaryColor);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: fit-content;
+
+        font-family: 'Regular', sans-serif;
+        font-size: 1rem;
+
+        &.active {
+          background-color: var(--PrimaryColor);
+          color: var(--BgWhite);
+          font-family: 'Bold', sans-serif;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .inputs {
+      @include flex(column, wrap, center, center);
+      width: 100%;
+      gap: $MdSize;
+      margin-block: $XlSize2;
+
+      .input-wrapper {
+        position: relative;
+        width: 100%;
+
+        input {
+          width: 100%;
+          padding: 1rem 1rem 1rem 2.3rem;
+
+          &::placeholder {
+            font-family: 'Regular', sans-serif;
+            font-size: var(--md-size-base);
+          }
+        }
+
+        .icon {
+          position: absolute;
+          left: 1.15rem;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+
+        .icon-eye {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          height: 25px;
+          width: 25px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

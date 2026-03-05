@@ -1,0 +1,40 @@
+@import '../../variables';
+
+.delete-dialog {
+  padding: 3rem;
+  text-align: center;
+  background-color: white !important;
+  color: black !important;
+
+  img {
+    width: 350px;
+    // object-fit: scale-down;
+    margin-left: auto;
+    margin-right: auto;
+    padding-right: 25px;
+  }
+  .dialog-title {
+    font-family: 'bold', sans-serif;
+    font-size: 1.5rem;
+    // margin-top: 0.2rem;
+  }
+  p {
+    font-family: 'Regular', sans-serif;
+    font-size: 1rem;
+    color: #717171;
+    margin-bottom: var(--space-sm);
+  }
+  .btn-third {
+    border: 1px solid #000000;
+  }
+
+  .btns {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 1.2rem;
+    button {
+      width: 50%;
+    }
+  }
+}

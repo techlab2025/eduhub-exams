@@ -1,0 +1,20 @@
+@import '../variables';
+@import '../mixins/flex';
+.add-btn {
+  font-family: "Light";
+
+  background-color: #041953;
+  color: white;
+  padding-inline: calc($XlSize + 2px);
+  padding-block: $XsSize3;
+  font-size: $SmSize;
+  font-weight: $BaseFontSemiBoldWeight;
+  border-radius: calc($XlSize3 + 16px);
+  transition: all 0.3s linear;
+
+  &:hover {
+    color: #041953;
+    background-color: white;
+    border: 1px solid #041953;
+  }
+}

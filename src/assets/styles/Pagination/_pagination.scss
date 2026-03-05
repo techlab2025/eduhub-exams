@@ -1,0 +1,101 @@
+@import "../variables";
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $SmSize;
+  margin: $SmSize 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .show-results,
+  .count-per-page {
+    font-family: 'Tajawal-regular', sans-serif;
+    font-size: $MdSize;
+    color: $GrayText;
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+    }
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $XsSize;
+
+    .pagination-item {
+      font-family: 'Tajawal-regular', sans-serif;
+      font-size: $MdSize;
+      color: $GrayText;
+      padding: $XsSize $SmSize;
+      border-radius: $BorderRadiusSm;
+      cursor: pointer;
+
+      &.active {
+        color: $GrayText-1;
+        background-color: $Gray-2;
+      }
+    }
+
+    .count-per-page-select {
+      padding: $XsSize $SmSize;
+      background-color: $Gray-2;
+      border-radius: $BorderRadiusSm;
+      border: $BaseBorderWidth solid $MainBorder;
+      font-family: 'Tajawal-regular', sans-serif;
+      font-size: $MdSize;
+      color: $GrayText;
+    }
+  }
+
+  .count-per-page {
+    display: flex;
+    align-items: center;
+    gap: $XsSize;
+  }
+
+  .pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: $XsSize;
+    font-family: 'Tajawal-regular', sans-serif;
+    font-size: $MdSize;
+    padding: $XsSize $SmSize;
+    color: $GrayText-1;
+    background-color: $Gray-2;
+    border-radius: $BorderRadiusSm;
+    cursor: pointer;
+
+    @media (max-width: 768px) {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+.p-popover-content {
+  padding: 0 !important;
+}
+
+.per-page {
+  display: flex;
+  align-items: center;
+  gap: $XsSize;
+  flex-direction: column;
+
+  span {
+    padding: $XsSize $XlSize2;
+    font-family: 'Tajawal-regular', sans-serif;
+    font-size: $MdSize;
+    color: $GrayText;
+    cursor: pointer;
+
+    &:hover {
+      color: $GrayText-1;
+      background-color: $Gray-2;
+    }
+  }
+}
