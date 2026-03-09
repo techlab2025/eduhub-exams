@@ -1,9 +1,8 @@
-@import '../variables';
-@import '../mixins/flex';
+@use "../variables" as *;
+@use "../mixins/flex" as *;
 
 .input-search {
   position: relative;
-
 
   input {
     width: 100%;
@@ -26,11 +25,8 @@
     transform: translateY(-50%);
     left: $MdSize;
     cursor: pointer;
-
-
   }
 }
-
 
 html[dir="rtl"] .input-search {
   .icon-remove {

@@ -1,14 +1,11 @@
-import "./assets/styles/main.min.css";
-
+import "./styles/main.min.css";
 import { createApp } from "vue";
 import PrimeVue from "primevue/config";
 import { createPinia } from "pinia";
 import router from "./router";
-// import "./style.css";
 import App from "./App.vue";
-
+import Aura from '@primeuix/themes/aura';
 import { createI18n } from "vue-i18n";
-
 import ar from "./locales/ar.json";
 import en from "./locales/en.json";
 
@@ -22,7 +19,11 @@ const i18n = createI18n({
 });
 
 createApp(App)
-  .use(PrimeVue)
+  .use(PrimeVue, {
+    theme: {
+      preset: Aura
+    }
+  })
   .use(createPinia())
   .use(router)
   .use(i18n)

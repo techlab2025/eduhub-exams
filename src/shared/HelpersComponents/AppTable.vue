@@ -204,5 +204,4 @@ function getRowKey(item: T, index: number): string | number {
 </template>
 
 <style lang="scss">
-@use "@/styles/utils/table";
 </style>

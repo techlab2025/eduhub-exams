@@ -1,5 +1,5 @@
-@import '../variables';
-@import '../mixins/flex';
+@use "../variables" as *;
+@use "../mixins/flex" as *;
 .popover-button {
   @include flex-row(nowrap, center, center);
   gap: 6px;
@@ -9,14 +9,14 @@
   @include flex-column(nowrap, flex-start, flex-start);
   // gap: 10px;
   border-radius: 12px;
-  font-family: 'Regular';
+  font-family: "Regular";
   width: 10rem;
   text-align: center;
   .img-container {
     width: 100%;
     @include flex-row(nowrap, flex-start, center);
     &:hover {
-      img{
+      img {
         background-color: white;
         color: $PrimaryColor;
       }

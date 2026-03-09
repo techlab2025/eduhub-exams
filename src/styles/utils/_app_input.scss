@@ -4,44 +4,35 @@
 
 .input-wrapper {
   @include flex-column();
-
-  //   gap: $XsSize2;
-
   padding-inline-end: $XlSize2;
-
   @media (max-width: 768px) {
     padding-inline-end: 0;
   }
   .label {
     font-size: $SmSize;
-    color: $TextGray2;
+    color: #121212;
     font-weight: $BaseFontMediumWeight;
     text-transform: capitalize;
-
     @include flex-align();
     gap: $XsSize4;
   }
-
   .input {
     @include flex-row(nowrap, flex-start, center);
     gap: $XsSize2;
-    padding: $XsSize2 0 $XsSize4;
-    // border-radius: $XlSize3;
-    background-color: $BgWhite;
+    background-color: $White;
     color: $SecondaryColor;
     font-size: $SmSize;
     font-weight: $BaseFontSemiBoldWeight;
-    @include border-bottom($BaseBorderWidth, $TextGray5);
+    padding: $MdSize;
+    @include border($BaseBorderWidth, $SecondaryColor, solid, $MdSize);
     width: 100%;
     cursor: pointer;
-
     &:focus {
       outline: none;
       border-color: $PrimaryColor;
       box-shadow: 0 0 0 0.2rem rgba($PrimaryColor, 0.25);
-      @include border-bottom($BaseBorderWidth, $SecondaryColor);
+      @include border($BaseBorderWidth, $PrimaryColor, solid, $MdSize);
     }
-
     &::placeholder {
       color: $PrimaryColor;
       font-size: $SmSize;

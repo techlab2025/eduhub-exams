@@ -14,7 +14,7 @@ const router = createRouter({
     {
       path: "/",
       name: "Organization App",
-      component: () => import("@/shared/layouts/DashboardLayout.vue"),
+      component: () => import("@/views/AppLayout.vue"),
       children: [...dashboardRoutes, ...addSuffix(sharedRoutes, "Shared")],
     },
   ],

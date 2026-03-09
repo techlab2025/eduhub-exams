@@ -4,6 +4,8 @@ import { EmailController, EmailParams } from "@/modules/employee-email";
 
 import EmailForm from "./EmailForm.vue";
 import router from "@/router";
+import AppButton from "@/shared/HelpersComponents/AppButton.vue";
+import IconAccept from "@/shared/icons/IconAccept.vue";
 
 // Controller instance
 const controller = EmailController.getInstance();
@@ -49,7 +51,13 @@ const updateData = (updatedParams: EmailParams) => {
   <div class="email-crud-example">
     <EmailForm :email="controller.itemData.value!" @updateData="updateData" />
 
-    <button type="button" @click="saveEmail">Save Email</button>
+    <AppButton title="Save Email" @click="saveEmail" size="sm" icon="right">
+      Save Email
+
+      <template #icon>
+        <IconAccept />
+      </template>
+    </AppButton>
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error">

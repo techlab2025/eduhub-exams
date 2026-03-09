@@ -1,5 +1,5 @@
-@use '../variables' as *;
-@use '../mixins/border' as *;
+@use "../variables" as *;
+@use "../mixins/border" as *;
 
 .p-accordionpanel {
   border-color: $Gray-2 !important;
@@ -10,7 +10,7 @@
 
 .p-select {
   border-color: #d9dbe9 !important;
-  font-family: 'Regular';
+  font-family: "Regular";
   font-size: $SmSize;
   font-weight: $BaseFontSemiBoldWeight;
   padding: $XsSize3;
@@ -32,7 +32,7 @@
 }
 
 .p-select-option {
-  font-family: 'Regular';
+  font-family: "Regular";
   font-size: $SmSize;
   font-weight: $BaseFontSemiBoldWeight;
   background-color: white !important;
@@ -43,7 +43,7 @@
 }
 
 .p-multiselect-overlay {
-  font-family: 'Regular';
+  font-family: "Regular";
   font-size: $SmSize;
   font-weight: $BaseFontSemiBoldWeight;
   background-color: white !important;
@@ -58,7 +58,7 @@
 }
 
 .p-multiselect-option {
-  font-family: 'Regular';
+  font-family: "Regular";
   font-size: $SmSize;
   font-weight: $BaseFontSemiBoldWeight;
   background-color: white !important;
@@ -78,7 +78,7 @@
 }
 
 .p-checkbox-input {
-  font-family: 'Regular';
+  font-family: "Regular";
   font-size: $SmSize;
   font-weight: $BaseFontSemiBoldWeight;
   background-color: white !important;
@@ -88,7 +88,7 @@
 }
 
 .p-multiselect {
-  font-family: 'Regular';
+  font-family: "Regular";
   font-size: $SmSize;
   font-weight: $BaseFontSemiBoldWeight;
   border-color: #d9dbe9 !important;
@@ -152,7 +152,7 @@
 }
 
 .optionlabel {
-  font-family: 'Regular';
+  font-family: "Regular";
   font-size: $SmSize;
   font-weight: $BaseFontSemiBoldWeight;
 }
@@ -216,7 +216,7 @@
     font-weight: $BaseFontSemiBoldWeight;
     font-size: $MdSize;
     color: #202020;
-    font-family: 'Light';
+    font-family: "Light";
   }
   span {
     width: fit-content;

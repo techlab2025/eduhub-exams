@@ -2,18 +2,18 @@
 @use "../mixins/border" as *;
 
 .btn-danger {
-  background-color: $BgWhite;
-  color: $BgRed;
+  background-color: $White;
+  color: $Red;
   //border-color: $BgRed;
 
-  @include border($BaseBorderWidth, $BgRed, solid, clamp(
+  @include border($BaseBorderWidth, $Red, solid, clamp(
           calc(50 * 0.8px),
           calc(50 * 100vw / var(--base-width)),
           calc(50 * 1.2px)
   ));
 
   &:hover {
-    background-color: $BgRed;
-    color: $BgWhite;
+    background-color: $Red;
+    color: $White;
   }
 }

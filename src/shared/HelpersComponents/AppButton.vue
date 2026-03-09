@@ -11,6 +11,7 @@ const props = withDefaults(
     theme?: ButtonTheme;
     type?: ButtonType;
     size?: ButtonSize;
+    title?: string;
     disabled?: boolean;
     loading?: boolean;
     iconOnly?: boolean;
@@ -51,9 +52,11 @@ const tag = computed(() => {
 
 // Build attributes depending on tag
 const rootAttrs = computed(() => {
-  if (props.to) return { to: props.to };
-  if (props.href) return { href: props.href, target: props.target };
-  return { type: props.type, disabled: isDisabled.value };
+  const base: Record<string, unknown> = {};
+  if (props.title) base.title = props.title;
+  if (props.to) return { ...base, to: props.to };
+  if (props.href) return { ...base, href: props.href, target: props.target };
+  return { ...base, type: props.type, disabled: isDisabled.value };
 });
 </script>
 
@@ -108,7 +111,3 @@ const rootAttrs = computed(() => {
     </span>
   </component>
 </template>
-
-<style lang="scss">
-@use "@/styles/utils/app_button";
-</style>

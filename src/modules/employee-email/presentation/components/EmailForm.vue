@@ -56,20 +56,27 @@ const updateData = () => {
   <div class="email-crud-example">
     <div class="email-form">
       <h3>{{ isEditing ? "Edit Email" : "Add New Email" }}</h3>
-      <input
-        v-model="formEmail"
-        type="email"
-        @input="updateData"
-        placeholder="Enter email address"
-      />
-      <CustomSelectInput
-        v-model="formType"
-        :staticOptions="emailTypes"
-        :placeholder="$t('select_email_type')"
-        :required="true"
-        :id="'email-type'"
-        @update:modelValue="updateType"
-      />
+      <div class="input-wrapper">
+        <label for="email">Email</label>
+        <input
+          v-model="formEmail"
+          type="email"
+          @input="updateData"
+          placeholder="Enter email address"
+          class="input"
+        />
+      </div>
+
+      <div class="input-wrapper">
+        <CustomSelectInput
+          v-model="formType"
+          :staticOptions="emailTypes"
+          :placeholder="$t('select_email_type')"
+          :required="true"
+          :id="'email-type'"
+          @update:modelValue="updateType"
+        />
+      </div>
     </div>
   </div>
 </template>

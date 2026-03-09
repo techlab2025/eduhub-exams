@@ -2,9 +2,12 @@
 
 .btn-primary {
   background-color: $PrimaryColor;
-  color: $SecondaryColor;
+  color: $White;
+  border-color: $PrimaryColor;
+  font-family: "Regular";
+  font-size: $XsSize;
   &:hover {
-    background-color: $SecondaryColor;
+    background-color: transparent;
     color: $PrimaryColor;
   }
 }

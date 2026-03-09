@@ -1,11 +1,11 @@
-@import '../variables';
-@import '../mixins/flex';
-@import '../mixins/grid';
+@use "../variables" as *;
+@use "../mixins/flex" as *;
+@use "../mixins/grid" as *;
 
 .tabs-selction-container {
   @include flex-column(nowrap, flex-start, flex-start);
   gap: $SmSize;
-  font-family: 'Regular';
+  font-family: "Regular";
   width: 100%;
 
   .tabs-selction-header {
