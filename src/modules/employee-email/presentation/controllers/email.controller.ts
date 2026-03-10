@@ -23,12 +23,12 @@ export default class EmailController extends BaseController<
    * Controller configuration
    * Defines behavior for loading, success, and error dialogs
    */
-  protected get config(): ControllerConfig {
+   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: false,
+      showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
-      autoRetry: false,
+      autoRetry: true,
       maxAutoRetries: 2,
     };
   }

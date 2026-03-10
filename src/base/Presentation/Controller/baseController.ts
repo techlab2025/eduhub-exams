@@ -355,6 +355,8 @@ export default abstract class BaseController<T, TList = T[]> {
   ): Promise<DataState<T> | undefined> {
     this._lastOperation = { type: "create", params, options };
 
+    // console.log("[Controller] Creating item with params:", params);
+
     this.setItemLoading();
 
     if (this.config.showLoadingDialog) {

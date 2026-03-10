@@ -5,7 +5,7 @@ import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
  * Parameters for fetching a single employee email (show endpoint).
  * Sends only the employee mail ID in the body.
  */
-export default class ShowEmailParams implements Params {
+export default class EmailItemParams implements Params {
   public id: number;
 
   public static readonly validation = new ClassValidation().setRules({
@@ -23,11 +23,11 @@ export default class ShowEmailParams implements Params {
   }
 
   validate() {
-    return ShowEmailParams.validation.validate(this);
+    return EmailItemParams.validation.validate(this);
   }
 
   validateOrThrow() {
-    return ShowEmailParams.validation.validateOrThrow(this);
+    return EmailItemParams.validation.validateOrThrow(this);
   }
 
  
