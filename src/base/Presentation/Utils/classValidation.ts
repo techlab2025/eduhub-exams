@@ -1,5 +1,5 @@
-import DialogSelector from "../Dialogs/dialog.selector";
-import warning from "@/assets/images/dialogs/warning.png";
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+
 
 // class_validation.ts
 export interface ValidationRule {
@@ -190,11 +190,8 @@ export class ValidationError extends Error {
   }
 
   openDialog() {
-    DialogSelector.instance.failedDialog.openDialog({
-      dialogName: "dialog",
-      titleContent: ``, //Validation failed
-      imageElement: warning,
-      messageContent: `  ${this.errors.map((e) => `${e.field}: ${e.message}`).join(" - ")}`,
-    });
+    dialogManager.warning(
+        this.errors.map((e) => `${e.field}: ${e.message}`).join("\n")
+    );
   }
 }

@@ -28,7 +28,7 @@ const saveEmail = async () => {
       await controller.update(paramsToSave);
     } else {
       await controller.create(paramsToSave);
-      router.push({ name: "Employee Emails" });
+      // router.push({ name: "Employee Emails" });
     }
 
     // // Refresh list and reset form
@@ -51,7 +51,7 @@ const updateData = (updatedParams: EmailParams) => {
   <div class="email-crud-example">
     <EmailForm :email="controller.itemData.value!" @updateData="updateData" />
 
-    <AppButton title="Save Email" @click="saveEmail" size="sm" icon="right">
+    <AppButton title="Save Email" @click="saveEmail" size="sm" icon="right" type="submit">
       Save Email
 
       <template #icon>
