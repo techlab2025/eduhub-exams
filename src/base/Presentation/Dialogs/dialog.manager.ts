@@ -121,15 +121,6 @@ class DialogManager {
             this.dialogQueue.value.push(dialogOptions);
         } else {
             this.currentDialog.value = dialogOptions;
-
-            // Auto-dismiss if duration is set
-            if (dialogOptions.duration && dialogOptions.duration > 0) {
-                setTimeout(() => {
-                    if (this.currentDialog.value?.id === dialogOptions.id) {
-                        this.closeDialog();
-                    }
-                }, dialogOptions.duration);
-            }
         }
 
         return dialogOptions.id!;

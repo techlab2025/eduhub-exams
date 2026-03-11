@@ -245,7 +245,7 @@ describe('EmailModel', () => {
                     type: EmailType.WORK,
                 });
 
-                expect(model.toString()).toBe('display@example.com (work)');
+                expect(model.toString()).toBe('display@example.com (work email)');
             });
         });
     });

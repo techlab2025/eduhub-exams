@@ -45,7 +45,16 @@ export default class EmailRepository extends BaseRepository<
 
   protected parseList(data: any): EmailModel[] {
     if (!Array.isArray(data)) return [];
-    return data.map((item) => this.parseItem(item));
+    return data.reduce((acc: EmailModel[], item) => {
+      try {
+        if (item != null) {
+          acc.push(this.parseItem(item));
+        }
+      } catch {
+        // Skip invalid items
+      }
+      return acc;
+    }, []);
   }
 
 }

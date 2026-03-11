@@ -10,25 +10,26 @@ const loadingMessage = computed(() => dialogManager.loadingMessage.value);
 const loadingProgress = computed(() => dialogManager.loadingProgress.value);
 
 // Local state
-const dialogRef = ref<HTMLDialogElement | null>(null);
 const isVisible = ref(false);
 const isClosing = ref(false);
-
-// keep dialog element in sync with visibility
-watch(isVisible, (visible) => {
-  if (visible) {
-    // open as modal if element exists
-    dialogRef.value?.showModal();
-  } else {
-    dialogRef.value?.close();
-  }
-});
+let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Watch for dialog changes
 watch(currentDialog, (newDialog) => {
   if (newDialog) {
     isVisible.value = true;
     isClosing.value = false;
+    
+    // Clear existing timer
+    if (autoCloseTimer) clearTimeout(autoCloseTimer);
+    
+    // Auto-close logic
+    const duration = newDialog.duration ?? 3000;
+    if (duration > 0) {
+      autoCloseTimer = setTimeout(() => {
+        handleClose();
+      }, duration);
+    }
   }
 });
 
@@ -98,12 +99,17 @@ const showActions = computed(() => {
 // Methods
 function closeWithAnimation() {
   isClosing.value = true;
-  setTimeout(() => {
-    // ensure the native dialog is closed as well
-    dialogRef.value?.close();
-    isVisible.value = false;
-    isClosing.value = false;
-  }, 5000);
+  isVisible.value = false;
+  
+  if (autoCloseTimer) {
+    clearTimeout(autoCloseTimer);
+    autoCloseTimer = null;
+  }
+}
+
+function handleAfterLeave() {
+  isClosing.value = false;
+  dialogManager.closeDialog();
 }
 
 function handleClose() {
@@ -111,9 +117,6 @@ function handleClose() {
     currentDialog.value.onCancel();
   }
   closeWithAnimation();
-  setTimeout(() => {
-    dialogManager.closeDialog();
-  }, 5000);
 }
 
 function handleBackdropClick() {
@@ -180,21 +183,25 @@ function getActionClass(type?: string): string {
 
 <template>
   <Teleport to="body">
-    <Transition name="dialog-fade">
-      <!-- native dialog element provides its own backdrop -->
-      <dialog
-        ref="dialogRef"
+    <Transition name="dialog-fade" @after-leave="handleAfterLeave">
+      <div
         v-if="isVisible"
-        class="unified-dialog"
-        :class="[
-          `dialog-type-${dialogType}`,
-          currentDialog?.customClass,
-          { 'is-closing': isClosing },
-        ]"
-        role="dialog"
-        aria-modal="true"
+        class="unified-dialog-backdrop"
+        :class="{ 'is-closing': isClosing }"
         @click.self="handleBackdropClick"
       >
+        <Transition name="dialog-zoom">
+          <div
+            v-if="isVisible"
+            class="unified-dialog"
+            :class="[
+              `dialog-type-${dialogType}`,
+              currentDialog?.customClass,
+              { 'is-closing': isClosing },
+            ]"
+            role="dialog"
+            aria-modal="true"
+          >
             <!-- Loading Spinner -->
             <div v-if="isLoading && !currentDialog" class="dialog-loading">
               <div class="loading-spinner"></div>
@@ -303,20 +310,27 @@ function getActionClass(type?: string): string {
                 </button>
               </div>
             </template>
-      </dialog>
+          </div>
+        </Transition>
+      </div>
     </Transition>
   </Teleport>
 </template>
 
 <style scoped>
-/* Backdrop for native dialog */
-dialog.unified-dialog::backdrop {
+/* Backdrop */
+.unified-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
-  z-index: 9999;
 }
 
-/* Dialog Container (still applied to <dialog>) */
+/* Dialog Container */
 .unified-dialog {
   position: relative;
   width: 90%;

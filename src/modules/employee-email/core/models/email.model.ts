@@ -1,4 +1,4 @@
-import { EmailType } from "../constants/emailType.enum";
+import { EmailType, getEmailTypeName } from "../constants/emailType.enum";
 import { isValidEmail, normalizeEmail } from "../utils/email.validation";
 
 /**
@@ -23,12 +23,24 @@ export default class EmailModel {
         createdAt?: string;
         updatedAt?: string;
     }) {
+        if (!data.email) {
+            throw new Error('Email is required');
+        }
+
+        const normalized = normalizeEmail(data.email);
+
+        if (!isValidEmail(normalized)) {
+            throw new Error('Invalid email format');
+        }
+
         this.id = data.id;
-        this.email = data.email;
+        this.email = normalized;
         this.type = data.type || EmailType.EMPLOYEE;
         this.employeeId = data.employeeId;
         this.createdAt = data.createdAt;
         this.updatedAt = data.updatedAt;
+
+        Object.freeze(this);
     }
 
     /**
@@ -40,6 +52,11 @@ export default class EmailModel {
     static fromJson(json: any): EmailModel {
         if (!json) {
             throw new Error("Cannot create EmailModel from null or undefined");
+        }
+
+        const email = json.email;
+        if (!email || !isValidEmail(normalizeEmail(email))) {
+            throw new Error('Invalid email format');
         }
 
         return new EmailModel({
@@ -105,6 +122,6 @@ export default class EmailModel {
      * @returns Formatted string
      */
     toString(): string {
-        return `${this.email} (${this.type})`;
+        return `${this.email} (${getEmailTypeName(this.type).toLowerCase()})`;
     }
 }

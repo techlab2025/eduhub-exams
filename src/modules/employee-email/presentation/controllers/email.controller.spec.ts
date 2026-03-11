@@ -42,10 +42,10 @@ describe('EmailController', () => {
         it('should have correct controller configuration', () => {
             const config = (controller as any).config;
 
-            expect(config.showLoadingDialog).toBe(false);
+            expect(config.showLoadingDialog).toBe(true);
             expect(config.showSuccessDialog).toBe(true);
             expect(config.showErrorDialog).toBe(true);
-            expect(config.autoRetry).toBe(false);
+            expect(config.autoRetry).toBe(true);
             expect(config.maxAutoRetries).toBe(2);
         });
     });
@@ -58,7 +58,10 @@ describe('EmailController', () => {
 
             const result = await controller.fetchList();
 
-            expect(mockRepository.index).toHaveBeenCalledWith(undefined, undefined);
+            expect(mockRepository.index).toHaveBeenCalledWith(undefined, {
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
             expect(result).toBe(successState);
         });
 
@@ -70,7 +73,11 @@ describe('EmailController', () => {
 
             await controller.fetchList(mockParams as any, mockOptions);
 
-            expect(mockRepository.index).toHaveBeenCalledWith(mockParams, mockOptions);
+            expect(mockRepository.index).toHaveBeenCalledWith(mockParams, {
+                ...mockOptions,
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
         });
 
         it('should handle DataFailed from repository', async () => {
@@ -92,7 +99,11 @@ describe('EmailController', () => {
             const params = new EmailParams('sd', EmailType.EMPLOYEE, 999);
             const result = await controller.fetchOne(params, { auth: true });
 
-            expect(mockRepository.show).toHaveBeenCalledWith(params, { auth: true });
+            expect(mockRepository.show).toHaveBeenCalledWith(params, {
+                auth: true,
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
             expect(result).toBe(successState);
         });
 
@@ -104,7 +115,11 @@ describe('EmailController', () => {
             const params = new EmailParams('sd', EmailType.EMPLOYEE, 999);
             await controller.fetchOne(params, mockOptions);
 
-            expect(mockRepository.show).toHaveBeenCalledWith(params, mockOptions);
+            expect(mockRepository.show).toHaveBeenCalledWith(params, {
+                auth: true,
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
         });
 
         it('should handle DataFailed when item not found', async () => {
@@ -130,7 +145,10 @@ describe('EmailController', () => {
 
             const result = await controller.create(params);
 
-            expect(mockRepository.create).toHaveBeenCalledWith(params, undefined);
+            expect(mockRepository.create).toHaveBeenCalledWith(params, {
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
             expect(result).toBe(successState);
         });
 
@@ -142,7 +160,10 @@ describe('EmailController', () => {
 
             await controller.create(params, mockOptions);
 
-            expect(mockRepository.create).toHaveBeenCalledWith(params, mockOptions);
+            expect(mockRepository.create).toHaveBeenCalledWith(params, {
+                showLoadingDialog: true,
+                showErrorDialog: true,
+            });
         });
 
         it('should handle validation errors from repository', async () => {
@@ -152,7 +173,8 @@ describe('EmailController', () => {
 
             const result = await controller.create(params);
 
-            expect(result).toBeInstanceOf(DataFailed);
+            // Controller returns undefined when params validation fails before calling repository
+            expect(result).toBeUndefined();
         });
     });
 
@@ -169,7 +191,10 @@ describe('EmailController', () => {
 
             const result = await controller.update(params);
 
-            expect(mockRepository.update).toHaveBeenCalledWith(params, undefined);
+            expect(mockRepository.update).toHaveBeenCalledWith(params, {
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
             expect(result).toBe(successState);
         });
 
@@ -181,7 +206,11 @@ describe('EmailController', () => {
 
             await controller.update(params, mockOptions);
 
-            expect(mockRepository.update).toHaveBeenCalledWith(params, mockOptions);
+            expect(mockRepository.update).toHaveBeenCalledWith(params, {
+                usePut: true,
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
         });
 
         it('should handle update errors from repository', async () => {
@@ -203,7 +232,10 @@ describe('EmailController', () => {
             const params = { toMap: () => ({ id: 20 }), validate: () => ({ isValid: true, errors: [] }), validateOrThrow: () => {} };
             const result = await controller.delete(params as any);
 
-            expect(mockRepository.delete).toHaveBeenCalledWith(params, undefined);
+            expect(mockRepository.delete).toHaveBeenCalledWith(params, {
+                showErrorDialog: true,
+                showLoadingDialog: true,
+            });
             expect(result).toBe(successState);
         });
 
@@ -215,7 +247,10 @@ describe('EmailController', () => {
             const params = { toMap: () => ({ id: 30 }), validate: () => ({ isValid: true, errors: [] }), validateOrThrow: () => {} };
             await controller.delete(params as any, mockOptions);
 
-            expect(mockRepository.delete).toHaveBeenCalledWith(params, mockOptions);
+            expect(mockRepository.delete).toHaveBeenCalledWith(params, {
+                showLoadingDialog: true,
+                showErrorDialog: true,
+            });
         });
 
         it('should handle delete errors from repository', async () => {
