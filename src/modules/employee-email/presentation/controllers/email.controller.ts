@@ -5,7 +5,7 @@ import EmailRepository from "../../data/repositories/email.repository";
 
 /**
  * Email Controller for managing employee emails
- * 
+ *
  * This controller provides methods for CRUD operations on employee emails
  * and specialized queries like fetching emails by employee or type.
  */
@@ -23,13 +23,13 @@ export default class EmailController extends BaseController<
    * Controller configuration
    * Defines behavior for loading, success, and error dialogs
    */
-   protected get config(): ControllerConfig {
+  protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
       autoRetry: true,
-      maxAutoRetries: 2,
+      maxAutoRetries: 1,
     };
   }
 
@@ -47,6 +47,4 @@ export default class EmailController extends BaseController<
     }
     return EmailController.instance;
   }
-
-
 }

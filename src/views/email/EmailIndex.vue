@@ -5,7 +5,7 @@ import EmailIndex from "@/modules/employee-email/presentation/components/EmailIn
 
 <template>
   <div class="email-add-view">
-    <h2>Email List</h2>
+    <!-- <h2>Email List</h2> -->
     <EmailIndex />
   </div>
 </template>

@@ -3,9 +3,9 @@ import ServicesInterface, {
   CrudType,
   type ApiResponse,
   type ExtendedCallOptions,
-  type ProgressCallback
-} from './apiServiceInterface';
-import { env } from '@/base/Core/Config/index';
+  type ProgressCallback,
+} from "./apiServiceInterface";
+import { env } from "@/base/Core/Config/index";
 
 /**
  * Configuration for API endpoints supporting CRUD operations.
@@ -26,8 +26,6 @@ export interface ApiEndpoints {
 
   /** Delete endpoint */
   delete?: string;
-
-
 }
 
 /**
@@ -183,10 +181,7 @@ export default abstract class BaseApiService extends ServicesInterface {
    * Fetch single item (POST request with Params in body).
    * The ID should be included in the Params.
    */
-  async show(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<ApiResponse> {
+  async show(params?: Params, options?: ApiCallOptions): Promise<ApiResponse> {
     const url = this.resolveEndpoint(this.endpoints.show);
     const mergedOptions = this.mergeOptions({
       ...options,
@@ -204,13 +199,19 @@ export default abstract class BaseApiService extends ServicesInterface {
   /**
    * Create new item (POST request with FormData or JSON).
    */
-  async create(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+  async create(
+    params: Params,
+    options?: ApiCallOptions,
+    isAutoRetry?: boolean,
+  ): Promise<ApiResponse> {
     const url = this.resolveEndpoint(this.endpoints.create);
-    console.log(options, 'options');
-    const mergedOptions = this.mergeOptions(options);
-    console.log(mergedOptions, 'mergedOptions');
-
-
+    console.log(options, "options");
+    const mergedOptions = this.mergeOptions({
+      ...options,
+      enableRetry: isAutoRetry,
+      
+    });
+    console.log(mergedOptions, "mergedOptions");
 
     return this.call({
       url,
@@ -227,10 +228,12 @@ export default abstract class BaseApiService extends ServicesInterface {
   async update(
     params?: Params,
     options?: ApiCallOptions,
+    isAutoRetry?: boolean,
   ): Promise<ApiResponse> {
     const url = this.resolveEndpoint(this.endpoints.update);
     const mergedOptions = this.mergeOptions({
       ...options,
+      enableRetry: isAutoRetry,
       usePost: options?.usePost ?? true,
     });
 
@@ -282,10 +285,10 @@ export default abstract class BaseApiService extends ServicesInterface {
     config: CustomEndpointConfig,
     options?: ApiCallOptions,
   ): Promise<ApiResponse<T>> {
-    console.log(options, 'options');
+    console.log(options, "options");
     const mergedOptions = this.mergeOptions(options);
 
-    console.log(mergedOptions, 'mergedOptions');
+    console.log(mergedOptions, "mergedOptions");
     return this.call({
       url: config.url,
       type: config.method,

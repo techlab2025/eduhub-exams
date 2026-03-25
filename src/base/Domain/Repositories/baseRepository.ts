@@ -171,11 +171,12 @@ export default abstract class BaseRepository<T, TList = T[]> {
   async create(
     params: Params,
     options?: ApiCallOptions,
+    isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
     const retryFn = () => this.create(params, options);
 
     try {
-      const httpResponse = await this.apiService.create(params, options);
+      const httpResponse = await this.apiService.create(params, options ,isAutoRetry );
       return this.processItemResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);
@@ -188,11 +189,12 @@ export default abstract class BaseRepository<T, TList = T[]> {
   async update(
     params?: Params,
     options?: ApiCallOptions,
+    isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
     const retryFn = () => this.update(params, options);
 
     try {
-      const httpResponse = await this.apiService.update(params, options);
+      const httpResponse = await this.apiService.update(params, options ,isAutoRetry );
       return this.processItemResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);

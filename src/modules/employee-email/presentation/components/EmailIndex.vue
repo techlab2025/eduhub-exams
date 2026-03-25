@@ -8,6 +8,7 @@ import AppTable, {
 import type EmailModel from "@/modules/employee-email/core/models/email.model";
 import FilterEmailParams from "../../core/params/filter.email.params";
 import Pagination from "@/shared/HelpersComponents/Pagination.vue";
+import DeleteEmailParams from "../../core/params/deleteParams";
 
 // Controller instance
 const controller = EmailController.getInstance();
@@ -39,18 +40,18 @@ onMounted(async () => {
   await fetchEmails();
 });
 
-const editEmail = (email: EmailModel) => {
-  console.log("Edit email:", email);
-};
-
-const deleteEmail = (id: number) => {
-  console.log("Delete email:", id);
+const deleteEmail = async (id: number) => {
+  await controller.delete(new DeleteEmailParams(id));
+  await fetchEmails();
 };
 </script>
 
 <template>
   <div class="email-crud-example">
-    <h2>Employee Email Management</h2>
+    <div class="index-header">
+      <h2>Employee Email Management</h2>
+      <router-link to="/emails/add" class="add-btn">Add Email</router-link>
+    </div>
 
     <DataStatusBuilder
       :controller="controller.listState.value"
@@ -74,8 +75,14 @@ const deleteEmail = (id: number) => {
           </template>
 
           <template #actions="{ item }">
-            <button @click="editEmail(item)">Edit</button>
-            <button @click="deleteEmail(item.id!)">Delete</button>
+            <div class="btns-container">
+              <router-link
+                class="btn btn-primary"
+                :to="`/emails/edit/${item.id}`"
+                >Edit</router-link
+              >
+              <button @click="deleteEmail(item.id!)">Delete</button>
+            </div>
           </template>
         </AppTable>
 
@@ -94,10 +101,22 @@ const deleteEmail = (id: number) => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+.btns-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.index-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
 .email-crud-example {
   padding: 20px;
-  max-width: 800px;
+  /* max-width: 800px;*/
   margin: 0 auto;
 }
 

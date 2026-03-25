@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   EmailController,
   EmailParams,
@@ -7,6 +7,8 @@ import {
 } from "@/modules/employee-email";
 
 import EmailForm from "./EmailForm.vue";
+import { useRoute } from "vue-router";
+import ShowEmailParams from "../../core/params/show.email.params";
 
 // Controller instance
 const controller = EmailController.getInstance();
@@ -16,7 +18,7 @@ const params = ref<EmailParams | null>(null);
 /**
  * Save (create or update) email
  */
-async function saveEmail() {
+const saveEmail = async () => {
   if (!params.value) {
     console.error("No email parameters to save");
     return;
@@ -24,26 +26,25 @@ async function saveEmail() {
 
   const paramsToSave = params.value;
 
-  if (paramsToSave.employeeId) {
+  if (paramsToSave.type) {
     await controller.update(paramsToSave);
-  } 
-
-
-}
+  }
+};
 
 const updateData = (updatedParams: EmailParams) => {
   params.value = updatedParams;
   // saveEmail();
 };
 
+const route = useRoute();
+onMounted(async () => {
+  await controller.fetchOne(new ShowEmailParams(Number(route.params.id)));
+});
 </script>
 
 <template>
   <div class="email-crud-example">
-    <EmailForm
-      :email="controller.itemData.value!"
-      @updateData="updateData"
-    />
+    <EmailForm :email="controller.itemData.value!" @updateData="updateData" />
 
     <button type="button" @click="saveEmail">Save Email</button>
 

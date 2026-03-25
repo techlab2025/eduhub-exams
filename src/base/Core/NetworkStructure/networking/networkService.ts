@@ -231,8 +231,8 @@ export default class NetworkService {
     const retryOptions: RetryOptions = {
       ...DEFAULT_RETRY_OPTIONS,
       ...options,
-      maxAttempts: env.maxRetryAttempts,
-      initialDelay: env.retryDelay,
+      maxAttempts: options.maxAttempts ?? env.maxRetryAttempts,
+      initialDelay: options.initialDelay ?? env.retryDelay,
     };
 
     let lastError: Error | null = null;
