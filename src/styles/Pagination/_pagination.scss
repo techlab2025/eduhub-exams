@@ -1,4 +1,4 @@
-@import "../variables";
+@use "../variables" as *;
 .pagination-wrapper {
   display: flex;
   align-items: center;
@@ -13,7 +13,7 @@
 
   .show-results,
   .count-per-page {
-    font-family: 'Tajawal-regular', sans-serif;
+    font-family: "Tajawal-regular", sans-serif;
     font-size: $MdSize;
     color: $GrayText;
     @media (max-width: 768px) {
@@ -28,7 +28,7 @@
     gap: $XsSize;
 
     .pagination-item {
-      font-family: 'Tajawal-regular', sans-serif;
+      font-family: "Tajawal-regular", sans-serif;
       font-size: $MdSize;
       color: $GrayText;
       padding: $XsSize $SmSize;
@@ -46,7 +46,7 @@
       background-color: $Gray-2;
       border-radius: $BorderRadiusSm;
       border: $BaseBorderWidth solid $MainBorder;
-      font-family: 'Tajawal-regular', sans-serif;
+      font-family: "Tajawal-regular", sans-serif;
       font-size: $MdSize;
       color: $GrayText;
     }
@@ -62,7 +62,7 @@
     display: flex;
     align-items: center;
     gap: $XsSize;
-    font-family: 'Tajawal-regular', sans-serif;
+    font-family: "Tajawal-regular", sans-serif;
     font-size: $MdSize;
     padding: $XsSize $SmSize;
     color: $GrayText-1;
@@ -88,7 +88,7 @@
 
   span {
     padding: $XsSize $XlSize2;
-    font-family: 'Tajawal-regular', sans-serif;
+    font-family: "Tajawal-regular", sans-serif;
     font-size: $MdSize;
     color: $GrayText;
     cursor: pointer;

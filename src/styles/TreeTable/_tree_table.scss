@@ -1,9 +1,9 @@
-@import '../variables';
+@use "../variables" as *;
 .heirarchy-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: 'Regular';
+  font-family: "Regular";
 
   .heirarchy-title {
     font-weight: 700;
@@ -56,11 +56,15 @@
   font-weight: 700;
   color: var(--dark-color);
   margin: 0 0 16px 0;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-family: 'Regular';
+  font-family: "Regular";
 }
 
 .timeline-progress-bar {
@@ -69,12 +73,16 @@
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  font-family: 'Regular';
+  font-family: "Regular";
 }
 
 .timeline-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-color) 0%, var(--success-color) 100%);
+  background: linear-gradient(
+    90deg,
+    var(--primary-color) 0%,
+    var(--success-color) 100%
+  );
   border-radius: 10px;
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -92,13 +100,18 @@
 }
 
 .timeline-progress-fill::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   animation: shimmer 2s infinite;
 }
 
@@ -172,7 +185,11 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 100%
+  );
   box-shadow: 0 4px 12px rgba(30, 58, 142, 0.3);
   z-index: 2;
   position: relative;
@@ -243,17 +260,21 @@
 
 .timeline-content {
   padding: 14px;
-  font-family: 'Regular';
+  font-family: "Regular";
 }
 
 .timeline-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, var(--primary-color) 0%, var(--success-color) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--primary-color) 0%,
+    var(--success-color) 100%
+  );
   transform: scaleY(0);
   transform-origin: top;
   transition: transform 0.4s ease;
@@ -271,7 +292,7 @@
   gap: 8px;
   border-bottom: 1px solid var(--primary-color-opacity-1);
   z-index: 99;
-  font-family: 'Regular';
+  font-family: "Regular";
   transition: all 0.3s linear;
   &:hover {
     cursor: pointer;
@@ -286,7 +307,7 @@
     z-index: 99;
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -12px;
       left: -2px;
@@ -311,7 +332,11 @@
 .timeline-badge {
   padding: 4px 12px;
   border-radius: 20px;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 100%
+  );
   color: white;
   font-size: 11px;
   font-weight: 600;
@@ -330,13 +355,21 @@
   align-items: flex-start;
   gap: 12px;
   padding: 10px;
-  background: linear-gradient(135deg, rgba(30, 58, 142, 0.02) 0%, rgba(30, 58, 142, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(30, 58, 142, 0.02) 0%,
+    rgba(30, 58, 142, 0.05) 100%
+  );
   border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .timeline-detail-item:hover {
-  background: linear-gradient(135deg, rgba(30, 58, 142, 0.05) 0%, rgba(30, 58, 142, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(30, 58, 142, 0.05) 0%,
+    rgba(30, 58, 142, 0.1) 100%
+  );
   transform: translateX(4px);
 }
 
@@ -344,7 +377,11 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;

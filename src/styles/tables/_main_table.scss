@@ -1,4 +1,4 @@
-@import '../variables';
+@use "../variables" as *;
 .table-responsive {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -26,7 +26,7 @@
     thead {
       font-size: 0.8rem;
       // background-color: var(--table-header-bg);
-      font-family: 'Regular';
+      font-family: "Regular";
       tr {
         th {
           background-color: #f5f6f7;
@@ -55,7 +55,7 @@
     }
 
     tbody {
-      font-family: 'Regular';
+      font-family: "Regular";
       padding-top: 10px;
       tr {
         font-size: 1rem;

@@ -1,12 +1,17 @@
-@import '../mixins/grid';
-@import '../mixins/flex';
-@import '../variables';
+@use "../mixins/grid" as *;
+@use "../mixins/flex" as *;
+@use "../variables" as *;
 
 .login {
   @include grid(2, 1fr, 10px);
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(247.48deg, #1d4ed8 -32.76%, #163ca5 61.38%, #0f2972 99.86%);
+  background: linear-gradient(
+    247.48deg,
+    #1d4ed8 -32.76%,
+    #163ca5 61.38%,
+    #0f2972 99.86%
+  );
 
   @media screen and (max-width: 1179px) {
     @include flex(column-reverse, wrap, center, center);
@@ -51,7 +56,7 @@
 
         span {
           color: #c4cbd7;
-          font-family: 'Light';
+          font-family: "Light";
         }
       }
 
@@ -59,7 +64,7 @@
         top: 13%;
         transform: translateX(-48%);
         p {
-          font-family: 'Regular';
+          font-family: "Regular";
           @media screen and (min-width: 1101px) and (max-width: 1440px) {
             width: 80%;
           }
@@ -71,7 +76,7 @@
         left: 68%;
         transform: translateX(-48%);
         p {
-          font-family: 'Regular';
+          font-family: "Regular";
           @media screen and (min-width: 1101px) and (max-width: 1440px) {
             width: 80%;
           }
@@ -127,7 +132,7 @@
 
         h2 {
           font-size: var(--xl-size-1);
-          font-family: 'Bold', sans-serif;
+          font-family: "Bold", sans-serif;
         }
       }
 
@@ -137,12 +142,12 @@
         text-align: center;
 
         p {
-          font-family: 'Bold', sans-serif;
+          font-family: "Bold", sans-serif;
           font-size: var(--xl-size-base);
         }
 
         span {
-          font-family: 'Regular', sans-serif;
+          font-family: "Regular", sans-serif;
           font-size: var(--md-size-base);
           color: #9ca3af;
         }
@@ -163,13 +168,13 @@
         transition: all 0.3s ease;
         width: fit-content;
 
-        font-family: 'Regular', sans-serif;
+        font-family: "Regular", sans-serif;
         font-size: 1rem;
 
         &.active {
           background-color: var(--PrimaryColor);
           color: var(--BgWhite);
-          font-family: 'Bold', sans-serif;
+          font-family: "Bold", sans-serif;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
       }
@@ -190,7 +195,7 @@
           padding: 1rem 1rem 1rem 2.3rem;
 
           &::placeholder {
-            font-family: 'Regular', sans-serif;
+            font-family: "Regular", sans-serif;
             font-size: var(--md-size-base);
           }
         }
