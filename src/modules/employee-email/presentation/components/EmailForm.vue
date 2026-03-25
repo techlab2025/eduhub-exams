@@ -3,6 +3,7 @@ import { ref, watch } from "vue";
 import { EmailModel, EmailParams, EmailType } from "@/modules/employee-email";
 import TitleInterface from "@/base/Data/Models/titleInterface";
 import CustomSelectInput from "@/shared/FormInputs/CustomSelectInput.vue";
+import { useRoute } from "vue-router";
 
 const emit = defineEmits<{
   updateData: [params: EmailParams];
@@ -50,12 +51,13 @@ const updateData = () => {
   );
   emit("updateData", params);
 };
+const route = useRoute();
 </script>
 
 <template>
   <div class="email-crud-example">
+    <h3>{{ route.params.id ? "Edit Email" : "Add New Email" }}</h3>
     <div class="email-form">
-      <h3>{{ isEditing ? "Edit Email" : "Add New Email" }}</h3>
       <div class="input-wrapper">
         <label for="email">Email</label>
         <input
@@ -74,6 +76,7 @@ const updateData = () => {
           :placeholder="$t('select_email_type')"
           :required="true"
           :id="'email-type'"
+          label="Employee Type"
           @update:modelValue="updateType"
         />
       </div>
@@ -81,4 +84,15 @@ const updateData = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.email-form {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  input {
+    color: black;
+  }
+}
+</style>

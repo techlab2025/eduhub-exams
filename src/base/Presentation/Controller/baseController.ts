@@ -382,6 +382,7 @@ export default abstract class BaseController<T, TList = T[]> {
       const result = await this.repository.create(
         params,
         this.mergeOptions(options),
+        this.config.autoRetry,
       );
       this.setItemState(result);
       this.handleItemResponse(result, "Created successfully");
@@ -421,6 +422,7 @@ export default abstract class BaseController<T, TList = T[]> {
       const result = await this.repository.update(
         params,
         this.mergeOptions(options),
+        this.config.autoRetry,
       );
       this.setItemState(result);
       this.handleItemResponse(result, "Updated successfully");

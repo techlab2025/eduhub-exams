@@ -51,7 +51,13 @@ const updateData = (updatedParams: EmailParams) => {
   <div class="email-crud-example">
     <EmailForm :email="controller.itemData.value!" @updateData="updateData" />
 
-    <AppButton title="Save Email" @click="saveEmail" size="sm" icon="right" type="submit">
+    <AppButton
+      title="Save Email"
+      @click="saveEmail"
+      size="sm"
+      icon="right"
+      type="submit"
+    >
       Save Email
 
       <template #icon>
@@ -69,7 +75,7 @@ const updateData = (updatedParams: EmailParams) => {
 <style scoped>
 .email-crud-example {
   padding: 20px;
-  max-width: 800px;
+  /* max-width: 800px; */
   margin: 0 auto;
 }
 
