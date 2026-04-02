@@ -1,6 +1,17 @@
 // Updated user store
-import type UserModel from "@/features/website/login/Data/models/user_model";
 import { defineStore } from "pinia";
+
+/**
+ * TODO: Replace with proper UserModel from auth module when implemented.
+ * This is a temporary interface to unblock the store from a stale import.
+ */
+interface UserModel {
+  id?: number;
+  name?: string;
+  email?: string;
+  token?: string;
+  [key: string]: any;
+}
 
 export const useUserStore = defineStore("user", {
   state: () => ({

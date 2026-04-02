@@ -137,7 +137,7 @@ export class ClassValidation {
       // Check custom validation
       if (rule.custom) {
         const result = rule.custom(value);
-        console.log(result, "result");
+
         if (result !== true) {
           errors.push({
             field,
@@ -160,9 +160,7 @@ export class ClassValidation {
    * Validate and throw error if validation fails
    */
   validateOrThrow(obj: any): void {
-    console.log(obj, "obj");
     const { isValid, errors } = this.validate(obj);
-    console.log({ isValid, errors }, "{ isValid, errors }");
     if (!isValid) {
       // throw new ValidationError(errors)
       const validationError = new ValidationError(errors);
