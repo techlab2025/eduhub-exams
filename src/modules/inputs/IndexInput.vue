@@ -39,7 +39,7 @@ const mockStaticOptions = ref<TitleInterface<string | number>[]>([
           <h2>Dynamic API Select</h2>
           <span></span>
         </div>
-             
+
         <p class="panel-desc">
           Fetches options from an API controller using filter params.
         </p>

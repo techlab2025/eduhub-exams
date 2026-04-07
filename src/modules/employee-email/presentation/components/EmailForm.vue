@@ -2,8 +2,8 @@
 import { ref, watch } from "vue";
 import { EmailModel, EmailParams, EmailType } from "@/modules/employee-email";
 import TitleInterface from "@/base/Data/Models/titleInterface";
-import CustomSelectInput from "@/shared/FormInputs/CustomSelectInput.vue";
 import { useRoute } from "vue-router";
+import UpdatedCustomInputSelect from "@/shared/FormInputs/UpdatedCustomInputSelect.vue";
 
 const emit = defineEmits<{
   updateData: [params: EmailParams];
@@ -70,7 +70,7 @@ const route = useRoute();
       </div>
 
       <div class="input-wrapper">
-        <CustomSelectInput
+        <UpdatedCustomInputSelect
           v-model="formType"
           :staticOptions="emailTypes"
           :placeholder="$t('select_email_type')"

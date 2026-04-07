@@ -86,6 +86,7 @@
 
 @use "./layout/body";
 @use "./login/login";
+@use "./timeline";
 
 html {
   scroll-behavior: smooth;

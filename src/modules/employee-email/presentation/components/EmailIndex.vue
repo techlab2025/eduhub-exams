@@ -86,6 +86,7 @@ const deleteEmail = async (id: number) => {
   <div class="email-crud-example">
     <div class="index-header">
       <h2>Employee Email Management</h2>
+
       <router-link to="/emails/add" class="add-btn">Add Email</router-link>
     </div>
     <div class="input-search col-span-1">
