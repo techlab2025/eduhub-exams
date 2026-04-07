@@ -20,6 +20,7 @@ import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
 import { dialogManager } from "@/base/Presentation/Dialogs/dialog.manager";
 import { env } from "@/base/Core/Config";
 import type PaginationModel from "@/base/Core/Models/paginationModel";
+import TitleInterface from "@/base/Data/Models/titleInterface";
 
 /**
  * Controller configuration options
@@ -525,6 +526,26 @@ export default abstract class BaseController<T, TList = T[]> {
     );
   }
 
+  async fetchAsOptions(
+    params?: Params,
+    options?: ApiCallOptions,
+  ): Promise<TitleInterface<string | number>[]> {
+    await this.fetchList(params, options);
+
+    if (!this.isListSuccess()) return [];
+
+    return ((this.listData.value as any[]) ?? []).map((el: any) =>
+      this.toTitleInterface(el),
+    );
+  }
+
+  protected toTitleInterface(el: any): TitleInterface<string | number> {
+    return new TitleInterface({
+      id: el?.id ?? el?.value ?? "",
+      title: el?.title ?? el?.name ?? el?.label ?? String(el?.id ?? ""),
+      subtitle: el?.subtitle ?? "",
+    });
+  }
   // =========================================================================
   // STATE MANAGEMENT
   // =========================================================================
