@@ -8,6 +8,7 @@ import Aura from '@primeuix/themes/aura';
 import { createI18n } from "vue-i18n";
 import ar from "./locales/ar.json";
 import en from "./locales/en.json";
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const i18n = createI18n({
   locale: "en",
@@ -17,6 +18,7 @@ const i18n = createI18n({
     ar,
   },
 });
+const pinia = createPinia()
 
 createApp(App)
   .use(PrimeVue, {
@@ -24,7 +26,7 @@ createApp(App)
       preset: Aura
     }
   })
-  .use(createPinia())
+  .use(pinia.use(piniaPluginPersistedstate))
   .use(router)
   .use(i18n)
   .mount("#app");

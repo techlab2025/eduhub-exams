@@ -1,7 +1,7 @@
 import BaseRepository, {
   type RepositoryConfig,
 } from "@/base/Domain/Repositories/baseRepository";
-import LoginModel from "../../core/models/login.model";
+import LoginModel from "../../core/models/user.model";
 import LoginApiService from "../api/login.api-service";
 import type Params from "@/base/Core/Params/params";
 import type { DataState } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";

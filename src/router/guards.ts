@@ -9,18 +9,18 @@ export function authGuard(
 ): void {
   const userData = useUserStore()
 
-  // // Not authenticated - redirect to login
-  // if (to.name !== 'Login' && !userData.isAuth) {
-  //   return next({ path: '/login' })
-  // }
+  // Not authenticated - redirect to login
+  if (to.name !== 'Login' && !userData.isAuth) {
+    return next({ path: '/login' })
+  }
 
-  // // Already authenticated - redirect to dashboard
-  // if (to.name === 'Login' && userData.isAuth) {
-  //   const redirectPath = true
-  //     ? '/admin'
-  //     : '/organization'
-  //   return next({ path: redirectPath })
-  // }
+  // Already authenticated - redirect to dashboard
+  if (to.name === 'Login' && userData.isAuth) {
+    const redirectPath = true
+      ? '/admin'
+      : '/organization'
+    return next({ path: redirectPath })
+  }
 
   next()
 }

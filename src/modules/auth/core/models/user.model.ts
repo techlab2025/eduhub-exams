@@ -7,8 +7,9 @@ import { isValidEmail } from "../utils/email.validation";
  * This model handles email information for employees including
  * validation, type categorization, and API serialization.
  */
-export default class LoginModel {
+export default class UserModel {
   public readonly id?: number;
+  public readonly name: string;
   public readonly email: string;
   public readonly type: EmailType;
   public readonly employeeId?: number;
@@ -18,6 +19,7 @@ export default class LoginModel {
   constructor(data: {
     id?: number;
     email: string;
+    name: string;
     type?: EmailType;
     employeeId?: number;
     createdAt?: string;
@@ -25,6 +27,7 @@ export default class LoginModel {
   }) {
     this.id = data.id;
     this.email = data.email;
+    this.name = data.name
     this.type = data.type || EmailType.EMPLOYEE;
     this.employeeId = data.employeeId;
     this.createdAt = data.createdAt;
@@ -37,15 +40,16 @@ export default class LoginModel {
    * @returns EmailModel instance
    * @throws Error if email is invalid
    */
-  static fromJson(json: any): LoginModel {
+  static fromJson(json: any): UserModel {
     if (!json) {
       throw new Error("Cannot create EmailModel from null or undefined");
     }
 
-    return new LoginModel({
+    return new UserModel({
       id: json.id,
       email: json.email,
       type: json.type || EmailType.EMPLOYEE,
+      name: json.name,
       employeeId: json.employee_id,
       createdAt: json.created_at,
       updatedAt: json.updated_at,

@@ -1,53 +1,41 @@
 <script lang="ts" setup>
-import { markRaw, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref } from "vue";
+// import { useRoute, useRouter } from 'vue-router'
 // import IconFullScreen from '@/shared/icons/IconFullScreen.vue'
 // import IconMenu from '@/shared/icons/IconMenu.vue'
-import IconLogout from '@/shared/icons/IconLogout.vue'
-import IconArrowDownNav from '@/shared/icons/IconArrowDownNav.vue'
+import IconLogout from "@/shared/icons/IconLogout.vue";
+import IconArrowDownNav from "@/shared/icons/IconArrowDownNav.vue";
 // import { setDefaultImage } from '@/base/Presentation/Utils/set_default_image'
 // import { setDefaultImage } from "@/base/Presentation/Utils/set_default_image";
 // import { useUserStore } from "@/stores/user";
 // import defaultImage from "@/assets/images/user.png";
 // import ChangeLanguage from './ChangeLanguage.vue'
-import Notification from '../icons/Notification.vue'
-import SearchIcon from '../icons/SearchIcon.vue'
-import { useUserStore } from '@/stores/user'
-// import defaultLogo from '@/assets/images/logo.svg'
-
-const route = useRoute()
-// console.log(route.name)
-// defineEmits(["open"]);
+// import Notification from '../icons/Notification.vue'
+import SearchIcon from "../icons/SearchIcon.vue";
+import { useUserStore } from "@/stores/user";
 
 const props = defineProps({
   open: {
     type: Boolean,
     default: true,
   },
-})
+});
 
-const emit = defineEmits(['open'])
+const emit = defineEmits(["open"]);
 
-const language = ref<string>('')
+const userStore = useUserStore();
 
-const router = useRouter()
-// const userStore = useUserStore();
+const user = userStore.user;
 
 const logout = () => {
-  localStorage.removeItem('user')
-  localStorage.removeItem('token')
-  window.location.href = '/login/admin'
+  userStore.logout();
+};
 
-}
-
-const isDropMenuOpen = ref(false)
+const isDropMenuOpen = ref(false);
 
 const toggleDropMenu = () => {
-  isDropMenuOpen.value = !isDropMenuOpen.value
-}
-
-// fetch user store data
-const { user } = useUserStore()
+  isDropMenuOpen.value = !isDropMenuOpen.value;
+};
 </script>
 
 <template>
@@ -69,7 +57,7 @@ const { user } = useUserStore()
         </div> -->
         <router-link class="flex items-center gap-2" :to="'/'">
           <!-- <img :src="defaultLogo" alt="logo-img"> -->
-          <p class="logo">logo </p>
+          <p class="logo">logo</p>
         </router-link>
       </div>
 
@@ -85,10 +73,13 @@ const { user } = useUserStore()
           <Notification />
         </div> -->
 
-        <div class="user cursor-pointer dropdown-trigger" @click="toggleDropMenu">
+        <div
+          class="user cursor-pointer dropdown-trigger"
+          @click="toggleDropMenu"
+        >
           <IconArrowDownNav class="drop-icon" />
           <div class="profile-data">
-            <span>{{ user?.name.split(' ')[0] }}</span>
+            <span>{{ user?.email }}</span>
             <!-- <span>{{ user?.type == OrganizationTypeEnum.ADMIN ? 'Admin' : 'Organization' }}</span> -->
           </div>
 
@@ -98,7 +89,7 @@ const { user } = useUserStore()
             <ul>
               <li @click="logout">
                 <IconLogout />
-                <span> {{ $t('logout') }} </span>
+                <span> {{ $t("logout") }} </span>
               </li>
             </ul>
           </div>

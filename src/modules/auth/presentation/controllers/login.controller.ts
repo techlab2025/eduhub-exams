@@ -1,9 +1,11 @@
 import BaseController from "@/base/Presentation/Controller/baseController";
 import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
-import type LoginModel from "../../core/models/login.model";
+import type LoginModel from "../../core/models/user.model";
 import LoginRepository from "../../data/repositories/login.repository";
 import type Params from "@/base/Core/Params/params";
 import { DataState, DataFailed } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
+import { useUserStore } from "@/stores/user";
+import router from "@/router";
 
 /**
  * Email Controller for managing employee emails
@@ -20,6 +22,9 @@ export default class LoginController extends BaseController<
   protected get repository() {
     return LoginRepository.getInstance();
   }
+
+  //user Store
+  private userStore = useUserStore();
 
   /**
    * Controller configuration
@@ -59,9 +64,10 @@ export default class LoginController extends BaseController<
     try {
       const response = await this.repository.login(params);
       this.setItemState(response);
-      
+
       this.handleItemResponse(response, "Logged in successfully");
-      
+      if (response.data) this.userStore.setUser(response.data);
+      router.push("/")
       return response;
     } catch (error: any) {
       const failed = new DataFailed<LoginModel>({ error });

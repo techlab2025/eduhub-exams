@@ -1,63 +1,51 @@
-// Updated user store
 import { defineStore } from "pinia";
+import { ref } from "vue";
+import UserModel from "@/modules/auth/core/models/user.model";
 
-/**
- * TODO: Replace with proper UserModel from auth module when implemented.
- * This is a temporary interface to unblock the store from a stale import.
- */
-interface UserModel {
-  id?: number;
-  name?: string;
-  email?: string;
-  token?: string;
-  [key: string]: any;
-}
 
-export const useUserStore = defineStore("user", {
-  state: () => ({
-    user: null as UserModel | null,
-    isAuth: false,
-    expiresAt: null as number | null, // Store expiration timestamp
-  }),
-  actions: {
-    setUser(user: UserModel) {
-      this.user = user;
-      this.isAuth = true;
-      this.expiresAt = Date.now() + 24 * 60 * 60 * 1000; // Set expiration 24h ahead
-      this.setAutoLogout();
-    },
-    async logout() {
-      if (window.LogoutChannel) {
-        window.LogoutChannel.postMessage(
-          JSON.stringify({
-            message: "logout",
-            status: true,
-          }),
-        );
-      }
 
-      this.user = null;
-      this.isAuth = false;
-      localStorage.clear();
-      this.expiresAt = null;
-    },
-    setAutoLogout() {
-      if (this.expiresAt) {
-        const timeout = this.expiresAt - Date.now();
-        if (timeout > 0) {
-          setTimeout(() => this.logout(), timeout);
-        }
+export const useUserStore = defineStore("user", () => {
+  const user = ref<UserModel | null>(null);
+  const isAuth = ref(false);
+  const expiresAt = ref<number | null>(null);
+
+  const setUser = (data: UserModel) => {
+    user.value = data;
+    isAuth.value = true;
+    expiresAt.value = Date.now() + 24 * 60 * 60 * 1000;
+    setAutoLogout();
+  }
+
+  const logout = () => {
+    user.value = null;
+    isAuth.value = false;
+    expiresAt.value = null;
+    localStorage.clear();
+  }
+
+  const setAutoLogout = () => {
+    if (expiresAt.value) {
+      const timeout = expiresAt.value - Date.now();
+      if (timeout > 0) {
+        setTimeout(() => logout(), timeout);
       }
+    }
+  }
+
+  const initFromPersist = () => {
+    if (expiresAt.value && Date.now() > expiresAt.value) {
+      logout();
+    } else {
+      setAutoLogout();
+    }
+  }
+
+  return { user, isAuth, expiresAt, setUser, logout, setAutoLogout, initFromPersist }
+},
+  {
+    persist: {
+      key: 'user',
+      storage: localStorage
     },
-  },
-  persist: {
-    afterHydrate: (ctx) => {
-      const store = ctx.store;
-      if (store.expiresAt && Date.now() > store.expiresAt) {
-        store.logout();
-      } else {
-        store.setAutoLogout();
-      }
-    },
-  },
-});
+  }
+);
