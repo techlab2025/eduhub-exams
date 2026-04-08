@@ -17,10 +17,5 @@ export const emailRoutes: RouteRecordRaw[] = [
     component: () => import("@/views/email/EmailEdit.vue"),
     props: true,
   },
-  {
-    path: "inputs",
-    name: "Inputs",
-    component: () => import("@/views/email/EmailEdit.vue"),
-    props: true,
-  },
+
 ];

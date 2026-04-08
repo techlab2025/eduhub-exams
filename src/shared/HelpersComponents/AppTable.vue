@@ -8,6 +8,7 @@ export interface TableHeader {
 }
 
 import { ref, computed } from "vue";
+import { dialogManager } from "@/base/Presentation/Dialogs/dialog.manager";
 
 const props = defineProps<{
   headers: TableHeader[];
@@ -85,6 +86,23 @@ function getRowKey(item: T, index: number): string | number {
   const val = (item as any)?.[key];
   return val !== undefined ? val : index;
 }
+
+// when double click on any filed copy to clipboard
+const copyToClipboard = async (value: unknown) => {
+  const text = String(value ?? "").trim();
+
+  if (!text || text === "--") return;
+
+  try {
+    await navigator.clipboard.writeText(text);
+
+    dialogManager.toastSuccess("Copied to clipboard: " + text, {
+      duration: 2000,
+    });
+  } catch (err) {
+    console.error("Clipboard copy failed:", err);
+  }
+};
 </script>
 
 <template>
@@ -149,6 +167,7 @@ function getRowKey(item: T, index: number): string | number {
                 ($slots.actions ? 1 : 0)
               "
               class="empty-row"
+              @dblclick="copyToClipboard(emptyMessage || 'No data available')"
             >
               {{ emptyMessage || "No data available" }}
             </td>
@@ -177,6 +196,8 @@ function getRowKey(item: T, index: number): string | number {
               v-for="header in headers"
               :key="header.key"
               :style="{ textAlign: header.align || 'left' }"
+              class="td-data"
+              @dblclick.stop="copyToClipboard((item as any)?.[header.key])"
             >
               <!--
                 Use named slot `cell-{key}` for custom rendering,
@@ -204,4 +225,18 @@ function getRowKey(item: T, index: number): string | number {
 </template>
 
 <style lang="scss">
+.app-table {
+  .td-data {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(var(--color-primary-rgb, 99, 102, 241), 0.05);
+    }
+
+    &:active {
+      background-color: rgba(var(--color-primary-rgb, 99, 102, 241), 0.1);
+    }
+  }
+}
 </style>
