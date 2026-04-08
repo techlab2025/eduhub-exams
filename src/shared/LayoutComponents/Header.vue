@@ -83,7 +83,7 @@ const toggleDropMenu = () => {
             <!-- <span>{{ user?.type == OrganizationTypeEnum.ADMIN ? 'Admin' : 'Organization' }}</span> -->
           </div>
 
-          <img alt="user" src="../../assets/images/travel.png" />
+          <img alt="user" src="@/assets/images/app/system-failed.png" />
 
           <div class="dropdown-menu" v-if="isDropMenuOpen">
             <ul>

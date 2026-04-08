@@ -30,11 +30,8 @@
     "jsdom": "^27.0.1",
     "sass-embedded": "^1.97.3",
     "typescript": "~5.9.3",
-    "vite": "npm:rolldown-vite@7.2.5",
+    "vite": "^8.0.0",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.1.4"
-  },
-  "overrides": {
-    "vite": "npm:rolldown-vite@7.2.5"
   }
 }

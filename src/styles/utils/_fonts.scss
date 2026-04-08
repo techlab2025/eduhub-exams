@@ -1,19 +1,23 @@
 @font-face {
   font-family: "extra-bold";
-  src: url("@/assets/fonts/URW/URW-DIN-Arabic-Black.ttf") format("truetype");
+  src: url("./../../assets/fonts/URW/URW-DIN-Arabic-Black.ttf")
+    format("truetype");
 }
 
 @font-face {
   font-family: "bold";
-  src: url("@/assets/fonts/URW/URW-DIN-Arabic-Bold.ttf") format("truetype");
+  src: url("./../../assets/fonts/URW/URW-DIN-Arabic-Bold.ttf")
+    format("truetype");
 }
 
 @font-face {
   font-family: "regular";
-  src: url("@/assets/fonts/URW/URW-DIN-Arabic-Medium.ttf") format("truetype");
+  src: url("./../../assets/fonts/URW/URW-DIN-Arabic-Medium.ttf")
+    format("truetype");
 }
 
 @font-face {
   font-family: "light";
-  src: url("@/assets/fonts/URW/URW-DIN-Arabic-Light.ttf") format("truetype");
+  src: url("./../../assets/fonts/URW/URW-DIN-Arabic-Light.ttf")
+    format("truetype");
 }
