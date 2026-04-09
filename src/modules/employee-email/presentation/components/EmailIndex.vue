@@ -11,6 +11,7 @@ import Pagination from "@/shared/HelpersComponents/Pagination.vue";
 import DeleteEmailParams from "../../core/params/deleteParams";
 import { useRoute, useRouter } from "vue-router";
 import { debounce } from "@/base/Presentation/Utils/debouced";
+import { useFormsStore } from "@/stores/formsStore";
 
 // Controller instance
 const controller = EmailController.getInstance();
@@ -80,6 +81,9 @@ const deleteEmail = async (id: number) => {
   await controller.delete(new DeleteEmailParams(id));
   await fetchEmails();
 };
+
+const FormStore = useFormsStore();
+const formRoute = "/emails/add";
 </script>
 
 <template>
@@ -87,7 +91,17 @@ const deleteEmail = async (id: number) => {
     <div class="index-header">
       <h2>Employee Email Management</h2>
 
-      <router-link to="/emails/add" class="add-btn">Add Email</router-link>
+      <router-link :to="formRoute" class="add-btn"
+        >{{
+          Object.keys(FormStore?.formData[formRoute] ?? {}).length === 0 ||
+          Object.values(FormStore?.formData[formRoute] ?? {}).every(
+            (v) => v == null,
+          )
+            ? `Add`
+            : `Continue Adding`
+        }}
+        Email</router-link
+      >
     </div>
     <div class="input-search col-span-1">
       <!--      <img alt="search" src="../../../../../../../assets/images/search-normal.png" />-->

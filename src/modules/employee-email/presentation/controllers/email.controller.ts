@@ -2,6 +2,11 @@ import BaseController from "@/base/Presentation/Controller/baseController";
 import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
 import EmailModel from "../../core/models/email.model";
 import EmailRepository from "../../data/repositories/email.repository";
+import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
+import type Params from "@/base/Core/Params/params";
+import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
+import router from "@/router";
+import { useFormsStore } from "@/stores/formsStore";
 
 /**
  * Email Controller for managing employee emails
@@ -46,5 +51,31 @@ export default class EmailController extends BaseController<
       EmailController.instance = new EmailController();
     }
     return EmailController.instance;
+  }
+
+  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+    const FormStore = useFormsStore();
+
+    const result = await super.create(params, options);
+    if (result instanceof DataSuccess) {
+      router.push({ name: "Employee Emails" });
+      if (formKey) {
+        FormStore.clearFormData(formKey);
+      }
+    }
+    return result;
+  }
+
+  async update(params: Params, options?: ApiCallOptions, formKey?: string) {
+    const FormStore = useFormsStore();
+
+    const result = await super.update(params, options);
+    if (result instanceof DataSuccess) {
+      router.push({ name: "Employee Emails" });
+      if (formKey) {
+        FormStore.clearFormData(formKey);
+      }
+    }
+    return result;
   }
 }
