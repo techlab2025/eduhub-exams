@@ -16,7 +16,7 @@ export const useFormsStore = defineStore(
       return formData.value[key];
     };
     const clearFormData = (key: string) => {
-      delete formData.value[key];
+      formData.value[key] = null;
     };
     const hasUnsavedChanges = (key: string) => {
       const data = formData.value[key];
@@ -28,7 +28,9 @@ export const useFormsStore = defineStore(
         duration: 15000,
         onClick: () => {
           console.log("Navigating to:", targetPath);
-          router.push(targetPath);
+          if (targetPath) {
+            router.push(targetPath);
+          }
         },
       });
     };

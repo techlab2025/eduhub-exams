@@ -7,9 +7,11 @@ import AppButton from "@/shared/HelpersComponents/AppButton.vue";
 import IconAccept from "@/shared/icons/IconAccept.vue";
 import HandleFilesUpload from "@/shared/FormInputs/HandleFilesUpload.vue";
 import Sys from "@/assets/images/app/system-failed.png";
+import { useRoute } from "vue-router";
 // Controller instance
 const controller = EmailController.getInstance();
-
+const route = useRoute();
+const formKey = route.fullPath;
 // Form state
 const params = ref<EmailParams | null>(null);
 /**
@@ -24,12 +26,12 @@ const saveEmail = async () => {
 
     const paramsToSave = params.value;
 
-    if (paramsToSave.employeeId) {
-      await controller.update(paramsToSave);
-    } else {
-      await controller.create(paramsToSave);
-      // router.push({ name: "Employee Emails" });
-    }
+    // if (paramsToSave.employeeId) {
+    //   await controller.update(paramsToSave, undefined, formKey);
+    // } else {
+    await controller.create(paramsToSave, undefined, formKey);
+    // router.push({ name: "Employee Emails" });
+    // }
 
     // // Refresh list and reset form
     // if (controller.isItemSuccess()) {
@@ -55,7 +57,11 @@ const handleFilesChange = (files: any) => {
 
 <template>
   <div class="email-crud-example">
-    <EmailForm :email="controller.itemData.value!" @updateData="updateData" />
+    <EmailForm
+      :formKey="formKey"
+      :email="controller.itemData.value!"
+      @updateData="updateData"
+    />
 
     <AppButton
       title="Save Email"

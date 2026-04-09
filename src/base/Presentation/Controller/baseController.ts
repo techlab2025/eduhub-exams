@@ -386,6 +386,7 @@ export default abstract class BaseController<T, TList = T[]> {
         this.config.autoRetry,
       );
       this.setItemState(result);
+
       this.handleItemResponse(result, "Created successfully");
       return result;
     } catch (error: any) {

@@ -6,10 +6,17 @@ import UpdatedCustomInputSelect from "@/shared/FormInputs/UpdatedCustomInputSele
 
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { useFormsStore } from "@/stores/formsStore";
+
+const { email, formKey } = defineProps<{
+  email?: EmailModel;
+  formKey?: string;
+}>();
+
+const FormStore = useFormsStore();
 onBeforeRouteLeave((to, from) => {
-  const savedData = FormStore.getFormData(formKey);
+  const savedData = FormStore.getFormData(formKey!);
   if (savedData && to.path !== from.path) {
-    FormStore.showReturnWarning(formKey);
+    FormStore.showReturnWarning(formKey!);
   }
 });
 
@@ -17,11 +24,7 @@ const emit = defineEmits<{
   updateData: [params: EmailParams];
 }>();
 
-const props = defineProps<{
-  email?: EmailModel;
-}>();
-
-const email = props.email;
+// const email = props.email;
 
 // Form state
 const formEmail = ref("");
@@ -51,13 +54,11 @@ const updateType = (type: TitleInterface<EmailType>) => {
   formType.value = type;
   updateData();
 };
-const FormStore = useFormsStore();
 const route = useRoute();
 
-const formKey = route.fullPath;
 const updateData = () => {
-  FormStore.setFormData(formKey, {
-    email: formEmail.value,
+  FormStore.setFormData(formKey!, {
+    email: formEmail.value.length > 0 ? formEmail.value : null,
     type: formType.value?.id,
     id: editingId.value || undefined,
   });
@@ -69,15 +70,22 @@ const updateData = () => {
   emit("updateData", params);
 };
 
-onMounted(() => {
-  const saved = FormStore.getFormData(formKey);
+const resetForm = () => {
+  formEmail.value = "";
+  formType.value = null;
+  editingId.value = null;
+  isEditing.value = false;
+};
 
+onMounted(() => {
+  const saved = FormStore.getFormData(formKey!);
   if (saved) {
     formEmail.value = saved.email;
-
     formType.value = emailTypes.find((t) => t.id === saved.type) ?? null;
-
     editingId.value = saved.id ?? null;
+    updateData();
+  } else {
+    resetForm();
   }
 });
 </script>
