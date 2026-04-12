@@ -3,11 +3,11 @@ import Accordion from 'primevue/accordion'
 import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import PermissionBuilder from '@/components/DataStatus/PermissionBuilder.vue'
 import { PermissionsEnum } from '@/features/users/Admin/Core/Enum/permission_enum'
-import GeerIcon from '../icons/GeerIcon.vue'
 import { useRoute } from 'vue-router'
+import GeerIcon from '../icons/GeerIcon.vue'
 
 const route = useRoute()
 interface Routes {
