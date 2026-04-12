@@ -3,13 +3,13 @@ import type {
   ApiEndpoints,
   ApiResponse,
 } from "@/base/Data/ApiService/baseApiService";
-import { ApiNames } from "@/base/Core/NetworkStructure/apiNames";
 import type Params from "@/base/Core/Params/params";
+import { EmailEndpoints } from "./email.api.endpoints";
 
 export default class EmailApiService extends BaseApiService {
   private static instance: EmailApiService;
 
-  private apiNames = ApiNames.instance;
+  private readonly emailEndpoints = new EmailEndpoints();
 
   /**
    * Singleton instance
@@ -23,11 +23,11 @@ export default class EmailApiService extends BaseApiService {
 
   protected get endpoints(): Partial<ApiEndpoints> {
     return {
-      index: this.apiNames.IndexMail,
-      show: this.apiNames.ShowMail,
-      create: this.apiNames.AddMail,
-      update: this.apiNames.EditMail,
-      delete: this.apiNames.DeleteMail,      
+      index: this.emailEndpoints.index,
+      show: this.emailEndpoints.show,
+      create: this.emailEndpoints.store,
+      update: this.emailEndpoints.update,
+      delete: this.emailEndpoints.delete,
     };
   }
 
