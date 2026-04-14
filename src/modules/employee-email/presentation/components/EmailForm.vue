@@ -88,6 +88,21 @@ onMounted(() => {
     resetForm();
   }
 });
+
+const items = ref<any[]>([
+  {
+    header: "Email",
+    content: "data",
+    id: 1,
+    text: "text",
+  },
+  {
+    header: "Type",
+    content: formType.value?.title,
+    id: 2,
+    text: "text",
+  },
+]);
 </script>
 
 <template>
@@ -130,5 +145,40 @@ onMounted(() => {
   input {
     color: black;
   }
+}
+
+:deep(.myacc) {
+  border: none;
+}
+
+:deep(.AccordionPanel) {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px !important;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  overflow: hidden;
+}
+
+:deep(.AccordionHeader) {
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  overflow: hidden;
+}
+
+:deep(.AccordionContent) {
+  background: white;
+  color: #475569;
+  padding: 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 </style>

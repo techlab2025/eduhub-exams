@@ -1,68 +1,79 @@
 @use "../variables" as *;
 @use "../mixins/flex" as *;
+
 .breadcrump-container {
   @include flex-column(nowrap, flex-start, center);
-  background-color: #f8f9fb;
-  border-radius: $XlSize;
-  font-family: "Regular";
+  background-color: var(--gray-50);
+  border-radius: var(--xl-size-base);
+  font-family: var(--font-family);
   width: 100%;
   margin-bottom: 12px;
-  // padding: 10px;
 
   .breadcrump {
     width: 100%;
     @include flex-row(nowrap, center, center);
+
     .info-dialog {
       width: 30px;
       height: 30px;
     }
 
-    // margin-bottom: $XlSize;
     .sidebar-back {
       @include flex-row(nowrap, flex-start, center);
-      gap: $XsSize3;
-      background-color: #f8f9fb;
-      color: #5e5e5e;
-      font-size: $SmSize;
+      gap: var(--xs-size-3);
+      background-color: var(--gray-50);
+      color: var(--gray-600);
+      font-size: var(--sm-size);
       font-weight: $BaseFontSemiBoldWeight;
-      border-radius: $XlSize2;
+      border-radius: var(--xl-size-1);
       cursor: pointer;
+      transition: var(--transition-fast);
+
+      &:hover {
+        color: var(--PrimaryColor);
+        background-color: var(--PrimaryColor-light);
+      }
+
       .icon {
         border-radius: 50%;
-        padding: $XsSize4;
+        padding: var(--xs-size-4);
         width: 30px;
         height: 30px;
       }
     }
+
     .p-breadcrumb {
       width: 100%;
-      background-color: #f8f9fb;
+      background-color: var(--gray-50);
       text-transform: capitalize;
 
       .p-breadcrumb-list {
         @include flex-row(nowrap, center, center);
         width: 100%;
-        background-color: #f8f9fb;
+        background-color: var(--gray-50);
         gap: 12px;
+
         .p-breadcrumb-item {
           .p-breadcrumb-item-link {
             .p-breadcrumb-item-label {
               text-transform: capitalize;
-              color: $PrimaryColor !important;
-              font-size: $SmSize;
+              color: var(--PrimaryColor) !important;
+              font-size: var(--sm-size);
               font-weight: $BaseFontMediumWeight;
             }
           }
+
           &:last-child {
             .p-breadcrumb-item-link {
               .p-breadcrumb-item-label {
-                color: #1f41bb66 !important;
+                color: var(--PrimaryColor-light) !important;
               }
             }
           }
         }
+
         .p-breadcrumb-separator {
-          color: #1f41bb4d !important;
+          color: var(--PrimaryColor-light) !important;
         }
       }
     }

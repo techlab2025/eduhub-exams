@@ -6,19 +6,17 @@
   gap: 1rem;
   padding: 0.5rem;
   margin-top: 25px;
-  // background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 2px solid #e2e8f0;
-  border-radius: 25px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-full);
+  transition: var(--transition-slow);
   cursor: pointer;
-}
+  background-color: var(--gray-50);
 
-// .checkbox-toggle-wrapper:hover {
-//   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-//   border-color: #cbd5e1;
-//   transform: translateY(-2px);
-//   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-// }
+  &:hover {
+    border-color: var(--gray-300);
+    background-color: var(--BgWhite);
+  }
+}
 
 .checkbox-checkbox {
   position: absolute;
@@ -40,9 +38,9 @@
   position: relative;
   width: 64px;
   height: 36px;
-  background: #cbd5e1;
-  border-radius: 18px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--gray-300);
+  border-radius: var(--radius-full);
+  transition: var(--transition-slow);
   flex-shrink: 0;
 }
 
@@ -52,9 +50,9 @@
   left: 3px;
   width: 30px;
   height: 30px;
-  background: white;
+  background: var(--BgWhite);
   border-radius: 50%;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-slow);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,24 +62,24 @@
 .icon {
   width: 18px;
   height: 18px;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .checkbox-icon {
-  color: #64748b;
+  color: var(--gray-500);
   opacity: 1;
   transform: scale(1);
 }
 
 .check-icon {
-  color: #1d4ed8;
+  color: var(--PrimaryColor);
   position: absolute;
   opacity: 0;
   transform: scale(0);
 }
 
 .checkbox-checkbox:checked ~ .checkbox-label .toggle-background {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 100%);
+  background: var(--PrimaryColor);
 }
 
 .checkbox-checkbox:checked ~ .checkbox-label .toggle-slider {
@@ -108,19 +106,19 @@
 .label-text {
   font-size: 1rem;
   font-weight: 600;
-  color: #1e293b;
-  transition: color 0.3s ease;
+  color: var(--gray-800);
+  transition: color var(--transition);
 }
 
 .label-status {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--gray-500);
   font-weight: 500;
-  transition: color 0.3s ease;
+  transition: color var(--transition);
 }
 
 .checkbox-checkbox:checked ~ .checkbox-label .label-status {
-  color: #1d4ed8;
+  color: var(--PrimaryColor);
 }
 
 .checkbox-toggle-wrapper:active {

@@ -1,16 +1,15 @@
 @use '../../variables' as *;
 
-/*loader container*/
+/* ── Loader Dialog ─────────────────────────────────────────────── */
 .loader-dialog {
   animation: fade-out 0.7s ease-out;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-md);
   padding: 20px 60px;
   margin: auto;
-  background: #ffffff;
-
-
+  background: var(--BgWhite);
   background-color: transparent !important;
+
   .loader-container {
     padding: 20px 60px;
   }
@@ -25,16 +24,16 @@
   backdrop-filter: blur(5px);
 }
 
-/* Animation keyframes */
-/* HTML: <div class="loader"></div> */
+/* ── Loader Animation ──────────────────────────────────────────── */
 .loader {
   width: 120px;
   height: 22px;
   border-radius: 20px;
-  color: $PrimaryColor;
+  color: var(--PrimaryColor);
   border: 2px solid;
   position: relative;
 }
+
 .loader::before {
   content: '';
   position: absolute;
@@ -44,21 +43,7 @@
   background: currentColor;
   animation: l6 2s infinite;
 }
-@keyframes l6 {
-  100% {
-    inset: 0;
-  }
-}
 
-/*
-  .loader {
-    width: 120px;
-    height: 20px;
-    -webkit-mask: radial-gradient(circle closest-side,#000 94%,#0000) left/20% 100%;
-    background: linear-gradient(#000 0 0) left/0% 100% no-repeat #ddd;
-    animation: l17 2s infinite steps(6);
-  }
-  @keyframes l17 {
-    100% {background-size:120% 100%}
-  }
- */
+@keyframes l6 {
+  100% { inset: 0; }
+}

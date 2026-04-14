@@ -2,28 +2,32 @@
 @use "../mixins/flex" as *;
 
 .fast-route-container {
-  font-family: "Regular";
+  font-family: var(--font-family);
+
   @media (min-width: 768px) {
     display: none;
   }
 
   .fast-route {
     @include flex-row(wrap, center, center);
-    gap: $XsSize2;
+    gap: var(--xs-size-2);
     padding-block: 12px;
 
     .route {
-      background-color: #fcfcfc;
-      color: #14146b;
-      padding: $XsSize2;
-      border-radius: $XlSize2;
+      background-color: var(--BgWhite);
+      color: var(--gray-800);
+      padding: var(--xs-size-2);
+      border-radius: var(--xl-size-1);
       cursor: pointer;
-      transition: 0.3s all linear;
+      transition: var(--transition-slow);
       text-transform: capitalize;
+      border: 1px solid var(--gray-200);
+      font-weight: $BaseFontMediumWeight;
 
       &:hover {
-        background-color: #14146b;
-        color: #fcfcfc;
+        background-color: var(--PrimaryColor);
+        color: var(--BgWhite);
+        border-color: var(--PrimaryColor);
       }
 
       &.active {

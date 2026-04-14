@@ -6,17 +6,12 @@
   @include grid(2, 1fr, 10px);
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(
-    247.48deg,
-    #1d4ed8 -32.76%,
-    #163ca5 61.38%,
-    #0f2972 99.86%
-  );
+  background: linear-gradient(135deg, var(--PrimaryColor-dark) 0%, var(--bg-sidebar) 100%);
 
   @media screen and (max-width: 1179px) {
     @include flex(column-reverse, wrap, center, center);
-    gap: $MdSize;
-    padding: $MdSize;
+    gap: var(--md-size);
+    padding: var(--md-size);
   }
 
   .images {
@@ -40,22 +35,24 @@
         @include flex(column, nowrap, flex-start, flex-start);
         position: absolute;
         width: 272px;
-        padding: $XsSize3 $MdSize;
-        gap: $XsSize2;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.1);
+        padding: var(--xs-size-3) var(--md-size);
+        gap: var(--xs-size-2);
+        border-radius: var(--radius-lg);
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
 
         p {
           color: var(--BgWhite);
-          font-size: $MdSize;
-          // width: 90%;
+          font-size: var(--md-size);
+
           @media screen and (min-width: 1101px) and (max-width: 1350px) {
             width: 80%;
           }
         }
 
         span {
-          color: #c4cbd7;
+          color: rgba(255, 255, 255, 0.75);
           font-family: "Light";
         }
       }
@@ -63,8 +60,10 @@
       .top-glass-card {
         top: 13%;
         transform: translateX(-48%);
+
         p {
           font-family: "Regular";
+
           @media screen and (min-width: 1101px) and (max-width: 1440px) {
             width: 80%;
           }
@@ -75,8 +74,10 @@
         bottom: 10%;
         left: 68%;
         transform: translateX(-48%);
+
         p {
           font-family: "Regular";
+
           @media screen and (min-width: 1101px) and (max-width: 1440px) {
             width: 80%;
           }
@@ -101,15 +102,15 @@
   .login-form {
     @include flex(column, wrap, center, center);
     width: 100%;
-    padding: $MdSize;
-    background-color: white;
-    border-radius: 50px 0 0 50px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: var(--md-size);
+    background-color: var(--BgWhite);
+    border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+    box-shadow: var(--shadow-xl);
 
     @media screen and (max-width: 1179px) {
       @include flex(column, wrap, center, center);
-      gap: $MdSize;
-      border-radius: 5px;
+      gap: var(--md-size);
+      border-radius: var(--radius-sm);
       width: 70%;
     }
 
@@ -117,7 +118,7 @@
       width: 100%;
     }
 
-    /* ---------- Title ---------- */
+    /* ── Title ─────────────────────────────────────────── */
     .title {
       @include flex(column, wrap, center, center);
       gap: 5rem;
@@ -128,11 +129,12 @@
 
       .logo {
         @include flex(row, wrap, center, center);
-        gap: $XsSize3;
+        gap: var(--xs-size-3);
 
         h2 {
           font-size: var(--xl-size-1);
           font-family: "Bold", sans-serif;
+          color: var(--gray-900);
         }
       }
 
@@ -144,12 +146,13 @@
         p {
           font-family: "Bold", sans-serif;
           font-size: var(--xl-size-base);
+          color: var(--gray-900);
         }
 
         span {
           font-family: "Regular", sans-serif;
           font-size: var(--md-size-base);
-          color: #9ca3af;
+          color: var(--gray-400);
         }
       }
     }
@@ -162,20 +165,25 @@
 
       .tab {
         padding: 0.5rem 1rem;
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: var(--PrimaryColor-light);
         border-bottom: 2px solid var(--PrimaryColor);
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: var(--transition);
         width: fit-content;
-
         font-family: "Regular", sans-serif;
         font-size: 1rem;
+        color: var(--gray-700);
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 
         &.active {
           background-color: var(--PrimaryColor);
           color: var(--BgWhite);
           font-family: "Bold", sans-serif;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          box-shadow: var(--shadow);
+        }
+
+        &:hover:not(.active) {
+          background-color: var(--gray-100);
         }
       }
     }
@@ -183,8 +191,8 @@
     .inputs {
       @include flex(column, wrap, center, center);
       width: 100%;
-      gap: $MdSize;
-      margin-block: $XlSize2;
+      gap: var(--md-size);
+      margin-block: var(--xl-size-1);
 
       .input-wrapper {
         position: relative;
@@ -193,10 +201,23 @@
         input {
           width: 100%;
           padding: 1rem 1rem 1rem 2.3rem;
+          border: 1px solid var(--gray-200);
+          border-radius: var(--radius-md);
+          transition: var(--transition-fast);
+          color: var(--gray-800);
+          background-color: var(--gray-50);
+
+          &:focus {
+            outline: none;
+            border-color: var(--PrimaryColor);
+            box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+            background-color: var(--BgWhite);
+          }
 
           &::placeholder {
             font-family: "Regular", sans-serif;
             font-size: var(--md-size-base);
+            color: var(--gray-400);
           }
         }
 
@@ -205,6 +226,7 @@
           left: 1.15rem;
           top: 50%;
           transform: translateY(-50%);
+          color: var(--gray-400);
         }
 
         .icon-eye {
@@ -214,6 +236,12 @@
           height: 25px;
           width: 25px;
           cursor: pointer;
+          color: var(--gray-400);
+          transition: var(--transition-fast);
+
+          &:hover {
+            color: var(--PrimaryColor);
+          }
         }
       }
     }

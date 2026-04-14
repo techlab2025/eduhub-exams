@@ -1,110 +1,70 @@
-@use "./variables" as *;
-// @use "./login/login";
-//@use "./normalize";
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
 
-/*<editor-fold desc="utils">*/
-@use "./utils/container";
-@use "./utils/_button";
-@use "./utils/_primary_btn";
-@use "./utils/_third_btn";
-@use "./utils/_secondary_btn";
-@use "./utils/input_serach";
-@use "./utils/data_empty";
-@use "./utils/popover";
-@use "./utils/btn_add";
-@use "./utils/btn_cancel";
-@use "./utils/bread_crumb";
-@use "./utils/tabs_selections";
-@use "./utils/custom_checkbox";
-@use "./utils/custom_select";
-@use "./utils/app_button";
-@use "./normalize";
-@use "./permission";
-@use "./crop";
-@use "./utils/_fonts";
-@use "./utils/_hidden";
-@use "./utils/app_input";
-//@use "./utils/_section_title";
-//@use "./utils/input_filter";
-//@use "./utils/_section_title";
-@use "./utils/danger_btn";
-/*</editor-fold>*/
+/* ── Core ──────────────────────────────────────────────────────── */
+@use "variables" as *;
+@use "normalize";
 
-/*<editor-fold desc="layout">*/
-@use "./layout/layout_imports";
-/*</editor-fold>*/
+/* ── Utilities ─────────────────────────────────────────────────── */
+@use "utils/fonts";
+@use "utils/hidden";
+@use "utils/heplers_spaces";
 
-/*<editor-fold desc="components">*/
-// @use "./components/drop_menu";
-// @use "./components/search_input";
-// @use "./components/date_picker";
+@use "utils/container";
+@use "utils/bread_crumb";
+@use "utils/app_button";
+@use "utils/app_input";
+@use "utils/input_serach";
+@use "utils/custom_checkbox";
+@use "utils/custom_select";
+@use "utils/switch_input";
+@use "utils/single_file_input";
 
-// @use "./components/dialog";
+@use "utils/data_empty";
+@use "utils/popover";
+@use "utils/tabs_selections";
+@use "utils/permission";
+@use "utils/crop";
 
-// @use "./components/checkbox";
+/* ── Layout ────────────────────────────────────────────────────── */
+@use "layout/layout_imports";
 
-// @use "./components/swiper";
-/*</editor-fold>*/
-
-/*<editor-fold desc="error">*/
+/* ── Components ────────────────────────────────────────────────── */
+@use "tables/main_table";
+@use "Pagination/pagination";
+@use "skeleton/skeleton";
+@use "ActionsButtons/actions_buttons";
+@use "FileUpload/file_upload";
 @use "Dialogs/imports";
-/*</editor-fold>*/
+@use "HomeBreadCrump/breadcrump";
+@use "HomeBreadCrump/fast_routes";
 
-/*<editor-fold desc="file_upload">*/
-@use "./FileUpload/file_upload";
-/*</editor-fold>*/
+/* ── Pages ─────────────────────────────────────────────────────── */
+@use "login/login";
+@use "error/error";
+// @use "timeline";
 
-/*<editor-fold desc="main_table">*/
-@use "./tables/main_table";
-/*</editor-fold>*/
-
-/*<editor-fold desc="list">*/
-// @use "./Lists/lists";
-/*</editor-fold>*/
-
-/*<editor-fold desc="pagination">*/
-@use "./Pagination/pagination";
-/*</editor-fold>*/
-/*<editor-fold desc="pagination">*/
-@use "./skeleton/skeleton";
-/*</editor-fold>*/
-/*<editor-fold desc="SingleInput">*/
-@use "./utils/single_file_input";
-/*</editor-fold>*/
-
-/*<editor-fold desc="Actions">*/
-@use "./ActionsButtons/actions_buttons";
-/*</editor-fold>*/
-
-/*<editor-fold desc="Switchbtn">*/
-@use "./utils/switch_input";
-/*</editor-fold>*/
-
-/*<editor-fold desc="home breadcrump">*/
-@use "./HomeBreadCrump/breadcrump";
-/*</editor-fold>*/
-
-@use "./layout/body";
-@use "./login/login";
-@use "./timeline";
+/* =============================================================================
+   GLOBAL OVERRIDES & BASE STYLES
+   ============================================================================= */
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
 
   @media (prefers-reduced-motion: reduce) {
     scroll-behavior: auto;
   }
-
-  > section {
-    scroll-snap-align: start;
-  }
 }
 
 body {
-  font-family: "Regular", sans-serif;
-  color: black;
+  font-family: var(--font-family);
+  color: var(--gray-900);
+  background-color: var(--bg-body);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   p,
   span,
   div {
@@ -112,31 +72,58 @@ body {
   }
 }
 
+/* ── PrimeVue Accordion Overrides ─────────────────────────────── */
 .p-accordionheader {
   background: transparent !important;
+  padding: 15px !important;
 }
 
 .p-accordioncontent-content {
   background: transparent !important;
-  color: $Gray-3 !important;
+  color: var(--gray-600) !important;
+  border: none !important;
 }
 
 .p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader,
 .p-accordionpanel:not(.p-accordionpanel-active):not(.p-disabled)
   > .p-accordionheader:hover {
-  color: $PrimaryColor !important;
+  color: var(--PrimaryColor) !important;
 
-  svg {
-    path {
-      fill: $PrimaryColor !important;
-    }
+  svg path {
+    fill: var(--PrimaryColor) !important;
   }
 }
 
+/* ── PrimeVue Toggle Switch ───────────────────────────────────── */
 .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-slider {
-  background-color: $PrimaryColor !important;
+  background-color: var(--PrimaryColor) !important;
 }
 
+/* ── PrimeVue Radio / Checkbox ────────────────────────────────── */
+.p-radiobutton-box {
+  border: 1px solid var(--gray-300) !important;
+}
+
+.factor-item .p-radiobutton-checked .p-radiobutton-box {
+  border: none !important;
+}
+
+/* ── Sidebar Link Overrides ───────────────────────────────────── */
+.sidebar .links ul {
+  border: none !important;
+}
+
+/* ── Layout Spacing ───────────────────────────────────────────── */
+.pt-15 {
+  padding-top: 15px !important;
+}
+
+.content .p-accordioncontent-content {
+  margin: 0 !important;
+  padding-inline: 14px;
+}
+
+/* ── Language Icon Nav ────────────────────────────────────────── */
 .icon-lng-nav {
   width: 25px !important;
   height: 25px !important;
@@ -145,55 +132,22 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: black;
+  color: var(--gray-900);
 }
 
-// for garrery
-.p-galleria-indicator-list {
-  .p-galleria-indicator {
-    button {
-      transition: all 0.5s ease-in-out;
-    }
-  }
-}
-
+/* ── PrimeVue Galleria ────────────────────────────────────────── */
 .p-galleria {
   border: none !important;
   outline: none !important;
 }
 
-.p-galleria-indicator-active {
-  button {
-    background-color: $PrimaryColor !important;
-    width: 30px !important;
-    height: 8px !important;
-    border-radius: 50px !important;
-  }
-}
-.p-radiobutton-box {
-  border: 1px solid #8c8c8c59 !important;
+.p-galleria-indicator-list .p-galleria-indicator button {
+  transition: all 0.3s ease;
 }
 
-.factor-item .p-radiobutton-checked .p-radiobutton-box {
-  border: none !important;
-}
-
-.pt-15 {
-  padding-top: 15px !important;
-}
-.sidebar .links ul {
-  border: none !important;
-}
-.p-accordioncontent-content {
-  border: none !important;
-}
-.p-accordionheader {
-  padding: 15px !important;
-}
-body {
-  font-family: "Regular";
-}
-.content .p-accordioncontent-content {
-  margin: 0 !important;
-  padding-inline: 14px;
+.p-galleria-indicator-active button {
+  background-color: var(--PrimaryColor) !important;
+  width: 30px !important;
+  height: 8px !important;
+  border-radius: 50px !important;
 }

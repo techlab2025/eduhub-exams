@@ -11,8 +11,8 @@ import IconArrowDownNav from "@/shared/icons/IconArrowDownNav.vue";
 // import defaultImage from "@/assets/images/user.png";
 // import ChangeLanguage from './ChangeLanguage.vue'
 // import Notification from '../icons/Notification.vue'
-import SearchIcon from "../icons/SearchIcon.vue";
 import { useUserStore } from "@/stores/user";
+import SearchIcon from "@/shared/icons/SearchIcon.vue";
 
 const props = defineProps({
   open: {

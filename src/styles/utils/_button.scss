@@ -3,23 +3,18 @@
 
 .btn {
   @include flex-center(row, nowrap);
-  // padding: $XsSize $XlSize;
-  font-size: $SmSize;
+  font-size: var(--sm-size);
   font-weight: $BaseFontWeightBold;
-  transition: $Transition;
+  transition: var(--transition);
   border-width: 1px;
   border-style: solid;
   width: fit-content;
   cursor: pointer;
-  gap: $XsSize;
-  border-radius: 4px;
+  gap: var(--xs-size);
+  border-radius: var(--radius-sm);
   padding: 10px 20px;
+
   &.w-full {
     width: 100%;
   }
-  // border-radius: clamp(
-  //   calc(50 * 0.8px),
-  //   calc(50 * 100vw / var(--base-width)),
-  //   calc(50 * 1.2px)
-  // );
 }
