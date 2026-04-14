@@ -2,54 +2,45 @@
 @use "../mixins/flex" as *;
 @use "../mixins/border" as *;
 
-// ─── Import existing partials ───────────────────────────────────────
 @use "button";
 @use "primary_btn";
 @use "secondary_btn";
 @use "third_btn";
 @use "danger_btn";
 
-// ═══════════════════════════════════════════════════════════════════
-// SIZES
-// ═══════════════════════════════════════════════════════════════════
+/* ── Sizes ─────────────────────────────────────────────────────── */
 .btn--sm {
-  padding: $XsSize4 $SmSize;
-  font-size: $XsSize;
-  gap: $XsSize4;
+  padding: var(--xs-size-4) var(--sm-size);
+  font-size: var(--xs-size);
+  gap: var(--xs-size-4);
 }
 
 .btn--md {
-  padding: $XsSize $XlSize;
-  font-size: $SmSize;
-  gap: $XsSize;
+  padding: var(--xs-size) var(--xl-size-base);
+  font-size: var(--sm-size);
+  gap: var(--xs-size);
 }
 
 .btn--lg {
-  padding: $SmSize $XlSize2;
-  font-size: $MdSize;
-  gap: $XsSize;
+  padding: var(--sm-size) var(--xl-size-1);
+  font-size: var(--md-size);
+  gap: var(--xs-size);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// BLOCK (full-width)
-// ═══════════════════════════════════════════════════════════════════
+/* ── Block ─────────────────────────────────────────────────────── */
 .btn--block {
   width: 100%;
   justify-content: center;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// DISABLED STATE
-// ═══════════════════════════════════════════════════════════════════
+/* ── Disabled ──────────────────────────────────────────────────── */
 .btn--disabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// LOADING STATE + SPINNER
-// ═══════════════════════════════════════════════════════════════════
+/* ── Loading ───────────────────────────────────────────────────── */
 .btn--loading {
   opacity: 0.7;
   cursor: wait;
@@ -67,130 +58,95 @@
 }
 
 @keyframes btn-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// ICON LAYOUT
-// ═══════════════════════════════════════════════════════════════════
+/* ── Icon ──────────────────────────────────────────────────────── */
 .btn__icon {
   @include flex-center;
   flex-shrink: 0;
   width: 1em;
   height: 1em;
 
-  svg {
-    width: 100%;
-    height: 100%;
-  }
+  svg { width: 100%; height: 100%; }
 }
 
-.btn__icon--left {
-  margin-inline-end: $XsSize4;
-}
+.btn__icon--left { margin-inline-end: var(--xs-size-4); }
+.btn__icon--right { margin-inline-start: var(--xs-size-4); }
 
-.btn__icon--right {
-  margin-inline-start: $XsSize4;
-}
-
-// Icon-only button → square
 .btn--icon-only {
-  padding: $XsSize;
+  padding: var(--xs-size);
   aspect-ratio: 1;
   justify-content: center;
 
-  .btn__icon {
-    margin: 0;
-  }
+  .btn__icon { margin: 0; }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// OUTLINE VARIANTS
-// ═══════════════════════════════════════════════════════════════════
+/* ── Outline ───────────────────────────────────────────────────── */
 .btn--outline {
   background-color: transparent;
   border-width: $BaseBorderWidth;
   border-style: solid;
 
   &.btn-primary {
-    border-color: $PrimaryColor;
-    color: $PrimaryColor;
-
+    border-color: var(--PrimaryColor);
+    color: var(--PrimaryColor);
     &:hover {
-      background-color: $PrimaryColor;
-      color: $White;
+      background-color: var(--PrimaryColor);
+      color: var(--BgWhite);
     }
   }
 
   &.btn-secondary {
-    border-color: $ThirdColor;
-    color: $ThirdColor;
-
+    border-color: var(--third-color);
+    color: var(--third-color);
     &:hover {
-      background-color: $ThirdColor;
-      color: $White;
+      background-color: var(--third-color);
+      color: var(--BgWhite);
     }
   }
 
   &.btn-third {
-    border-color: $Gray-3;
-    color: $Gray-3;
-
+    border-color: var(--gray-400);
+    color: var(--gray-400);
     &:hover {
-      background-color: $Gray-3;
-      color: $White;
+      background-color: var(--gray-400);
+      color: var(--BgWhite);
     }
   }
 
   &.btn-danger {
-    border-color: $Red;
-    color: $Red;
-
+    border-color: var(--Red);
+    color: var(--Red);
     &:hover {
-      background-color: $Red;
-      color: $White;
+      background-color: var(--Red);
+      color: var(--BgWhite);
     }
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// GHOST VARIANTS
-// ═══════════════════════════════════════════════════════════════════
+/* ── Ghost ─────────────────────────────────────────────────────── */
 .btn--ghost {
   background-color: transparent;
   border: none;
 
   &.btn-primary {
-    color: $PrimaryColor;
-
-    &:hover {
-      background-color: $Gray-1;
-    }
+    color: var(--PrimaryColor);
+    &:hover { background-color: var(--gray-50); }
   }
 
   &.btn-secondary {
-    color: $ThirdColor;
-
-    &:hover {
-      background-color: $Gray-1;
-    }
+    color: var(--third-color);
+    &:hover { background-color: var(--gray-50); }
   }
 
   &.btn-third {
-    color: $Gray-3;
-
-    &:hover {
-      background-color: $Gray-1;
-    }
+    color: var(--gray-400);
+    &:hover { background-color: var(--gray-50); }
   }
 
   &.btn-danger {
-    color: $Red;
-
-    &:hover {
-      background-color: $Gray-1;
-    }
+    color: var(--Red);
+    &:hover { background-color: var(--danger-light); }
   }
 }

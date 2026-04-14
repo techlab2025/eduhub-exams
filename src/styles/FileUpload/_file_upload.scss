@@ -4,45 +4,57 @@
 
 .multi-image-uploader {
   @include flex-column(nowrap, center, center);
-  gap: $XlSize;
+  gap: var(--xl-size-base);
   width: 100%;
+
   .input-image {
     @include flex-row(nowrap, center, center);
     width: 100%;
-    border: 1px solid #d9dbe9;
-    border-radius: $XlSize2;
-    padding: $XlSize;
+    border: 2px dashed var(--gray-200);
+    border-radius: var(--xl-size-1);
+    padding: var(--xl-size-base);
     cursor: pointer;
+    transition: var(--transition);
+    background-color: var(--gray-50);
+
+    &:hover {
+      border-color: var(--PrimaryColor);
+      background-color: var(--PrimaryColor-light);
+    }
 
     @include flex-column(nowrap, center, center);
+
     .input-label-images {
       cursor: pointer;
-
       @include flex-row(nowrap, center, center);
       gap: 10px;
+
       span {
-        color: $Gray-3;
-        font-size: $SmSize;
+        color: var(--gray-500);
+        font-size: var(--sm-size);
         font-weight: $BaseFontMediumWeight;
       }
     }
+
     input {
       cursor: pointer;
-
       display: none;
     }
   }
 
   .image-gallery {
     width: 100%;
-    border: 1px solid #d9dbe9;
-    border-radius: $XlSize2;
-    padding: $XlSize;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--xl-size-1);
+    padding: var(--xl-size-base);
+    background-color: var(--BgWhite);
 
     .image-item {
       width: 100px;
       position: relative;
       overflow: hidden;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
 
       &:hover {
         .overlay {
@@ -51,8 +63,8 @@
       }
 
       .preview-img {
-        border: 1px solid #f4f4f4;
-        border-radius: $XsSize;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--xs-size);
         cursor: pointer;
       }
 
@@ -63,16 +75,17 @@
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: $XsSize;
+        border-radius: var(--xs-size);
         z-index: 10000;
-        background-color: rgba(0, 0, 0, 0.418);
+        background-color: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(2px);
-        transition: all 0.3s ease;
+        transition: var(--transition);
         cursor: pointer;
         @include flex-column(nowrap, center, center);
+
         span {
-          color: #e23535;
-          font-size: $MdSize;
+          color: var(--BgWhite);
+          font-size: var(--md-size);
           font-weight: $BaseFontSemiBoldWeight;
         }
       }

@@ -1,33 +1,67 @@
 @use "../variables" as *;
+@use "../mixins/flex" as *;
+
+/* =============================================================================
+   TREE TABLE / TIMELINE — Modern Luxury Design
+   ============================================================================= */
+
+/* ── TreeTable Header ──────────────────────────────────────── */
 .heirarchy-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: "Regular";
+  @include flex-row(nowrap, flex-start, center);
+  gap: var(--sm-size);
+  font-family: var(--font-family);
+  position: relative;
+  padding-bottom: var(--sm-size);
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--PrimaryColor), transparent);
+    border-radius: var(--radius-full);
+  }
 
   .heirarchy-title {
-    font-weight: 700;
-    font-size: 20px;
-    color: #202020;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--gray-900);
+    letter-spacing: -0.02em;
   }
+
   .icon {
     width: 24px;
     height: 18px;
+    filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.3));
   }
 }
 
 .heirarchy-details {
-  display: flex;
-  align-items: center;
+  @include flex-row(nowrap, flex-start, center);
   gap: 24px;
 
   p {
-    color: #9ca3af;
+    color: var(--gray-400);
     font-weight: 500;
     font-size: 18px;
 
     span {
-      color: #1d4ed8;
+      color: var(--PrimaryColor);
+      font-weight: 700;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--PrimaryColor-light);
+        border-radius: var(--radius-full);
+      }
     }
   }
 }
@@ -36,129 +70,184 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #9ca3af;
+  background: linear-gradient(135deg, var(--gray-300), var(--gray-200));
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
   opacity: 0.5;
 }
 
+/* ── Timeline Container ────────────────────────────────────── */
 .timeline-container {
-  padding: 24px;
-  background: linear-gradient(135deg, var(--white-color) 0%, #f8f9fa 100%);
-  border-radius: 16px;
-  border: 1px solid var(--primary-color-opacity-1);
+  padding: 32px;
+  background: linear-gradient(
+    160deg,
+    var(--bg-main) 0%,
+    var(--gray-50) 50%,
+    var(--PrimaryColor-light) 100%
+  );
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 10px 40px -10px rgba(99, 102, 241, 0.08);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(99, 102, 241, 0.2),
+      transparent
+    );
+  }
 }
 
 .timeline-header {
-  margin-bottom: 32px;
+  margin-bottom: var(--xl-size-base);
 }
 
 .timeline-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--dark-color);
-  margin: 0 0 16px 0;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--secondary-color) 100%
-  );
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: 0 0 var(--sm-size) 0;
+  background: linear-gradient(135deg, var(--PrimaryColor) 0%, var(--PrimaryColor-active) 50%, var(--PrimaryColor-hover) 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-family: "Regular";
+  font-family: var(--font-family);
+  letter-spacing: -0.02em;
+  animation: gradientShift 3s ease infinite;
 }
 
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+/* ── Progress Bar ──────────────────────────────────────────── */
 .timeline-progress-bar {
-  height: 6px;
-  background: var(--primary-color-opacity-1);
-  border-radius: 10px;
+  height: 8px;
+  background: var(--gray-100);
+  border-radius: var(--radius-full);
   overflow: hidden;
   position: relative;
-  font-family: "Regular";
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .timeline-progress-fill {
   height: 100%;
   background: linear-gradient(
     90deg,
-    var(--primary-color) 0%,
-    var(--success-color) 100%
+    var(--PrimaryColor) 0%,
+    var(--PrimaryColor-hover) 50%,
+    var(--success) 100%
   );
-  border-radius: 10px;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  background-size: 200% 100%;
+  border-radius: var(--radius-full);
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  animation: shimmer 2s infinite;
+  animation: shimmer 3s ease infinite;
+  box-shadow:
+    0 2px 8px rgba(99, 102, 241, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      transparent 100%
+    );
+    animation: lightSweep 2.5s ease-in-out infinite;
+  }
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: -100% 0;
-  }
-
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
-.timeline-progress-fill::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  animation: shimmer 2s infinite;
+@keyframes lightSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
+/* ── Timeline Wrapper ──────────────────────────────────────── */
 .timeline-wrapper {
   position: relative;
-  padding-left: 40px;
+  padding-left: 48px;
 }
 
 .timeline-line {
   position: absolute;
-  left: 19px;
-  top: 20px;
-  bottom: 20px;
+  left: 23px;
+  top: 24px;
+  bottom: 24px;
   width: 2px;
-  background: #9ca3af66 !important ;
+  background: linear-gradient(
+    180deg,
+    var(--PrimaryColor-light),
+    var(--gray-200) 50%,
+    var(--gray-100)
+  );
   animation: lineGrow 1.5s ease-out forwards;
   transform-origin: top;
-  opacity: 0.5;
+  border-radius: var(--radius-full);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -2px;
+    width: 6px;
+    height: 6px;
+    background: var(--PrimaryColor);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+  }
 }
 
 @keyframes lineGrow {
-  from {
-    transform: scaleY(0);
-  }
-
-  to {
-    transform: scaleY(1);
-  }
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
+/* ── Timeline Item ─────────────────────────────────────────── */
 .timeline-item {
   position: relative;
-  margin-bottom: 32px;
+  margin-bottom: var(--xl-size-base);
   opacity: 0;
-  animation: fadeInUp 0.6s ease-out forwards;
-  border-radius: 18px;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+  &:nth-child(4) { animation-delay: 0.4s; }
+  &:nth-child(5) { animation-delay: 0.5s; }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px) scale(0.98);
   }
-
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -166,49 +255,56 @@
   margin-bottom: 0;
 }
 
+/* ── Timeline Marker / Dot ─────────────────────────────────── */
 .timeline-marker {
   position: absolute;
-  left: -40px;
-  top: 8px;
+  left: -48px;
+  top: 4px;
 }
 
 .timeline-dot {
   position: relative;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 48px;
+  height: 48px;
+  @include flex-center();
 }
 
 .timeline-dot-inner {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: linear-gradient(
     135deg,
-    var(--primary-color) 0%,
-    var(--secondary-color) 100%
+    var(--PrimaryColor) 0%,
+    var(--PrimaryColor-hover) 50%,
+    var(--PrimaryColor-active) 100%
   );
-  box-shadow: 0 4px 12px rgba(30, 58, 142, 0.3);
+  box-shadow:
+    0 4px 12px rgba(99, 102, 241, 0.35),
+    0 0 0 6px var(--PrimaryColor-light),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   z-index: 2;
   position: relative;
 }
 
 .timeline-item.active .timeline-dot-inner {
-  animation: pulse 2s infinite;
+  animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulse {
-  0%,
-  100% {
+  0%, 100% {
     transform: scale(1);
-    box-shadow: 0 4px 12px rgba(30, 58, 142, 0.3);
+    box-shadow:
+      0 4px 12px rgba(99, 102, 241, 0.35),
+      0 0 0 6px var(--PrimaryColor-light),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
-
   50% {
-    transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(30, 58, 142, 0.5);
+    transform: scale(1.08);
+    box-shadow:
+      0 6px 20px rgba(99, 102, 241, 0.5),
+      0 0 0 10px rgba(99, 102, 241, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 }
 
@@ -217,26 +313,25 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--primary-color);
+  background: var(--PrimaryColor);
   opacity: 0;
   z-index: 1;
 }
 
 .timeline-item.active .timeline-pulse {
-  animation: pulseRing 2s infinite;
+  animation: pulseRing 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulseRing {
   0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.4;
   }
-
   100% {
-    transform: translate(-50%, -50%) scale(1.5);
+    transform: translate(-50%, -50%) scale(1.8);
     opacity: 0;
   }
 }
@@ -246,160 +341,259 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  background: #f1f3f5;
-  border: 1px solid #9ca3af66;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary-color);
-  z-index: 3;
-}
-
-.timeline-content {
-  padding: 14px;
-  font-family: "Regular";
-}
-
-.timeline-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
+  width: 32px;
+  height: 32px;
   background: linear-gradient(
-    180deg,
-    var(--primary-color) 0%,
-    var(--success-color) 100%
+    135deg,
+    rgba(255, 255, 255, 0.9),
+    var(--gray-50)
   );
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.4s ease;
+  border: 1px solid var(--border-weak);
+  border-radius: 50%;
+  @include flex-center();
+  color: var(--PrimaryColor);
+  z-index: 3;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: var(--transition);
+
+  &:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+  }
 }
 
-.timeline-item:hover .timeline-card::before {
-  transform: scaleY(1);
+/* ── Timeline Card ─────────────────────────────────────────── */
+.timeline-content {
+  padding: 0;
+  font-family: var(--font-family);
+}
+
+.timeline-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-main);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-weak);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      var(--PrimaryColor) 0%,
+      var(--PrimaryColor-hover) 50%,
+      var(--success) 100%
+    );
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: var(--radius-full) 0 0 var(--radius-full);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(99, 102, 241, 0.15),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  &:hover {
+    transform: translateY(-2px) scale(1.005);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.06),
+      0 12px 32px rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.2);
+
+    &::before {
+      transform: scaleY(1);
+    }
+
+    &::after {
+      opacity: 1;
+    }
+  }
 }
 
 .timeline-card-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid var(--primary-color-opacity-1);
-  z-index: 99;
-  font-family: "Regular";
-  transition: all 0.3s linear;
+  @include flex-row(nowrap, space-between, center);
+  gap: var(--xs-size-4);
+  padding: var(--sm-size) var(--md-size);
+  border-bottom: 1px solid var(--border-weak);
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0.5),
+    transparent
+  );
+  transition: all 0.25s ease;
+  position: relative;
+
   &:hover {
     cursor: pointer;
-    background-color: #f1f3f5;
-    scale: 1.02;
+    background: linear-gradient(
+      180deg,
+      var(--PrimaryColor-light),
+      rgba(238, 242, 255, 0.3)
+    );
+
+    .timeline-status {
+      color: var(--PrimaryColor);
+    }
   }
 
   &.timeline-card-header-2 {
     margin-left: 20px;
     margin-top: 10px;
     position: relative;
-    z-index: 99;
 
     &::before {
       content: "";
       position: absolute;
-      top: -12px;
+      top: -16px;
       left: -2px;
-      width: 10px;
-      height: 15px;
-      border-bottom-left-radius: 6px;
-      border-bottom: 3px solid #9ca3af;
-      border-left: 3px solid #9ca3af;
-      /* rotate: 60deg; */
-      z-index: 1;
-      opacity: 0.5;
+      width: 12px;
+      height: 18px;
+      border-bottom-left-radius: 8px;
+      border-bottom: 3px solid var(--gray-300);
+      border-left: 3px solid var(--gray-300);
+      opacity: 0.4;
+      transition: all 0.3s ease;
+    }
+
+    &:hover::before {
+      border-color: var(--PrimaryColor-light);
+      opacity: 0.6;
     }
   }
 }
 
+/* ── Timeline Status / Badge ───────────────────────────────── */
 .timeline-status {
   font-size: 16px;
-  font-weight: 600;
-  color: var(--dark-color);
+  font-weight: 700;
+  color: var(--gray-900);
+  letter-spacing: -0.01em;
+  transition: color 0.25s ease;
 }
 
 .timeline-badge {
-  padding: 4px 12px;
-  border-radius: 20px;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
   background: linear-gradient(
     135deg,
-    var(--primary-color) 0%,
-    var(--secondary-color) 100%
+    var(--PrimaryColor) 0%,
+    var(--PrimaryColor-hover) 100%
   );
   color: white;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  box-shadow:
+    0 2px 6px rgba(99, 102, 241, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+  }
 }
 
+/* ── Timeline Details ──────────────────────────────────────── */
 .timeline-details {
-  display: flex;
-  flex-direction: column;
+  @include flex-column();
   gap: 12px;
+  padding: var(--sm-size) var(--md-size);
 }
 
 .timeline-detail-item {
-  display: flex;
-  align-items: flex-start;
+  @include flex-row(nowrap, flex-start, flex-start);
   gap: 12px;
-  padding: 10px;
+  padding: 12px;
   background: linear-gradient(
     135deg,
-    rgba(30, 58, 142, 0.02) 0%,
-    rgba(30, 58, 142, 0.05) 100%
+    rgba(238, 242, 255, 0.5) 0%,
+    var(--gray-50) 100%
   );
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
-.timeline-detail-item:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(30, 58, 142, 0.05) 0%,
-    rgba(30, 58, 142, 0.1) 100%
-  );
-  transform: translateX(4px);
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      var(--PrimaryColor-light) 0%,
+      rgba(238, 242, 255, 0.8) 100%
+    );
+    transform: translateX(6px);
+    border-color: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+  }
 }
 
 .detail-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(
     135deg,
-    var(--primary-color) 0%,
-    var(--secondary-color) 100%
+    var(--PrimaryColor) 0%,
+    var(--PrimaryColor-hover) 100%
   );
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include flex-center();
   color: white;
   flex-shrink: 0;
+  box-shadow:
+    0 3px 8px rgba(99, 102, 241, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: var(--transition);
+
+  .timeline-detail-item:hover & {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  }
 }
 
 .detail-content {
-  display: flex;
-  flex-direction: column;
+  @include flex-column();
   gap: 2px;
   flex: 1;
 }
 
 .detail-label {
   font-size: 11px;
-  font-weight: 600;
-  color: var(--light-color);
+  font-weight: 700;
+  color: var(--gray-500);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -407,115 +601,176 @@
 .detail-value {
   font-size: 14px;
   font-weight: 500;
-  color: var(--dark-color);
+  color: var(--gray-800);
+  line-height: 1.5;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .timeline-wrapper {
-    padding-left: 30px;
-  }
-
-  .timeline-marker {
-    left: -30px;
-  }
-
-  .timeline-line {
-    left: 14px;
-  }
-
-  .timeline-dot {
-    width: 30px;
-    height: 30px;
-  }
-
-  .timeline-content {
-    padding: 14px;
-    border: 1px solid #f1f3f5 !important;
-  }
-
-  .timeline-card {
-    padding: 16px;
-  }
-}
-
-.timeline-card-header {
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #f1f3f5 !important;
-  padding: 14px;
-  border-radius: 18px;
-}
-
+/* ── Action Buttons ────────────────────────────────────────── */
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 
   .add-btn {
-    background-color: #041953;
+    background: linear-gradient(
+      135deg,
+      var(--gray-900) 0%,
+      var(--gray-800) 100%
+    );
     color: white;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    border: none;
+    transition: var(--transition);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
 
     &:hover {
-      color: #041953;
-      background-color: white;
-      border: 1px solid #041953;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
-  .edit-btn {
-    background-color: #1d4ed80f;
-    border: 1px solid $PrimaryColor;
-    color: $PrimaryColor;
-    svg {
-      path {
-        transition: 0.5s all linear;
-      }
-      g {
-        transition: 0.3s all linear;
 
-        path {
-          transition: 0.5s all linear;
-        }
+  .edit-btn {
+    background: var(--bg-main);
+    border: 1px solid var(--PrimaryColor);
+    color: var(--PrimaryColor);
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        135deg,
+        var(--PrimaryColor),
+        var(--PrimaryColor-hover)
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+
+    svg {
+      position: relative;
+      z-index: 1;
+      transition: var(--transition);
+
+      path,
+      g path {
+        transition: 0.3s all linear;
       }
     }
+
     &:hover {
       color: white;
-      background-color: $PrimaryColor;
-      border: 1px solid #1d4ed80f;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      transform: translateY(-1px);
+
+      &::before { opacity: 1; }
+
       svg {
-        path {
-          stroke: #ffffff;
-        }
+        path { stroke: #ffffff; }
         g {
           opacity: 1;
           path {
             stroke: white;
             stroke-width: 2px;
-            z-index: 199999 !important;
           }
         }
       }
     }
   }
+
   .btn-delete {
-    color: rgba(255, 0, 0, 0.644);
-    background-color: #ff00002b;
-    border: 1px solid red;
+    color: var(--Red);
+    background: var(--danger-light);
+    border: 1px solid transparent;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-weight: 600;
+
     &:hover {
       color: white;
-      background-color: red;
-      border: 1px solid red;
+      background: linear-gradient(135deg, var(--Red) 0%, var(--danger-dark) 100%);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      transform: translateY(-1px);
     }
   }
 }
 
 .btn-container {
   display: flex;
-  gap: 10px;
-  .add-btn {
-    width: 100%;
+  gap: 12px;
+
+  .add-btn { width: 100%; }
+  .edit-btn { width: 30%; }
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .timeline-container {
+    padding: var(--md-size);
+    border-radius: var(--radius-md);
   }
-  .edit-btn {
-    width: 30%;
+
+  .timeline-wrapper {
+    padding-left: 36px;
+  }
+
+  .timeline-marker {
+    left: -36px;
+  }
+
+  .timeline-line {
+    left: 18px;
+  }
+
+  .timeline-dot {
+    width: 36px;
+    height: 36px;
+  }
+
+  .timeline-dot-inner {
+    width: 14px;
+    height: 14px;
+  }
+
+  .timeline-content {
+    border: none !important;
+  }
+
+  .timeline-card {
+    border-radius: var(--radius-md);
+  }
+
+  .timeline-card-header {
+    padding: var(--xs-size) var(--sm-size);
+  }
+
+  .timeline-details {
+    padding: var(--xs-size) var(--sm-size);
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 8px;
+
+    button {
+      width: 100% !important;
+    }
   }
 }

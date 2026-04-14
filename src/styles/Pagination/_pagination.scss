@@ -1,10 +1,11 @@
 @use "../variables" as *;
+
 .pagination-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $SmSize;
-  margin: $SmSize 0;
+  gap: var(--sm-size);
+  margin: var(--sm-size) 0;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -13,9 +14,10 @@
 
   .show-results,
   .count-per-page {
-    font-family: "Tajawal-regular", sans-serif;
-    font-size: $MdSize;
-    color: $GrayText;
+    font-family: var(--font-family);
+    font-size: var(--md-size);
+    color: var(--gray-500);
+
     @media (max-width: 768px) {
       font-size: 0.9rem;
     }
@@ -25,50 +27,68 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: $XsSize;
+    gap: var(--xs-size);
 
     .pagination-item {
-      font-family: "Tajawal-regular", sans-serif;
-      font-size: $MdSize;
-      color: $GrayText;
-      padding: $XsSize $SmSize;
-      border-radius: $BorderRadiusSm;
+      font-family: var(--font-family);
+      font-size: var(--md-size);
+      color: var(--gray-500);
+      padding: var(--xs-size) var(--sm-size);
+      border-radius: var(--radius-sm);
       cursor: pointer;
+      transition: var(--transition-fast);
+
+      &:hover {
+        background-color: var(--gray-100);
+        color: var(--gray-800);
+      }
 
       &.active {
-        color: $GrayText-1;
-        background-color: $Gray-2;
+        color: var(--BgWhite);
+        background-color: var(--PrimaryColor);
+        font-weight: $BaseFontSemiBoldWeight;
       }
     }
 
     .count-per-page-select {
-      padding: $XsSize $SmSize;
-      background-color: $Gray-2;
-      border-radius: $BorderRadiusSm;
-      border: $BaseBorderWidth solid $MainBorder;
-      font-family: "Tajawal-regular", sans-serif;
-      font-size: $MdSize;
-      color: $GrayText;
+      padding: var(--xs-size) var(--sm-size);
+      background-color: var(--gray-100);
+      border-radius: var(--radius-sm);
+      border: var(--BaseBorderWidth) solid var(--main-border);
+      font-family: var(--font-family);
+      font-size: var(--md-size);
+      color: var(--gray-600);
+      transition: var(--transition-fast);
+
+      &:hover {
+        border-color: var(--PrimaryColor);
+      }
     }
   }
 
   .count-per-page {
     display: flex;
     align-items: center;
-    gap: $XsSize;
+    gap: var(--xs-size);
   }
 
   .pagination-btn {
     display: flex;
     align-items: center;
-    gap: $XsSize;
-    font-family: "Tajawal-regular", sans-serif;
-    font-size: $MdSize;
-    padding: $XsSize $SmSize;
-    color: $GrayText-1;
-    background-color: $Gray-2;
-    border-radius: $BorderRadiusSm;
+    gap: var(--xs-size);
+    font-family: var(--font-family);
+    font-size: var(--md-size);
+    padding: var(--xs-size) var(--sm-size);
+    color: var(--gray-600);
+    background-color: var(--gray-100);
+    border-radius: var(--radius-sm);
     cursor: pointer;
+    transition: var(--transition-fast);
+
+    &:hover {
+      background-color: var(--PrimaryColor);
+      color: var(--BgWhite);
+    }
 
     @media (max-width: 768px) {
       font-size: 0.8rem;
@@ -83,19 +103,21 @@
 .per-page {
   display: flex;
   align-items: center;
-  gap: $XsSize;
+  gap: var(--xs-size);
   flex-direction: column;
 
   span {
-    padding: $XsSize $XlSize2;
-    font-family: "Tajawal-regular", sans-serif;
-    font-size: $MdSize;
-    color: $GrayText;
+    padding: var(--xs-size) var(--xl-size-1);
+    font-family: var(--font-family);
+    font-size: var(--md-size);
+    color: var(--gray-500);
     cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
 
     &:hover {
-      color: $GrayText-1;
-      background-color: $Gray-2;
+      color: var(--PrimaryColor);
+      background-color: var(--PrimaryColor-light);
     }
   }
 }

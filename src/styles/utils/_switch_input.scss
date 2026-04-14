@@ -1,12 +1,14 @@
 @use "../variables" as *;
 @use "../mixins/flex" as *;
+
 .switch-btn {
   @include flex-row(nowrap, center, center);
   gap: 6px;
-  font-family: "Light";
+  font-family: var(--font-family);
+
   .title {
-    color: #202020;
-    font-size: $MdSize;
+    color: var(--gray-800);
+    font-size: var(--md-size);
     font-weight: $BaseFontSemiBoldWeight;
   }
 }

@@ -1,55 +1,66 @@
 @use "../variables" as *;
 @use "../mixins/flex" as *;
+
 .popover-button {
   @include flex-row(nowrap, center, center);
   gap: 6px;
   cursor: pointer;
+  transition: var(--transition-fast);
+
+  &:hover {
+    color: var(--PrimaryColor);
+  }
 }
+
 .popover-content {
   @include flex-column(nowrap, flex-start, flex-start);
-  // gap: 10px;
-  border-radius: 12px;
-  font-family: "Regular";
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
   width: 10rem;
   text-align: center;
+  background-color: var(--BgWhite);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+
   .img-container {
     width: 100%;
     @include flex-row(nowrap, flex-start, center);
-    &:hover {
-      img {
-        background-color: white;
-        color: $PrimaryColor;
-      }
+
+    &:hover img {
+      background-color: var(--BgWhite);
+      color: var(--PrimaryColor);
     }
   }
+
   p {
-    // border-radius: 12px;
     cursor: pointer;
-    padding: $XsSize2;
+    padding: var(--xs-size-2);
     width: 100%;
-    background: #1d4ed812;
-    color: $PrimaryColor;
-    font-size: $MdSize;
+    background: var(--PrimaryColor-light);
+    color: var(--PrimaryColor);
+    font-size: var(--md-size);
     font-weight: $BaseFontWeightBold;
-    transition: 0.2s all linear;
+    transition: var(--transition-fast);
 
     &:hover {
-      background-color: white;
-      color: $PrimaryColor;
+      background-color: var(--BgWhite);
+      color: var(--PrimaryColor-hover);
     }
   }
 
   img {
     cursor: pointer;
     padding: 10px;
-    width: 100%;
-    height: 100%;
-    background: #1d4ed812;
-    color: $PrimaryColor;
-    font-size: $MdSize;
-    font-weight: $BaseFontWeightBold;
-    transition: 0.2s all linear;
     width: 40px;
     height: 42px;
+    background: var(--PrimaryColor-light);
+    color: var(--PrimaryColor);
+    font-size: var(--md-size);
+    font-weight: $BaseFontWeightBold;
+    transition: var(--transition-fast);
+
+    &:hover {
+      background-color: var(--BgWhite);
+    }
   }
 }

@@ -1,31 +1,41 @@
-@use '../../variables' as *;
+@use "../../variables" as *;
 
 .delete-dialog {
   padding: 3rem;
   text-align: center;
-  background-color: white !important;
-  color: black !important;
+  background-color: var(--BgWhite) !important;
+  color: var(--gray-900) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
 
   img {
     width: 350px;
-    // object-fit: scale-down;
     margin-left: auto;
     margin-right: auto;
     padding-right: 25px;
   }
+
   .dialog-title {
-    font-family: 'bold', sans-serif;
+    font-family: "bold", sans-serif;
     font-size: 1.5rem;
-    // margin-top: 0.2rem;
+    color: var(--gray-900);
   }
+
   p {
-    font-family: 'Regular', sans-serif;
+    font-family: "Regular", sans-serif;
     font-size: 1rem;
-    color: #717171;
+    color: var(--gray-500);
     margin-bottom: var(--space-sm);
   }
+
   .btn-third {
-    border: 1px solid #000000;
+    border: 1px solid var(--gray-400);
+    color: var(--gray-700);
+
+    &:hover {
+      border-color: var(--gray-900);
+      color: var(--gray-900);
+    }
   }
 
   .btns {
@@ -33,6 +43,7 @@
     gap: 1rem;
     width: 100%;
     margin-top: 1.2rem;
+
     button {
       width: 50%;
     }

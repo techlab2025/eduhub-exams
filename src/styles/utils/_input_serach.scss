@@ -6,16 +6,22 @@
 
   input {
     width: 100%;
-
-    border: 1px solid $MainBorder;
+    border: 1px solid var(--main-border);
     @include flex-row(nowrap, flex-start, center);
-    padding: $XsSize $MdSize;
-    border-radius: calc($XlSize3 + 10px);
-    font-family: "Regular";
-    padding-inline-start: calc(#{$MdSize} + calc(#{$XlSize3} - 4px));
+    padding: var(--xs-size) var(--md-size);
+    border-radius: calc(var(--xl-size-2) + 10px);
+    font-family: var(--font-family);
+    padding-inline-start: calc(#{var(--md-size)} + calc(#{var(--xl-size-2)} - 4px));
+    color: var(--gray-800);
+    transition: var(--transition-fast);
 
     &:focus {
-      border-color: $PrimaryColor;
+      border-color: var(--PrimaryColor);
+      box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+    }
+
+    &::placeholder {
+      color: var(--gray-400);
     }
   }
 
@@ -23,14 +29,20 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: $MdSize;
+    left: var(--md-size);
     cursor: pointer;
+    color: var(--gray-500);
+    transition: var(--transition-fast);
+
+    &:hover {
+      color: var(--Red);
+    }
   }
 }
 
 html[dir="rtl"] .input-search {
   .icon-remove {
     left: auto;
-    right: $MdSize;
+    right: var(--md-size);
   }
 }

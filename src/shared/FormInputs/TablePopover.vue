@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import Popover from 'primevue/popover'
-import DropIcon from '../icons/DropIcon.vue'
+import DropIcon from '@/shared/icons/DropIcon.vue'
 import wordSlice from '@/base/Presentation/Utils/word_slice'
 import { setDefaultImage } from '@/base/Presentation/Utils/set_default_image.ts'
 

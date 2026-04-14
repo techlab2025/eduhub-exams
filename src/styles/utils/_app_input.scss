@@ -4,38 +4,44 @@
 
 .input-wrapper {
   @include flex-column();
-  padding-inline-end: $XlSize2;
+  padding-inline-end: var(--xl-size-1);
+
   @media (max-width: 768px) {
     padding-inline-end: 0;
   }
+
   .label {
-    font-size: $SmSize;
-    color: #121212;
+    font-size: var(--sm-size);
+    color: var(--gray-800);
     font-weight: $BaseFontMediumWeight;
     text-transform: capitalize;
     @include flex-align();
-    gap: $XsSize4;
+    gap: var(--xs-size-4);
   }
+
   .input {
     @include flex-row(nowrap, flex-start, center);
-    gap: $XsSize2;
-    background-color: $White;
-    color: $SecondaryColor;
-    font-size: $SmSize;
+    gap: var(--xs-size-2);
+    background-color: var(--BgWhite);
+    color: var(--gray-800);
+    font-size: var(--sm-size);
     font-weight: $BaseFontSemiBoldWeight;
-    padding: $MdSize;
-    @include border($BaseBorderWidth, $SecondaryColor, solid, $MdSize);
+    padding: var(--md-size);
+    @include border($BaseBorderWidth, var(--gray-200), solid, var(--md-size));
     width: 100%;
     cursor: pointer;
+    transition: var(--transition-fast);
+
     &:focus {
       outline: none;
-      border-color: $PrimaryColor;
-      box-shadow: 0 0 0 0.2rem rgba($PrimaryColor, 0.25);
-      @include border($BaseBorderWidth, $PrimaryColor, solid, $MdSize);
+      border-color: var(--PrimaryColor);
+      box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+      @include border($BaseBorderWidth, var(--PrimaryColor), solid, var(--md-size));
     }
+
     &::placeholder {
-      color: $PrimaryColor;
-      font-size: $SmSize;
+      color: var(--gray-400);
+      font-size: var(--sm-size);
     }
   }
 }

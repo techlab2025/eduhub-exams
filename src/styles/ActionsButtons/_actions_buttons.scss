@@ -3,21 +3,21 @@
 
 .actions-buttons {
   @include flex-column(nowrap, flex-start, flex-start);
-  gap: $XsSize3;
-  font-family: "Regular";
+  gap: var(--xs-size-3);
+  font-family: var(--font-family);
   width: 100%;
 
   .actions-buttons-title {
     @include flex-row(nowrap, center, center);
-    gap: $XsSize4;
-    font-size: $MdSize;
+    gap: var(--xs-size-4);
+    font-size: var(--md-size);
     font-weight: $BaseFontSemiBoldWeight;
-    color: #202020;
+    color: var(--gray-800);
   }
 
   .actions-container {
     @include flex-row(nowrap, flex-start, center);
-    gap: $XlSize2;
+    gap: var(--xl-size-1);
     width: 100%;
 
     .action-container {
@@ -25,38 +25,44 @@
 
       .action-box {
         @include flex-row(nowrap, space-between, center);
-        border-radius: calc($XlSize3 + 3px);
-        border: 1px solid #d9dbe9;
-        padding-inline: $MdSize;
+        border-radius: calc(var(--xl-size-2) + 3px);
+        border: 1px solid var(--gray-200);
+        padding-inline: var(--md-size);
         cursor: pointer;
-        transition: 0.3s all linear;
+        transition: var(--transition-slow);
+        background-color: var(--BgWhite);
 
         @media (max-width: 768px) {
           @include flex-column(nowrap, center, center);
         }
 
         &.active {
-          background-color: #f4f7ff;
-          border: 1px solid #1d4ed8;
+          background-color: var(--PrimaryColor-light);
+          border: 1px solid var(--PrimaryColor);
+
           .title {
-            color: #1d4ed8;
+            color: var(--PrimaryColor);
           }
         }
 
         &:hover {
+          border-color: var(--PrimaryColor);
+          box-shadow: var(--shadow);
+
           .movement-icon {
             display: block;
             max-width: 80px;
             max-height: 80px;
           }
+
           .icon {
             display: none;
           }
         }
 
         .title {
-          color: #121212;
-          font-size: $MdSize;
+          color: var(--gray-800);
+          font-size: var(--md-size);
           font-weight: $BaseFontMediumWeight;
         }
 
@@ -64,12 +70,14 @@
           max-width: 80px;
           max-height: 80px;
         }
+
         .movement-icon {
           max-width: 80px;
           max-height: 80px;
           display: none;
         }
       }
+
       .action {
         display: none;
       }

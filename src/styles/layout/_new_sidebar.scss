@@ -3,151 +3,89 @@
 @use "../mixins/border" as *;
 
 .sidebar {
-  background-color: $White;
+  background-color: var(--bg-sidebar);
   width: 300px;
   height: 100vh;
-
-  //box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-in-out;
-  border-radius: 0 $XlSize $XlSize 0;
+  transition: var(--transition-slow);
+  border-radius: 0 var(--xl-size-base) var(--xl-size-base) 0;
   position: sticky;
   top: 0;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
 
   .sidebar-wrapper {
     @include flex-column();
-    gap: $MdSize;
-    // position: fixed;
+    gap: var(--md-size);
     height: 100vh;
     width: 100%;
-    background-color: $White;
+    background-color: var(--bg-sidebar);
+
     .sidebar-back {
       @include flex-row(nowrap, flex-start, center);
-      gap: $XsSize3;
+      gap: var(--xs-size-3);
       width: 90%;
-      margin-left: auto;
-      margin-right: auto;
-      margin-block: 10px;
+      margin: 10px auto 0;
       margin-top: 30px;
-      background-color: #f8f9fb;
-      color: #5e5e5e;
-
-      font-size: $SmSize;
+      background-color: var(--bg-sidebar-hover);
+      color: var(--gray-300);
+      font-size: var(--sm-size);
       font-weight: $BaseFontSemiBoldWeight;
-      border-radius: $XlSize2;
-      padding: $XsSize2;
+      border-radius: var(--xl-size-1);
+      padding: var(--xs-size-2);
+      transition: var(--transition-fast);
+      border: 1px solid transparent;
+
+      &:hover {
+        background-color: transparent;
+        color: var(--BgWhite);
+        border-color: var(--gray-600);
+      }
+
       .icon {
-        border: 1px solid #f1f1f1;
+        border: 1px solid var(--gray-600);
         border-radius: 50%;
         padding: 5px;
         width: 30px;
         height: 30px;
+        transition: var(--transition-fast);
+      }
+
+      &:hover .icon {
+        border-color: var(--PrimaryColor);
+        color: var(--PrimaryColor);
       }
     }
   }
-  .active-panel {
-    color: $PrimaryColor !important;
-    font-weight: $BaseFontWeightBold;
-    font-size: $SmSize;
-    position: relative;
-    padding-left: 20px;
-    transition: all 0.3s ease-in-out;
-    width: 88%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 45px;
-    background-color: #f8f9fb;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    // padding-bottom: 40px;
-    &::before {
-      content: "";
-      position: absolute;
-      left: 28px;
-      top: 52%;
-      transform: translate(-50%, -50%);
-      width: 15px;
-      height: 15px;
-      background-color: #1f41bb1f;
-      border-radius: 50%;
-    }
-    &::after {
-      content: "";
-      position: absolute;
-      left: 28px;
-      top: 52%;
-      transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
-      background-color: $PrimaryColor;
-      border-radius: 50%;
-    }
-  }
-
-  @include flex-column();
-  gap: $MdSize;
 
   &.close {
     width: 50px;
   }
 
-  .logo {
-    @include flex-align();
-    gap: $MdSize;
-    padding: $MdSize;
-    //img {
-    //  width: 24px;
-    //  height: 24px;
-    //}
-
-    h2 {
-      font-size: $XlSize;
-      font-weight: $BaseFontWeightBold;
-      color: $Black;
-    }
-  }
-
-  .close-sidebar {
-    position: absolute;
-    top: $MdSize;
-    right: calc($XlSize * -1);
-    z-index: 100;
-    cursor: pointer;
-    //border: none;
-    background-color: $White;
-    @include flex-center();
-    width: calc($XlSize4 - $SmSize);
-    height: calc($XlSize4 - $SmSize);
-
-    // @include border($BorderWidth3, #f8f9fb, solid, 50%);
-  }
-
   .links {
     @include flex-column();
     scroll-behavior: smooth;
-    overflow-y: scroll;
-    gap: $MdSize;
+    overflow-y: auto;
+    gap: var(--md-size);
+    padding: 0 var(--md-size);
 
     &::-webkit-scrollbar {
-      width: 2px;
+      width: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-      border-radius: 5px;
-      background-color: $Gray-2;
+      border-radius: var(--radius-full);
+      background-color: var(--gray-600);
     }
 
     &::-webkit-scrollbar-track {
-      background-color: $Gray-2;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: $Gray-2;
+      background-color: var(--bg-sidebar);
     }
 
     .links-header {
       @include flex-align();
-      gap: $XsSize4;
-      color: #000057 !important;
+      gap: var(--xs-size-4);
+      color: var(--BgWhite) !important;
+      font-weight: $BaseFontWeightBold;
+
       a {
         width: 100%;
         span {
@@ -158,40 +96,50 @@
 
     .p-accordioncontent-content {
       padding-bottom: 0 !important;
-      li {
-        a {
+      padding-inline: 0 !important;
+
+      li a {
+        width: 100%;
+        span {
           width: 100%;
-          span {
-            width: 100%;
-          }
         }
       }
     }
+
     .p-accordionheader {
-      background-color: #f8f9fb !important;
-      color: #000057 !important;
-      font-size: $SmSize;
+      background-color: var(--bg-sidebar-hover) !important;
+      color: var(--gray-200) !important;
+      font-size: var(--sm-size);
       font-weight: $BaseFontWeightBold;
-      margin-inline: $MdSize2;
-      border-radius: $MdSize $MdSize 0 0 !important;
+      margin-inline: 0 !important;
+      border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
       border: none !important;
+      transition: var(--transition-fast);
+
+      &:hover {
+        background-color: var(--gray-700) !important;
+        color: var(--PrimaryColor) !important;
+      }
     }
+
     .p-accordionpanel {
       border: none !important;
     }
 
     .active-panel-out {
-      background-color: #f8f9fb !important;
-      color: $PrimaryColor !important;
+      background-color: var(--bg-sidebar-hover) !important;
+      color: var(--PrimaryColor) !important;
       padding: 12px;
       width: 89%;
       margin-left: auto;
       margin-right: auto;
       position: relative;
       font-weight: $BaseFontWeightBold;
-      font-size: $SmSize;
+      font-size: var(--sm-size);
       padding-left: 25px;
-      transition: all 0.3s ease-in-out;
+      transition: var(--transition-slow);
+      border-left: 3px solid var(--PrimaryColor);
+
       span {
         padding-left: 20px;
       }
@@ -204,9 +152,10 @@
         transform: translate(-50%, -50%);
         width: 15px;
         height: 15px;
-        background-color: #1f41bb1f;
+        background-color: var(--PrimaryColor-light);
         border-radius: 50%;
       }
+
       &::after {
         content: "";
         position: absolute;
@@ -215,65 +164,77 @@
         transform: translate(-50%, -50%);
         width: 8px;
         height: 8px;
-        background-color: $PrimaryColor;
+        background-color: var(--PrimaryColor);
         border-radius: 50%;
       }
     }
+
     ul {
       @include flex-column();
-      gap: $SmSize;
+      gap: 5px;
+      margin-top: 5px;
       position: relative;
-      background-color: #f8f9fb;
-      padding: $XsSize2;
-      border-top: 1px solid #f0f0f0 !important;
+      padding: 5px;
+      background-color: var(--bg-sidebar-hover);
+      // padding: var(--xs-size-2);
+      border-top: 1px solid var(--gray-600) !important;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
 
       li {
         @include flex-align();
-        gap: $SmSize;
-        font-size: $MdSize;
-        color: #aaaaaa;
-        font-family: "Regular", sans-serif;
+        gap: var(--sm-size);
+        font-size: var(--md-size);
+        color: var(--gray-400);
+        font-family: var(--font-family);
         cursor: pointer;
-        transition: all 0.3s ease-in-out;
+        transition: var(--transition-slow);
         font-weight: $BaseFontMediumWeight;
 
         &:hover {
-          color: $PrimaryColor;
+          color: var(--BgWhite);
         }
 
         a {
           @include flex-align();
-          gap: $XsSize4;
+          gap: var(--xs-size-4);
+          text-decoration: none;
+          span {
+            padding-left: 8px;
+          }
 
           &.router-link-active,
           &.active-link {
-            color: $PrimaryColor !important;
+            color: var(--PrimaryColor) !important;
             font-weight: $BaseFontWeightBold;
-            font-size: $SmSize;
+            font-size: var(--sm-size);
             position: relative;
             padding-left: 20px;
-            transition: all 0.3s ease-in-out;
+            transition: var(--transition-slow);
+            background-color: var(--bg-sidebar);
+            border-radius: var(--radius-sm);
+            padding: var(--xs-size-2) var(--xs-size-2) var(--xs-size-2) 20px;
 
             &::before {
               content: "";
               position: absolute;
-              left: 4px;
-              top: 52%;
+              left: 15px;
+              top: 50%;
               transform: translate(-50%, -50%);
               width: 15px;
               height: 15px;
-              background-color: #1f41bb1f;
+              background-color: var(--PrimaryColor-light);
               border-radius: 50%;
             }
+
             &::after {
               content: "";
               position: absolute;
-              left: 4px;
-              top: 52%;
+              left: 15px;
+              top: 50%;
               transform: translate(-50%, -50%);
               width: 8px;
               height: 8px;
-              background-color: $PrimaryColor;
+              background-color: var(--PrimaryColor);
               border-radius: 50%;
             }
           }
