@@ -5,6 +5,20 @@ import EmailTestFactory from '../../__tests__/email.test-factory';
 import { DataSuccess, DataFailed } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import EmailParams from '../../core/params/email.params';
 
+// Mock Pinia store to avoid "no active Pinia" error
+vi.mock('@/stores/formsStore', () => ({
+    useFormsStore: () => ({
+        clearFormData: vi.fn(),
+    }),
+}));
+
+// Mock router to avoid navigation side-effects
+vi.mock('@/router', () => ({
+    default: {
+        push: vi.fn(),
+    },
+}));
+
 describe('EmailController', () => {
     let controller: EmailController;
     let mockRepository: any;

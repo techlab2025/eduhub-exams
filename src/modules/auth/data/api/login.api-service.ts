@@ -3,13 +3,13 @@ import type {
   ApiEndpoints,
   ApiResponse,
 } from "@/base/Data/ApiService/baseApiService";
-import { ApiNames } from "@/base/Core/NetworkStructure/apiNames";
 import type Params from "@/base/Core/Params/params";
+import { LoginEndpoints } from "./login.api.endpoints";
 
 export default class LoginApiService extends BaseApiService {
   private static instance: LoginApiService;
 
-  private apiNames = ApiNames.instance;
+  private loginendpoints = new LoginEndpoints();
 
   /**
    * Singleton instance
@@ -21,19 +21,13 @@ export default class LoginApiService extends BaseApiService {
     return LoginApiService.instance;
   }
 
-
-
   protected get endpoints(): Partial<ApiEndpoints> {
     return {
-      index: this.apiNames.IndexMail,
-      show: this.apiNames.ShowMail,
-      create: this.apiNames.loginEmployee,
-      update: this.apiNames.EditMail,
-      delete: this.apiNames.DeleteMail,
+      create: this.loginendpoints.login,
     };
   }
 
   async login(params: Params): Promise<ApiResponse> {
-    return this.customPost(this.apiNames.loginEmployee, params);
+    return this.customPost(this.loginendpoints.login, params);
   }
 }

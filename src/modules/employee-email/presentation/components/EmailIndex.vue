@@ -84,6 +84,8 @@ const deleteEmail = async (id: number) => {
 
 const FormStore = useFormsStore();
 const formRoute = "/emails/add";
+
+
 </script>
 
 <template>
