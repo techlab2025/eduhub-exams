@@ -58,7 +58,8 @@ const route = useRoute();
 
 const updateData = () => {
   FormStore.setFormData(formKey!, {
-    email: formEmail.value.length > 0 ? formEmail.value : null,
+    email:
+      formEmail.value && formEmail.value?.length > 0 ? formEmail.value : null,
     type: formType.value?.id,
     id: editingId.value || undefined,
   });
