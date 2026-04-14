@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { EmailController, getEmailTypeName } from "@/modules/employee-email";
 import DataStatusBuilder from "@/shared/DataStatues/DataStatusBuilder.vue";
 import AppTable, {
@@ -17,6 +17,7 @@ import { useFormsStore } from "@/stores/formsStore";
 const controller = EmailController.getInstance();
 const router = useRouter();
 const route = useRoute();
+
 // Table headers
 const headers: TableHeader[] = [
   { key: "email", label: "Email", width: "50%", sortable: true },
@@ -26,6 +27,7 @@ const headers: TableHeader[] = [
 // Pagination state
 const perPage = ref(10);
 const word = ref("");
+const totalCount = computed(() => controller.pagination.value?.total || 0);
 
 const fetchEmails = async (page: number = 1, word: string = "") => {
   await controller.fetchList(
@@ -85,74 +87,180 @@ const deleteEmail = async (id: number) => {
 const FormStore = useFormsStore();
 const formRoute = "/emails/add";
 
-
+const isDraft = computed(() => {
+  const data = FormStore?.formData[formRoute] ?? {};
+  return (
+    Object.keys(data).length === 0 ||
+    Object.values(data).every((v) => v == null)
+  );
+});
 </script>
 
 <template>
-  <div class="email-crud-example">
-    <div class="index-header">
-      <h2>Employee Email Management</h2>
+  <div class="email-page">
+    <!-- ═══ Page Header ═══ -->
+    <header class="page-header">
+      <div class="header-left">
+        <div class="header-icon-wrap">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1>Email Management</h1>
+          <p class="subtitle">
+            Manage employee email addresses
+            <span v-if="totalCount" class="count-pill">{{ totalCount }}</span>
+          </p>
+        </div>
+      </div>
 
-      <router-link :to="formRoute" class="add-btn"
-        >{{
-          Object.keys(FormStore?.formData[formRoute] ?? {}).length === 0 ||
-          Object.values(FormStore?.formData[formRoute] ?? {}).every(
-            (v) => v == null,
-          )
-            ? `Add`
-            : `Continue Adding`
-        }}
-        Email</router-link
-      >
-    </div>
-    <div class="input-search col-span-1">
-      <!--      <img alt="search" src="../../../../../../../assets/images/search-normal.png" />-->
-      <span class="icon-remove" @click="((word = ''), Search())">
-        <Search />
-      </span>
-      <input
-        v-model="word"
-        :placeholder="'search'"
-        class="input"
-        type="text"
-        @input="Search"
-      />
+      <router-link :to="formRoute" class="btn-add">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        >
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+        <span>{{ isDraft ? "Add Email" : "Continue Adding" }}</span>
+      </router-link>
+    </header>
+
+    <!-- ═══ Toolbar ═══ -->
+    <div class="toolbar">
+      <div class="search-field">
+        <span class="search-icon">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+        </span>
+        <input
+          v-model="word"
+          placeholder="Search by email address…"
+          class="search-input"
+          type="text"
+          @input="Search"
+        />
+        <Transition name="fade">
+          <button
+            v-if="word"
+            class="clear-btn"
+            @click="
+              word = '';
+              Search();
+            "
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </Transition>
+      </div>
     </div>
 
+    <!-- ═══ Table ═══ -->
     <DataStatusBuilder
       :controller="controller.listState.value"
-      :on-retry="
-        async () => {
-          await fetchEmails();
-        }
-      "
+      :on-retry="async () => await fetchEmails()"
     >
       <template #success="{ data }">
-        <AppTable
-          :headers="headers"
-          :items="data as EmailModel[]"
-          selectable
-          show-index
-          hoverable
-          striped
-        >
-          <template #cell-type="{ item }">
-            <span class="email-type">{{ getEmailTypeName(item.type) }}</span>
-          </template>
+        <div class="table-frame">
+          <AppTable
+            :headers="headers"
+            :items="data as EmailModel[]"
+            selectable
+            show-index
+            hoverable
+            striped
+          >
+            <template #cell-type="{ item }">
+              <span class="type-chip" :data-type="item.type">
+                {{ getEmailTypeName(item.type) }}
+              </span>
+            </template>
 
-          <template #actions="{ item }">
-            <div class="btns-container">
-              <router-link
-                class="btn btn-primary"
-                :to="`/emails/edit/${item.id}`"
-                >Edit</router-link
-              >
-              <button @click="deleteEmail(item.id!)">Delete</button>
-            </div>
-          </template>
-        </AppTable>
+            <template #actions="{ item }">
+              <div class="row-actions">
+                <router-link
+                  class="action-btn edit"
+                  :to="`/emails/edit/${item.id}`"
+                  title="Edit"
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    />
+                    <path
+                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                    />
+                  </svg>
+                </router-link>
+                <button
+                  class="action-btn delete"
+                  title="Delete"
+                  @click="deleteEmail(item.id!)"
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  </svg>
+                </button>
+              </div>
+            </template>
+          </AppTable>
+        </div>
 
-        <!-- Pagination -->
         <Pagination
           :pagination="controller.pagination.value"
           @change-page="onPageChange"
@@ -161,95 +269,37 @@ const formRoute = "/emails/add";
       </template>
 
       <template #empty>
-        <p>No emails found</p>
+        <div class="empty-state">
+          <svg
+            width="56"
+            height="56"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+          >
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+          <h3>No emails yet</h3>
+          <p>Add the first employee email to get started</p>
+          <router-link :to="formRoute" class="btn-add empty-cta">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            <span>Add Email</span>
+          </router-link>
+        </div>
       </template>
     </DataStatusBuilder>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.btns-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-}
-.index-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-.email-crud-example {
-  padding: 20px;
-  /* max-width: 800px;*/
-  margin: 0 auto;
-}
-
-.email-list {
-  margin-bottom: 30px;
-}
-
-.email-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-.email-type {
-  color: #666;
-  font-size: 0.9em;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-}
-
-.email-form {
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-}
-
-.email-form input,
-.email-form select {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.form-actions {
-  display: flex;
-  gap: 10px;
-}
-
-button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.error {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-}
-</style>

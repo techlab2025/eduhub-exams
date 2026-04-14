@@ -40,6 +40,9 @@
 @use "HomeBreadCrump/breadcrump";
 @use "HomeBreadCrump/fast_routes";
 
+/* ── Modules ───────────────────────────────────────────────────── */
+@use "email-emplyee/email_employee_imports";
+
 /* ── Pages ─────────────────────────────────────────────────────── */
 @use "login/login";
 @use "error/error";

@@ -38,10 +38,6 @@ const sections = ref<SidebarSection[]>([
         link: "/emails",
         name: "Emails",
       },
-      {
-        link: "/emails",
-        name: "Emails",
-      },
     ],
   },
   {

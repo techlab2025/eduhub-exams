@@ -224,19 +224,318 @@ const copyToClipboard = async (value: unknown) => {
   </div>
 </template>
 
-<style lang="scss">
-.app-table {
-  .td-data {
-    cursor: pointer;
-    transition: background-color 0.2s;
+<style lang="scss" scoped>
+/* ── Wrapper ────────────────────────────────────────────────── */
+.app-table-wrapper {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-main);
+  border: 1px solid var(--border-strong);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.03);
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(99, 102, 241, 0.15),
+      transparent
+    );
+    pointer-events: none;
+  }
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-100);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: var(--radius-full);
 
     &:hover {
-      background-color: rgba(var(--color-primary-rgb, 99, 102, 241), 0.05);
+      background: var(--gray-400);
     }
+  }
+}
 
-    &:active {
-      background-color: rgba(var(--color-primary-rgb, 99, 102, 241), 0.1);
+/* ── Table ─────────────────────────────────────────────────── */
+.app-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-family);
+  position: relative;
+
+  /* ── Header ──────────────────────────────────────────────── */
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    tr th {
+      background: linear-gradient(
+        180deg,
+        var(--gray-50) 0%,
+        var(--gray-100) 100%
+      );
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--gray-600);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 2px solid var(--border-weak);
+      white-space: nowrap;
+      user-select: none;
+
+      &:first-child {
+        padding-left: 20px;
+      }
+
+      &:last-child {
+        padding-right: 20px;
+      }
+
+      &.sortable {
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: linear-gradient(
+            180deg,
+            var(--PrimaryColor-light) 0%,
+            rgba(238, 242, 255, 0.5) 100%
+          );
+          color: var(--PrimaryColor);
+        }
+      }
+
+      &.active {
+        color: var(--PrimaryColor);
+        background: linear-gradient(
+          180deg,
+          var(--PrimaryColor-light) 0%,
+          rgba(238, 242, 255, 0.8) 100%
+        );
+        border-bottom-color: var(--PrimaryColor);
+      }
+
+      .th-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        .sort-icon {
+          font-size: 0.65rem;
+          opacity: 0.4;
+          transition: all 0.2s ease;
+        }
+
+        &:hover .sort-icon {
+          opacity: 0.8;
+        }
+      }
     }
+  }
+
+  /* ── Body ────────────────────────────────────────────────── */
+  tbody {
+    tr {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: var(--border-weak);
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      &:not(:last-child)::after {
+        opacity: 1;
+      }
+
+      &.hoverable {
+        &:hover {
+          background: linear-gradient(
+            90deg,
+            var(--PrimaryColor-light) 0%,
+            rgba(238, 242, 255, 0.4) 30%,
+            transparent 100%
+          );
+          transform: scale(1.001);
+          box-shadow:
+            inset 0 0 0 1px rgba(99, 102, 241, 0.08),
+            0 2px 8px rgba(99, 102, 241, 0.06);
+
+          td {
+            color: var(--gray-900);
+          }
+        }
+      }
+
+      &.striped:nth-child(even) {
+        background: var(--gray-50);
+
+        &:hover {
+          background: linear-gradient(
+            90deg,
+            var(--PrimaryColor-light) 0%,
+            rgba(238, 242, 255, 0.4) 30%,
+            transparent 100%
+          );
+        }
+      }
+
+      &.selected {
+        background: linear-gradient(
+          90deg,
+          var(--PrimaryColor-light) 0%,
+          rgba(238, 242, 255, 0.6) 50%,
+          transparent 100%
+        ) !important;
+
+        td {
+          color: var(--PrimaryColor);
+          font-weight: 600;
+        }
+      }
+
+      td {
+        padding: 14px 16px;
+        color: var(--gray-700);
+        font-size: 0.9rem;
+        font-weight: 500;
+        line-height: 1.5;
+        transition: all 0.2s ease;
+
+        &:first-child {
+          padding-left: 20px;
+        }
+
+        &:last-child {
+          padding-right: 20px;
+        }
+
+        &.td-data {
+          cursor: pointer;
+          position: relative;
+
+          &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s ease;
+          }
+
+          &:hover::before {
+            background: rgba(99, 102, 241, 0.04);
+          }
+
+          &:active::before {
+            background: rgba(99, 102, 241, 0.08);
+          }
+        }
+
+        &.td-index {
+          font-weight: 700;
+          color: var(--gray-400);
+          font-size: 0.8rem;
+          font-variant-numeric: tabular-nums;
+          width: 40px;
+          text-align: center;
+        }
+      }
+
+      .empty-row {
+        text-align: center;
+        padding: 48px 20px;
+        color: var(--gray-400);
+        font-size: 0.95rem;
+        font-style: italic;
+      }
+    }
+  }
+
+  /* ── Checkbox ────────────────────────────────────────────── */
+  .th-checkbox,
+  .td-checkbox {
+    width: 44px;
+    text-align: center;
+
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--gray-300);
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      background: var(--bg-main);
+
+      &:checked {
+        background: linear-gradient(
+          135deg,
+          var(--PrimaryColor) 0%,
+          var(--PrimaryColor-hover) 100%
+        );
+        border-color: var(--PrimaryColor);
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+
+        &::after {
+          content: "";
+          position: absolute;
+          left: 5px;
+          top: 1px;
+          width: 6px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+      }
+
+      &:hover:not(:checked) {
+        border-color: var(--PrimaryColor);
+        box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+      }
+    }
+  }
+
+  /* ── Actions ─────────────────────────────────────────────── */
+  .th-actions,
+  .td-actions {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
   }
 }
 </style>
