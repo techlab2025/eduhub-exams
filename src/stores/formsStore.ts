@@ -23,6 +23,12 @@ export const useFormsStore = defineStore(
       return data && (data.email !== "" || data.type !== undefined);
     };
     const showReturnWarning = (targetPath: string) => {
+      if (
+        Object.keys(formData.value[targetPath] ?? {}).length === 0 ||
+        Object.values(formData.value[targetPath] ?? {}).every((v) => v == null)
+      ) {
+        return;
+      }
       dialogManager.toastInfo("Click here to return to the form", {
         title: "Unsaved Changes",
         duration: 15000,
@@ -50,3 +56,4 @@ export const useFormsStore = defineStore(
     },
   },
 );
+

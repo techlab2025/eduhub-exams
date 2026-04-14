@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 const ButtonValue = ref(props.checked);
 
-const UpdateData = (data) => {
+const UpdateData = (data: any) => {
   // console.log(data.target.checked);
   emit("update:checked", data.target.checked);
 };
