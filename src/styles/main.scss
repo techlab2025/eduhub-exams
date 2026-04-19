@@ -10,7 +10,6 @@
 @use "utils/fonts";
 @use "utils/hidden";
 @use "utils/heplers_spaces";
-
 @use "utils/container";
 @use "utils/bread_crumb";
 @use "utils/app_button";
@@ -20,7 +19,6 @@
 @use "utils/custom_select";
 @use "utils/switch_input";
 @use "utils/single_file_input";
-
 @use "utils/data_empty";
 @use "utils/popover";
 @use "utils/tabs_selections";
@@ -28,7 +26,7 @@
 @use "utils/crop";
 
 /* ── Layout ────────────────────────────────────────────────────── */
-@use "layout/layout_imports";
+@use "../shared/LayoutComponents/styles/layout_imports";
 
 /* ── Components ────────────────────────────────────────────────── */
 @use "tables/main_table";
@@ -37,16 +35,14 @@
 @use "ActionsButtons/actions_buttons";
 @use "FileUpload/file_upload";
 @use "Dialogs/imports";
-@use "HomeBreadCrump/breadcrump";
 @use "HomeBreadCrump/fast_routes";
 
 /* ── Modules ───────────────────────────────────────────────────── */
-@use "email-emplyee/email_employee_imports";
+// @use "../modules/employee-email/presentation/styles/email_employee_imports";
 
 /* ── Pages ─────────────────────────────────────────────────────── */
-@use "login/login";
+@use "../modules/auth/presentation/styles/login";
 @use "error/error";
-// @use "timeline";
 
 /* =============================================================================
    GLOBAL OVERRIDES & BASE STYLES

@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { sharedRoutes } from "./routes/shared";
-import { addSuffix } from "./helpers";
 import { dashboardRoutes } from "./routes/modules";
 import { authGuard } from "./guards";
+import HomeIcon from "@/shared/icons/BreadcrumbIcons/HomeIcon.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,12 +13,15 @@ const router = createRouter({
     },
     {
       path: "/",
-      name: "Organization App",
+      name: "Home App",
       component: () => import("@/views/AppLayout.vue"),
-      children: [...dashboardRoutes, ...addSuffix(sharedRoutes, "Shared")],
+      children: [...dashboardRoutes],
+      meta: {
+        icon: HomeIcon,
+      },
     },
   ],
 });
 
-router.beforeEach(authGuard)
+router.beforeEach(authGuard);
 export default router;

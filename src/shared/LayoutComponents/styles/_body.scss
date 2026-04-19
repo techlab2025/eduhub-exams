@@ -1,5 +1,5 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins/flex" as *;
 
 body {
   background-color: var(--bg-body);

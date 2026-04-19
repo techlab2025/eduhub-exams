@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BackIcon from "@/shared/icons/BackIcon.vue";
+import HomeIcon from "@/shared/icons/BreadcrumbIcons/HomeIcon.vue";
 import Breadcrumb from "primevue/breadcrumb";
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -7,7 +8,7 @@ import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
-const items = ref<{ label: string; url?: string }[]>([]);
+const items = ref<{ label: string; url?: string; icon?: any }[]>([]);
 const navigationHistory = ref<{ path: string; name: string; params: any }[]>(
   [],
 );
@@ -48,26 +49,12 @@ const shareKeywords = (route1: string, route2: string): boolean => {
 // Extract the first path segment after /organization/
 const getRouteSection = (path: string): string | null => {
   const match = path.match(/^\/organization\/([^\/]+)/);
-  return match ? match[1] : null;
+  return match ? String(match[1]) : null;
 };
 
 const removeGuard = router.beforeEach((to, from) => {
   if (to.path !== from.path && from.name) {
-    const toName = to.name as string;
     const fromName = from.name as string;
-
-    // Check if we're at organization base
-    const isFromOrganization =
-      from.path === "/organization" ||
-      from.name?.toLowerCase() === "organization";
-    const isToOrganization =
-      to.path === "/organization" || to.name?.toLowerCase() === "organization";
-
-    // If leaving or returning to organization home, clear history
-    if (isFromOrganization || isToOrganization) {
-      navigationHistory.value = [];
-      return;
-    }
 
     // Get the main section after /organization/ for both routes
     const fromSection = getRouteSection(from.path);
@@ -101,7 +88,6 @@ const removeGuard = router.beforeEach((to, from) => {
         }
       }
     } else {
-      // Different sections - CLEAR history completely
       navigationHistory.value = [];
     }
   }
@@ -113,11 +99,10 @@ const GetFullPath = () => {
   items.value.push({
     label: "Home",
     url: "/",
+    icon: HomeIcon,
   });
-
   const currentRouteName = route.name as string;
-
-  if (!currentRouteName || currentRouteName.toLowerCase() === "organization") {
+  if (!currentRouteName || currentRouteName.toLowerCase() === "/") {
     return;
   }
 
@@ -138,10 +123,11 @@ const GetFullPath = () => {
   });
 
   // Add current route if not duplicate
-  if (!seenPaths.has(route.path)) {
+  if (!seenPaths.has(route.path) && currentRouteName !== "Home App") {
     items.value.push({
       label: currentRouteName,
       url: undefined,
+      icon: route.meta.icon,
     });
   }
 };
@@ -168,9 +154,7 @@ const RouterBack = () => {
   router.back();
 };
 
-const IsHome = computed(
-  () => route.path === "/organization" || route.path === "/admin",
-);
+const IsHome = computed(() => route.path === "/");
 </script>
 
 <template>
@@ -180,7 +164,43 @@ const IsHome = computed(
         <BackIcon class="icon" />
         <span>back</span>
       </button>
-      <Breadcrumb :model="items" />
+      <Breadcrumb :model="items">
+        <template #item="{ item }">
+          <router-link :to="String(item.url)" class="breadcrumb-link">
+            <span v-if="item.icon">
+              <component :is="item.icon" />
+            </span>
+            <span v-if="item.url && item.url !== '/'">
+              {{ item.label }}
+            </span>
+            <span v-else> Home </span>
+          </router-link>
+        </template>
+      </Breadcrumb>
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+@use "../../../styles/variables" as *;
+:deep(.p-breadcrumb-item svg) {
+  width: 15px;
+  height: 15px;
+}
+:deep(.p-breadcrumb-item svg path) {
+  stroke: $BreadcrumpIconColor !important;
+  fill: $BreadcrumpIconColor !important;
+}
+.breadcrumb-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+span:first-child {
+  padding-top: 2px;
+}
+span:last-child {
+  font-size: 14px;
+  color: $BreadcrumpTextColor;
+}
+</style>

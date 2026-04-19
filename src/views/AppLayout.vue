@@ -6,5 +6,4 @@ import DashboardLayout from "@/shared/LayoutComponents/DashboardLayout.vue";
   <DashboardLayout>
     <RouterView />
   </DashboardLayout>
-  <!-- <UnifiedDialog /> -->
 </template>

@@ -1,6 +1,6 @@
-@use '../variables' as *;
-@use '../mixins/border' as *;
-@use '../mixins/flex' as *;
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins/border" as *;
+@use "../../../styles/mixins/flex" as *;
 
 .header {
   @include flex-row(nowrap, space-between, center);

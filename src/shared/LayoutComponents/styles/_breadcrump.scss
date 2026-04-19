@@ -1,10 +1,9 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins/flex" as *;
 
 .breadcrump-container {
   @include flex-column(nowrap, flex-start, center);
-  background-color: var(--gray-50);
-  border-radius: var(--xl-size-base);
+  border-radius: 5حء;
   font-family: var(--font-family);
   width: 100%;
   margin-bottom: 12px;
@@ -25,7 +24,7 @@
       color: var(--gray-600);
       font-size: var(--sm-size);
       font-weight: $BaseFontSemiBoldWeight;
-      border-radius: var(--xl-size-1);
+      border-radius: 5px;
       cursor: pointer;
       transition: var(--transition-fast);
 
@@ -44,13 +43,14 @@
 
     .p-breadcrumb {
       width: 100%;
-      background-color: var(--gray-50);
+      background-color: $BreadcrumpBg;
       text-transform: capitalize;
+      border-radius: 6px;
+      padding: 5px;
 
       .p-breadcrumb-list {
         @include flex-row(nowrap, center, center);
         width: 100%;
-        background-color: var(--gray-50);
         gap: 12px;
 
         .p-breadcrumb-item {
@@ -58,7 +58,7 @@
             .p-breadcrumb-item-label {
               text-transform: capitalize;
               color: var(--PrimaryColor) !important;
-              font-size: var(--sm-size);
+              font-size: $XsSize;
               font-weight: $BaseFontMediumWeight;
             }
           }
@@ -73,7 +73,11 @@
         }
 
         .p-breadcrumb-separator {
-          color: var(--PrimaryColor-light) !important;
+          color: var(--primary-dark) !important;
+          svg {
+            width: 15px;
+            height: 15px;
+          }
         }
       }
     }

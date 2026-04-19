@@ -1,12 +1,16 @@
-@use "../mixins/grid" as *;
-@use "../mixins/flex" as *;
-@use "../variables" as *;
+@use "../../../../styles/mixins/grid" as *;
+@use "../../../../styles/mixins/flex" as *;
+@use "../../../../styles/variables" as *;
 
 .login {
   @include grid(2, 1fr, 10px);
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--PrimaryColor-dark) 0%, var(--bg-sidebar) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--PrimaryColor-dark) 0%,
+    var(--bg-sidebar) 100%
+  );
 
   @media screen and (max-width: 1179px) {
     @include flex(column-reverse, wrap, center, center);

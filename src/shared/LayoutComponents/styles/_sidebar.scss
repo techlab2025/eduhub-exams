@@ -1,6 +1,6 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
-@use "../mixins/border" as *;
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins/flex" as *;
+@use "../../../styles/mixins/border" as *;
 
 .sidebar {
   background-color: var(--bg-sidebar);

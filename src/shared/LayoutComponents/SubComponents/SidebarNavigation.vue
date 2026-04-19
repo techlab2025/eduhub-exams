@@ -35,8 +35,8 @@ const sections = ref<SidebarSection[]>([
     icon: IconSetting,
     routes: [
       {
-        link: "/emails",
-        name: "Emails",
+        link: "/",
+        name: "Home",
       },
     ],
   },
@@ -44,7 +44,7 @@ const sections = ref<SidebarSection[]>([
     title: "location",
     type: SidebarSectionType.location,
     icon: IconSetting,
-    routes: [{ link: "/admin/countries", name: "country" }],
+    routes: [],
   },
 ]);
 
