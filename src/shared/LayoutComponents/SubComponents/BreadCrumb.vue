@@ -170,10 +170,10 @@ const IsHome = computed(() => route.path === "/");
             <span v-if="item.icon">
               <component :is="item.icon" />
             </span>
-            <span v-if="item.url && item.url !== '/'">
+            <span>
               {{ item.label }}
             </span>
-            <span v-else> Home </span>
+            <!-- <span v-else> Home </span> -->
           </router-link>
         </template>
       </Breadcrumb>

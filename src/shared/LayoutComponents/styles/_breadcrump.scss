@@ -7,6 +7,8 @@
   font-family: var(--font-family);
   width: 100%;
   margin-bottom: 12px;
+  background-color: $BreadcrumpBg;
+  border-radius: 6px;
 
   .breadcrump {
     width: 100%;
@@ -20,7 +22,7 @@
     .sidebar-back {
       @include flex-row(nowrap, flex-start, center);
       gap: var(--xs-size-3);
-      background-color: var(--gray-50);
+      // background-color: var(--gray-50);
       color: var(--gray-600);
       font-size: var(--sm-size);
       font-weight: $BaseFontSemiBoldWeight;
@@ -28,10 +30,10 @@
       cursor: pointer;
       transition: var(--transition-fast);
 
-      &:hover {
-        color: var(--PrimaryColor);
-        background-color: var(--PrimaryColor-light);
-      }
+      // &:hover {
+      //   color: var(--PrimaryColor);
+      //   background-color: var(--PrimaryColor-light);
+      // }
 
       .icon {
         border-radius: 50%;
@@ -43,11 +45,10 @@
 
     .p-breadcrumb {
       width: 100%;
-      background-color: $BreadcrumpBg;
       text-transform: capitalize;
-      border-radius: 6px;
       padding: 5px;
 
+      background-color: transparent !important;
       .p-breadcrumb-list {
         @include flex-row(nowrap, center, center);
         width: 100%;
@@ -73,7 +74,7 @@
         }
 
         .p-breadcrumb-separator {
-          color: var(--primary-dark) !important;
+          color: $BreadcrumpTextColor !important;
           svg {
             width: 15px;
             height: 15px;

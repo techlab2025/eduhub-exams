@@ -1,7 +1,10 @@
 import type Params from "@/base/Core/Params/params";
 import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
 
-export default class CountryParams implements Params {
+/**
+ * Parameters for adding a new country
+ */
+export default class AddCountryParams implements Params {
   public title: string;
   public code: string;
   public flag: string;
@@ -28,10 +31,10 @@ export default class CountryParams implements Params {
   }
 
   validate() {
-    return CountryParams.validation.validate(this);
+    return AddCountryParams.validation.validate(this);
   }
 
   validateOrThrow() {
-    return CountryParams.validation.validateOrThrow(this);
+    return AddCountryParams.validation.validateOrThrow(this);
   }
 }

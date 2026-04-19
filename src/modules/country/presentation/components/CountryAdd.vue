@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { EmailController, EmailParams } from "@/modules/employee-email";
-
-import EmailForm from "./EmailForm.vue";
 import AppButton from "@/shared/HelpersComponents/AppButton.vue";
 import IconAccept from "@/shared/icons/IconAccept.vue";
 import { useRoute } from "vue-router";
+import type CountryParams from "../../core/params/ad.email.params";
+import CountryController from "../controllers/country.controller";
+import CountryForm from "./CountryForm.vue";
 // Controller instance
-const controller = EmailController.getInstance();
+const controller = CountryController.getInstance();
 const route = useRoute();
 const formKey = route.fullPath;
 // Form state
-const params = ref<EmailParams | null>(null);
+const params = ref<CountryParams | null>(null);
 /**
  * Save (create or update) email
  */
@@ -24,24 +24,13 @@ const saveEmail = async () => {
 
     const paramsToSave = params.value;
 
-    // if (paramsToSave.employeeId) {
-    //   await controller.update(paramsToSave, undefined, formKey);
-    // } else {
     await controller.create(paramsToSave, undefined, formKey);
-    // router.push({ name: "Employee Emails" });
-    // }
-
-    // // Refresh list and reset form
-    // if (controller.isItemSuccess()) {
-    //   await controller.fetchList();
-    //   params.value = null; // Reset form
-    // }
   } catch (error) {
     console.error("Error saving email:", error);
   }
 };
 
-const updateData = (updatedParams: EmailParams) => {
+const updateData = (updatedParams: CountryParams) => {
   params.value = updatedParams;
   // saveEmail();
 };
@@ -49,7 +38,7 @@ const updateData = (updatedParams: EmailParams) => {
 
 <template>
   <div class="email-crud-example">
-    <EmailForm
+    <CountryForm
       :formKey="formKey"
       :email="controller.itemData.value!"
       @updateData="updateData"
@@ -62,7 +51,7 @@ const updateData = (updatedParams: EmailParams) => {
       icon="right"
       type="submit"
     >
-      Save Email
+      Save Country
 
       <template #icon>
         <IconAccept />
@@ -141,6 +130,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 button:hover {

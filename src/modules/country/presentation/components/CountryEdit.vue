@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import {
-  EmailController,
-  EmailParams,
-  EmailType,
-} from "@/modules/employee-email";
-
-import EmailForm from "./EmailForm.vue";
 import { useRoute } from "vue-router";
-import ShowEmailParams from "../../core/params/show.email.params";
+import CountryController from "../controllers/country.controller";
+import type CountryParams from "../../core/params/ad.email.params";
+import type EditCountryParams from "../../core/params/edit.country.params";
+import ShowCountryParams from "../../core/params/show.countrey.params";
+import CountryForm from "./CountryForm.vue";
 
 // Controller instance
-const controller = EmailController.getInstance();
+const controller = CountryController.getInstance();
 
 // Form state
-const params = ref<EmailParams | null>(null);
+const params = ref<CountryParams | null>(null);
 /**
  * Save (create or update) email
  */
@@ -24,27 +21,26 @@ const saveEmail = async () => {
     return;
   }
 
-  const paramsToSave = params.value;
-
-  if (paramsToSave.type) {
-    await controller.update(paramsToSave);
-  }
+  await controller.update(params.value);
 };
 
-const updateData = (updatedParams: EmailParams) => {
+const updateData = (updatedParams: EditCountryParams) => {
   params.value = updatedParams;
   // saveEmail();
 };
 
 const route = useRoute();
 onMounted(async () => {
-  await controller.fetchOne(new ShowEmailParams(Number(route.params.id)));
+  await controller.fetchOne(new ShowCountryParams(Number(route.params.id)));
 });
 </script>
 
 <template>
   <div class="email-crud-example">
-    <EmailForm :email="controller.itemData.value!" @updateData="updateData" />
+    <CountryForm
+      :country="controller.itemData.value!"
+      @updateData="updateData"
+    />
 
     <button type="button" @click="saveEmail">Save Email</button>
 
@@ -58,7 +54,7 @@ onMounted(async () => {
 <style scoped>
 .email-crud-example {
   padding: 20px;
-  max-width: 800px;
+  /* max-width: 800px; */
   margin: 0 auto;
 }
 
@@ -114,6 +110,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 12px;
 }
 
 button:hover {

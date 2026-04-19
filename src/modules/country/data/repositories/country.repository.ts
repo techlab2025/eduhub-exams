@@ -5,9 +5,9 @@ import CountryModel from "../../core/models/country.model";
 import CountryApiService from "../api/country.api-service";
 
 /**
- * Email Repository for API data operations
+ * Country Repository for API data operations
  *
- * This repository handles all data access for employee emails,
+ * This repository handles all data access for countries,
  * including parsing API responses and error handling.
  */
 export default class CountryRepository extends BaseRepository<
@@ -28,9 +28,26 @@ export default class CountryRepository extends BaseRepository<
     };
   }
 
+  protected get mockItem(): CountryModel {
+    return CountryModel.example;
+  }
+
+  protected get mockList(): CountryModel[] {
+    return [
+      CountryModel.example,
+      { ...CountryModel.example, title: "Country 2", code: "CO2", flag: "🇨🇴" },
+        {
+        ...CountryModel.example,
+        title: "Country 10",
+        code: "CO10",
+        flag: "🇨🇴",
+      },
+    ];
+  }
+
   /**
    * Get singleton instance
-   * @returns EmailRepository instance
+   * @returns CountryRepository instance
    */
   static getInstance(): CountryRepository {
     if (!CountryRepository.instance) {

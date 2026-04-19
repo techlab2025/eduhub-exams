@@ -2,7 +2,7 @@ import type Params from "@/base/Core/Params/params";
 import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
 
 /**
- * Parameters for creating/updating employee email
+ * Parameters for showing a country
  */
 export default class ShowCountryParams implements Params {
   public id: number;

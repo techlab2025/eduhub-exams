@@ -1,42 +1,45 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue";
-import { EmailController, getEmailTypeName } from "@/modules/employee-email";
 import DataStatusBuilder from "@/shared/DataStatues/DataStatusBuilder.vue";
 import AppTable, {
   type TableHeader,
 } from "@/shared/HelpersComponents/AppTable.vue";
-import type EmailModel from "@/modules/employee-email/core/models/email.model";
-import FilterEmailParams from "../../core/params/filter.email.params";
 import Pagination from "@/shared/HelpersComponents/Pagination.vue";
-import DeleteEmailParams from "../../core/params/deleteParams";
 import { useRoute, useRouter } from "vue-router";
 import { debounce } from "@/base/Presentation/Utils/debouced";
 import { useFormsStore } from "@/stores/formsStore";
+import IndexCountryParams from "../../core/params/index.country.params";
+import CountryController from "../controllers/country.controller";
+import DeleteCountryParams from "../../core/params/deleteParams";
+import type CountryModel from "../../core/models/country.model";
 
 // Controller instance
-const controller = EmailController.getInstance();
+const controller = CountryController.getInstance();
+const state = computed(() => controller.listState.value);
 const router = useRouter();
 const route = useRoute();
 
 // Table headers
 const headers: TableHeader[] = [
-  { key: "email", label: "Email", width: "50%", sortable: true },
-  { key: "type", label: "Type", width: "30%" },
+  { key: "title", label: "Title", width: "30%", sortable: true },
+  { key: "code", label: "Code", width: "30%" },
+  { key: "flag", label: "Flag", width: "30%" },
 ];
 
 // Pagination state
 const perPage = ref(10);
 const word = ref("");
-const totalCount = computed(() => controller.pagination.value?.total || 0);
+const totalCount = computed(() => controller.listData.value?.length);
 
-const fetchEmails = async (page: number = 1, word: string = "") => {
-  await controller.fetchList(
-    new FilterEmailParams(
+const fetchCountries = async (page: number = 1, word: string = "") => {
+  const state = await controller.fetchList(
+    new IndexCountryParams(
       word,
       route.query.page ? Number(route.query.page) : page,
       perPage.value,
     ),
   );
+  console.log(state, "state");
 };
 
 const Search = debounce(() => {
@@ -48,11 +51,11 @@ const Search = debounce(() => {
     },
   });
 
-  fetchEmails(1, word.value);
+  fetchCountries(1, word.value);
 });
 
 const onPageChange = (page: number) => {
-  fetchEmails(page);
+  fetchCountries(page);
   router.push({
     query: {
       ...route.query,
@@ -64,7 +67,7 @@ const onPageChange = (page: number) => {
 
 const onPerPageChange = (count: number) => {
   perPage.value = count;
-  fetchEmails(1);
+  fetchCountries(1);
 };
 
 // Fetch emails on component mount
@@ -73,19 +76,19 @@ onMounted(async () => {
     word.value = String(route.query.word);
   }
 
-  await fetchEmails(
+  await fetchCountries(
     route.query.page ? Number(route.query.page) : 1,
     word.value,
   );
 });
 
-const deleteEmail = async (id: number) => {
-  await controller.delete(new DeleteEmailParams(id));
-  await fetchEmails();
+const deleteCountry = async (id: number) => {
+  await controller.delete(new DeleteCountryParams(id));
+  await fetchCountries();
 };
 
 const FormStore = useFormsStore();
-const formRoute = "/emails/add";
+const formRoute = "/countries/add";
 
 const isDraft = computed(() => {
   const data = FormStore?.formData[formRoute] ?? {};
@@ -101,25 +104,10 @@ const isDraft = computed(() => {
     <!-- ═══ Page Header ═══ -->
     <header class="page-header">
       <div class="header-left">
-        <div class="header-icon-wrap">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-          </svg>
-        </div>
         <div class="header-text">
-          <h1>Email Management</h1>
+          <h1>Country Management</h1>
           <p class="subtitle">
-            Manage employee email addresses
+            Manage country
             <span v-if="totalCount" class="count-pill">{{ totalCount }}</span>
           </p>
         </div>
@@ -137,7 +125,7 @@ const isDraft = computed(() => {
         >
           <path d="M12 5v14M5 12h14" />
         </svg>
-        <span>{{ isDraft ? "Add Email" : "Continue Adding" }}</span>
+        <span>{{ isDraft ? "Add Country" : "Continue Adding" }}</span>
       </router-link>
     </header>
 
@@ -160,7 +148,7 @@ const isDraft = computed(() => {
         </span>
         <input
           v-model="word"
-          placeholder="Search by email address…"
+          placeholder="Search by country name…"
           class="search-input"
           type="text"
           @input="Search"
@@ -192,30 +180,30 @@ const isDraft = computed(() => {
 
     <!-- ═══ Table ═══ -->
     <DataStatusBuilder
-      :controller="controller.listState.value"
-      :on-retry="async () => await fetchEmails()"
+      :controller="state"
+      :on-retry="async () => await fetchCountries()"
     >
       <template #success="{ data }">
         <div class="table-frame">
           <AppTable
             :headers="headers"
-            :items="data as EmailModel[]"
+            :items="data as CountryModel[]"
             selectable
             show-index
             hoverable
             striped
           >
-            <template #cell-type="{ item }">
-              <span class="type-chip" :data-type="item.type">
-                {{ getEmailTypeName(item.type) }}
-              </span>
+            <template #cell-name="{ item }">
+              {{ item.title }}
             </template>
-
+            <template #cell-flag="{ item }">
+              {{ item.flag }}
+            </template>
             <template #actions="{ item }">
               <div class="row-actions">
                 <router-link
                   class="action-btn edit"
-                  :to="`/emails/edit/${item.id}`"
+                  :to="`/countries/edit/${item.id}`"
                   title="Edit"
                 >
                   <svg
@@ -239,7 +227,7 @@ const isDraft = computed(() => {
                 <button
                   class="action-btn delete"
                   title="Delete"
-                  @click="deleteEmail(item.id!)"
+                  @click="deleteCountry(item.id!)"
                 >
                   <svg
                     width="15"

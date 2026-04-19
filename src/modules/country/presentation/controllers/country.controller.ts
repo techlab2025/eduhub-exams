@@ -9,10 +9,9 @@ import router from "@/router";
 import { useFormsStore } from "@/stores/formsStore";
 
 /**
- * Email Controller for managing employee emails
+ * Country Controller for managing countries
  *
- * This controller provides methods for CRUD operations on employee emails
- * and specialized queries like fetching emails by employee or type.
+ * This controller provides methods for CRUD operations on countries.
  */
 export default class CountryController extends BaseController<
   CountryModel,
@@ -44,7 +43,7 @@ export default class CountryController extends BaseController<
 
   /**
    * Get singleton instance
-   * @returns EmailController instance
+   * @returns CountryController instance
    */
   static getInstance(): CountryController {
     if (!CountryController.instance) {
@@ -58,7 +57,7 @@ export default class CountryController extends BaseController<
 
     const result = await super.create(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: "Employee Emails" });
+      router.push({ name: "Countries" });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
@@ -71,7 +70,7 @@ export default class CountryController extends BaseController<
 
     const result = await super.update(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: "Employee Emails" });
+      router.push({ name: "Countries" });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }

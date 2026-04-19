@@ -1,11 +1,5 @@
-import { isValidEmail, normalizeEmail } from "../utils/country.validation";
-import { env } from "@/base/Core/Config/environment.manager";
-
 /**
- * Email model representing employee email data
- *
- * This model handles email information for employees including
- * validation, type categorization, and API serialization.
+ * Country model representing a nation's geographical and cultural data
  */
 export default class CountryModel {
   public readonly id?: number;
@@ -28,23 +22,13 @@ export default class CountryModel {
   }
 
   /**
-   * Create EmailModel from API response
+   * Create CountryModel from API response
    * @param json - Raw JSON data from API
-   * @returns EmailModel instance
-   * @throws Error if email is invalid
+   * @returns CountryModel instance
    */
   static fromJson(json: any): CountryModel {
-    if (env.isTest) {
-      return CountryModel.example;
-    }
-
     if (!json) {
-      throw new Error("Cannot create EmailModel from null or undefined");
-    }
-
-    const email = json.email;
-    if (!email || !isValidEmail(normalizeEmail(email))) {
-      throw new Error("Invalid email format");
+      throw new Error("Cannot create CountryModel from null or undefined");
     }
 
     return new CountryModel({

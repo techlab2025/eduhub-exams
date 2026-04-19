@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { EmailModel, EmailParams, EmailType } from "@/modules/employee-email";
-import TitleInterface from "@/base/Data/Models/titleInterface";
-import UpdatedCustomInputSelect from "@/shared/FormInputs/UpdatedCustomInputSelect.vue";
-
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { useFormsStore } from "@/stores/formsStore";
-import HandleFilesUpload from "@/shared/FormInputs/HandleFilesUpload.vue";
-import Sys from "@/assets/images/app/system-failed.png";
+import type CountryModel from "../../core/models/country.model";
+import AddCountryParams from "../../core/params/add.country.params";
 
-const { email, formKey } = defineProps<{
-  email?: EmailModel;
+const emit = defineEmits(['updateData'])
+
+const { country, formKey } = defineProps<{
+  country?: CountryModel;
   formKey?: string;
 }>();
 
@@ -22,68 +20,49 @@ onBeforeRouteLeave((to, from) => {
   }
 });
 
-const emit = defineEmits<{
-  updateData: [params: EmailParams];
-}>();
+
 
 // Form state
-const formEmail = ref("");
-const formType = ref<TitleInterface<EmailType> | null>(null);
-const isEditing = ref(false);
-const editingId = ref<number | null>(null);
-
-const emailTypes: TitleInterface<EmailType>[] = [
-  new TitleInterface({ id: EmailType.EMPLOYEE, title: "Employee" }),
-  new TitleInterface({ id: EmailType.PERSONAL, title: "Personal" }),
-];
+const title = ref<string>("");
+const code = ref<string>("");
+const flag = ref<string>("");
 
 watch(
-  () => email,
-  (newEmail) => {
-    if (newEmail) {
-      formEmail.value = newEmail.email;
-      formType.value = emailTypes.find((t) => t.id === newEmail.type) ?? null;
-      editingId.value = newEmail.id ?? null;
-      isEditing.value = true;
+  () => country,
+  (newCountry) => {
+    if (newCountry) {
+      title.value = newCountry.title;
+      code.value = newCountry.code;
+      flag.value = newCountry.flag;
     }
   },
   { immediate: true },
 );
 
-const updateType = (type: TitleInterface<EmailType>) => {
-  formType.value = type;
-  updateData();
-};
 const route = useRoute();
 
 const updateData = () => {
   FormStore.setFormData(formKey!, {
-    email:
-      formEmail.value && formEmail.value?.length > 0 ? formEmail.value : null,
-    type: formType.value?.id,
-    id: editingId.value || undefined,
+    title: title.value,
+    code: code.value,
+    flag: flag.value,
   });
-  const params = new EmailParams(
-    formEmail.value,
-    formType.value?.id as EmailType,
-    editingId.value || undefined,
-  );
+  const params = new AddCountryParams(title.value, code.value, flag.value);
   emit("updateData", params);
 };
 
 const resetForm = () => {
-  formEmail.value = "";
-  formType.value = null;
-  editingId.value = null;
-  isEditing.value = false;
+  title.value = "";
+  code.value = "";
+  flag.value = "";
 };
 
 onMounted(() => {
   const saved = FormStore.getFormData(formKey!);
   if (saved) {
-    formEmail.value = saved.email;
-    formType.value = emailTypes.find((t) => t.id === saved.type) ?? null;
-    editingId.value = saved.id ?? null;
+    title.value = saved.title;
+    code.value = saved.code;
+    flag.value = saved.flag;
     updateData();
   } else {
     resetForm();
@@ -101,32 +80,17 @@ const handleFilesChange = (files: any) => {
   <div class="email-form-card">
     <!-- ── Card Header ───────────────────────────────────── -->
     <header class="form-header">
-      <div class="header-icon">
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-        </svg>
-      </div>
       <div class="header-text">
-        <h3>{{ route.params.id ? "Edit Email" : "Add New Email" }}</h3>
+        <h3>{{ route.params.id ? "Edit Country" : "Add New Country" }}</h3>
         <p class="header-subtitle">
           {{
-            isEditing
-              ? "Update the email details below"
-              : "Fill in the email address and type"
+            route.params.id
+              ? "Update the country details below"
+              : "Fill in the country name, code and flag"
           }}
         </p>
       </div>
-      <span v-if="isEditing" class="edit-badge">Editing</span>
+      <span v-if="route.params.id" class="edit-badge">Editing</span>
     </header>
 
     <!-- ── Divider ───────────────────────────────────────── -->
@@ -136,72 +100,46 @@ const handleFilesChange = (files: any) => {
     <div class="form-fields">
       <!-- Email Field -->
       <div class="field-group">
-        <label class="field-label" for="email">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-          </svg>
-          Email Address
-        </label>
+        <label class="field-label" for="title"> Country Title </label>
         <div class="input-wrap">
           <input
-            v-model="formEmail"
-            id="email"
-            type="email"
+            v-model="title"
+            id="title"
+            type="text"
             @input="updateData"
-            placeholder="name@company.com"
+            placeholder="Country Title"
             class="field-input"
           />
         </div>
       </div>
 
-      <!-- Type Field -->
       <div class="field-group">
-        <label class="field-label">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          Email Type
-        </label>
-        <UpdatedCustomInputSelect
-          v-model="formType"
-          :staticOptions="emailTypes"
-          :placeholder="$t('select_email_type')"
-          :required="true"
-          id="email-type"
-          label="Employee Type"
-          @update:modelValue="updateType"
-        />
+        <label class="field-label" for="code"> Country Code </label>
+        <div class="input-wrap">
+          <input
+            v-model="code"
+            id="code"
+            type="text"
+            @input="updateData"
+            placeholder="Country Code"
+            class="field-input"
+          />
+        </div>
       </div>
 
-      <HandleFilesUpload
-        :label="$t('contract')"
-        accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
-        :max-files="2"
-        :multiple="false"
-        @change="handleFilesChange"
-        className="input-file"
-        :index="1"
-      />
+      <div class="field-group">
+        <label class="field-label" for="flag"> Country Flag </label>
+        <div class="input-wrap">
+          <input
+            v-model="flag"
+            id="flag"
+            type="text"
+            @input="updateData"
+            placeholder="Country Flag"
+            class="field-input"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -316,14 +254,17 @@ const handleFilesChange = (files: any) => {
 /* ── Form Fields ────────────────────────── */
 .form-fields {
   padding: 20px 24px 24px;
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
 .field-group {
   display: flex;
   flex-direction: column;
+
   gap: 8px;
 }
 

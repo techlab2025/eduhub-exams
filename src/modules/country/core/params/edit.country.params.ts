@@ -2,8 +2,7 @@ import type Params from "@/base/Core/Params/params";
 import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
 
 /**
- * Parameters for fetching a single employee email (show endpoint).
- * Sends only the employee mail ID in the body.
+ * Parameters for updating an existing country
  */
 export default class EditCountryParams implements Params {
   public id: number;
