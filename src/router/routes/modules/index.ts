@@ -1,4 +1,4 @@
 import type { RouteRecordRaw } from "vue-router";
-import { emailRoutes } from "./email";
+import { countryRoutes } from "./country";
 
-export const dashboardRoutes: RouteRecordRaw[] = [...emailRoutes];
+export const dashboardRoutes: RouteRecordRaw[] = [...countryRoutes];

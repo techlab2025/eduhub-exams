@@ -127,6 +127,22 @@ export default abstract class BaseRepository<T, TList = T[]> {
     };
   }
 
+  /**
+   * Mock single item returned in test mode instead of making an API call.
+   * Override in subclass when useStaticData / isTest is enabled.
+   */
+  protected get mockItem(): T {
+    throw new Error(`${this.constructor.name}: mockItem not implemented for test mode`);
+  }
+
+  /**
+   * Mock list returned in test mode instead of making an API call.
+   * Override in subclass when useStaticData / isTest is enabled.
+   */
+  protected get mockList(): TList {
+    throw new Error(`${this.constructor.name}: mockList not implemented for test mode`);
+  }
+
   // =========================================================================
   // CRUD Operations
   // =========================================================================
@@ -138,7 +154,10 @@ export default abstract class BaseRepository<T, TList = T[]> {
     params?: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<TList>> {
-   
+    if (env.useStaticData) {
+      return new DataSuccess<TList>({ data: this.mockList });
+    }
+
     const retryFn = () => this.index(params, options);
 
     try {
@@ -152,10 +171,11 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Fetch single item by ID.
    */
-  async show(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<T>> {
+  async show(params?: Params, options?: ApiCallOptions): Promise<DataState<T>> {
+    if (env.useStaticData) {
+      return new DataSuccess<T>({ data: this.mockItem });
+    }
+
     const retryFn = () => this.show(params, options);
 
     try {
@@ -174,10 +194,18 @@ export default abstract class BaseRepository<T, TList = T[]> {
     options?: ApiCallOptions,
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
+    if (env.useStaticData) {
+      return new DataSuccess<T>({ data: this.mockItem });
+    }
+
     const retryFn = () => this.create(params, options);
 
     try {
-      const httpResponse = await this.apiService.create(params, options ,isAutoRetry );
+      const httpResponse = await this.apiService.create(
+        params,
+        options,
+        isAutoRetry,
+      );
       return this.processItemResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);
@@ -192,10 +220,18 @@ export default abstract class BaseRepository<T, TList = T[]> {
     options?: ApiCallOptions,
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
+    if (env.useStaticData) {
+      return new DataSuccess<T>({ data: this.mockItem });
+    }
+
     const retryFn = () => this.update(params, options);
 
     try {
-      const httpResponse = await this.apiService.update(params, options ,isAutoRetry );
+      const httpResponse = await this.apiService.update(
+        params,
+        options,
+        isAutoRetry,
+      );
       return this.processItemResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);
@@ -209,6 +245,10 @@ export default abstract class BaseRepository<T, TList = T[]> {
     params?: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<void>> {
+    if (env.useStaticData) {
+      return new DataSuccess<void>({});
+    }
+
     const retryFn = () => this.delete(params, options);
 
     try {
