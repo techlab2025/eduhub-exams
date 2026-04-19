@@ -1,4 +1,4 @@
-import { EmailType, getEmailTypeName } from "../constants/emailType.enum";
+import { EmailType } from "../constants/emailType.enum";
 import { isValidEmail, normalizeEmail } from "../utils/email.validation";
 
 /**
@@ -122,6 +122,6 @@ export default class EmailModel {
      * @returns Formatted string
      */
     toString(): string {
-        return `${this.email} (${getEmailTypeName(this.type).toLowerCase()})`;
+        return `${this.email} (${this.type})`;
     }
 }

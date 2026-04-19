@@ -1,21 +1,18 @@
 /**
- * Employee Email Module - Main Exports
+ * Auth Module - Main Exports
  */
 
-// Constants
-export { EmailType, getEmailTypeName } from "./core/constants/emailType.enum";
-
 // Models
-export { default as EmailModel } from "./core/models/email.model";
+export { default as UserModel } from "./core/models/user.model";
 
 // Params
-export { default as EmailParams } from "./core/params/email.params";
+export { default as LoginParams } from "./core/params/login.params";
 
 // Repository
-export { default as EmailRepository } from "./data/repositories/email.repository";
+export { default as LoginRepository } from "./data/repositories/login.repository";
 
 // Controller
-export { default as EmailController } from "./presentation/controllers/email.controller";
+export { default as LoginController } from "./presentation/controllers/login.controller";
 
 // API Service
-export { default as EmailApiService } from "./data/api/email.api-service";
+export { default as LoginApiService } from "./data/api/login.api-service";

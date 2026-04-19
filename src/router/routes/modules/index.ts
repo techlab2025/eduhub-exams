@@ -11,7 +11,5 @@ export const dashboardRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/AppHome.vue'),
   },
   ...emailRoutes,
-  ...InputsRoutes
-  
-
+  ...InputsRoutes,
 ]

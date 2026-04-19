@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
-import { EmailController, getEmailTypeName } from "@/modules/employee-email";
+import { onMounted, ref, computed, onBeforeUnmount } from "vue";
+import { EmailController, getEmailTypeNameKey } from "@/modules/employee-email";
 import DataStatusBuilder from "@/shared/DataStatues/DataStatusBuilder.vue";
 import AppTable, {
   type TableHeader,
@@ -29,13 +29,25 @@ const perPage = ref(10);
 const word = ref("");
 const totalCount = computed(() => controller.pagination.value?.total || 0);
 
+// Request cancellation
+let searchAbortController: AbortController | null = null;
+
 const fetchEmails = async (page: number = 1, word: string = "") => {
+  // Cancel any previous search request
+  if (searchAbortController) {
+    searchAbortController.abort();
+  }
+
+  // Create new abort controller for this request
+  searchAbortController = new AbortController();
+
   await controller.fetchList(
     new FilterEmailParams(
       word,
       route.query.page ? Number(route.query.page) : page,
       perPage.value,
     ),
+    { signal: searchAbortController.signal } as any,
   );
 };
 
@@ -77,6 +89,14 @@ onMounted(async () => {
     route.query.page ? Number(route.query.page) : 1,
     word.value,
   );
+});
+
+// Clean up abort controller on unmount
+onBeforeUnmount(() => {
+  if (searchAbortController) {
+    searchAbortController.abort();
+    searchAbortController = null;
+  }
 });
 
 const deleteEmail = async (id: number) => {
@@ -207,7 +227,7 @@ const isDraft = computed(() => {
           >
             <template #cell-type="{ item }">
               <span class="type-chip" :data-type="item.type">
-                {{ getEmailTypeName(item.type) }}
+                {{ $t(getEmailTypeNameKey(item.type)) }}
               </span>
             </template>
 

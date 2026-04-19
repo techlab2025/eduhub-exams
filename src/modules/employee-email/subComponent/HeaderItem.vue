@@ -1,6 +1,12 @@
 <script setup lang="ts">
+interface HeaderItemProps {
+  header: string;
+  content: string;
+  id: number;
+}
+
 const props = defineProps<{
-  item: any;
+  item: HeaderItemProps;
 }>();
 </script>
 <template>

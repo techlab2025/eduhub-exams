@@ -11,7 +11,7 @@ export default class EmailParams implements Params {
   public employeeId?: number;
 
   public static readonly validation = new ClassValidation().setRules({
-    type: { required: true, minLength: 2, maxLength: 100 },
+    type: { required: true },
     email: { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   });
 

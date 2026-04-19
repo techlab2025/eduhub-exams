@@ -21,7 +21,7 @@ const i18n = createI18n({
 });
 const pinia = createPinia();
 
-createApp(App)
+const app = createApp(App)
   .use(PrimeVue, {
     theme: {
       preset: Aura,
@@ -31,5 +31,11 @@ createApp(App)
   .use(pinia.use(piniaPluginPersistedstate))
   .use(router)
   .use(i18n)
-  .use(ToastService)
-  .mount("#app");
+  .use(ToastService);
+
+// Initialize persisted state from user store (auto-logout timer)
+import { useUserStore } from "@/stores/user";
+const userStore = useUserStore();
+userStore.initFromPersist();
+
+app.mount("#app");
