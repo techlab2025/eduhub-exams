@@ -4,7 +4,9 @@
       "Bash(npx *)",
       "Bash(npm run *)",
       "Bash(rm *)",
-      "Bash(mkdir *)"
+      "Bash(mkdir *)",
+      "Bash(set *)",
+      "Bash(xdg-open *)"
     ]
   },
   "$version": 3
