@@ -41,7 +41,7 @@ import {
   CancelledRequestException,
   ValidationException,
 } from "@/base/Core/Constants/exceptionConstants";
-import { env } from "@/base/Core/Config";
+import { env, EnvironmentManager } from "@/base/Core/Config";
 import ErrorHandler from "@/base/Core/NetworkStructure/errors/errorHandler";
 
 /**
@@ -138,6 +138,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
     params?: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<TList>> {
+   
     const retryFn = () => this.index(params, options);
 
     try {
