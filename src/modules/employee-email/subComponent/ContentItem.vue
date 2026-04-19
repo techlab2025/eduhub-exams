@@ -1,6 +1,13 @@
 <script setup lang="ts">
+interface ContentItemProps {
+  content: string;
+  header: string;
+  id: number;
+  text: string;
+}
+
 const props = defineProps<{
-  item: any;
+  item: ContentItemProps;
 }>();
 </script>
 <template>

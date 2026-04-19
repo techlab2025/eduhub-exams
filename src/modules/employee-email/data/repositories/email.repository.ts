@@ -39,13 +39,13 @@ export default class EmailRepository extends BaseRepository<
     return EmailRepository.instance;
   }
 
-  protected parseItem(data: any): EmailModel {
+  protected parseItem(data: Record<string, unknown>): EmailModel {
     return EmailModel.fromJson(data);
   }
 
-  protected parseList(data: any): EmailModel[] {
+  protected parseList(data: Record<string, unknown>[]): EmailModel[] {
     if (!Array.isArray(data)) return [];
-    return data.reduce((acc: EmailModel[], item) => {
+    return data.reduce((acc: EmailModel[], item: Record<string, unknown>) => {
       try {
         if (item != null) {
           acc.push(this.parseItem(item));

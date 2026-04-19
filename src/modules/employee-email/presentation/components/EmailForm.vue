@@ -7,7 +7,6 @@ import UpdatedCustomInputSelect from "@/shared/FormInputs/UpdatedCustomInputSele
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { useFormsStore } from "@/stores/formsStore";
 import HandleFilesUpload from "@/shared/FormInputs/HandleFilesUpload.vue";
-import Sys from "@/assets/images/app/system-failed.png";
 
 const { email, formKey } = defineProps<{
   email?: EmailModel;
@@ -90,10 +89,15 @@ onMounted(() => {
   }
 });
 
-const UploadedFiles = ref<string[]>([]);
-const handleFilesChange = (files: any) => {
-  UploadedFiles.value = files.map((f: any) => f);
-  console.log(UploadedFiles.value);
+interface FileUploadEvent {
+  name: string;
+  size: number;
+  type: string;
+}
+
+const UploadedFiles = ref<FileUploadEvent[]>([]);
+const handleFilesChange = (files: FileUploadEvent[]) => {
+  UploadedFiles.value = files;
 };
 </script>
 

@@ -33,7 +33,6 @@ export const useFormsStore = defineStore(
         title: "Unsaved Changes",
         duration: 15000,
         onClick: () => {
-          console.log("Navigating to:", targetPath);
           if (targetPath) {
             router.push(targetPath);
           }

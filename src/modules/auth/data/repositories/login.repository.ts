@@ -14,7 +14,7 @@ import type { DataState } from "@/base/Core/NetworkStructure/Resources/dataState
  */
 export default class LoginRepository extends BaseRepository<
   LoginModel,
-  LoginModel[]
+  never
 > {
   private static instance: LoginRepository;
 
@@ -45,9 +45,8 @@ export default class LoginRepository extends BaseRepository<
     return LoginModel.fromJson(data);
   }
 
-  protected parseList(data: any): LoginModel[] {
-    if (!Array.isArray(data)) return [];
-    return data.map((item) => this.parseItem(item));
+  protected parseList(data: any): never {
+    throw new Error("LoginRepository does not support list operations");
   }
 
   async login(params: Params): Promise<DataState<LoginModel>> {

@@ -18,7 +18,6 @@ const params = ref<EmailParams | null>(null);
 const saveEmail = async () => {
   try {
     if (!params.value) {
-      console.error("No email parameters to save");
       return;
     }
 
@@ -37,7 +36,7 @@ const saveEmail = async () => {
     //   params.value = null; // Reset form
     // }
   } catch (error) {
-    console.error("Error saving email:", error);
+    // Handle error silently - let the controller handle error state
   }
 };
 

@@ -11,19 +11,20 @@ export const EmailType = {
 export type EmailType = typeof EmailType[keyof typeof EmailType];
 
 /**
- * Get display name for email type
+ * Get i18n key for email type display name
+ * Use this with $t() in components to get localized display names
  */
-export function getEmailTypeName(type: EmailType): string {
+export function getEmailTypeNameKey(type: EmailType): string {
     switch (type) {
         case EmailType.EMPLOYEE:
-            return "Employee Email";
+            return "employee";
         case EmailType.PERSONAL:
-            return "Personal Email";
+            return "personal";
         case EmailType.WORK:
-            return "Work Email";
+            return "work";
         case EmailType.OTHER:
-            return "Other";
+            return "other";
         default:
-            return "Unknown";
+            return "unknown";
     }
 }
