@@ -12,6 +12,7 @@ import IndexCountryParams from "../../core/params/index.country.params";
 import CountryController from "../controllers/country.controller";
 import DeleteCountryParams from "../../core/params/deleteParams";
 import type CountryModel from "../../core/models/country.model";
+import DeleteDialog from "@/shared/HelpersComponents/dialog/DeleteDialog.vue";
 
 // Controller instance
 const controller = CountryController.getInstance();
@@ -224,7 +225,27 @@ const isDraft = computed(() => {
                     />
                   </svg>
                 </router-link>
-                <button
+                <DeleteDialog @delete="deleteCountry(item.id!)">
+                  <template #Dialog>
+                    <button class="action-btn delete" title="Delete">
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                      </svg>
+                    </button>
+                  </template>
+                </DeleteDialog>
+                <!-- <button
                   class="action-btn delete"
                   title="Delete"
                   @click="deleteCountry(item.id!)"
@@ -243,7 +264,7 @@ const isDraft = computed(() => {
                     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
                     <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                   </svg>
-                </button>
+                </button> -->
               </div>
             </template>
           </AppTable>
