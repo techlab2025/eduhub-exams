@@ -5,8 +5,8 @@
 
 import { ErrorModel, ErrorType } from '../errors/errorModel';
 import type { Data_state_params } from './data_state_params/dataStateParams';
-import ValidationModel from '@/base/Core/NetworkStructure/Resources/validations/validationModel';
-import PaginationModel from '@/base/Core/Models/paginationModel';
+import type ValidationModel from '@/base/Core/NetworkStructure/Resources/validations/validationModel';
+import type PaginationModel from '@/base/Core/Models/paginationModel';
 import type DataSuccessParams from '@/base/Core/NetworkStructure/Resources/dataState/data_state_params/dataSuccessParams';
 import type DataFailedParams from '@/base/Core/NetworkStructure/Resources/dataState/data_state_params/dataFailedParams';
 
@@ -120,11 +120,7 @@ class DataInitial<T> extends DataState<T> {
  * Dump state (for cached/stale data)
  */
 class DataDump<T> extends DataState<T> {
-  constructor(
-    data: T | null = null,
-    searchData: T | null = null,
-    message: string | null = null
-  ) {
+  constructor(data: T | null = null, searchData: T | null = null, message: string | null = null) {
     super({ data, searchData, message });
   }
 }
@@ -280,7 +276,7 @@ class DataRateLimited<T> extends DataState<T> {
   async retryAfterDelay(): Promise<DataState<T> | null> {
     if (this.retryFn) {
       if (this.retryAfter) {
-        await new Promise(resolve => setTimeout(resolve, this.retryAfter! * 1000));
+        await new Promise((resolve) => setTimeout(resolve, this.retryAfter! * 1000));
       }
       return await this.retryFn();
     }

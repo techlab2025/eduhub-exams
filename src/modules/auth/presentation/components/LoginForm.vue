@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref } from "vue";
-// import { useRouter } from 'vue-router'
-import LoginController from "../controllers/login.controller";
-import LoginParams from "../../core/params/login.params";
+  import { ref } from 'vue';
+  // import { useRouter } from 'vue-router'
+  import LoginController from '../controllers/login.controller';
+  import LoginParams from '../../core/params/login.params';
 
-const email = ref("");
-const password = ref("");
+  const email = ref('');
+  const password = ref('');
 
-const controller = LoginController.getInstance();
+  const controller = LoginController.getInstance();
 
-const login = async () => {
-  const params = new LoginParams(email.value, password.value);
-  await controller.login(params);
-};
+  const login = async () => {
+    const params = new LoginParams(email.value, password.value);
+    await controller.login(params);
+  };
 
-const isPasswordVisible = ref();
+  const isPasswordVisible = ref();
 </script>
 
 <template>
@@ -22,15 +22,13 @@ const isPasswordVisible = ref();
     <div class="images">
       <div class="login-image">
         <div class="top-glass-card">
-          <p>{{ $t("See your entire safety operation at a glance") }}</p>
-          <span>{{ $t("Real-time data. One powerful dashboard") }}</span>
+          <p>{{ $t('See your entire safety operation at a glance') }}</p>
+          <span>{{ $t('Real-time data. One powerful dashboard') }}</span>
         </div>
         <!-- <img src="@/assets/images/login.png" alt="" /> -->
         <div class="bottom-glass-card">
-          <p>{{ $t("Work from the field — even offline") }}</p>
-          <span>{{
-            $t("Submit reports, inspections & observations anytime, anywhere")
-          }}</span>
+          <p>{{ $t('Work from the field — even offline') }}</p>
+          <span>{{ $t('Submit reports, inspections & observations anytime, anywhere') }}</span>
         </div>
       </div>
       <svg
@@ -57,7 +55,7 @@ const isPasswordVisible = ref();
       </svg>
     </div>
 
-    <form @submit.prevent="login" class="login-form">
+    <form class="login-form" @submit.prevent="login">
       <div class="title">
         <div class="logo">
           <!-- <img src="@/assets/images/logo.svg" width="22" alt="logo" /> -->
@@ -65,10 +63,8 @@ const isPasswordVisible = ref();
         </div>
 
         <div class="text">
-          <p>{{ $t("Log in now") }}</p>
-          <span>{{
-            $t("Please enter your email and password to log in")
-          }}</span>
+          <p>{{ $t('Log in now') }}</p>
+          <span>{{ $t('Please enter your email and password to log in') }}</span>
         </div>
       </div>
 
@@ -93,27 +89,27 @@ const isPasswordVisible = ref();
         <div class="input-wrapper">
           <!-- <Email class="icon " /> -->
           <input
+            id="email"
+            v-model="email"
             class="input py"
             :placeholder="$t('Enter Your Mail')"
             type="email"
-            id="email"
-            v-model="email"
           />
         </div>
         <div class="input-wrapper">
           <!-- <Loca class="icon" /> -->
           <input
-            :type="isPasswordVisible ? 'text' : 'password'"
             id="password"
+            v-model="password"
+            :type="isPasswordVisible ? 'text' : 'password'"
             :placeholder="$t('Enter Password')"
             class="input py"
-            v-model="password"
           />
           <!-- <CloseEye class="icon-eye" v-if="isPasswordVisible" @click="isPasswordVisible = !isPasswordVisible" /> -->
           <!-- <EyeIcon class="icon-eye" v-else @click="isPasswordVisible = !isPasswordVisible" /> -->
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">{{ $t("login") }}</button>
+      <button type="submit" class="btn btn-primary">{{ $t('login') }}</button>
     </form>
   </section>
 </template>

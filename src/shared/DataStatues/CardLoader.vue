@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import Skeleton from "primevue/skeleton";
+  import Skeleton from 'primevue/skeleton';
 
-const props = defineProps<{
-  rows: number;
-  cols: number;
-}>();
+  const props = defineProps<{
+    rows: number;
+    cols: number;
+  }>();
 </script>
 
 <template>
   <div class="container">
     <div class="cards">
-      <div class="item" v-for="i in rows" :key="i">
+      <div v-for="i in rows" :key="i" class="item">
         <div class="flex items-center justify-between gap-2 headerCard">
           <div class="total">
             <p>

@@ -1,72 +1,79 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import CustomAccordion from "@/shared/Accordion/CustomAccordion.vue";
-import IconSetting from "@/shared/icons/IconSetting.vue";
-import BackIcon from "@/shared/icons/BackIcon.vue";
+  import { ref, watch } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import CustomAccordion from '@/shared/Accordion/CustomAccordion.vue';
+  import IconSetting from '@/shared/icons/IconSetting.vue';
+  import BackIcon from '@/shared/icons/BackIcon.vue';
 
-// ── Section Types ─────────────────────────────────────────────
-const SidebarSectionType = {
-  settings: "settings",
-  location: "location",
-  unknown: "unknown",
-} as const;
+  // ── Section Types ─────────────────────────────────────────────
+  const SidebarSectionType = {
+    settings: 'settings',
+    location: 'location',
+    unknown: 'unknown',
+  } as const;
 
-type SidebarSectionKey =
-  (typeof SidebarSectionType)[keyof typeof SidebarSectionType];
+  type SidebarSectionKey = (typeof SidebarSectionType)[keyof typeof SidebarSectionType];
 
-interface SidebarSection {
-  title: string;
-  type: SidebarSectionKey;
-  icon?: string | object;
-  routes: SidebarRoute[];
-}
+  interface SidebarSection {
+    title: string;
+    type: SidebarSectionKey;
+    icon?: string | object;
+    routes: SidebarRoute[];
+  }
 
-interface SidebarRoute {
-  link: string;
-  name: string;
-}
+  interface SidebarRoute {
+    link: string;
+    name: string;
+  }
 
-// ── Section Data ──────────────────────────────────────────────
-const sections = ref<SidebarSection[]>([
-  {
-    title: "settings",
-    type: SidebarSectionType.settings,
-    icon: IconSetting,
-    routes: [
-      {
-        link: "/",
-        name: "Home",
-      },
-    ],
-  },
-  {
-    title: "location",
-    type: SidebarSectionType.location,
-    icon: IconSetting,
-    routes: [],
-  },
-]);
+  // ── Section Data ──────────────────────────────────────────────
+  const sections = ref<SidebarSection[]>([
+    {
+      title: 'settings',
+      type: SidebarSectionType.settings,
+      icon: IconSetting,
+      routes: [
+        {
+          link: '/',
+          name: 'Home',
+        },
+        {
+          link: '/countries',
+          name: 'Countries',
+        },
+        {
+          link: '/employees',
+          name: 'Employees',
+        },
+      ],
+    },
+    {
+      title: 'location',
+      type: SidebarSectionType.location,
+      icon: IconSetting,
+      routes: [],
+    },
+  ]);
 
-const route = useRoute();
-const accordionValue = ref<string[]>([]);
+  const route = useRoute();
+  const accordionValue = ref<string[]>([]);
 
-watch(
-  () => route.path,
-  (newPath) => {
-    const activeIndex = sections.value.findIndex((s) =>
-      s.routes.some((r) => newPath.includes(r.link)),
-    );
-    accordionValue.value = activeIndex >= 0 ? [activeIndex.toString()] : [];
-  },
-  { immediate: true },
-);
+  watch(
+    () => route.path,
+    (newPath) => {
+      const activeIndex = sections.value.findIndex((s) =>
+        s.routes.some((r) => newPath.includes(r.link)),
+      );
+      accordionValue.value = activeIndex >= 0 ? [activeIndex.toString()] : [];
+    },
+    { immediate: true },
+  );
 
-const isOpen = ref(true);
-const router = useRouter();
-const RouterBack = () => {
-  router.back();
-};
+  const isOpen = ref(true);
+  const router = useRouter();
+  const RouterBack = () => {
+    router.back();
+  };
 </script>
 
 <template>
@@ -81,7 +88,7 @@ const RouterBack = () => {
         <CustomAccordion
           :items="sections"
           :multiple="false"
-          :defaultValue="accordionValue"
+          :default-value="accordionValue"
           AccordionClass="sidebar-accordion"
           AccordionPanelClass="sidebar-panel"
           AccordionHeaderClass="sidebar-header"
@@ -89,10 +96,7 @@ const RouterBack = () => {
         >
           <template #header="{ item }">
             <div class="links-header">
-              <component
-                v-if="typeof item.icon !== 'string' && item.icon"
-                :is="item.icon"
-              />
+              <component :is="item.icon" v-if="typeof item.icon !== 'string' && item.icon" />
               {{ $t(item.title) }}
             </div>
           </template>
@@ -116,36 +120,36 @@ const RouterBack = () => {
 </template>
 
 <style scoped lang="scss">
-.links-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-}
+  .links-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+  }
 
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-  li {
-    a {
-      display: block;
-      padding: 0.5rem 0;
-      color: inherit;
-      text-decoration: none;
+    li {
+      a {
+        display: block;
+        padding: 0.5rem 0;
+        color: inherit;
+        text-decoration: none;
 
-      &.active {
-        color: #3b82f6;
-        font-weight: 500;
+        &.active {
+          color: #3b82f6;
+          font-weight: 500;
+        }
       }
     }
   }
-}
 
-@media (max-width: 600px) {
-  aside {
-    display: none !important;
+  @media (max-width: 600px) {
+    aside {
+      display: none !important;
+    }
   }
-}
 </style>

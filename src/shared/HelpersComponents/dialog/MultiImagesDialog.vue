@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import Dialog from 'primevue/dialog'
-import { ref } from 'vue'
-import Galleria from 'primevue/galleria'
-import HeaderSection from '@/features/Organization/Project/Presentation/components/Details/DetailsHeader/HeaderSection.vue'
+  import Dialog from 'primevue/dialog';
+  import { ref } from 'vue';
+  import Galleria from 'primevue/galleria';
+  import HeaderSection from '@/features/Organization/Project/Presentation/components/Details/DetailsHeader/HeaderSection.vue';
 
-const { images } = defineProps<{ images: string[] }>()
+  const { images } = defineProps<{ images: string[] }>();
 
-const visible = ref(false)
+  const visible = ref(false);
 
-const responsiveOptions = ref([
-  {
-    breakpoint: '1300px',
-    numVisible: 4,
-  },
-  {
-    breakpoint: '575px',
-    numVisible: 1,
-  },
-])
+  const responsiveOptions = ref([
+    {
+      breakpoint: '1300px',
+      numVisible: 4,
+    },
+    {
+      breakpoint: '575px',
+      numVisible: 1,
+    },
+  ]);
 </script>
 
 <template>
@@ -25,7 +25,7 @@ const responsiveOptions = ref([
     <button type="button" @click="visible = true">
       <slot />
     </button>
-    <Dialog v-model:visible="visible" modal maximizable dismissableMask :style="{ width: '70vw' }">
+    <Dialog v-model:visible="visible" modal maximizable dismissable-mask :style="{ width: '70vw' }">
       <template #header>
         <HeaderSection
           :img="''"
@@ -35,14 +35,14 @@ const responsiveOptions = ref([
       </template>
       <Galleria
         :value="images"
-        :responsiveOptions="responsiveOptions"
-        :numVisible="5"
+        :responsive-options="responsiveOptions"
+        :num-visible="5"
         :circular="true"
-        containerStyle="max-width: 100%"
-        :showItemNavigators="false"
-        :showThumbnails="false"
-        :showItemNavigatorsOnHover="false"
-        :showIndicators="true"
+        container-style="max-width: 100%"
+        :show-item-navigators="false"
+        :show-thumbnails="false"
+        :show-item-navigators-on-hover="false"
+        :show-indicators="true"
       >
         <template #item="slotProps">
           <img

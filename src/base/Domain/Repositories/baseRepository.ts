@@ -1,27 +1,24 @@
 import {
   DataEmpty,
   DataFailed,
-  DataState,
+  type DataState,
   DataSuccess,
   DataTimeout,
   DataNoNetwork,
   DataCancelled,
   DataRateLimited,
-} from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import type Params from "@/base/Core/Params/params";
-import { HttpStatusCode } from "axios";
-import {
-  ErrorModel,
-  ErrorType,
-} from "@/base/Core/NetworkStructure/Resources/errors/errorModel";
-import type BaseApiService from "@/base/Data/ApiService/baseApiService";
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import type Params from '@/base/Core/Params/params';
+import { HttpStatusCode } from 'axios';
+import { ErrorModel, ErrorType } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
+import type BaseApiService from '@/base/Data/ApiService/baseApiService';
 import type {
   ApiCallOptions,
   ApiResponse,
   CrudType,
   CustomEndpointConfig,
-} from "@/base/Data/ApiService/baseApiService";
-import PaginationModel from "@/base/Core/Models/paginationModel";
+} from '@/base/Data/ApiService/baseApiService';
+import PaginationModel from '@/base/Core/Models/paginationModel';
 import {
   BadGatewayException,
   BadRequestException,
@@ -40,9 +37,9 @@ import {
   RateLimitException,
   CancelledRequestException,
   ValidationException,
-} from "@/base/Core/Constants/exceptionConstants";
-import { env } from "@/base/Core/Config";
-import ErrorHandler from "@/base/Core/NetworkStructure/errors/errorHandler";
+} from '@/base/Core/Constants/exceptionConstants';
+import { env, EnvironmentManager } from '@/base/Core/Config';
+import ErrorHandler from '@/base/Core/NetworkStructure/errors/errorHandler';
 
 /**
  * Configuration for repository response parsing.
@@ -122,9 +119,25 @@ export default abstract class BaseRepository<T, TList = T[]> {
     return {
       hasPagination: false,
       parseResponse: true,
-      dataKey: "data",
-      paginationKey: "meta",
+      dataKey: 'data',
+      paginationKey: 'meta',
     };
+  }
+
+  /**
+   * Mock single item returned in test mode instead of making an API call.
+   * Override in subclass when useStaticData / isTest is enabled.
+   */
+  protected get mockItem(): T {
+    throw new Error(`${this.constructor.name}: mockItem not implemented for test mode`);
+  }
+
+  /**
+   * Mock list returned in test mode instead of making an API call.
+   * Override in subclass when useStaticData / isTest is enabled.
+   */
+  protected get mockList(): TList {
+    throw new Error(`${this.constructor.name}: mockList not implemented for test mode`);
   }
 
   // =========================================================================
@@ -134,10 +147,11 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Fetch list of items with optional pagination.
    */
-  async index(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<TList>> {
+  async index(params?: Params, options?: ApiCallOptions): Promise<DataState<TList>> {
+    if (env.useStaticData) {
+      return new DataSuccess<TList>({ data: this.mockList });
+    }
+
     const retryFn = () => this.index(params, options);
 
     try {
@@ -151,10 +165,11 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Fetch single item by ID.
    */
-  async show(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<T>> {
+  async show(params?: Params, options?: ApiCallOptions): Promise<DataState<T>> {
+    if (env.useStaticData) {
+      return new DataSuccess<T>({ data: this.mockItem });
+    }
+
     const retryFn = () => this.show(params, options);
 
     try {
@@ -173,10 +188,14 @@ export default abstract class BaseRepository<T, TList = T[]> {
     options?: ApiCallOptions,
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
+    if (env.useStaticData) {
+      return new DataSuccess<T>({ data: this.mockItem });
+    }
+
     const retryFn = () => this.create(params, options);
 
     try {
-      const httpResponse = await this.apiService.create(params, options ,isAutoRetry );
+      const httpResponse = await this.apiService.create(params, options, isAutoRetry);
       return this.processItemResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);
@@ -191,10 +210,14 @@ export default abstract class BaseRepository<T, TList = T[]> {
     options?: ApiCallOptions,
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
+    if (env.useStaticData) {
+      return new DataSuccess<T>({ data: this.mockItem });
+    }
+
     const retryFn = () => this.update(params, options);
 
     try {
-      const httpResponse = await this.apiService.update(params, options ,isAutoRetry );
+      const httpResponse = await this.apiService.update(params, options, isAutoRetry);
       return this.processItemResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);
@@ -204,10 +227,11 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Delete item by ID.
    */
-  async delete(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<void>> {
+  async delete(params?: Params, options?: ApiCallOptions): Promise<DataState<void>> {
+    if (env.useStaticData) {
+      return new DataSuccess<void>({});
+    }
+
     const retryFn = () => this.delete(params, options);
 
     try {
@@ -238,10 +262,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
 
     try {
       const httpResponse = await apiCall();
-      const isSuccess = this.isSuccessStatus(
-        httpResponse.statusCode,
-        httpResponse.data,
-      );
+      const isSuccess = this.isSuccessStatus(httpResponse.statusCode, httpResponse.data);
 
       if (isSuccess && httpResponse.data.data != null) {
         return new DataSuccess<R>({
@@ -251,10 +272,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
       }
 
       return new DataFailed({
-        error: new ErrorModel(
-          httpResponse.data.message ?? "Unknown error",
-          ErrorType.serviceSide,
-        ),
+        error: new ErrorModel(httpResponse.data.message ?? 'Unknown error', ErrorType.serviceSide),
       });
     } catch (error) {
       return this.handleError(error, retryFn);
@@ -302,11 +320,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
    */
   private isSuccessStatus(statusCode: number, data: any): boolean {
     return (
-      [
-        HttpStatusCode.Ok,
-        HttpStatusCode.Created,
-        HttpStatusCode.Accepted,
-      ].includes(statusCode) &&
+      [HttpStatusCode.Ok, HttpStatusCode.Created, HttpStatusCode.Accepted].includes(statusCode) &&
       (data.status ?? true)
     );
   }
@@ -318,14 +332,11 @@ export default abstract class BaseRepository<T, TList = T[]> {
     httpResponse: ApiResponse,
     retryFn?: () => Promise<DataState<TList>>,
   ): DataState<TList> {
-    const isSuccess = this.isSuccessStatus(
-      httpResponse.statusCode,
-      httpResponse.data,
-    );
+    const isSuccess = this.isSuccessStatus(httpResponse.statusCode, httpResponse.data);
 
     if (isSuccess) {
-      const dataKey = this.config.dataKey || "data";
-      const paginationKey = this.config.paginationKey || "meta";
+      const dataKey = this.config.dataKey || 'data';
+      const paginationKey = this.config.paginationKey || 'meta';
 
       if (httpResponse.data[dataKey] != null) {
         try {
@@ -333,18 +344,12 @@ export default abstract class BaseRepository<T, TList = T[]> {
           let rawData = httpResponse.data[dataKey];
 
           // Handle nested pagination structure
-          if (
-            this.config.hasPagination &&
-            httpResponse.data[dataKey][paginationKey]
-          ) {
+          if (this.config.hasPagination && httpResponse.data[dataKey][paginationKey]) {
             const paginatedData = httpResponse.data[dataKey];
 
             if (paginatedData.data?.length === 0) {
               return new DataEmpty<TList>(
-                new ErrorModel(
-                  httpResponse.data.message ?? "",
-                  ErrorType.dataEmpty,
-                ),
+                new ErrorModel(httpResponse.data.message ?? '', ErrorType.dataEmpty),
               );
             }
 
@@ -359,30 +364,21 @@ export default abstract class BaseRepository<T, TList = T[]> {
           });
         } catch (e) {
           if (env.isLoggingEnabled) {
-            console.error("Error parsing list data from Repository", e);
+            console.error('Error parsing list data from Repository', e);
           }
           return new DataFailed({
-            error: new ErrorModel(
-              httpResponse.data.message ?? "",
-              ErrorType.dataDirty,
-            ),
+            error: new ErrorModel(httpResponse.data.message ?? '', ErrorType.dataDirty),
           });
         }
       } else {
         return new DataEmpty<TList>(
-          new ErrorModel(
-            httpResponse.data.message ?? "No data",
-            ErrorType.dataEmpty,
-          ),
+          new ErrorModel(httpResponse.data.message ?? 'No data', ErrorType.dataEmpty),
         );
       }
     }
 
     return new DataFailed({
-      error: new ErrorModel(
-        httpResponse.data.message ?? "",
-        ErrorType.serviceSide,
-      ),
+      error: new ErrorModel(httpResponse.data.message ?? '', ErrorType.serviceSide),
     });
   }
 
@@ -393,11 +389,8 @@ export default abstract class BaseRepository<T, TList = T[]> {
     httpResponse: ApiResponse,
     retryFn?: () => Promise<DataState<T>>,
   ): DataState<T> {
-    const isSuccess = this.isSuccessStatus(
-      httpResponse.statusCode,
-      httpResponse.data,
-    );
-    const dataKey = this.config.dataKey || "data";
+    const isSuccess = this.isSuccessStatus(httpResponse.statusCode, httpResponse.data);
+    const dataKey = this.config.dataKey || 'data';
 
     if (isSuccess) {
       if (httpResponse.data[dataKey] != null) {
@@ -408,13 +401,10 @@ export default abstract class BaseRepository<T, TList = T[]> {
           });
         } catch (e) {
           if (env.isLoggingEnabled) {
-            console.error("Error parsing item data from Repository", e);
+            console.error('Error parsing item data from Repository', e);
           }
           return new DataFailed({
-            error: new ErrorModel(
-              httpResponse.data.message ?? "",
-              ErrorType.dataDirty,
-            ),
+            error: new ErrorModel(httpResponse.data.message ?? '', ErrorType.dataDirty),
           });
         }
       }
@@ -425,10 +415,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
     }
 
     return new DataFailed({
-      error: new ErrorModel(
-        httpResponse.data.message ?? "",
-        ErrorType.serviceSide,
-      ),
+      error: new ErrorModel(httpResponse.data.message ?? '', ErrorType.serviceSide),
     });
   }
 
@@ -436,10 +423,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
    * Process response for void operations (delete).
    */
   private processVoidResponse(httpResponse: ApiResponse): DataState<void> {
-    const isSuccess = this.isSuccessStatus(
-      httpResponse.statusCode,
-      httpResponse.data,
-    );
+    const isSuccess = this.isSuccessStatus(httpResponse.statusCode, httpResponse.data);
 
     if (isSuccess) {
       return new DataSuccess<void>({
@@ -448,10 +432,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
     }
 
     return new DataFailed({
-      error: new ErrorModel(
-        httpResponse.data.message ?? "",
-        ErrorType.serviceSide,
-      ),
+      error: new ErrorModel(httpResponse.data.message ?? '', ErrorType.serviceSide),
     });
   }
 
@@ -462,28 +443,19 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Handle different exception types and convert to appropriate DataState.
    */
-  protected handleError<R>(
-    error: any,
-    retryFn?: () => Promise<DataState<R>>,
-  ): DataState<R> {
+  protected handleError<R>(error: any, retryFn?: () => Promise<DataState<R>>): DataState<R> {
     // Log error
     if (env.isLoggingEnabled) {
-      ErrorHandler.logError(error, "Repository");
+      ErrorHandler.logError(error, 'Repository');
     }
 
     // Handle timeout
-    if (
-      error instanceof RequestTimeoutException ||
-      ErrorHandler.isTimeout(error)
-    ) {
+    if (error instanceof RequestTimeoutException || ErrorHandler.isTimeout(error)) {
       return new DataTimeout<R>(retryFn);
     }
 
     // Handle network disconnection
-    if (
-      error instanceof NetworkDisconnectException ||
-      ErrorHandler.isNetworkError(error)
-    ) {
+    if (error instanceof NetworkDisconnectException || ErrorHandler.isNetworkError(error)) {
       return new DataNoNetwork<R>(retryFn);
     }
 
@@ -556,10 +528,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
 
     // Unknown error
     return new DataFailed({
-      error: new ErrorModel(
-        error?.message ?? "Unknown error",
-        ErrorType.unknown,
-      ),
+      error: new ErrorModel(error?.message ?? 'Unknown error', ErrorType.unknown),
     });
   }
 }

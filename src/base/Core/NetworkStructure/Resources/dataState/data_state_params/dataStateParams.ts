@@ -1,6 +1,6 @@
-import { ErrorModel } from "../../errors/errorModel";
-import ValidationModel from "../../validations/validationModel";
-import PaginationModel from "@/base/Core/Models/paginationModel";
+import { type ErrorModel } from '../../errors/errorModel';
+import type ValidationModel from '../../validations/validationModel';
+import type PaginationModel from '@/base/Core/Models/paginationModel';
 interface Data_state_params<T> {
   data?: T | null;
   searchData?: T | null;
@@ -25,9 +25,4 @@ interface DataInitialParams<T> {
   data?: T | null;
 }
 
-export type {
-  Data_state_params,
-  DataSuccessParams,
-  DataFailedParams,
-  DataInitialParams,
-};
+export type { Data_state_params, DataSuccessParams, DataFailedParams, DataInitialParams };

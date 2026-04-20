@@ -1,14 +1,5 @@
-import type { RouteRecordRaw } from "vue-router";
-import { emailRoutes } from "./email";
+import type { RouteRecordRaw } from 'vue-router';
+import { countryRoutes } from './country';
+import { employeeRoutes } from './employee';
 
-
-export const dashboardRoutes: RouteRecordRaw[] = [
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: () => import('@/views/AppLayout.vue'),
-    children: [
-      ...emailRoutes,
-    ]
-  },
-]
+export const dashboardRoutes: RouteRecordRaw[] = [...countryRoutes, ...employeeRoutes];

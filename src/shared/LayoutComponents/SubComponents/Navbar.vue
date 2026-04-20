@@ -1,41 +1,41 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-// import { useRoute, useRouter } from 'vue-router'
-// import IconFullScreen from '@/shared/icons/IconFullScreen.vue'
-// import IconMenu from '@/shared/icons/IconMenu.vue'
-import IconLogout from "@/shared/icons/IconLogout.vue";
-import IconArrowDownNav from "@/shared/icons/IconArrowDownNav.vue";
-// import { setDefaultImage } from '@/base/Presentation/Utils/set_default_image'
-// import { setDefaultImage } from "@/base/Presentation/Utils/set_default_image";
-// import { useUserStore } from "@/stores/user";
-// import defaultImage from "@/assets/images/user.png";
-// import ChangeLanguage from './ChangeLanguage.vue'
-// import Notification from '../icons/Notification.vue'
-import { useUserStore } from "@/stores/user";
-import SearchIcon from "@/shared/icons/SearchIcon.vue";
+  import { ref } from 'vue';
+  // import { useRoute, useRouter } from 'vue-router'
+  // import IconFullScreen from '@/shared/icons/IconFullScreen.vue'
+  // import IconMenu from '@/shared/icons/IconMenu.vue'
+  import IconLogout from '@/shared/icons/IconLogout.vue';
+  import IconArrowDownNav from '@/shared/icons/IconArrowDownNav.vue';
+  // import { setDefaultImage } from '@/base/Presentation/Utils/set_default_image'
+  // import { setDefaultImage } from "@/base/Presentation/Utils/set_default_image";
+  // import { useUserStore } from "@/stores/user";
+  // import defaultImage from "@/assets/images/user.png";
+  // import ChangeLanguage from './ChangeLanguage.vue'
+  // import Notification from '../icons/Notification.vue'
+  import { useUserStore } from '@/stores/user';
+  import SearchIcon from '@/shared/icons/SearchIcon.vue';
 
-const props = defineProps({
-  open: {
-    type: Boolean,
-    default: true,
-  },
-});
+  const props = defineProps({
+    open: {
+      type: Boolean,
+      default: true,
+    },
+  });
 
-const emit = defineEmits(["open"]);
+  const emit = defineEmits(['open']);
 
-const userStore = useUserStore();
+  const userStore = useUserStore();
 
-const user = userStore.user;
+  const user = userStore.user;
 
-const logout = () => {
-  userStore.logout();
-};
+  const logout = () => {
+    userStore.logout();
+  };
 
-const isDropMenuOpen = ref(false);
+  const isDropMenuOpen = ref(false);
 
-const toggleDropMenu = () => {
-  isDropMenuOpen.value = !isDropMenuOpen.value;
-};
+  const toggleDropMenu = () => {
+    isDropMenuOpen.value = !isDropMenuOpen.value;
+  };
 </script>
 
 <template>
@@ -73,10 +73,7 @@ const toggleDropMenu = () => {
           <Notification />
         </div> -->
 
-        <div
-          class="user cursor-pointer dropdown-trigger"
-          @click="toggleDropMenu"
-        >
+        <div class="user cursor-pointer dropdown-trigger" @click="toggleDropMenu">
           <IconArrowDownNav class="drop-icon" />
           <div class="profile-data">
             <span>{{ user?.email }}</span>
@@ -85,11 +82,11 @@ const toggleDropMenu = () => {
 
           <img alt="user" src="@/assets/images/app/system-failed.png" />
 
-          <div class="dropdown-menu" v-if="isDropMenuOpen">
+          <div v-if="isDropMenuOpen" class="dropdown-menu">
             <ul>
               <li @click="logout">
                 <IconLogout />
-                <span> {{ $t("logout") }} </span>
+                <span> {{ $t('logout') }} </span>
               </li>
             </ul>
           </div>

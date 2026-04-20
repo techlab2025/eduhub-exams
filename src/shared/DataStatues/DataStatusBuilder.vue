@@ -1,166 +1,156 @@
 <script lang="ts" setup>
-/**
- * DataStatusBuilder Component
- * Enhanced component handling all data states with customizable slots
- */
-
-import {
-  DataDump,
-  DataEmpty,
-  DataFailed,
-  DataInitial,
-  DataLoading,
-  type DataState,
-  DataSuccess,
-  DataValid,
-  DataTimeout,
-  DataNoNetwork,
-  DataCancelled,
-  DataProgress,
-  DataRateLimited,
-} from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import { computed, type PropType } from "vue";
-
-// Import state components
-import DataFailedState from "./DataFailed.vue";
-import TimeoutState from "./TimeoutState.vue";
-import NoNetworkState from "./NoNetworkState.vue";
-import ProgressState from "./ProgressState.vue";
-
-const props = defineProps({
   /**
-   * @deprecated Use 'controller' instead
+   * DataStatusBuilder Component
+   * Enhanced component handling all data states with customizable slots
    */
-  status: {
-    type: Object as PropType<DataState<any>>,
-    default: undefined,
-  },
-  /**
-   * The current data state from controller
-   */
-  controller: {
-    type: Object as PropType<DataState<any>>,
-    default: () => new DataInitial<any>(),
-  },
-  /**
-   * Show skeleton loader instead of spinner
-   */
-  useSkeleton: {
-    type: Boolean,
-    default: false,
-  },
-  /**
-   * Custom retry function for error states
-   */
-  onRetry: {
-    type: Function as PropType<() => Promise<void>>,
-    default: undefined,
-  },
-  /**
-   * Show inline error instead of full-page
-   */
-  inlineError: {
-    type: Boolean,
-    default: false,
-  },
-});
 
-const emit = defineEmits<{
-  (e: "retry"): void;
-}>();
+  import {
+    DataDump,
+    DataEmpty,
+    DataFailed,
+    DataInitial,
+    DataLoading,
+    type DataState,
+    DataSuccess,
+    DataValid,
+    DataTimeout,
+    DataNoNetwork,
+    DataCancelled,
+    DataProgress,
+    DataRateLimited,
+  } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import { computed, type PropType } from 'vue';
 
-// Use controller prop, fallback to status for backwards compatibility
-const currentState = computed(
-  () => props.controller ?? props.status ?? new DataInitial(),
-);
+  // Import state components
+  import DataFailedState from './DataFailed.vue';
+  import TimeoutState from './TimeoutState.vue';
+  import NoNetworkState from './NoNetworkState.vue';
+  import ProgressState from './ProgressState.vue';
 
-// State type checks
-const isSuccess = computed(
-  () =>
-    currentState.value instanceof DataSuccess ||
-    currentState.value instanceof DataDump,
-);
+  const props = defineProps({
+    /**
+     * @deprecated Use 'controller' instead
+     */
+    status: {
+      type: Object as PropType<DataState<any>>,
+      default: undefined,
+    },
+    /**
+     * The current data state from controller
+     */
+    controller: {
+      type: Object as PropType<DataState<any>>,
+      default: () => new DataInitial<any>(),
+    },
+    /**
+     * Show skeleton loader instead of spinner
+     */
+    useSkeleton: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * Custom retry function for error states
+     */
+    onRetry: {
+      type: Function as PropType<() => Promise<void>>,
+      default: undefined,
+    },
+    /**
+     * Show inline error instead of full-page
+     */
+    inlineError: {
+      type: Boolean,
+      default: false,
+    },
+  });
 
-const isValid = computed(() => currentState.value instanceof DataValid);
+  const emit = defineEmits<{
+    (e: 'retry'): void;
+  }>();
 
-const isEmpty = computed(() => currentState.value instanceof DataEmpty);
+  // Use controller prop, fallback to status for backwards compatibility
+  const currentState = computed(() => props.controller ?? props.status ?? new DataInitial());
 
-const isInitial = computed(() => currentState.value instanceof DataInitial);
+  // State type checks
+  const isSuccess = computed(
+    () => currentState.value instanceof DataSuccess || currentState.value instanceof DataDump,
+  );
 
-const isFailed = computed(() => currentState.value instanceof DataFailed);
+  const isValid = computed(() => currentState.value instanceof DataValid);
 
-const isLoading = computed(() => currentState.value instanceof DataLoading);
+  const isEmpty = computed(() => currentState.value instanceof DataEmpty);
 
-const isTimeout = computed(() => currentState.value instanceof DataTimeout);
+  const isInitial = computed(() => currentState.value instanceof DataInitial);
 
-const isNoNetwork = computed(() => currentState.value instanceof DataNoNetwork);
+  const isFailed = computed(() => currentState.value instanceof DataFailed);
 
-const isCancelled = computed(() => currentState.value instanceof DataCancelled);
+  const isLoading = computed(() => currentState.value instanceof DataLoading);
 
-const isProgress = computed(() => currentState.value instanceof DataProgress);
+  const isTimeout = computed(() => currentState.value instanceof DataTimeout);
 
-const isRateLimited = computed(
-  () => currentState.value instanceof DataRateLimited,
-);
+  const isNoNetwork = computed(() => currentState.value instanceof DataNoNetwork);
 
-// Error state (any error condition)
-const isError = computed(
-  () =>
-    isFailed.value ||
-    isTimeout.value ||
-    isNoNetwork.value ||
-    isRateLimited.value,
-);
+  const isCancelled = computed(() => currentState.value instanceof DataCancelled);
 
-// Get retry function from state or props
-const retryFn = computed(() => {
-  if (props.onRetry) return props.onRetry;
+  const isProgress = computed(() => currentState.value instanceof DataProgress);
 
-  const state = currentState.value;
-  if (state instanceof DataTimeout && state.retryFn) {
-    return async () => {
-      await state.retryFn!();
-    };
+  const isRateLimited = computed(() => currentState.value instanceof DataRateLimited);
+
+  // Error state (any error condition)
+  const isError = computed(
+    () => isFailed.value || isTimeout.value || isNoNetwork.value || isRateLimited.value,
+  );
+
+  // Get retry function from state or props
+  const retryFn = computed(() => {
+    if (props.onRetry) return props.onRetry;
+
+    const state = currentState.value;
+    if (state instanceof DataTimeout && state.retryFn) {
+      return async () => {
+        await state.retryFn!();
+      };
+    }
+    if (state instanceof DataNoNetwork && state.retryFn) {
+      return async () => {
+        await state.retryFn!();
+      };
+    }
+    if (state instanceof DataRateLimited && state.retryFn) {
+      return async () => {
+        await state.retryAfterDelay();
+      };
+    }
+
+    return undefined;
+  });
+
+  // Handle retry
+  function handleRetry() {
+    if (retryFn.value) {
+      retryFn.value();
+    } else {
+      emit('retry');
+    }
   }
-  if (state instanceof DataNoNetwork && state.retryFn) {
-    return async () => {
-      await state.retryFn!();
-    };
-  }
-  if (state instanceof DataRateLimited && state.retryFn) {
-    return async () => {
-      await state.retryAfterDelay();
-    };
-  }
 
-  return undefined;
-});
+  // Get progress value for progress state
+  const progressValue = computed(() => {
+    if (currentState.value instanceof DataProgress) {
+      return currentState.value.progress;
+    }
+    return 0;
+  });
 
-// Handle retry
-function handleRetry() {
-  if (retryFn.value) {
-    retryFn.value();
-  } else {
-    emit("retry");
-  }
-}
-
-// Get progress value for progress state
-const progressValue = computed(() => {
-  if (currentState.value instanceof DataProgress) {
-    return currentState.value.progress;
-  }
-  return 0;
-});
-
-// Get error message
-const errorMessage = computed(() => {
-  const state = currentState.value;
-  if (state.error) {
-    return state.error.displayMessage || state.error.title;
-  }
-  return "An error occurred";
-});
+  // Get error message
+  const errorMessage = computed(() => {
+    const state = currentState.value;
+    if (state.error) {
+      return state.error.displayMessage || state.error.title;
+    }
+    return 'An error occurred';
+  });
 </script>
 
 <template>
@@ -174,11 +164,7 @@ const errorMessage = computed(() => {
 
     <!-- Valid State -->
     <div v-else-if="isValid" class="status-valid">
-      <slot
-        name="valid"
-        :validation="currentState.validation"
-        :state="currentState"
-      >
+      <slot name="valid" :validation="currentState.validation" :state="currentState">
         <!-- Default: render nothing -->
       </slot>
     </div>
@@ -243,7 +229,7 @@ const errorMessage = computed(() => {
           <div class="rate-limited-icon">⏱️</div>
           <h3>Too Many Requests</h3>
           <p>Please wait before trying again.</p>
-          <button @click="handleRetry" class="retry-btn">Try Again</button>
+          <button class="retry-btn" @click="handleRetry">Try Again</button>
         </div>
       </slot>
     </div>
@@ -260,20 +246,11 @@ const errorMessage = computed(() => {
 
     <!-- Failed State -->
     <div v-else-if="isFailed" class="status-failed">
-      <slot
-        name="failed"
-        :error="currentState.error"
-        :retry="handleRetry"
-        :state="currentState"
-      >
+      <slot name="failed" :error="currentState.error" :retry="handleRetry" :state="currentState">
         <div v-if="inlineError" class="inline-error">
           <span class="error-icon">⚠️</span>
           <span class="error-text">{{ errorMessage }}</span>
-          <button
-            v-if="retryFn || $attrs.onRetry"
-            class="inline-retry"
-            @click="handleRetry"
-          >
+          <button v-if="retryFn || $attrs.onRetry" class="inline-retry" @click="handleRetry">
             Retry
           </button>
         </div>
@@ -306,204 +283,204 @@ const errorMessage = computed(() => {
 </template>
 
 <style scoped>
-.data-status-builder {
-  width: 100%;
-}
-
-/* Empty State */
-.empty-default {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  text-align: center;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.empty-message {
-  color: #64748b;
-  font-size: 1rem;
-}
-
-/* Loading */
-.spinner-loader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  gap: 1rem;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #6366f1;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  .data-status-builder {
+    width: 100%;
   }
-}
 
-.loading-text {
-  color: #64748b;
-  font-size: 0.875rem;
-}
-
-/* Skeleton Loader */
-.skeleton-loader {
-  padding: 1rem;
-}
-
-.skeleton-line {
-  height: 1rem;
-  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
-  background-size: 200% 100%;
-  border-radius: 4px;
-  margin-bottom: 0.75rem;
-  animation: shimmer 1.5s infinite;
-}
-
-.skeleton-line.short {
-  width: 60%;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
+  /* Empty State */
+  .empty-default {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
   }
-  100% {
-    background-position: -200% 0;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
   }
-}
 
-/* Inline Error */
-.inline-error {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
-  font-size: 0.875rem;
-}
+  .empty-message {
+    color: #64748b;
+    font-size: 1rem;
+  }
 
-.error-icon {
-  flex-shrink: 0;
-}
+  /* Loading */
+  .spinner-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    gap: 1rem;
+  }
 
-.error-text {
-  flex: 1;
-  color: #dc2626;
-}
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
 
-.inline-retry {
-  padding: 0.25rem 0.75rem;
-  background: #dc2626;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
-.inline-retry:hover {
-  background: #b91c1c;
-}
-
-/* Rate Limited */
-.rate-limited-default {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  text-align: center;
-}
-
-.rate-limited-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.rate-limited-default h3 {
-  margin: 0 0 0.5rem;
-  color: #1e293b;
-}
-
-.rate-limited-default p {
-  margin: 0 0 1.5rem;
-  color: #64748b;
-}
-
-.retry-btn {
-  padding: 0.75rem 1.5rem;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.retry-btn:hover {
-  background: #4f46e5;
-}
-
-/* Cancelled */
-.cancelled-default {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  text-align: center;
-  color: #64748b;
-}
-
-.cancelled-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .empty-message,
   .loading-text {
-    color: #94a3b8;
+    color: #64748b;
+    font-size: 0.875rem;
+  }
+
+  /* Skeleton Loader */
+  .skeleton-loader {
+    padding: 1rem;
   }
 
   .skeleton-line {
-    background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+    height: 1rem;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
     background-size: 200% 100%;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    animation: shimmer 1.5s infinite;
   }
 
+  .skeleton-line.short {
+    width: 60%;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Inline Error */
   .inline-error {
-    background: #1e1e1e;
-    border-color: #7f1d1d;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    font-size: 0.875rem;
+  }
+
+  .error-icon {
+    flex-shrink: 0;
   }
 
   .error-text {
-    color: #fca5a5;
+    flex: 1;
+    color: #dc2626;
+  }
+
+  .inline-retry {
+    padding: 0.25rem 0.75rem;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .inline-retry:hover {
+    background: #b91c1c;
+  }
+
+  /* Rate Limited */
+  .rate-limited-default {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .rate-limited-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
   }
 
   .rate-limited-default h3 {
-    color: #f1f5f9;
+    margin: 0 0 0.5rem;
+    color: #1e293b;
   }
 
-  .rate-limited-default p,
-  .cancelled-default {
-    color: #94a3b8;
+  .rate-limited-default p {
+    margin: 0 0 1.5rem;
+    color: #64748b;
   }
-}
+
+  .retry-btn {
+    padding: 0.75rem 1.5rem;
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .retry-btn:hover {
+    background: #4f46e5;
+  }
+
+  /* Cancelled */
+  .cancelled-default {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    color: #64748b;
+  }
+
+  .cancelled-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .empty-message,
+    .loading-text {
+      color: #94a3b8;
+    }
+
+    .skeleton-line {
+      background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+      background-size: 200% 100%;
+    }
+
+    .inline-error {
+      background: #1e1e1e;
+      border-color: #7f1d1d;
+    }
+
+    .error-text {
+      color: #fca5a5;
+    }
+
+    .rate-limited-default h3 {
+      color: #f1f5f9;
+    }
+
+    .rate-limited-default p,
+    .cancelled-default {
+      color: #94a3b8;
+    }
+  }
 </style>

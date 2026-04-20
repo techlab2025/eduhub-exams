@@ -1,5 +1,5 @@
-import { useUserStore } from "@/stores/user";
-import { PermissionsEnum } from "@/features/dashboard/users/employee/Core/Enum/permission_enum";
+import { useUserStore } from '@/stores/user';
+import { type PermissionsEnum } from '@/features/dashboard/users/employee/Core/Enum/permission_enum';
 
 export default class PermissionHandler {
   private static _instance: PermissionHandler;

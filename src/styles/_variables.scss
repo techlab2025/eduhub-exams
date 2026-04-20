@@ -84,73 +84,28 @@
   --medium-color: #f59e0b;
   --high-color: #dc2626;
   --icon-bg: #f1f5f9;
-  --breadcrump-bg: #cbd2e8;
-  --breadcrump-icon-color: #6366f1;
-  --breadcrump-text-color: black;
+  --breadcrump-bg: #0f172a;
+  --breadcrump-icon-color: white;
+  --breadcrump-text-color: white;
 
   /* ── Typography ────────────────────────────────────────────── */
   --font-family:
-    "URW DIN Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
+    'URW DIN Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* ── Sizing (responsive clamp) ─────────────────────────────── */
   --base-width: 1440;
   --base-height: 900;
-  --xl-size-3: clamp(
-    calc(50 * 0.8px),
-    calc(50 * 100vw / var(--base-width)),
-    calc(50 * 1.2px)
-  );
-  --xl-size-2: clamp(
-    calc(30 * 0.8px),
-    calc(30 * 100vw / var(--base-width)),
-    calc(30 * 1.2px)
-  );
-  --xl-size-1: clamp(
-    calc(24 * 0.8px),
-    calc(24 * 100vw / var(--base-width)),
-    calc(24 * 1.2px)
-  );
-  --xl-size-base: clamp(
-    calc(20 * 0.8px),
-    calc(20 * 100vw / var(--base-width)),
-    calc(20 * 1.2px)
-  );
-  --md-size: clamp(
-    calc(16 * 0.8px),
-    calc(16 * 100vw / var(--base-width)),
-    calc(16 * 1.2px)
-  );
-  --md-size-2: clamp(
-    calc(18 * 0.8px),
-    calc(18 * 100vw / var(--base-width)),
-    calc(18 * 1.2px)
-  );
-  --sm-size: clamp(
-    calc(14 * 0.8px),
-    calc(14 * 100vw / var(--base-width)),
-    calc(14 * 1.2px)
-  );
-  --xs-size: clamp(
-    calc(12 * 0.8px),
-    calc(12 * 100vw / var(--base-width)),
-    calc(12 * 1.2px)
-  );
-  --xs-size-2: clamp(
-    calc(10 * 0.8px),
-    calc(10 * 100vw / var(--base-width)),
-    calc(10 * 1.2px)
-  );
-  --xs-size-3: clamp(
-    calc(8 * 0.8px),
-    calc(8 * 100vw / var(--base-width)),
-    calc(8 * 1.2px)
-  );
-  --xs-size-4: clamp(
-    calc(6 * 0.8px),
-    calc(6 * 100vw / var(--base-width)),
-    calc(6 * 1.2px)
-  );
+  --xl-size-3: clamp(calc(50 * 0.8px), calc(50 * 100vw / var(--base-width)), calc(50 * 1.2px));
+  --xl-size-2: clamp(calc(30 * 0.8px), calc(30 * 100vw / var(--base-width)), calc(30 * 1.2px));
+  --xl-size-1: clamp(calc(24 * 0.8px), calc(24 * 100vw / var(--base-width)), calc(24 * 1.2px));
+  --xl-size-base: clamp(calc(20 * 0.8px), calc(20 * 100vw / var(--base-width)), calc(20 * 1.2px));
+  --md-size: clamp(calc(16 * 0.8px), calc(16 * 100vw / var(--base-width)), calc(16 * 1.2px));
+  --md-size-2: clamp(calc(18 * 0.8px), calc(18 * 100vw / var(--base-width)), calc(18 * 1.2px));
+  --sm-size: clamp(calc(14 * 0.8px), calc(14 * 100vw / var(--base-width)), calc(14 * 1.2px));
+  --xs-size: clamp(calc(12 * 0.8px), calc(12 * 100vw / var(--base-width)), calc(12 * 1.2px));
+  --xs-size-2: clamp(calc(10 * 0.8px), calc(10 * 100vw / var(--base-width)), calc(10 * 1.2px));
+  --xs-size-3: clamp(calc(8 * 0.8px), calc(8 * 100vw / var(--base-width)), calc(8 * 1.2px));
+  --xs-size-4: clamp(calc(6 * 0.8px), calc(6 * 100vw / var(--base-width)), calc(6 * 1.2px));
   --section-padding: clamp(
     calc(120 * 0.8px),
     calc(120 * 100vw / var(--base-width)),
@@ -160,12 +115,9 @@
   /* ── Shadows ───────────────────────────────────────────────── */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --shadow-xl:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 
   /* ── Radius ────────────────────────────────────────────────── */
   --radius-xs: 4px;
