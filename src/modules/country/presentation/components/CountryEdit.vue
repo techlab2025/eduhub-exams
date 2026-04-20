@@ -4,8 +4,8 @@ import { useRoute } from "vue-router";
 import CountryController from "../controllers/country.controller";
 import type CountryParams from "../../core/params/ad.email.params";
 import type EditCountryParams from "../../core/params/edit.country.params";
-import ShowCountryParams from "../../core/params/show.countrey.params";
 import CountryForm from "./CountryForm.vue";
+import ShowCountryParams from "../../core/params/show.country.params";
 
 // Controller instance
 const controller = CountryController.getInstance();
