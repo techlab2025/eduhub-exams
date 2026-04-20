@@ -108,7 +108,23 @@
     background-color: #0d1b2a; // your navy color
     border-radius: 40px 40px 40px 40px; // top-left · top-right · bottom-left · bottom-right=0
     position: relative;
-    overflow: visible; // critical — allows ::after to bleed outside
+    overflow: hidden; // critical — allows ::after to bleed outside
+    .login-icon {
+      position: absolute;
+      top: 10%;
+      right: 0;
+      transform: translateY(-30%);
+      rotate: 36deg;
+      animation: Movelogo 2s ease-in-out forwards;
+      @keyframes Movelogo {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(1000px);
+        }
+      }
+    }
   }
 
   .login-form {

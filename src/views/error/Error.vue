@@ -13,7 +13,7 @@ import ErrorIcon404 from "@/shared/icons/Error/ErrorIcon404.vue";
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .error-container {
   width: 100%;
   height: 100vh;
@@ -62,5 +62,10 @@ import ErrorIcon404 from "@/shared/icons/Error/ErrorIcon404.vue";
   width: 40%;
   transform: translate(-50%, -50%);
   z-index: 99;
+
+  @media (max-width: 768px) {
+    top: 90%;
+    width: 100%;
+  }
 }
 </style>
