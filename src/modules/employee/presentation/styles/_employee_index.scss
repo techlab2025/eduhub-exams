@@ -1,0 +1,196 @@
+@use "../../../../styles/variables" as *;
+@use "../../../../styles/mixins/flex" as *;
+
+/* =============================================================================
+   EMPLOYEE INDEX PAGE
+   ============================================================================= */
+
+.employee-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-weak);
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--PrimaryColor), transparent);
+    border-radius: var(--radius-full);
+  }
+}
+
+.header-text {
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    margin-top: 2px;
+    font-size: 0.875rem;
+    color: var(--gray-400);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 26px;
+      padding: 0 10px;
+      background: linear-gradient(135deg, var(--PrimaryColor), var(--PrimaryColor-hover));
+      color: white;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  background: linear-gradient(135deg, var(--PrimaryColor) 0%, var(--PrimaryColor-hover) 100%);
+  color: white;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 420px;
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--gray-400);
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    border: 1px solid var(--border-weak);
+    border-radius: var(--radius-md);
+    background: var(--bg-main);
+    outline: none;
+    transition: all 0.25s ease;
+
+    &:focus {
+      border-color: var(--PrimaryColor);
+      box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+    }
+  }
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  &.admin {
+    background: #eef2ff;
+    color: #4338ca;
+  }
+
+  &.user {
+    background: #f3f4f6;
+    color: #374151;
+  }
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-weak);
+  background: white;
+  color: var(--gray-500);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &.edit:hover {
+    border-color: var(--PrimaryColor);
+    color: var(--PrimaryColor);
+  }
+
+  &.delete:hover {
+    border-color: var(--Red);
+    color: var(--Red);
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+
+  svg {
+    color: var(--gray-300);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    margin: 0 0 8px;
+    color: var(--gray-800);
+  }
+
+  p {
+    color: var(--gray-400);
+    margin-bottom: 24px;
+  }
+}
