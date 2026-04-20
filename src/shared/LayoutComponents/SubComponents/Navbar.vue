@@ -9,6 +9,7 @@ import HeaderDarkModeIcon from "@/shared/icons/HeaderIcons/HeaderDarkModeIcon.vu
 import HeaderMessgaesIcon from "@/shared/icons/HeaderIcons/HeaderMessgaesIcon.vue";
 import HeaderNotificationIcon from "@/shared/icons/HeaderIcons/HeaderNotificationIcon.vue";
 import EmployeeImage from "@/assets/images/headerIMages/employee.jpg";
+import { useRouter } from "vue-router";
 const props = defineProps({
   open: {
     type: Boolean,
@@ -20,9 +21,10 @@ const emit = defineEmits(["open"]);
 
 const userStore = useUserStore();
 const themeStore = useThemeStore();
-
+const router = useRouter();
 const logout = () => {
   userStore.logout();
+  router.push("/login");
 };
 
 const isDropMenuOpen = ref(false);
@@ -43,7 +45,10 @@ const toggleDropMenu = () => {
       <div class="setting">
         <HeaderNotificationIcon class="cursor-pointer" />
         <HeaderMessgaesIcon class="cursor-pointer" />
-        <HeaderDarkModeIcon class="cursor-pointer" @click="themeStore.toggle()" />
+        <HeaderDarkModeIcon
+          class="cursor-pointer"
+          @click="themeStore.toggle()"
+        />
         <HeaderSettingIcon class="cursor-pointer" />
 
         <div

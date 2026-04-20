@@ -3,7 +3,10 @@ import type { ControllerConfig } from "@/base/Presentation/Controller/baseContro
 import type LoginModel from "../../core/models/user.model";
 import LoginRepository from "../../data/repositories/login.repository";
 import type Params from "@/base/Core/Params/params";
-import { DataState, DataFailed } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
+import {
+  DataState,
+  DataFailed,
+} from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
 import { useUserStore } from "@/stores/user";
 import router from "@/router";
 
@@ -35,7 +38,7 @@ export default class LoginController extends BaseController<
       showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
-      autoRetry: true,
+      autoRetry: false,
       maxAutoRetries: 2,
     };
   }
@@ -67,7 +70,7 @@ export default class LoginController extends BaseController<
 
       this.handleItemResponse(response, "Logged in successfully");
       if (response.data) this.userStore.setUser(response.data);
-      router.push("/")
+      router.push("/");
       return response;
     } catch (error: any) {
       const failed = new DataFailed<LoginModel>({ error });

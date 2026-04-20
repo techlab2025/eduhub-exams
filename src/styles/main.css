@@ -4337,24 +4337,12 @@ body::-webkit-scrollbar-thumb:hover {
   height: 100%;
   color: white;
   background-color: #0d1b2a;
-  border-radius: 40px 40px 40px 40px;
+  border-radius: 40px;
   position: relative;
-  overflow: hidden;
 }
-.login .login-logo .login-icon {
-  position: absolute;
-  top: 10%;
-  right: 0;
-  transform: translateY(-30%);
-  rotate: 36deg;
-  animation: Movelogo 2s ease-in-out forwards;
-}
-@keyframes Movelogo {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(1000px);
+@media (max-width: 1000px) {
+  .login .login-logo {
+    display: none;
   }
 }
 .login .login-form {
