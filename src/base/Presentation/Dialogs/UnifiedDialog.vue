@@ -336,7 +336,7 @@ function getActionClass(type?: string): string {
   width: 90%;
   max-width: 400px;
   padding: 2rem;
-  background: white;
+  background: var(--bg-main);
   border-radius: 16px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   text-align: center;

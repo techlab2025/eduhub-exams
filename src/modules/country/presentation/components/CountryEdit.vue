@@ -83,9 +83,9 @@ onMounted(async () => {
 
 .email-form {
   padding: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-weak);
   border-radius: 4px;
-  background-color: #f9f9f9;
+  background-color: var(--bg-section);
 }
 
 .email-form input,
@@ -93,7 +93,7 @@ onMounted(async () => {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-weak);
   border-radius: 4px;
 }
 

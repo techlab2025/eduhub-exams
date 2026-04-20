@@ -3,240 +3,92 @@
 @use "../../../styles/mixins/border" as *;
 
 .sidebar {
-  background-color: var(--bg-sidebar);
-  width: 300px;
+  width: 260px;
   height: 100vh;
-  transition: var(--transition-slow);
-  border-radius: 0 var(--xl-size-base) var(--xl-size-base) 0;
-  position: sticky;
-  top: 0;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  background: $SidebarBg;
+  color: $SidebarTextColor;
+  // padding: 26px;
+  padding: $XlSize 0;
+  border-radius: 12px;
 
   .sidebar-wrapper {
-    @include flex-column();
-    gap: var(--md-size);
-    height: 100vh;
-    width: 100%;
-    background-color: var(--bg-sidebar);
-
-    .sidebar-back {
-      @include flex-row(nowrap, flex-start, center);
-      gap: var(--xs-size-3);
-      width: 90%;
-      margin: 10px auto 0;
-      margin-top: 30px;
-      background-color: var(--bg-sidebar-hover);
-      color: var(--gray-300);
-      font-size: var(--sm-size);
-      font-weight: $BaseFontSemiBoldWeight;
-      border-radius: var(--xl-size-1);
-      padding: var(--xs-size-2);
-      transition: var(--transition-fast);
-      border: 1px solid transparent;
-
-      &:hover {
-        background-color: transparent;
-        color: var(--BgWhite);
-        border-color: var(--gray-600);
-      }
-
-      .icon {
-        border: 1px solid var(--gray-600);
-        border-radius: 50%;
-        padding: 5px;
-        width: 30px;
-        height: 30px;
-        transition: var(--transition-fast);
-      }
-
-      &:hover .icon {
-        border-color: var(--PrimaryColor);
-        color: var(--PrimaryColor);
-      }
-    }
-  }
-
-  &.close {
-    width: 50px;
-  }
-
-  .links {
-    @include flex-column();
-    scroll-behavior: smooth;
-    overflow-y: auto;
-    gap: var(--md-size);
-    padding: 0 var(--md-size);
-
-    &::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: var(--radius-full);
-      background-color: var(--gray-600);
-    }
-
-    &::-webkit-scrollbar-track {
-      background-color: var(--bg-sidebar);
-    }
-
-    .links-header {
-      @include flex-align();
-      gap: var(--xs-size-4);
-      color: var(--BgWhite) !important;
-      font-weight: $BaseFontWeightBold;
-
-      a {
-        width: 100%;
-        span {
-          width: 100%;
-        }
+    @include flex-column(nowrap, flex-start, stretch);
+    height: 100%;
+    .logo-container {
+      padding: 10px 20px;
+      text-align: center;
+      .logo {
+        font-size: 24px;
+        font-weight: 700;
+        font-family: "Regular";
+        color: #ffffff;
       }
     }
 
-    .p-accordioncontent-content {
-      padding-bottom: 0 !important;
-      padding-inline: 0 !important;
+    .menu {
+      @include flex-column(nowrap, flex-start, stretch);
+      gap: 12px;
 
-      li a {
-        width: 100%;
-        span {
-          width: 100%;
-        }
-      }
-    }
-
-    .p-accordionheader {
-      background-color: var(--bg-sidebar-hover) !important;
-      color: var(--gray-200) !important;
-      font-size: var(--sm-size);
-      font-weight: $BaseFontWeightBold;
-      margin-inline: 0 !important;
-      border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
-      border: none !important;
-      transition: var(--transition-fast);
-
-      &:hover {
-        background-color: var(--gray-700) !important;
-        color: var(--PrimaryColor) !important;
-      }
-    }
-
-    .p-accordionpanel {
-      border: none !important;
-    }
-
-    .active-panel-out {
-      background-color: var(--bg-sidebar-hover) !important;
-      color: var(--PrimaryColor) !important;
-      padding: 12px;
-      width: 89%;
-      margin-left: auto;
-      margin-right: auto;
-      position: relative;
-      font-weight: $BaseFontWeightBold;
-      font-size: var(--sm-size);
-      padding-left: 25px;
-      transition: var(--transition-slow);
-      border-left: 3px solid var(--PrimaryColor);
-
-      span {
-        padding-left: 20px;
-      }
-
-      &::before {
-        content: "";
-        position: absolute;
-        left: 25px;
-        top: 52%;
-        transform: translate(-50%, -50%);
-        width: 15px;
-        height: 15px;
-        background-color: var(--PrimaryColor-light);
-        border-radius: 50%;
-      }
-
-      &::after {
-        content: "";
-        position: absolute;
-        left: 25px;
-        top: 52%;
-        transform: translate(-50%, -50%);
-        width: 8px;
-        height: 8px;
-        background-color: var(--PrimaryColor);
-        border-radius: 50%;
-      }
-    }
-
-    ul {
-      @include flex-column();
-      gap: 5px;
-      margin-top: 5px;
-      position: relative;
-      padding: 5px;
-      background-color: var(--bg-sidebar-hover);
-      // padding: var(--xs-size-2);
-      border-top: 1px solid var(--gray-600) !important;
-      border-radius: 0 0 var(--radius-md) var(--radius-md);
-
-      li {
-        @include flex-align();
-        gap: var(--sm-size);
-        font-size: var(--md-size);
-        color: var(--gray-400);
-        font-family: var(--font-family);
-        cursor: pointer;
-        transition: var(--transition-slow);
+      .group-title {
+        font-size: $SmSize;
         font-weight: $BaseFontMediumWeight;
+        padding: 0 $XlSize;
+        margin-bottom: 5px;
+        color: #b8b8b8;
+        font-family: "Regular";
+      }
+
+      .menu-item {
+        @include flex-row(nowrap, flex-start, center);
+        gap: 12px;
+        padding: 10px 20px;
+        margin: 0 10px;
+        // border-radius: 10px;
+        color: #cbd5f5;
+        transition: 0.2s;
+        font-size: $MdSize;
+        font-weight: $BaseFontSemiBoldWeight;
+        font-family: "Regular";
+
+        .icon {
+          width: 18px;
+        }
+
+        .label {
+          flex: 1;
+        }
+
+        .badge {
+          background: #ef4444;
+          color: white;
+          font-size: 10px;
+          padding: 2px 6px;
+          border-radius: 6px;
+        }
+
+        .arrow {
+          margin-left: auto;
+          opacity: 0.6;
+        }
 
         &:hover {
-          color: var(--BgWhite);
+          background: rgba(255, 255, 255, 0.05);
         }
 
-        a {
-          @include flex-align();
-          gap: var(--xs-size-4);
-          text-decoration: none;
-          span {
-            padding-left: 8px;
-          }
-
-          &.router-link-active,
-          &.active-link {
-            color: var(--PrimaryColor) !important;
-            font-weight: $BaseFontWeightBold;
-            font-size: var(--sm-size);
-            position: relative;
-            padding-left: 20px;
-            transition: var(--transition-slow);
-            background-color: var(--bg-sidebar);
-            border-radius: var(--radius-sm);
-            padding: var(--xs-size-2) var(--xs-size-2) var(--xs-size-2) 20px;
-
-            &::before {
-              content: "";
-              position: absolute;
-              left: 15px;
-              top: 50%;
-              transform: translate(-50%, -50%);
-              width: 15px;
-              height: 15px;
-              background-color: var(--PrimaryColor-light);
-              border-radius: 50%;
-            }
-
-            &::after {
-              content: "";
-              position: absolute;
-              left: 15px;
-              top: 50%;
-              transform: translate(-50%, -50%);
-              width: 8px;
-              height: 8px;
-              background-color: var(--PrimaryColor);
-              border-radius: 50%;
-            }
+        &.active {
+          background: #ffffff0d;
+          color: #ffffff;
+          position: relative;
+          &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 50%;
+            background: #ffffff;
+            border-radius: 6px;
           }
         }
       }

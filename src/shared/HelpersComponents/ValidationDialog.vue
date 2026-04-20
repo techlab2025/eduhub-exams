@@ -50,7 +50,7 @@ export default {
 }
 
 .dialog-content {
-  background: #fff;
+  background: var(--bg-main);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -61,7 +61,7 @@ export default {
 .dialog-message {
   margin-bottom: 20px;
   font-size: 16px;
-  color: black !important;
+  color: var(--gray-900) !important;
 }
 
 .dialog-close-btn {

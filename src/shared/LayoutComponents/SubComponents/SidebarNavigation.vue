@@ -1,159 +1,88 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import CustomAccordion from "@/shared/Accordion/CustomAccordion.vue";
-import IconSetting from "@/shared/icons/IconSetting.vue";
+import { ref, type Component } from "vue";
 import BackIcon from "@/shared/icons/BackIcon.vue";
 
-// ── Section Types ─────────────────────────────────────────────
-const SidebarSectionType = {
-  settings: "settings",
-  location: "location",
-  unknown: "unknown",
-} as const;
+// Example icons (replace with yours)
+// import IconDashboard from "@/shared/icons/IconDashboard.vue";
+import IconSettings from "@/shared/icons/IconSetting.vue";
+import SettingIcon from "@/shared/icons/SidebarIcons/SettingIcon.vue";
 
-type SidebarSectionKey =
-  (typeof SidebarSectionType)[keyof typeof SidebarSectionType];
-
-interface SidebarSection {
-  title: string;
-  type: SidebarSectionKey;
-  icon?: string | object;
-  routes: SidebarRoute[];
-}
-
-interface SidebarRoute {
+const route = useRoute();
+const router = useRouter();
+interface MenuItem {
   link: string;
   name: string;
+  icon?: Component;
+  badge?: string;
+  hasArrow?: boolean;
 }
+interface MenuSection {
+  group: string;
+  items: MenuItem[];
+}
+const RouterBack = () => {
+  router.back();
+};
 
-// ── Section Data ──────────────────────────────────────────────
-const sections = ref<SidebarSection[]>([
+const menu = ref<MenuSection[]>([
   {
-    title: "settings",
-    type: SidebarSectionType.settings,
-    icon: IconSetting,
-    routes: [
-      {
-        link: "/",
-        name: "Home",
-      },
-      {
-        link: "/countries",
-        name: "Countries",
-      },
+    group: "Overview",
+    items: [
       {
         link: "/employees",
         name: "Employees",
+        icon: SettingIcon,
       },
     ],
   },
   {
-    title: "location",
-    type: SidebarSectionType.location,
-    icon: IconSetting,
-    routes: [],
+    group: "location",
+    items: [
+      {
+        link: "/countries",
+        name: "Countries",
+        icon: SettingIcon,
+      },
+    ],
   },
 ]);
-
-const route = useRoute();
-const accordionValue = ref<string[]>([]);
-
-watch(
-  () => route.path,
-  (newPath) => {
-    const activeIndex = sections.value.findIndex((s) =>
-      s.routes.some((r) => newPath.includes(r.link)),
-    );
-    accordionValue.value = activeIndex >= 0 ? [activeIndex.toString()] : [];
-  },
-  { immediate: true },
-);
-
-const isOpen = ref(true);
-const router = useRouter();
-const RouterBack = () => {
-  router.back();
-};
 </script>
-
 <template>
-  <aside :class="['sidebar', isOpen ? 'open' : 'close']">
+  <aside class="sidebar">
     <div class="sidebar-wrapper">
-      <button class="sidebar-back" @click="RouterBack">
-        <BackIcon class="icon" />
-        <span>back</span>
-      </button>
+      <div class="logo-container">
+        <h2 class="logo">Logo</h2>
+      </div>
 
-      <div class="links">
-        <CustomAccordion
-          :items="sections"
-          :multiple="false"
-          :defaultValue="accordionValue"
-          AccordionClass="sidebar-accordion"
-          AccordionPanelClass="sidebar-panel"
-          AccordionHeaderClass="sidebar-header"
-          AccordionContentClass="sidebar-content"
-        >
-          <template #header="{ item }">
-            <div class="links-header">
-              <component
-                v-if="typeof item.icon !== 'string' && item.icon"
-                :is="item.icon"
-              />
-              {{ $t(item.title) }}
-            </div>
-          </template>
+      <!-- Menu -->
+      <div class="menu">
+        <div v-for="(group, gIndex) in menu" :key="gIndex" class="menu-group">
+          <p v-if="group.group" class="group-title">
+            {{ group.group }}
+          </p>
 
-          <template #content="{ item }">
-            <ul>
-              <li v-for="(routeItem, index) in item.routes" :key="index">
-                <router-link
-                  :to="routeItem.link"
-                  :class="{ active: route.path.includes(routeItem.link) }"
-                >
-                  <span>{{ $t(routeItem.name) }}</span>
-                </router-link>
-              </li>
-            </ul>
-          </template>
-        </CustomAccordion>
+          <router-link
+            v-for="(item, i) in group.items"
+            :key="i"
+            :to="item.link"
+            class="menu-item"
+            :class="{ active: route.path === item.link }"
+          >
+            <component :is="item.icon" class="icon" />
+
+            <span class="label">{{ item.name }}</span>
+
+            <span v-if="item?.badge" class="badge">
+              {{ item?.badge }}
+            </span>
+
+            <span v-if="item?.hasArrow" class="arrow">›</span>
+          </router-link>
+        </div>
       </div>
     </div>
   </aside>
 </template>
 
-<style scoped lang="scss">
-.links-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  li {
-    a {
-      display: block;
-      padding: 0.5rem 0;
-      color: inherit;
-      text-decoration: none;
-
-      &.active {
-        color: #3b82f6;
-        font-weight: 500;
-      }
-    }
-  }
-}
-
-@media (max-width: 600px) {
-  aside {
-    display: none !important;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

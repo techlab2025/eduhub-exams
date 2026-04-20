@@ -102,19 +102,34 @@ const isDraft = computed(() => {
 
 <template>
   <div class="email-page">
-    <!-- ═══ Page Header ═══ -->
-    <header class="page-header">
-      <div class="header-left">
-        <div class="header-text">
-          <h1>Country Management</h1>
-          <p class="subtitle">
-            Manage country
-            <span v-if="totalCount" class="count-pill">{{ totalCount }}</span>
-          </p>
+    <div class="index-header">
+      <div class="toolbar">
+        <div class="search-field">
+          <span class="search-icon">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </span>
+          <input
+            v-model="word"
+            placeholder="Search by country name or code…"
+            class="search-input"
+            type="text"
+            @input="Search"
+          />
         </div>
       </div>
-
       <router-link :to="formRoute" class="btn-add">
+        <span>{{ isDraft ? "Add Country" : "Continue Adding" }}</span>
         <svg
           width="18"
           height="18"
@@ -126,57 +141,7 @@ const isDraft = computed(() => {
         >
           <path d="M12 5v14M5 12h14" />
         </svg>
-        <span>{{ isDraft ? "Add Country" : "Continue Adding" }}</span>
       </router-link>
-    </header>
-
-    <!-- ═══ Toolbar ═══ -->
-    <div class="toolbar">
-      <div class="search-field">
-        <span class="search-icon">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-        </span>
-        <input
-          v-model="word"
-          placeholder="Search by country name…"
-          class="search-input"
-          type="text"
-          @input="Search"
-        />
-        <Transition name="fade">
-          <button
-            v-if="word"
-            class="clear-btn"
-            @click="
-              word = '';
-              Search();
-            "
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          </button>
-        </Transition>
-      </div>
     </div>
 
     <!-- ═══ Table ═══ -->
@@ -245,7 +210,6 @@ const isDraft = computed(() => {
                     </button>
                   </template>
                 </DeleteDialog>
-
               </div>
             </template>
           </AppTable>

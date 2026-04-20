@@ -225,7 +225,7 @@ const inputId = `file-upload-${props.index ?? crypto.randomUUID()}`;
   transition:
     border-color 0.15s,
     background 0.15s;
-  background: #fafafa;
+  background: var(--bg-section);
 }
 
 .upload-area:hover:not(.disabled) {

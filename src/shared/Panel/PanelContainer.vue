@@ -7,10 +7,10 @@
 
 <style scoped>
 .panel-container {
-  background: white;
+  background: var(--bg-main);
   border-radius: 14px;
   padding: 22px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-weak);
   transition: all 0.2s ease;
 }
 

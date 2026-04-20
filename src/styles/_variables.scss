@@ -84,9 +84,11 @@
   --medium-color: #f59e0b;
   --high-color: #dc2626;
   --icon-bg: #f1f5f9;
-  --breadcrump-bg: #0f172a;
+  --breadcrump-bg: linear-gradient(to right, #4faf7c, #1e293b);
   --breadcrump-icon-color: white;
-  --breadcrump-text-color: white;
+  --breadcrump-text-color: black;
+  --sidebar-bg: #0f172a;
+  --sidebar-text-color: #b8b8b8;
 
   /* ── Typography ────────────────────────────────────────────── */
   --font-family:
@@ -182,6 +184,87 @@
 }
 
 /* =============================================================================
+   DARK MODE TOKENS
+   Applied when `html` carries the `dark` class (toggled via themeStore)
+   ============================================================================= */
+
+html.dark {
+  /* ── Backgrounds ───────────────────────────────────────────── */
+  --bg-body: #0d1117;
+  --bg-main: #161b22;
+  --bg-header: #161b22;
+  --bg-card: #161b22;
+  --bg-section: #0d1117;
+
+  /* ── Sidebar stays dark — already dark by design ────────────── */
+  --bg-sidebar: #090e18;
+  --bg-sidebar-hover: #0f172a;
+  --border-sidebar: #0f172a;
+
+  /* ── Borders ───────────────────────────────────────────────── */
+  --border-weak: #30363d;
+  --border-strong: #484f58;
+
+  /* ── Neutrals (inverted scale) ─────────────────────────────── */
+  --gray-50: #161b22;
+  --gray-100: #21262d;
+  --gray-200: #30363d;
+  --gray-300: #484f58;
+  --gray-400: #6e7681;
+  --gray-500: #8b949e;
+  --gray-600: #b1bac4;
+  --gray-700: #c9d1d9;
+  --gray-800: #e6edf3;
+  --gray-900: #f0f6fc;
+  --gray-950: #ffffff;
+
+  /* ── Legacy aliases ────────────────────────────────────────── */
+  --BgWhite: #161b22;
+  --header-page-color: #f0f6fc;
+  --second-dark-color: #21262d;
+  --main-border: #30363d;
+  --checkbox-bg: #21262d;
+  --icon-bg: #21262d;
+  --subtitle-color: #8b949e;
+  --GrayText: #8b949e;
+  --GrayText-1: #8b949e;
+  --DarkGray: #8b949e;
+  --Black: #f0f6fc;
+  --Gray-1: #161b22;
+  --Gray-2: #21262d;
+  --card-observation-bg: #161b22;
+  --sidebar-bg: #090e18;
+  --sidebar-text-color: #8b949e;
+
+  /* ── Semantic light variants (inverted for dark) ────────────── */
+  --success-light: #052e16;
+  --danger-light: #3b0a0a;
+  --warning-light: #2d1a00;
+  --info-light: #0a1f2e;
+  --PrimaryColor-light: #1a1f3a;
+
+  /* ── Component-level overrides ─────────────────────────────── */
+
+  /* Breadcrumb */
+  --breadcrumb-bg: linear-gradient(to right, #2d4a3e3d 0 2%, #161b22 5% 100%);
+  --breadcrumb-text: #e6edf3;
+  --breadcrumb-first-text: #4ade80;
+  --breadcrumb-separator: #6e7681;
+
+  /* Status badges */
+  --badge-admin-bg: #1a1f3a;
+  --badge-admin-text: #a5b4fc;
+  --badge-user-bg: #21262d;
+  --badge-user-text: #c9d1d9;
+
+  /* Type chips (country index) */
+  --chip-work-bg: #1a1f3a;
+  --chip-work-text: #a5b4fc;
+  --chip-personal-bg: #052e16;
+  --chip-personal-text: #4ade80;
+}
+
+/* =============================================================================
    SCSS VARIABLE MAPPINGS (for existing codebase compat)
    ============================================================================= */
 
@@ -224,6 +307,8 @@ $BgRed: var(--danger-light);
 $BreadcrumpBg: var(--breadcrump-bg);
 $BreadcrumpIconColor: var(--breadcrump-icon-color);
 $BreadcrumpTextColor: var(--breadcrump-text-color);
+$SidebarBg: var(--sidebar-bg);
+$SidebarTextColor: var(--sidebar-text-color);
 
 /* Sizes */
 $XsSize: var(--xs-size); //6px

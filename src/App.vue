@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import UnifiedDialog from "@/base/Presentation/Dialogs/UnifiedDialog.vue";
 import ToastContainer from "@/base/Presentation/Dialogs/ToastContainer.vue";
+import { useThemeStore } from "@/stores/theme";
+
+// Initialise early so the `dark` class is applied before first paint
+useThemeStore();
 </script>
 
 <template>

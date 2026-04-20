@@ -127,7 +127,7 @@ const GetFullPath = () => {
     items.value.push({
       label: currentRouteName,
       url: undefined,
-      icon: route.meta.icon,
+      // icon: route.meta.icon,
     });
   }
 };
@@ -160,16 +160,12 @@ const IsHome = computed(() => route.path === "/");
 <template>
   <div class="breadcrump-container">
     <div class="breadcrump">
-      <button class="sidebar-back" @click="RouterBack" v-if="!IsHome">
-        <BackIcon class="icon" />
-        <span>back</span>
-      </button>
       <Breadcrumb :model="items">
         <template #item="{ item }">
           <router-link :to="String(item.url)" class="breadcrumb-link">
-            <span v-if="item.icon">
+            <!-- <span v-if="item.icon">
               <component :is="item.icon" />
-            </span>
+            </span> -->
             <span>
               {{ item.label }}
             </span>

@@ -190,7 +190,7 @@ function handleToastClick(toast: Toast): void {
   min-width: 300px;
   max-width: 400px;
   padding: 1rem;
-  background: white;
+  background: var(--bg-main);
   border-radius: 12px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 8px 10px -6px rgba(0, 0, 0, 0.1);

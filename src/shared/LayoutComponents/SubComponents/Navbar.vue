@@ -1,19 +1,14 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-// import { useRoute, useRouter } from 'vue-router'
-// import IconFullScreen from '@/shared/icons/IconFullScreen.vue'
-// import IconMenu from '@/shared/icons/IconMenu.vue'
 import IconLogout from "@/shared/icons/IconLogout.vue";
-import IconArrowDownNav from "@/shared/icons/IconArrowDownNav.vue";
-// import { setDefaultImage } from '@/base/Presentation/Utils/set_default_image'
-// import { setDefaultImage } from "@/base/Presentation/Utils/set_default_image";
-// import { useUserStore } from "@/stores/user";
-// import defaultImage from "@/assets/images/user.png";
-// import ChangeLanguage from './ChangeLanguage.vue'
-// import Notification from '../icons/Notification.vue'
 import { useUserStore } from "@/stores/user";
+import { useThemeStore } from "@/stores/theme";
 import SearchIcon from "@/shared/icons/SearchIcon.vue";
-
+import HeaderSettingIcon from "@/shared/icons/HeaderIcons/HeaderSettingIcon.vue";
+import HeaderDarkModeIcon from "@/shared/icons/HeaderIcons/HeaderDarkModeIcon.vue";
+import HeaderMessgaesIcon from "@/shared/icons/HeaderIcons/HeaderMessgaesIcon.vue";
+import HeaderNotificationIcon from "@/shared/icons/HeaderIcons/HeaderNotificationIcon.vue";
+import EmployeeImage from "@/assets/images/headerIMages/employee.jpg";
 const props = defineProps({
   open: {
     type: Boolean,
@@ -24,8 +19,7 @@ const props = defineProps({
 const emit = defineEmits(["open"]);
 
 const userStore = useUserStore();
-
-const user = userStore.user;
+const themeStore = useThemeStore();
 
 const logout = () => {
   userStore.logout();
@@ -41,50 +35,23 @@ const toggleDropMenu = () => {
 <template>
   <header class="header">
     <nav class="nav">
-      <div class="menu">
-        <!-- Add the new icon to open the sidebar -->
-        <!-- <span v-if="!props.open" class="cursor-pointer" @click="toggleSidebar">
-          <IconMenu />
-        </span> -->
-        <!-- <span  class="cursor-pointer" @click="toggleSidebar">
-          <IconMenu />
-        </span> -->
-        <!-- <div class="header-link flex gap-sm items-center">
-          <h1>
-            <router-link to="/">{{ $t('home') }} </router-link>
-          </h1>
-          <p class="route-name">{{ $t(typeof route?.name === 'string' ? route.name : '') }} /</p>
-        </div> -->
-        <router-link class="flex items-center gap-2" :to="'/'">
-          <!-- <img :src="defaultLogo" alt="logo-img"> -->
-          <p class="logo">logo</p>
-        </router-link>
-      </div>
-
       <div class="search">
         <SearchIcon />
         <input type="serach" placeholder="Search What You Want" />
       </div>
 
       <div class="setting">
-        <!-- <ChangeLanguage class="countery-icon" /> -->
-
-        <!-- <div class="notification cursor-pointer" @click="toggleFullScreen">
-          <Notification />
-        </div> -->
+        <HeaderNotificationIcon class="cursor-pointer" />
+        <HeaderMessgaesIcon class="cursor-pointer" />
+        <HeaderDarkModeIcon class="cursor-pointer" @click="themeStore.toggle()" />
+        <HeaderSettingIcon class="cursor-pointer" />
 
         <div
           class="user cursor-pointer dropdown-trigger"
           @click="toggleDropMenu"
         >
-          <IconArrowDownNav class="drop-icon" />
-          <div class="profile-data">
-            <span>{{ user?.email }}</span>
-            <!-- <span>{{ user?.type == OrganizationTypeEnum.ADMIN ? 'Admin' : 'Organization' }}</span> -->
-          </div>
-
-          <img alt="user" src="@/assets/images/app/system-failed.png" />
-
+          <!-- <IconArrowDownNav class="drop-icon" /> -->
+          <img alt="user" :src="EmployeeImage" />
           <div class="dropdown-menu" v-if="isDropMenuOpen">
             <ul>
               <li @click="logout">
