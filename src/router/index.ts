@@ -20,6 +20,17 @@ const router = createRouter({
         icon: HomeIcon,
       },
     },
+    // not found routes
+    {
+      path: "/not-found",
+      name: "Not Found",
+      component: () => import("@/views/error/Error.vue"),
+    },
+    // redirect to not found
+    {
+      path: "/:pathMatch(.*)*",
+      redirect: "/not-found",
+    },
   ],
 });
 

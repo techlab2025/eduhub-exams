@@ -66,7 +66,6 @@ export const environments: Record<EnvironmentStage, EnvironmentConfig> = {
  */
 export function getDefaultStage(): EnvironmentStage {
   let envVar = import.meta.env?.VITE_APP_ENV;
-  console.log(import.meta.env, "import.meta.env?");
   if (envVar && isValidStage(envVar)) {
     return envVar as EnvironmentStage;
   }
