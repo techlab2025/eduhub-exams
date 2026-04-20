@@ -25,7 +25,7 @@ import ErrorIcon404 from "@/shared/icons/Error/ErrorIcon404.vue";
   color: #4faf7c1a;
   text-align: center;
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -34,7 +34,7 @@ import ErrorIcon404 from "@/shared/icons/Error/ErrorIcon404.vue";
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -60%);
   z-index: -1;
 }
 
@@ -44,7 +44,7 @@ import ErrorIcon404 from "@/shared/icons/Error/ErrorIcon404.vue";
   color: #24385c;
   text-align: center;
   position: absolute;
-  top: 80%;
+  top: 70%;
   left: 50%;
   width: 100%;
   transform: translate(-50%, -50%);
@@ -57,7 +57,7 @@ import ErrorIcon404 from "@/shared/icons/Error/ErrorIcon404.vue";
   color: #8a8a8a;
   text-align: center;
   position: absolute;
-  top: 92%;
+  top: 80%;
   left: 50%;
   width: 40%;
   transform: translate(-50%, -50%);
