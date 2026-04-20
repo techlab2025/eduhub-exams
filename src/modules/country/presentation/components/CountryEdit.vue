@@ -2,7 +2,6 @@
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import CountryController from "../controllers/country.controller";
-import type CountryParams from "../../core/params/ad.email.params";
 import type EditCountryParams from "../../core/params/edit.country.params";
 import CountryForm from "./CountryForm.vue";
 import ShowCountryParams from "../../core/params/show.country.params";
@@ -11,7 +10,7 @@ import ShowCountryParams from "../../core/params/show.country.params";
 const controller = CountryController.getInstance();
 
 // Form state
-const params = ref<CountryParams | null>(null);
+const params = ref<EditCountryParams | null>(null);
 /**
  * Save (create or update) email
  */
