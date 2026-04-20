@@ -1,5 +1,26 @@
 {
     "home": "Home",
     "title_ar": "Title in Arabic",
-    "click_me": "Click Me"
+    "click_me": "Click Me",
+    "add_document": "Add Document",
+    "edit_document": "Edit Document",
+    "save_document": "Save Document",
+    "continue_adding": "Continue Adding",
+    "update_document_details": "Update the document details below",
+    "fill_document_details": "Fill in the document information",
+    "editing": "Editing",
+    "title": "Title",
+    "subject_id": "Subject ID",
+    "stage_id": "Stage ID",
+    "document_type": "Document Type",
+    "is_all_units": "All Units",
+    "document_title_placeholder": "Document Title",
+    "subject_id_placeholder": "Subject ID",
+    "stage_id_placeholder": "Stage ID",
+    "select_document_type": "Select Document Type",
+    "search_documents": "Search documents…",
+    "no_documents_yet": "No documents yet",
+    "add_first_document": "Add the first document to get started",
+    "documents": "Documents",
+    "optional": "optional"
 }

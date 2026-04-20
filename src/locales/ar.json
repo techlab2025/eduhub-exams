@@ -1,5 +1,26 @@
 {
     "home": "الرئيسية",
     "title_ar": "العنوان بالعربية",
-    "click_me": "اضغط هنا"
+    "click_me": "اضغط هنا",
+    "add_document": "إضافة وثيقة",
+    "edit_document": "تعديل الوثيقة",
+    "save_document": "حفظ الوثيقة",
+    "continue_adding": "متابعة الإضافة",
+    "update_document_details": "قم بتحديث تفاصيل الوثيقة أدناه",
+    "fill_document_details": "أدخل معلومات الوثيقة",
+    "editing": "تعديل",
+    "title": "العنوان",
+    "subject_id": "معرف المادة",
+    "stage_id": "معرف المرحلة",
+    "document_type": "نوع الوثيقة",
+    "is_all_units": "جميع الوحدات",
+    "document_title_placeholder": "عنوان الوثيقة",
+    "subject_id_placeholder": "معرف المادة",
+    "stage_id_placeholder": "معرف المرحلة",
+    "select_document_type": "اختر نوع الوثيقة",
+    "search_documents": "ابحث في الوثائق…",
+    "no_documents_yet": "لا توجد وثائق بعد",
+    "add_first_document": "أضف أول وثيقة للبدء",
+    "documents": "الوثائق",
+    "optional": "اختياري"
 }

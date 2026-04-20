@@ -7,6 +7,7 @@ import BackIcon from "@/shared/icons/BackIcon.vue";
 // import IconDashboard from "@/shared/icons/IconDashboard.vue";
 import IconSettings from "@/shared/icons/IconSetting.vue";
 import SettingIcon from "@/shared/icons/SidebarIcons/SettingIcon.vue";
+import DocumentIcon from "@/shared/icons/BreadcrumbIcons/DocumentIcon.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -33,6 +34,11 @@ const menu = ref<MenuSection[]>([
         link: "/employees",
         name: "Employees",
         icon: SettingIcon,
+      },
+      {
+        link: "/documents",
+        name: "Documents",
+        icon: DocumentIcon,
       },
     ],
   },
