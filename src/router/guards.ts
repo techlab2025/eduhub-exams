@@ -13,5 +13,14 @@ export function authGuard(
     return next({ path: "/login" });
   }
 
-  next();
+  // Already authenticated - redirect to dashboard based on user type
+  if (to.name === 'Login' && userData.isAuth) {
+    // Derive redirect path based on user type
+    // Users with type 1 (EMPLOYEE) go to organization, others to admin
+    const userType = userData.user?.type;
+    const redirectPath = userType === 1 ? '/organization' : '/admin';
+    return next({ path: redirectPath })
+  }
+
+  next()
 }

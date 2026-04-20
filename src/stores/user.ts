@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import UserModel from "@/modules/auth/core/models/user.model";
 
-
+let autoLogoutTimer: ReturnType<typeof setTimeout> | null = null;
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<UserModel | null>(null);
@@ -17,6 +17,11 @@ export const useUserStore = defineStore("user", () => {
   }
 
   const logout = () => {
+    // Clear any pending auto-logout timer
+    if (autoLogoutTimer) {
+      clearTimeout(autoLogoutTimer);
+      autoLogoutTimer = null;
+    }
     user.value = null;
     isAuth.value = false;
     expiresAt.value = null;
@@ -24,10 +29,16 @@ export const useUserStore = defineStore("user", () => {
   }
 
   const setAutoLogout = () => {
+    // Clear any existing timer before setting a new one
+    if (autoLogoutTimer) {
+      clearTimeout(autoLogoutTimer);
+      autoLogoutTimer = null;
+    }
+
     if (expiresAt.value) {
       const timeout = expiresAt.value - Date.now();
       if (timeout > 0) {
-        setTimeout(() => logout(), timeout);
+        autoLogoutTimer = setTimeout(() => logout(), timeout);
       }
     }
   }

@@ -15,7 +15,7 @@ import router from "@/router";
  */
 export default class LoginController extends BaseController<
   LoginModel,
-  LoginModel[]
+  never
 > {
   private static instance: LoginController;
 

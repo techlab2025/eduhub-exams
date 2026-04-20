@@ -63,6 +63,7 @@ export default class UserModel {
   toJson(): any {
     return {
       id: this.id,
+      name: this.name,
       email: this.email,
       type: this.type,
       employee_id: this.employeeId,
