@@ -10,7 +10,6 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: './tsconfig.app.json',
     extraFileExtensions: ['.vue'],
   },
   extends: [
@@ -37,13 +36,13 @@ module.exports = {
     // Attribute hyphenation (PrimeVue uses PascalCase props)
     'vue/attribute-hyphenation': 'warn',
     // Unused vars in templates
-    'vue/no-unused-vars': 'warn',
+    'vue/no-unused-vars': 'error',
 
     // ── TypeScript — warn-only during incremental adoption ───────────────────
     // any is used in base infrastructure and PrimeVue interop
     '@typescript-eslint/no-explicit-any': 'warn',
-    // Unused vars — warn to guide cleanup, not block commits
-    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    // Unused vars — block commits
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     // Enforce type-only imports (can auto-fix)
     '@typescript-eslint/consistent-type-imports': [
       'warn',
