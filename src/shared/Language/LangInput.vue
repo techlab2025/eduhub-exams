@@ -24,6 +24,7 @@ watch(value, (v) => {
   emit("update:modelValue", data);
 });
 
+const c = 0;
 watch(
   () => props.modelValue,
   () => {
