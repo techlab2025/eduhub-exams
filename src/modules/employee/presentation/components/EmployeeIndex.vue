@@ -13,7 +13,6 @@ import DeleteEmployeeParams from "../../core/params/delete.employee.params";
 import type EmployeeModel from "../../core/models/employee.model";
 import DeleteDialog from "@/shared/HelpersComponents/dialog/DeleteDialog.vue";
 import { useFormsStore } from "@/stores/formsStore";
-import TreeView from "@/shared/HelpersComponents/Tree/TreeView.vue";
 
 // Controller instance
 const controller = EmployeeController.getInstance();
@@ -96,7 +95,6 @@ const isDraft = computed(() => {
 </script>
 
 <template>
-  <!-- <TreeView /> -->
   <div class="employee-page">
     <div class="index-header">
       <div class="toolbar">
