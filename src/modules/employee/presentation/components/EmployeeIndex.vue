@@ -92,8 +92,6 @@ const isDraft = computed(() => {
     Object.values(data).every((v) => v == null)
   );
 });
-
-const EmployeeName = ref<string>("");
 </script>
 
 <template>

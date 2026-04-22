@@ -1,32 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 export interface TreeNode {
   id: number | string;
   label: string;
   children?: TreeNode[];
 }
 const props = defineProps<{
-  node: TreeNode
-}>()
+  node: TreeNode;
+}>();
+const emit = defineEmits(["handleItemClick"]);
 
-const isOpen = ref(false)
+const isOpen = ref(false);
 
-const hasChildren = props.node.children && props.node.children.length > 0
+const hasChildren = props.node.children && props.node.children.length > 0;
 
 const toggle = () => {
-  if (hasChildren) isOpen.value = !isOpen.value
-}
+  if (hasChildren) isOpen.value = !isOpen.value;
+};
 </script>
 
 <template>
   <div class="tree-item">
-    <div class="tree-label" @click="toggle">
-      <span v-if="hasChildren">
-        {{ isOpen ? '📂' : '📁' }}
+    <div class="tree-label">
+      <span v-if="hasChildren" @click="toggle">
+        {{ isOpen ? "📂" : "📁" }}
+        {{ node.label }}
       </span>
-      <span v-else>📄</span>
-
-      {{ node.label }}
+      <span v-else @click="$emit('handleItemClick', node)"
+        >📄
+        {{ node.label }}
+      </span>
     </div>
 
     <div v-if="hasChildren && isOpen" class="tree-children">
@@ -34,6 +37,7 @@ const toggle = () => {
         v-for="child in node.children"
         :key="child.id"
         :node="child"
+        @handleItemClick="$emit('handleItemClick', $event)"
       />
     </div>
   </div>

@@ -26,7 +26,9 @@ const data: TreeNode[] = [
     label: "Equity",
   },
 ];
-
+const handle = (node: TreeNode) => {
+  console.log(node);
+};
 // defineProps<{
 //   data: TreeNode[];
 // }>();
@@ -34,6 +36,11 @@ const data: TreeNode[] = [
 
 <template>
   <div>
-    <TreeItem v-for="node in data" :key="node.id" :node="node" />
+    <TreeItem
+      v-for="node in data"
+      :key="node.id"
+      :node="node"
+      @handleItemClick="handle"
+    />
   </div>
 </template>
