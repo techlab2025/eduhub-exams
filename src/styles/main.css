@@ -3620,6 +3620,14 @@ body::-webkit-scrollbar-thumb:hover {
   gap: 10px;
 }
 
+.flex {
+  display: flex;
+}
+
+.gap-10 {
+  gap: 10px;
+}
+
 /* ── Page Header ───────────────────────────────────────────── */
 .page-header {
   display: flex;

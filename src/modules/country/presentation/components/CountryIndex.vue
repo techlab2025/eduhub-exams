@@ -30,7 +30,6 @@ const headers: TableHeader[] = [
 // Pagination state
 const perPage = ref(10);
 const word = ref("");
-const totalCount = computed(() => controller.listData.value?.length);
 
 const fetchCountries = async (page: number = 1, word: string = "") => {
   const state = await controller.fetchList(
@@ -98,6 +97,16 @@ const isDraft = computed(() => {
     Object.values(data).every((v) => v == null)
   );
 });
+const SelectedRow = ref<CountryModel[]>([]);
+const setSelectef = (items: CountryModel[]) => {
+  SelectedRow.value = items;
+};
+
+const deleteSelected = () => {
+  SelectedRow.value.forEach((item) => {
+    deleteCountry(item.id!);
+  });
+};
 </script>
 
 <template>
@@ -128,20 +137,29 @@ const isDraft = computed(() => {
           />
         </div>
       </div>
-      <router-link :to="formRoute" class="btn-add">
-        <span>{{ isDraft ? "Add Country" : "Continue Adding" }}</span>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
+      <div class="flex gap-10">
+        <router-link :to="formRoute" class="btn-add">
+          <span>{{ isDraft ? "Add Country" : "Continue Adding" }}</span>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </router-link>
+        <button
+          v-if="SelectedRow.length > 0"
+          @click="deleteSelected"
+          class="btn-add"
         >
-          <path d="M12 5v14M5 12h14" />
-        </svg>
-      </router-link>
+          <span>delete</span>
+        </button>
+      </div>
     </div>
 
     <!-- ═══ Table ═══ -->
@@ -158,6 +176,7 @@ const isDraft = computed(() => {
             show-index
             hoverable
             striped
+            @selection-change="setSelectef"
           >
             <template #cell-name="{ item }">
               {{ item.title }}

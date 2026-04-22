@@ -106,7 +106,7 @@ watch(
   () => availableColumns.value,
   (newColumns) => {
     if (exportConfig.value.selectedColumns.length === 0 && newColumns.length > 0) {
-      exportConfig.value.selectedColumns = [...newColumns]
+      exportConfig.val  ue.selectedColumns = [...newColumns]
     }
   },
   { immediate: true },
