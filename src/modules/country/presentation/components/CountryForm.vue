@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { useFormsStore } from "@/stores/formsStore";
 import type CountryModel from "../../core/models/country.model";
 import AddCountryParams from "../../core/params/add.country.params";
+import MultiLangInput from "@/shared/MultiLangInput.vue";
 
-const emit = defineEmits(['updateData'])
+const emit = defineEmits(["updateData"]);
 
 const { country, formKey } = defineProps<{
   country?: CountryModel;
@@ -19,8 +20,6 @@ onBeforeRouteLeave((to, from) => {
     FormStore.showReturnWarning(formKey!);
   }
 });
-
-
 
 // Form state
 const title = ref<string>("");
@@ -47,7 +46,7 @@ const updateData = () => {
     code: code.value,
     flag: flag.value,
   });
-  const params = new AddCountryParams(title.value, code.value, flag.value);
+  const params = new AddCountryParams(title.value!, code.value, flag.value);
   emit("updateData", params);
 };
 
@@ -68,12 +67,6 @@ onMounted(() => {
     resetForm();
   }
 });
-
-const UploadedFiles = ref<string[]>([]);
-const handleFilesChange = (files: any) => {
-  UploadedFiles.value = files.map((f: any) => f);
-  console.log(UploadedFiles.value);
-};
 </script>
 
 <template>

@@ -2,10 +2,13 @@
  * Country model representing a nation's geographical and cultural data
  */
 export default class FaqsModel {
-  public readonly answer: string;
-  public readonly question: string;
+  public readonly answer: Record<string, string>;
+  public readonly question: Record<string, string>;
 
-  constructor(data: { answer: string; question: string }) {
+  constructor(data: {
+    answer: Record<string, string>;
+    question: Record<string, string>;
+  }) {
     this.answer = data.answer;
     this.question = data.question;
 
@@ -29,7 +32,15 @@ export default class FaqsModel {
   }
 
   static example: FaqsModel = new FaqsModel({
-    answer: "lorem ipsum dolor sit amet consectetur adipiscing elit",
-    question: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+    answer: {
+      en: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+      ar: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+      fr: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+    },
+    question: {
+      en: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+      ar: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+      fr: "lorem ipsum dolor sit amet consectetur adipiscing elit",
+    },
   });
 }

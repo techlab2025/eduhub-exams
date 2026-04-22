@@ -4,17 +4,18 @@ import FaqsController from "../controllers/faqs.controller";
 import AddFaqsParams from "../../core/params/add.faqs.params";
 import FaqsDetailsParams from "../../core/params/faqs.details.params";
 import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
+import MultiLangInput from "@/shared/MultiLangInput.vue";
 
 const emit = defineEmits(["update:data"]);
 
 type FaqItem = {
-  question: string;
-  answer: string;
+  question: Record<string, string>;
+  answer: Record<string, string>;
 };
 
 const createEmptyItem = (): FaqItem => ({
-  question: "",
-  answer: "",
+  question: {},
+  answer: {},
 });
 
 const data = ref<FaqItem[]>([createEmptyItem()]);
@@ -68,7 +69,6 @@ onMounted(() => {
 onUnmounted(() => {
   data.value = [];
 });
-
 </script>
 
 <template>
@@ -97,21 +97,23 @@ onUnmounted(() => {
 
         <!-- Question -->
         <div class="field">
-          <label>Question</label>
-          <textarea
-            v-model="item.question"
-            @input="updateData"
-            placeholder="Enter question..."
+          <MultiLangInput
+            @update:modelValue="item.question = $event"
+            :fieldKey="`question`"
+            :label="`question`"
+            :languages="['en', 'ar', 'fr']"
+            :modelValue="item.question"
           />
         </div>
 
         <!-- Answer -->
         <div class="field">
-          <label>Answer</label>
-          <textarea
-            v-model="item.answer"
-            @input="updateData"
-            placeholder="Enter answer..."
+          <MultiLangInput
+            @update:modelValue="item.answer = $event"
+            :fieldKey="`answer`"
+            :label="`answer`"
+            :languages="['en', 'ar', 'fr']"
+            :modelValue="item.answer"
           />
         </div>
       </div>
