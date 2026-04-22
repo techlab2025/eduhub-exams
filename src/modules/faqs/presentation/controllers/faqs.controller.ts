@@ -1,10 +1,10 @@
 import BaseController from "@/base/Presentation/Controller/baseController";
 import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
-// import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
-// import type Params from "@/base/Core/Params/params";
-// import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-// import router from "@/router";
-// import { useFormsStore } from "@/stores/formsStore";
+import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
+import type Params from "@/base/Core/Params/params";
+import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
+import router from "@/router";
+import { useFormsStore } from "@/stores/formsStore";
 import type FaqsModel from "../../core/models/faqs.model";
 import FaqsRepository from "../../data/repositories/faqs.repository";
 
@@ -32,7 +32,7 @@ export default class FaqsController extends BaseController<
       showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
-      autoRetry: true,
+      autoRetry: false,
       maxAutoRetries: 1,
     };
   }
@@ -52,29 +52,16 @@ export default class FaqsController extends BaseController<
     return FaqsController.instance;
   }
 
-  // async create(params: Params, options?: ApiCallOptions, formKey?: string) {
-  //   const FormStore = useFormsStore();
+  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+    const FormStore = useFormsStore();
 
-  //   const result = await super.create(params, options);
-  //   if (result instanceof DataSuccess) {
-  //     router.push({ name: "Countries" });
-  //     if (formKey) {
-  //       FormStore.clearFormData(formKey);
-  //     }
-  //   }
-  //   return result;
-  // }
-
-  // async update(params: Params, options?: ApiCallOptions, formKey?: string) {
-  //   const FormStore = useFormsStore();
-
-  //   const result = await super.update(params, options);
-  //   if (result instanceof DataSuccess) {
-  //     router.push({ name: "Countries" });
-  //     if (formKey) {
-  //       FormStore.clearFormData(formKey);
-  //     }
-  //   }
-  //   return result;
-  // }
+    const result = await super.create(params, { ...options, useJson: true });
+    if (result instanceof DataSuccess) {
+      router.push({ name: "Faqs" });
+      if (formKey) {
+        FormStore.clearFormData(formKey);
+      }
+    }
+    return result;
+  }
 }

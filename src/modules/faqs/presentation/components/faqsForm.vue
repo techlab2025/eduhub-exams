@@ -1,353 +1,237 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
-import { onBeforeRouteLeave, useRoute } from "vue-router";
-import { useFormsStore } from "@/stores/formsStore";
-import type FaqsModel from "../../core/models/faqs.model";
+import { ref, onMounted, onUnmounted } from "vue";
+import FaqsController from "../controllers/faqs.controller";
 import AddFaqsParams from "../../core/params/add.faqs.params";
+import FaqsDetailsParams from "../../core/params/faqs.details.params";
+import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
 
-const emit = defineEmits(["updateData"]);
+const emit = defineEmits(["update:data"]);
 
-const { country, formKey } = defineProps<{
-  country?: FaqsModel;
-  formKey?: string;
-}>();
-
-const FormStore = useFormsStore();
-onBeforeRouteLeave((to, from) => {
-  const savedData = FormStore.getFormData(formKey!);
-  if (savedData && to.path !== from.path) {
-    FormStore.showReturnWarning(formKey!);
-  }
-});
-
-// Form state
-const title = ref<string>("");
-const code = ref<string>("");
-const flag = ref<string>("");
-
-watch(
-  () => country,
-  (newCountry) => {
-    if (newCountry) {
-      title.value = newCountry.title;
-    }
-  },
-  { immediate: true },
-);
-
-const route = useRoute();
-
-const updateData = () => {
-  FormStore.setFormData(formKey!, {
-    title: title.value,
-    code: code.value,
-    flag: flag.value,
-  });
-  const params = new AddFaqsParams(title.value);
-  emit("updateData", params);
+type FaqItem = {
+  question: string;
+  answer: string;
 };
 
-const resetForm = () => {
-  title.value = "";
-  code.value = "";
-  flag.value = "";
+const createEmptyItem = (): FaqItem => ({
+  question: "",
+  answer: "",
+});
+
+const data = ref<FaqItem[]>([createEmptyItem()]);
+
+// ─── Add / Remove ───────────────────────
+const addNewItem = () => {
+  data.value.push(createEmptyItem());
+  updateData();
+};
+
+const removeItem = (index: number) => {
+  data.value.splice(index, 1);
+  updateData();
+};
+
+// ─── Update ─────────────────────────────
+const updateData = () => {
+  emit("update:data", data.value);
+};
+
+// ─── Init ───────────────────────────────
+onMounted(() => {
+  updateData();
+});
+
+const faqsController = FaqsController.getInstance();
+const SubmitData = () => {
+  faqsController.create(
+    new AddFaqsParams({
+      faqs: data.value.map((el) => {
+        return new FaqsDetailsParams({
+          question: el.question,
+          answer: el.answer,
+        });
+      }),
+    }),
+  );
+};
+
+const ShowFaqs = async () => {
+  const result = await faqsController.fetchList();
+  if (result instanceof DataSuccess) {
+    data.value = result.data;
+  }
 };
 
 onMounted(() => {
-  const saved = FormStore.getFormData(formKey!);
-  if (saved) {
-    title.value = saved.title;
-    code.value = saved.code;
-    flag.value = saved.flag;
-    updateData();
-  } else {
-    resetForm();
-  }
+  ShowFaqs();
 });
 
-const UploadedFiles = ref<string[]>([]);
-const handleFilesChange = (files: any) => {
-  UploadedFiles.value = files.map((f: any) => f);
-  console.log(UploadedFiles.value);
-};
+onUnmounted(() => {
+  data.value = [];
+});
+
 </script>
 
 <template>
-  <div class="email-form-card">
-    <!-- ── Card Header ───────────────────────────────────── -->
-    <header class="form-header">
-      <div class="header-text">
-        <h3>{{ route.params.id ? "Edit Country" : "Add New Country" }}</h3>
-        <p class="header-subtitle">
-          {{
-            route.params.id
-              ? "Update the country details below"
-              : "Fill in the country name, code and flag"
-          }}
-        </p>
-      </div>
-      <span v-if="route.params.id" class="edit-badge">Editing</span>
-    </header>
+  <div class="faq-container">
+    <!-- Header -->
+    <div class="faq-header">
+      <h3>FAQs</h3>
+      <p>Add questions and answers dynamically</p>
+    </div>
 
-    <!-- ── Divider ───────────────────────────────────────── -->
-    <div class="form-divider" />
+    <!-- List -->
+    <div class="faq-list">
+      <div v-for="(item, index) in data" :key="index" class="faq-card">
+        <!-- Card Header -->
+        <div class="card-header">
+          <span>FAQ #{{ index + 1 }}</span>
 
-    <!-- ── Fields ────────────────────────────────────────── -->
-    <div class="form-fields">
-      <!-- Email Field -->
-      <div class="field-group">
-        <label class="field-label" for="title"> faqs </label>
-        <div class="input-wrap">
+          <button
+            v-if="data.length > 1"
+            class="delete-btn"
+            @click="removeItem(index)"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Question -->
+        <div class="field">
+          <label>Question</label>
           <textarea
-            v-model="title"
-            id="title"
-            type="text"
+            v-model="item.question"
             @input="updateData"
-            placeholder="Country Title"
-            class="field-input"
-          ></textarea>
+            placeholder="Enter question..."
+          />
+        </div>
+
+        <!-- Answer -->
+        <div class="field">
+          <label>Answer</label>
+          <textarea
+            v-model="item.answer"
+            @input="updateData"
+            placeholder="Enter answer..."
+          />
         </div>
       </div>
+    </div>
+
+    <!-- Add Button -->
+    <div class="btn-container">
+      <button class="add-btn" @click="addNewItem">+ Add FAQ</button>
+      <button class="add-btn" @click="SubmitData">Save</button>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-/* ═══════════════════════════════════════════
-   EMAIL FORM — Luxury Card Design
-   ═══════════════════════════════════════════ */
+<style scoped lang="scss">
+.btn-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  .btn-primary {
+    width: 50%;
+  }
+}
 
-.email-form-card {
+.faq-container {
   background: var(--bg-main);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--border-strong);
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.04),
-    0 8px 32px rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  position: relative;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(99, 102, 241, 0.15),
-      transparent
-    );
-    pointer-events: none;
-  }
-}
-
-/* ── Form Header ────────────────────────── */
-.form-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 20px 24px 16px;
-
-  .header-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-md);
-    background: linear-gradient(
-      135deg,
-      var(--PrimaryColor-light),
-      rgba(238, 242, 255, 0.4)
-    );
-    color: var(--PrimaryColor);
-    flex-shrink: 0;
-    box-shadow:
-      0 2px 6px rgba(99, 102, 241, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  }
-
-  .header-text {
-    flex: 1;
-
-    h3 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--gray-900);
-      margin: 0;
-      letter-spacing: -0.01em;
-    }
-
-    .header-subtitle {
-      margin-top: 2px;
-      font-size: 0.8rem;
-      color: var(--gray-400);
-      margin-bottom: 0;
-    }
-  }
-
-  .edit-badge {
-    padding: 4px 12px;
-    border-radius: var(--radius-full);
-    background: linear-gradient(
-      135deg,
-      var(--warning-light),
-      rgba(254, 243, 199, 0.5)
-    );
-    color: var(--warning-dark);
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  }
-}
-
-/* ── Divider ────────────────────────────── */
-.form-divider {
-  height: 1px;
-  margin: 0 24px;
-  background: linear-gradient(
-    90deg,
-    var(--border-weak),
-    rgba(226, 232, 240, 0.3),
-    transparent
-  );
-}
-
-/* ── Form Fields ────────────────────────── */
-.form-fields {
-  padding: 20px 24px 24px;
-  // display: flex;
-  // flex-direction: column;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.field-group {
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-}
-
-.field-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--gray-700);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-
-  svg {
-    color: var(--PrimaryColor);
-    flex-shrink: 0;
-  }
-}
-
-.input-wrap {
-  position: relative;
-}
-
-.field-input {
-  width: 100%;
-  padding: 12px 16px;
   border: 1px solid var(--border-weak);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  color: var(--gray-800);
-  background: var(--gray-50);
-  outline: none;
-  transition: all 0.25s ease;
-  font-family: var(--font-family);
+  border-radius: 16px;
+  padding: 20px;
+}
 
-  &::placeholder {
+/* Header */
+.faq-header {
+  margin-bottom: 16px;
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.85rem;
     color: var(--gray-400);
   }
+}
 
-  &:focus {
+/* List */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Card */
+.faq-card {
+  border: 1px solid var(--border-weak);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--gray-50);
+  transition: 0.25s;
+
+  &:hover {
     border-color: var(--PrimaryColor);
     background: var(--bg-main);
-    box-shadow:
-      0 0 0 3px var(--PrimaryColor-light),
-      0 2px 8px rgba(99, 102, 241, 0.06);
-  }
-
-  &:hover:not(:focus) {
-    border-color: var(--gray-300);
-    background: var(--bg-main);
   }
 }
 
-/* ── Deep: Custom Input Select ──────────── */
-:deep(.myacc) {
-  border: none;
+/* Header inside card */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-weight: 700;
 }
 
-:deep(.AccordionPanel) {
-  border: 1px solid var(--border-weak) !important;
-  border-radius: var(--radius-md) !important;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: var(--gray-50);
+/* Fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
 
-  &:hover {
-    border-color: var(--PrimaryColor) !important;
+  label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  textarea {
+    resize: none;
+    min-height: 80px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-weak);
+    background: white;
+    transition: 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: var(--PrimaryColor);
+      box-shadow: 0 0 0 2px var(--PrimaryColor-light);
+    }
   }
 }
 
-:deep(.AccordionHeader) {
-  padding: 12px 16px;
+/* Buttons */
+.add-btn {
+  margin-top: 16px;
+  width: 50%;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--PrimaryColor);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-btn {
   background: transparent;
   border: none;
-  font-weight: 600;
-  color: var(--gray-800);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  color: red;
   cursor: pointer;
-  transition: background 0.2s ease;
-  font-size: 0.9rem;
-
-  &:hover {
-    background: var(--PrimaryColor-light);
-    color: var(--PrimaryColor);
-  }
-}
-
-:deep(.AccordionContent) {
-  background: var(--bg-main);
-  color: var(--gray-600);
-  padding: 12px 16px;
-  font-size: 0.875rem;
-  line-height: 1.6;
-}
-
-/* ── Responsive ─────────────────────────── */
-@media (max-width: 600px) {
-  .form-header {
-    padding: 16px;
-    flex-wrap: wrap;
-  }
-
-  .form-fields {
-    padding: 16px;
-    gap: 16px;
-  }
-
-  .form-divider {
-    margin: 0 16px;
-  }
-
-  .edit-badge {
-    display: none;
-  }
 }
 </style>

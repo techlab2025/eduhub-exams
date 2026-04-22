@@ -19,10 +19,10 @@ watch(currentDialog, (newDialog) => {
   if (newDialog) {
     isVisible.value = true;
     isClosing.value = false;
-    
+
     // Clear existing timer
     if (autoCloseTimer) clearTimeout(autoCloseTimer);
-    
+
     // Auto-close logic
     const duration = newDialog.duration ?? 3000;
     if (duration > 0) {
@@ -100,7 +100,7 @@ const showActions = computed(() => {
 function closeWithAnimation() {
   isClosing.value = true;
   isVisible.value = false;
-  
+
   if (autoCloseTimer) {
     clearTimeout(autoCloseTimer);
     autoCloseTimer = null;
@@ -108,8 +108,8 @@ function closeWithAnimation() {
 }
 
 function handleAfterLeave() {
-  isClosing.value = false;
-  dialogManager.closeDialog();
+  // isClosing.value = false;
+  // dialogManager.closeDialog();
 }
 
 function handleClose() {
@@ -179,6 +179,20 @@ function getActionClass(type?: string): string {
       return "dialog-action-secondary";
   }
 }
+
+watch(
+  () => isVisible.value,
+  () => {
+    console.log(isVisible.value, "isVisible.value");
+  },
+);
+
+watch(
+  () => isClosing.value,
+  () => {
+    console.log(isClosing.value, "isClosing.value");
+  },
+);
 </script>
 
 <template>
@@ -328,6 +342,10 @@ function getActionClass(type?: string): string {
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
+
+  &.is-closing {
+    display: none;
+  }
 }
 
 /* Dialog Container */

@@ -294,7 +294,6 @@ export default abstract class BaseApiService extends ServicesInterface {
 
     });
 
-    console.log(mergedOptions, "mergedOptions");
 
 
     return this.call({
