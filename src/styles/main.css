@@ -4752,6 +4752,7 @@ body div {
 
 .p-drawer .p-drawer-header {
   background-color: var(--sidebar-bg) !important;
+  display: none;
 }
 
 .p-drawer .p-drawer-content {

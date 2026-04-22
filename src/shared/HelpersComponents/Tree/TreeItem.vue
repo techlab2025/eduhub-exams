@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AddBranch from "@/shared/icons/AddBranch.vue";
+import FolderIcon from "@/shared/icons/FolderIcon.vue";
 import { ref } from "vue";
 export interface TreeNode {
   id: number | string;
@@ -22,9 +24,16 @@ const toggle = () => {
 <template>
   <div class="tree-item">
     <div class="tree-label">
-      <span v-if="hasChildren" @click="toggle">
+      <!-- <span v-if="hasChildren" @click="toggle">
         {{ isOpen ? "📂" : "📁" }}
         {{ node.label }}
+      </span> -->
+      <span class="tree-label-item" v-if="hasChildren" @click="toggle">
+        <AddBranch />
+        <FolderIcon />
+        <span>
+          {{ node.label }}
+        </span>
       </span>
       <span v-else @click="$emit('handleItemClick', node)"
         >📄
@@ -51,6 +60,12 @@ const toggle = () => {
 .tree-label {
   cursor: pointer;
   display: flex;
+  align-items: center;
+  gap: 6px;
+
+}
+.tree-label-item{
+    display: flex;
   align-items: center;
   gap: 6px;
 }

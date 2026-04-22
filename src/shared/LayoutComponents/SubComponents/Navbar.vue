@@ -13,6 +13,7 @@ import { useRouter } from "vue-router";
 import Drawer from "primevue/drawer";
 import SidebarNavigation from "./SidebarNavigation.vue";
 import HeaderSidebarIcon from "@/shared/icons/HeaderIcons/HeaderSidebarIcon.vue";
+import TechlabLogo from "@/assets/images/TechlabLogo.png";
 
 const props = defineProps({
   open: {
@@ -42,6 +43,7 @@ const DrawerVisible = ref(false);
 <template>
   <header class="header">
     <nav class="nav">
+      <!-- <img class="logo-img" :src="TechlabLogo" alt="Techlab Logo" /> -->
       <div class="search">
         <SearchIcon />
         <input type="serach" placeholder="Search What You Want" />
@@ -85,4 +87,10 @@ const DrawerVisible = ref(false);
   </header>
 </template>
 
-<style scoped></style>
+<!-- <style scoped>
+.logo-img {
+  background-color: red;
+  width: 100px;
+  height: 100px;
+}
+</style> -->
