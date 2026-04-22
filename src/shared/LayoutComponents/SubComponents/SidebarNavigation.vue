@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { ref, type Component } from "vue";
 import SettingIcon from "@/shared/icons/SidebarIcons/SettingIcon.vue";
 import DocumentIcon from "@/shared/icons/BreadcrumbIcons/DocumentIcon.vue";
 
 const route = useRoute();
-const router = useRouter();
 const emit = defineEmits(["clickItem"]);
 interface MenuItem {
   link: string;
