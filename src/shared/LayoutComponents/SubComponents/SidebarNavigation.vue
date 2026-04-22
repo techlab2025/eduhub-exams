@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import { ref, type Component } from "vue";
-import BackIcon from "@/shared/icons/BackIcon.vue";
-
-// Example icons (replace with yours)
-// import IconDashboard from "@/shared/icons/IconDashboard.vue";
-import IconSettings from "@/shared/icons/IconSetting.vue";
 import SettingIcon from "@/shared/icons/SidebarIcons/SettingIcon.vue";
 import DocumentIcon from "@/shared/icons/BreadcrumbIcons/DocumentIcon.vue";
 
 const route = useRoute();
 const router = useRouter();
+const emit = defineEmits(["clickItem"]);
 interface MenuItem {
   link: string;
   name: string;
@@ -22,9 +18,6 @@ interface MenuSection {
   group: string;
   items: MenuItem[];
 }
-const RouterBack = () => {
-  router.back();
-};
 
 const menu = ref<MenuSection[]>([
   {
@@ -79,6 +72,7 @@ const menu = ref<MenuSection[]>([
             :to="item.link"
             class="menu-item"
             :class="{ active: route.path === item.link }"
+            @click="$emit('clickItem')"
           >
             <component :is="item.icon" class="icon" />
 

@@ -14,8 +14,15 @@
   // border: 1px solid var(--border-weak);
   border-top: none;
 
-  @media (max-width: 768px) {
+  // @media (max-width: 768px) {
+  //   display: none;
+  // }
+  .sidebar-drawer {
     display: none;
+    padding-top: 5px;
+    @media (max-width: 768px) {
+      display: block;
+    }
   }
 
   .nav {

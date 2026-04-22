@@ -166,3 +166,13 @@ body {
   height: 8px !important;
   border-radius: 50px !important;
 }
+.p-drawer .p-drawer-header {
+  background-color: var(--sidebar-bg) !important;
+}
+.p-drawer .p-drawer-content {
+  background-color: var(--sidebar-bg) !important;
+  padding: 0 !important;
+  .sidebar {
+    width: 100% !important;
+  }
+}

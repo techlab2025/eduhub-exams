@@ -32,8 +32,12 @@ body {
   width: 100%;
   font-family: var(--font-family);
   background-color: var(--bg-main);
+
   .sidebar-container {
     padding: 26px;
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   .content-wrapper {
@@ -53,6 +57,9 @@ body {
       width: 96%;
       margin-block: 6px;
     }
+    @media (max-width: 768px) {
+      width: 100%;
+    }
   }
 
   .p-accordioncontent-content {
@@ -65,14 +72,14 @@ body {
 
   .main-content {
     background-color: var(--bg-main);
-    // padding: var(--md-size);
-    // border-radius: var(--radius-lg);
-    // border: 1px solid var(--border-strong);
-    // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
     overflow: hidden;
     z-index: 999;
     position: relative;
     min-height: 82vh;
     padding: 0 26px;
+    @media (max-width: 768px) {
+      padding: 14px;
+    }
   }
 }

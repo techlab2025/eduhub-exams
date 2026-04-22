@@ -10,6 +10,10 @@ import HeaderMessgaesIcon from "@/shared/icons/HeaderIcons/HeaderMessgaesIcon.vu
 import HeaderNotificationIcon from "@/shared/icons/HeaderIcons/HeaderNotificationIcon.vue";
 import EmployeeImage from "@/assets/images/headerIMages/employee.jpg";
 import { useRouter } from "vue-router";
+import Drawer from "primevue/drawer";
+import SidebarNavigation from "./SidebarNavigation.vue";
+import HeaderSidebarIcon from "@/shared/icons/HeaderIcons/HeaderSidebarIcon.vue";
+
 const props = defineProps({
   open: {
     type: Boolean,
@@ -32,6 +36,7 @@ const isDropMenuOpen = ref(false);
 const toggleDropMenu = () => {
   isDropMenuOpen.value = !isDropMenuOpen.value;
 };
+const DrawerVisible = ref(false);
 </script>
 
 <template>
@@ -65,6 +70,15 @@ const toggleDropMenu = () => {
               </li>
             </ul>
           </div>
+        </div>
+        <div class="sidebar-drawer">
+          <button class="cursor-pointer" @click="DrawerVisible = true">
+            <HeaderSidebarIcon />
+          </button>
+          <Drawer position="right" v-model:visible="DrawerVisible">
+            <template #header> </template>
+            <SidebarNavigation @clickItem="DrawerVisible = false" />
+          </Drawer>
         </div>
       </div>
     </nav>

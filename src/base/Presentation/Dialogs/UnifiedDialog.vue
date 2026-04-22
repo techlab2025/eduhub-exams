@@ -179,20 +179,6 @@ function getActionClass(type?: string): string {
       return "dialog-action-secondary";
   }
 }
-
-watch(
-  () => isVisible.value,
-  () => {
-    console.log(isVisible.value, "isVisible.value");
-  },
-);
-
-watch(
-  () => isClosing.value,
-  () => {
-    console.log(isClosing.value, "isClosing.value");
-  },
-);
 </script>
 
 <template>
