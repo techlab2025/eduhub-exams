@@ -8,20 +8,28 @@
   background: $SidebarBg;
   color: $SidebarTextColor;
   // padding: 26px;
-  padding: $XlSize 0;
+  padding: 0;
   border-radius: 12px;
 
   .sidebar-wrapper {
     @include flex-column(nowrap, flex-start, stretch);
     height: 100%;
+
     .logo-container {
-      padding: 10px 20px;
+      // padding: 10px 20px;
       text-align: center;
+      max-width: 120px;
+      margin-left: auto;
+      margin-right: auto;
+      menu-item
+      // margin: auto;
       .logo {
         font-size: 24px;
         font-weight: 700;
         font-family: "Regular";
         color: #ffffff;
+        width: 100%;
+        height: 100%;
       }
     }
 
@@ -48,7 +56,7 @@
         transition: 0.2s;
         font-size: $MdSize;
         font-weight: $BaseFontSemiBoldWeight;
-        font-family: "Regular";
+        font-family: "Light";
 
         .icon {
           width: 18px;
@@ -72,11 +80,11 @@
         }
 
         &:hover {
-          background: rgba(255, 255, 255, 0.05);
+          background: #4faf7c0f;
         }
 
         &.active {
-          background: #ffffff0d;
+          background: #4faf7c0f;
           color: #ffffff;
           position: relative;
           &::before {

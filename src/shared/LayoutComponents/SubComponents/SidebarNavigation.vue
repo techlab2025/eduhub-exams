@@ -3,7 +3,7 @@ import { useRoute } from "vue-router";
 import { ref, type Component } from "vue";
 import SettingIcon from "@/shared/icons/SidebarIcons/SettingIcon.vue";
 import DocumentIcon from "@/shared/icons/BreadcrumbIcons/DocumentIcon.vue";
-
+import TechlabLogo from "@/assets/images/TechlabLogo.png";
 const route = useRoute();
 const emit = defineEmits(["clickItem"]);
 interface MenuItem {
@@ -55,7 +55,8 @@ const menu = ref<MenuSection[]>([
   <aside class="sidebar">
     <div class="sidebar-wrapper">
       <div class="logo-container">
-        <h2 class="logo">Logo</h2>
+        <img class="logo" :src="TechlabLogo" alt="Techlab Logo" />
+        <!-- <h2 class="logo">Logo</h2> -->
       </div>
 
       <!-- Menu -->
