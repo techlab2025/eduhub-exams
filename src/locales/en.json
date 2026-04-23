@@ -20,6 +20,9 @@
     "update_the_email_details": "Update the email details below",
     "fill_in_the_email_address": "Fill in the email address and type",
     "editing": "Editing",
+
+
+    
     "employee_type": "Employee Type",
     "unsaved_changes": "Unsaved Changes",
     "return_to_form": "Click here to return to the form",
@@ -32,7 +35,6 @@
     "continue_adding": "Continue Adding",
     "update_document_details": "Update the document details below",
     "fill_document_details": "Fill in the document information",
-    "editing": "Editing",
     "title": "Title",
     "subject_id": "Subject ID",
     "stage_id": "Stage ID",
@@ -46,5 +48,20 @@
     "no_documents_yet": "No documents yet",
     "add_first_document": "Add the first document to get started",
     "documents": "Documents",
-    "optional": "optional"
+    "optional": "optional",
+    "export_to_pdf": "Export to PDF",
+    "export_to_excel": "Export to Excel",
+    "export_data": "Export Data",
+    "select_columns": "Select Columns",
+    "all_columns": "All Columns",
+    "clear_selection": "Clear Selection",
+    "include_header": "Include Header",
+    "auto_fit": "Auto-Fit Columns",
+    "preview": "Preview",
+    "no_data": "No data available",
+    "document_management": "Document Management",
+    "manage_documents": "Manage system documents",
+    "create_document": "Create Document",
+    "document_title": "Document Title",
+    "required_field": "Required Field"
 }
