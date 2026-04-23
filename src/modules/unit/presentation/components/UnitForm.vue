@@ -83,16 +83,56 @@ onMounted(() => {
   }
 });
 
-const EducationTypes = ref<TitleInterface<EducationType>[]>([
+const EducationTypes = ref<TitleInterface<number>[]>([
   new TitleInterface({
-    id: EducationType.General,
-    title: "General",
+    id: 1,
+    title: "الرياضيات",
   }),
   new TitleInterface({
-    id: EducationType.Technical,
-    title: "Technical",
+    id: 2,
+    title: "الفيزياء",
+  }),
+  new TitleInterface({
+    id: 3,
+    title: "الكيمياء",
+  }),
+  new TitleInterface({
+    id: 4,
+    title: "الاحياء",
+  }),
+  new TitleInterface({
+    id: 5,
+    title: "العلوم",
   }),
 ]);
+
+const Stages = ref<TitleInterface<number>[]>([
+  new TitleInterface({
+    title: "المرحلة الإعدادية",
+    id: 1,
+  }),
+  new TitleInterface({
+    title: "المرحلة الابتدائية",
+    id: 2,
+  }),
+]);
+
+watch(
+  () => unit,
+  (newUnit) => {
+    if (!newUnit) return;
+    stage.value = new TitleInterface<number>({
+      id: newUnit.Stage.id,
+      title: newUnit.Stage.title,
+    });
+
+    subject.value = new TitleInterface<number>({
+      id: newUnit.Subject.id,
+      title: newUnit.Subject.title,
+    });
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -133,28 +173,36 @@ const EducationTypes = ref<TitleInterface<EducationType>[]>([
       </div>
 
       <div class="field-group">
-        <!-- <label class="field-label" for="code"> Education Type </label> -->
         <div class="input-wrap">
           <UpdatedCustomInputSelect
             :label="`Subject`"
             :static-options="EducationTypes"
             :model-value="subject"
             id="subject"
-            @update:model-value="updateData"
+            @update:model-value="
+              (val) => {
+                subject = val as TitleInterface<number>;
+                updateData();
+              }
+            "
             placeholder="Subject"
           />
         </div>
       </div>
 
       <div class="field-group">
-        <!-- <label class="field-label" for="code"> Education Type </label> -->
         <div class="input-wrap">
           <UpdatedCustomInputSelect
             :label="`Stage`"
-            :static-options="EducationTypes"
+            :static-options="Stages"
             :model-value="stage"
             id="stage"
-            @update:model-value="updateData"
+            @update:model-value="
+              (val) => {
+                stage = val as TitleInterface<number>;
+                updateData();
+              }
+            "
             placeholder="Stage"
           />
         </div>

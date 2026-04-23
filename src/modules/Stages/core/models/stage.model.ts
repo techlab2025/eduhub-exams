@@ -40,7 +40,7 @@ export default class StageModel {
 
   static example: StageModel = new StageModel({
     id: 1,
-    title: "Egypt",
+    title: "المرحلة الثانوية",
     EducationType: new TitleInterface({
       id: EducationType.General,
       title: "General",

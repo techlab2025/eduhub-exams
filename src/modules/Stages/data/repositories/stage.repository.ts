@@ -39,11 +39,20 @@ export default class StageRepository extends BaseRepository<
       StageModel.example,
       {
         ...StageModel.example,
-        title: "Stage 2 ",
+        title: "المرحلة الإعدادية",
         id: 2,
         EducationType: new TitleInterface({
           id: EducationType.Technical,
           title: "Technical",
+        }),
+      },
+      {
+        ...StageModel.example,
+        title: "المرحلة الابتدائية",
+        id: 3,
+        EducationType: new TitleInterface({
+          id: EducationType.General,
+          title: "General",
         }),
       },
     ];

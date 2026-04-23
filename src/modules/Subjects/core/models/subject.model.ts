@@ -42,10 +42,10 @@ export default class SubjectModel {
 
   static example: SubjectModel = new SubjectModel({
     id: 1,
-    title: "Mathematics",
+    title: "الرياضيات",
     Stage: new TitleInterface({
       id: 1,
-      title: "Stage 1",
+      title: "المرحلة الثانوية",
     }),
   });
 }

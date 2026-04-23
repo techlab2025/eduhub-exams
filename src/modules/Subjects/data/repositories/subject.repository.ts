@@ -39,11 +39,20 @@ export default class SubjectRepository extends BaseRepository<
       SubjectModel.example,
       {
         ...SubjectModel.example,
-        title: "Stage 2 ",
+        title: "الفيزياء",
         id: 2,
         Stage: new TitleInterface({
           id: 2,
-          title: "Stage 2",
+          title: "المرحلة الإعدادية",
+        }),
+      },
+      {
+        ...SubjectModel.example,
+        title: "الكيمياء",
+        id: 3,
+        Stage: new TitleInterface({
+          id: 3,
+          title: "المرحلة الابتدائية",
         }),
       },
     ];

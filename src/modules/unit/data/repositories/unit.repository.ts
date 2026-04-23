@@ -38,11 +38,20 @@ export default class UnitRepository extends BaseRepository<
       UnitModel.example,
       {
         ...UnitModel.example,
-        title: "Subject 2 ",
+        title: "الوحدة الثانية",
         id: 2,
         Subject: new TitleInterface({
           id: 2,
-          title: "Subject 2",
+          title: "الفيزياء",
+        }),
+      },
+      {
+        ...UnitModel.example,
+        title: "الوحدة الثالثة",
+        id: 3,
+        Subject: new TitleInterface({
+          id: 3,
+          title: "الكيمياء",
         }),
       },
     ];

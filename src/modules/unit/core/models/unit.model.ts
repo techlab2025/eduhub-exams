@@ -49,14 +49,14 @@ export default class UnitModel {
 
   static example: UnitModel = new UnitModel({
     id: 1,
-    title: "Mathematics",
+    title: "الوحدة الأولى",
     Subject: new TitleInterface({
       id: 1,
-      title: "Subject 1",
+      title: "الرياضيات",
     }),
     Stage: new TitleInterface({
       id: 1,
-      title: "Stage 1",
+      title: "المرحلة الثانوية",
     }),
   });
 }

@@ -191,7 +191,7 @@ const deleteSelected = () => {
               <div class="row-actions">
                 <router-link
                   class="action-btn edit"
-                  :to="`/subjects/edit/${item.id}`"
+                  :to="`/units/edit/${item.id}`"
                   title="Edit"
                 >
                   <svg
