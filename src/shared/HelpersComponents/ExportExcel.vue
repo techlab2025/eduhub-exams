@@ -2,7 +2,7 @@
 <script lang="ts" setup>
   import { ref, computed, watch, nextTick } from 'vue';
   import * as XLSX from 'xlsx';
-  // import { saveAs } from 'file-saver';
+  import { saveAs } from 'file-saver';
   // import ExportIcon from '@/shared/icons/ExportIcon.vue';
   import SaveIcon from '@/shared/icons/SaveIcon.vue';
 

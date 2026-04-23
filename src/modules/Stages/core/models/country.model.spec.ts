@@ -1,78 +1,59 @@
 import { describe, it, expect } from 'vitest';
-import CountryModel from './country.model';
+import StageModel from './stage.model';
+import TitleInterface from '@/base/Data/Models/titleInterface';
+import { EducationType } from '../constants/educationtype.enum';
 
-describe('CountryModel', () => {
-    describe('constructor', () => {
-        it('should create a valid country model', () => {
-            const model = new CountryModel({
-                id: 1,
-                title: 'Egypt',
-                code: 'EG',
-                flag: '🇪🇬',
-            });
+const makeEducationType = () => new TitleInterface({ id: EducationType.General, title: 'General' });
 
-            expect(model.id).toBe(1);
-            expect(model.title).toBe('Egypt');
-            expect(model.code).toBe('EG');
-            expect(model.flag).toBe('🇪🇬');
-        });
+describe('StageModel', () => {
+  describe('constructor', () => {
+    it('creates a valid stage model', () => {
+      const model = new StageModel({
+        id: 1,
+        title: 'المرحلة الثانوية',
+        EducationType: makeEducationType(),
+      });
 
-        it('should handle missing id', () => {
-            const model = new CountryModel({
-                title: 'Jordan',
-                code: 'JO',
-                flag: '🇯🇴',
-            });
-
-            expect(model.id).toBeUndefined();
-            expect(model.title).toBe('Jordan');
-        });
+      expect(model.id).toBe(1);
+      expect(model.title).toBe('المرحلة الثانوية');
+      expect(model.EducationType).toBeDefined();
     });
 
-    describe('fromJson', () => {
-        it('should create model from API response', () => {
-            const json = {
-                id: 5,
-                title: 'Saudi Arabia',
-                code: 'SA',
-                flag: '🇸🇦',
-            };
+    it('handles missing id', () => {
+      const model = new StageModel({
+        title: 'Primary',
+        EducationType: makeEducationType(),
+      });
 
-            const model = CountryModel.fromJson(json);
-
-            expect(model.id).toBe(5);
-            expect(model.title).toBe('Saudi Arabia');
-            expect(model.code).toBe('SA');
-            expect(model.flag).toBe('🇸🇦');
-        });
-
-        it('should throw error when JSON is null', () => {
-            expect(() => CountryModel.fromJson(null)).toThrow('Cannot create CountryModel from null or undefined');
-        });
-
-        it('should throw error when JSON is undefined', () => {
-            expect(() => CountryModel.fromJson(undefined)).toThrow('Cannot create CountryModel from null or undefined');
-        });
+      expect(model.id).toBeUndefined();
+      expect(model.title).toBe('Primary');
     });
 
-    describe('example', () => {
-        it('should provide a valid example instance', () => {
-            expect(CountryModel.example).toBeInstanceOf(CountryModel);
-            expect(CountryModel.example.title).toBe('Egypt');
-            expect(CountryModel.example.code).toBe('EG');
-        });
+    it('is frozen after construction', () => {
+      const model = new StageModel({
+        id: 2,
+        title: 'Secondary',
+        EducationType: makeEducationType(),
+      });
+
+      expect(Object.isFrozen(model)).toBe(true);
+    });
+  });
+
+  describe('fromJson', () => {
+    it('throws when JSON is null', () => {
+      expect(() => StageModel.fromJson(null)).toThrow();
     });
 
-    describe('immutability', () => {
-        it('should be frozen', () => {
-            const model = new CountryModel({
-                id: 1,
-                title: 'Egypt',
-                code: 'EG',
-                flag: '🇪🇬',
-            });
-
-            expect(Object.isFrozen(model)).toBe(true);
-        });
+    it('throws when JSON is undefined', () => {
+      expect(() => StageModel.fromJson(undefined)).toThrow();
     });
+  });
+
+  describe('example', () => {
+    it('provides a valid example instance', () => {
+      expect(StageModel.example).toBeInstanceOf(StageModel);
+      expect(typeof StageModel.example.title).toBe('string');
+    });
+  });
 });

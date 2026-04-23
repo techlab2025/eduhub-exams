@@ -1,49 +1,39 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import CountryApiService from "./country.api-service";
-import { CountryEndpoints } from "./country.api.endpoints";
+import { describe, it, expect, beforeEach } from 'vitest';
+import StageApiService from './stage.api-service';
+import { StageEndpoints } from './stage.api.endpoints';
 
-const endpoints = new CountryEndpoints();
+const endpoints = new StageEndpoints();
 
-describe("CountryApiService", () => {
-  let service: CountryApiService;
+describe('StageApiService', () => {
+  let service: StageApiService;
 
   beforeEach(() => {
-    service = CountryApiService.getInstance();
+    service = StageApiService.getInstance();
   });
 
-  describe("singleton pattern", () => {
-    it("should return the same instance", () => {
-      const instance1 = CountryApiService.getInstance();
-      const instance2 = CountryApiService.getInstance();
-
-      expect(instance1).toBe(instance2);
-    });
+  it('returns the same singleton instance', () => {
+    const a = StageApiService.getInstance();
+    const b = StageApiService.getInstance();
+    expect(a).toBe(b);
   });
 
-  describe("endpoints configuration", () => {
-    it("should have index endpoint", () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.index).toBe(endpoints.index);
-    });
+  it('has index endpoint configured', () => {
+    const serviceEndpoints = (service as any).stageEndpoints;
+    expect(serviceEndpoints.index).toBe(endpoints.index);
+  });
 
-    it("should have show endpoint", () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.show).toBe(endpoints.show);
-    });
+  it('has store endpoint configured', () => {
+    const serviceEndpoints = (service as any).stageEndpoints;
+    expect(serviceEndpoints.store).toBe(endpoints.store);
+  });
 
-    it("should have create endpoint (mapped from store)", () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.create).toBe(endpoints.store);
-    });
+  it('has update endpoint configured', () => {
+    const serviceEndpoints = (service as any).stageEndpoints;
+    expect(serviceEndpoints.update).toBe(endpoints.update);
+  });
 
-    it("should have update endpoint", () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.update).toBe(endpoints.update);
-    });
-
-    it("should have delete endpoint", () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.delete).toBe(endpoints.delete);
-    });
+  it('has delete endpoint configured', () => {
+    const serviceEndpoints = (service as any).stageEndpoints;
+    expect(serviceEndpoints.delete).toBe(endpoints.delete);
   });
 });

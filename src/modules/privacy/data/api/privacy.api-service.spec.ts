@@ -1,49 +1,39 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import CountryApiService from './country.api-service';
-import { CountryEndpoints } from './country.api.endpoints';
+import PrivacyApiService from './privacy.api-service';
+import { PrivacyEndpoints } from './privacy.api.endpoints';
 
-const endpoints = new CountryEndpoints();
+const endpoints = new PrivacyEndpoints();
 
-describe('CountryApiService', () => {
-  let service: CountryApiService;
+describe('PrivacyApiService', () => {
+  let service: PrivacyApiService;
 
   beforeEach(() => {
-    service = CountryApiService.getInstance();
+    service = PrivacyApiService.getInstance();
   });
 
-  describe('singleton pattern', () => {
-    it('should return the same instance', () => {
-      const instance1 = CountryApiService.getInstance();
-      const instance2 = CountryApiService.getInstance();
-
-      expect(instance1).toBe(instance2);
-    });
+  it('returns the same singleton instance', () => {
+    const a = PrivacyApiService.getInstance();
+    const b = PrivacyApiService.getInstance();
+    expect(a).toBe(b);
   });
 
-  describe('endpoints configuration', () => {
-    it('should have index endpoint', () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.index).toBe(endpoints.index);
-    });
+  it('has index endpoint configured', () => {
+    const ep = (service as any).privacyEndpoints;
+    expect(ep.index).toBe(endpoints.index);
+  });
 
-    it('should have show endpoint', () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.show).toBe(endpoints.show);
-    });
+  it('has store endpoint configured', () => {
+    const ep = (service as any).privacyEndpoints;
+    expect(ep.store).toBe(endpoints.store);
+  });
 
-    it('should have create endpoint (mapped from store)', () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.create).toBe(endpoints.store);
-    });
+  it('has update endpoint configured', () => {
+    const ep = (service as any).privacyEndpoints;
+    expect(ep.update).toBe(endpoints.update);
+  });
 
-    it('should have update endpoint', () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.update).toBe(endpoints.update);
-    });
-
-    it('should have delete endpoint', () => {
-      const serviceEndpoints = (service as any).endpoints;
-      expect(serviceEndpoints.delete).toBe(endpoints.delete);
-    });
+  it('has delete endpoint configured', () => {
+    const ep = (service as any).privacyEndpoints;
+    expect(ep.delete).toBe(endpoints.delete);
   });
 });

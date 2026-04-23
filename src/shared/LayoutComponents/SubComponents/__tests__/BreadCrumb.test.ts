@@ -9,10 +9,14 @@ vi.mock('vue-router', () => ({
     push: vi.fn(),
     replace: vi.fn(),
     resolve: vi.fn(),
+    getRoutes: () => [],
   }),
   useRoute: () => ({
     query: {},
     params: {},
+    name: 'Home',
+    fullPath: '/',
+    matched: [],
   }),
   createRouter: vi.fn(() => ({
     install: vi.fn(),
