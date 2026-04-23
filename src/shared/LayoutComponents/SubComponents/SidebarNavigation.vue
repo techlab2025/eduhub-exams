@@ -52,6 +52,11 @@ const menu = ref<MenuSection[]>([
         name: "Stages",
         icon: SettingIcon,
       },
+      {
+        link: "/subjects",
+        name: "Subjects",
+        icon: SettingIcon,
+      },
     ],
   },
   {
