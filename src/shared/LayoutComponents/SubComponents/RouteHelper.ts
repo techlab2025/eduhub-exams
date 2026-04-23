@@ -1,4 +1,4 @@
-import type { RouteLocationMatched } from "vue-router";
+import type { RouteLocationMatched } from 'vue-router';
 
 type BreadCrumbItem = {
   label: string;
@@ -13,10 +13,9 @@ export const buildBreadcrumb = (route: any, router: any): BreadCrumbItem[] => {
     return Params;
   };
 
-  // 1️⃣ Home always
   result.push({
-    label: "Home",
-    url: "/",
+    label: 'Home',
+    url: '/',
   });
 
   const added = new Set<string>();
@@ -26,29 +25,19 @@ export const buildBreadcrumb = (route: any, router: any): BreadCrumbItem[] => {
     if (!r.meta?.breadcrumb || added.has(r.name as string)) return;
 
     if (r.meta.parent) {
-      const parentRoute = allRoutes.find(
-        (pr: any) => pr.name === r.meta.parent,
-      );
+      const parentRoute = allRoutes.find((pr: any) => pr.name === r.meta.parent);
       if (parentRoute) addRoute(parentRoute as any);
     }
 
     result.push({
       label: (r.meta.breadcrumb || r.name) as string,
-      url: r.path.replace(
-        /\/:[^/]+(\?)?/g,
-        `/${String(getUrlWithParams(r, route))}`,
-      ),
+      url: r.path.replace(/\/:[^/]+(\?)?/g, `/${String(getUrlWithParams(r, route))}`),
     });
 
     added.add(r.name as string);
   };
 
   route.matched.forEach(addRoute);
-
-  // // ✅ Make last breadcrumb not clickable
-  // if (result.length > 0) {
-  //   delete result[result.length - 1].url
-  // }
 
   return result;
 };
