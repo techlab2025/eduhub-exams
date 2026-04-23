@@ -13,7 +13,7 @@ import NavigationBarMobile from "./SubComponents/NavigationBarMobile.vue";
     <section class="content-wrapper">
       <Navbar />
       <div class="main-content">
-        <BreadCrumb />
+        <BreadCrumb  :BreadCramps="[]" />
         <slot />
       </div>
       <NavigationBarMobile class="mobile-nav" />
