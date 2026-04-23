@@ -72,6 +72,7 @@
     border-radius: 20px !important;
     cursor: pointer;
   }
+
   .email-crud-example {
     padding: 20px;
     /* max-width: 800px; */
@@ -93,7 +94,7 @@
   }
 
   .email-type {
-    color: #666;
+    color: var(--gray-600);
     font-size: 0.9em;
   }
 
@@ -106,7 +107,7 @@
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    background-color: #f9f9f9;
+    background-color: var(--gray-100);
   }
 
   .email-form input,
@@ -125,7 +126,7 @@
 
   button {
     padding: 8px 16px;
-    background-color: #007bff;
+    background-color: var(--PrimaryColor);
     color: white;
     border: none;
     border-radius: 4px;
@@ -133,14 +134,14 @@
   }
 
   button:hover {
-    background-color: #0056b3;
+    background-color: var(--PrimaryColor-dark);
   }
 
   .error {
     margin-top: 20px;
     padding: 10px;
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: var(--danger-light);
+    color: var(--danger-dark);
     border: 1px solid #f5c6cb;
     border-radius: 4px;
   }

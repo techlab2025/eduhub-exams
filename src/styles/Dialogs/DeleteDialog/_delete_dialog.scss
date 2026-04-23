@@ -1,4 +1,4 @@
-@use "../../variables" as *;
+@use '../../variables' as *;
 
 .delete-dialog {
   padding: 3rem;
@@ -16,13 +16,13 @@
   }
 
   .dialog-title {
-    font-family: "bold", sans-serif;
+    font-family: 'Bold', sans-serif;
     font-size: 1.5rem;
     color: var(--gray-900);
   }
 
   p {
-    font-family: "Regular", sans-serif;
+    font-family: 'Regular', sans-serif;
     font-size: 1rem;
     color: var(--gray-500);
     margin-bottom: var(--space-sm);

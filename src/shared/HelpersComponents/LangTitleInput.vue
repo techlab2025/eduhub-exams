@@ -370,7 +370,7 @@
     position: absolute;
     top: -2px;
     right: -2px;
-    background: #10b981;
+    background: var(--success);
     color: white;
     border-radius: 50%;
     width: 16px;
@@ -388,7 +388,7 @@
   }
 
   .validation-error {
-    color: #ef4444;
+    color: var(--danger);
     font-size: 0.875rem;
     margin-top: 0.25rem;
   }

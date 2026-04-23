@@ -98,9 +98,9 @@
   const isRateLimited = computed(() => currentState.value instanceof DataRateLimited);
 
   // Error state (any error condition)
-  const isError = computed(
-    () => isFailed.value || isTimeout.value || isNoNetwork.value || isRateLimited.value,
-  );
+  // const isError = computed(
+  //   () => isFailed.value || isTimeout.value || isNoNetwork.value || isRateLimited.value,
+  // );
 
   // Get retry function from state or props
   const retryFn = computed(() => {
@@ -303,7 +303,7 @@
   }
 
   .empty-message {
-    color: #64748b;
+    color: var(--gray-500);
     font-size: 1rem;
   }
 
@@ -320,8 +320,8 @@
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #e2e8f0;
-    border-top-color: #6366f1;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--PrimaryColor);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -333,7 +333,7 @@
   }
 
   .loading-text {
-    color: #64748b;
+    color: var(--gray-500);
     font-size: 0.875rem;
   }
 
@@ -344,7 +344,12 @@
 
   .skeleton-line {
     height: 1rem;
-    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background: linear-gradient(
+      90deg,
+      var(--gray-200) 25%,
+      var(--gray-100) 50%,
+      var(--gray-200) 75%
+    );
     background-size: 200% 100%;
     border-radius: 4px;
     margin-bottom: 0.75rem;
@@ -359,6 +364,7 @@
     0% {
       background-position: 200% 0;
     }
+
     100% {
       background-position: -200% 0;
     }
@@ -370,8 +376,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
+    background: var(--danger-light);
+    border: 1px solid var(--danger-light);
     border-radius: 8px;
     font-size: 0.875rem;
   }
@@ -382,12 +388,12 @@
 
   .error-text {
     flex: 1;
-    color: #dc2626;
+    color: var(--danger);
   }
 
   .inline-retry {
     padding: 0.25rem 0.75rem;
-    background: #dc2626;
+    background: var(--danger);
     color: white;
     border: none;
     border-radius: 4px;
@@ -397,7 +403,7 @@
   }
 
   .inline-retry:hover {
-    background: #b91c1c;
+    background: var(--danger-dark);
   }
 
   /* Rate Limited */
@@ -416,17 +422,17 @@
 
   .rate-limited-default h3 {
     margin: 0 0 0.5rem;
-    color: #1e293b;
+    color: var(--gray-800);
   }
 
   .rate-limited-default p {
     margin: 0 0 1.5rem;
-    color: #64748b;
+    color: var(--gray-500);
   }
 
   .retry-btn {
     padding: 0.75rem 1.5rem;
-    background: #6366f1;
+    background: var(--PrimaryColor);
     color: white;
     border: none;
     border-radius: 8px;
@@ -435,7 +441,7 @@
   }
 
   .retry-btn:hover {
-    background: #4f46e5;
+    background: var(--PrimaryColor-hover);
   }
 
   /* Cancelled */
@@ -445,7 +451,7 @@
     align-items: center;
     padding: 2rem;
     text-align: center;
-    color: #64748b;
+    color: var(--gray-500);
   }
 
   .cancelled-icon {
@@ -457,30 +463,35 @@
   @media (prefers-color-scheme: dark) {
     .empty-message,
     .loading-text {
-      color: #94a3b8;
+      color: var(--gray-400);
     }
 
     .skeleton-line {
-      background: linear-gradient(90deg, #334155 25%, #475569 50%, #334155 75%);
+      background: linear-gradient(
+        90deg,
+        var(--gray-700) 25%,
+        var(--gray-600) 50%,
+        var(--gray-700) 75%
+      );
       background-size: 200% 100%;
     }
 
     .inline-error {
-      background: #1e1e1e;
-      border-color: #7f1d1d;
+      background: var(--gray-900);
+      border-color: var(--danger-dark);
     }
 
     .error-text {
-      color: #fca5a5;
+      color: var(--danger-light);
     }
 
     .rate-limited-default h3 {
-      color: #f1f5f9;
+      color: var(--gray-100);
     }
 
     .rate-limited-default p,
     .cancelled-default {
-      color: #94a3b8;
+      color: var(--gray-400);
     }
   }
 </style>

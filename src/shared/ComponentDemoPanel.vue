@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import Tabs from "primevue/tabs";
-import TabList from "primevue/tablist";
-import Tab from "primevue/tab";
-import TabPanels from "primevue/tabpanels";
-import TabPanel from "primevue/tabpanel";
+  import Tabs from 'primevue/tabs';
+  import TabList from 'primevue/tablist';
+  import Tab from 'primevue/tab';
+  import TabPanels from 'primevue/tabpanels';
+  import TabPanel from 'primevue/tabpanel';
 
-defineProps<{
-  title: string;
-  description?: string;
-  code: string;
-}>();
+  defineProps<{
+    title: string;
+    description?: string;
+    code: string;
+  }>();
 </script>
 
 <template>
@@ -51,42 +51,44 @@ defineProps<{
 </template>
 
 <style scoped>
-.tabs-bg {
-  background-color: white !important;
-  .p-tablist {
-    background-color: white !important;
-    color: black !important;
+  .tabs-bg {
+    background-color: var(--BgWhite) !important;
+
+    .p-tablist {
+      background-color: var(--BgWhite) !important;
+      color: var(--BgBlack) !important;
+    }
+
+    .p-tabpanels {
+      background-color: var(--BgWhite) !important;
+      color: var(--BgBlack) !important;
+    }
   }
-  .p-tabpanels {
-    background-color: white !important;
-    color: black !important;
+
+  .guide-panel {
+    background: var(--BgWhite);
+    border-radius: 14px;
+    padding: 22px;
+    border: 1px solid var(--gray-200);
   }
-}
 
-.guide-panel {
-  background: white;
-  border-radius: 14px;
-  padding: 22px;
-  border: 1px solid #e5e7eb;
-}
+  .panel-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+  }
 
-.panel-header h2 {
-  font-size: 18px;
-  font-weight: 600;
-}
+  .panel-desc {
+    font-size: 13px;
+    color: var(--gray-500);
+    margin-bottom: 14px;
+  }
 
-.panel-desc {
-  font-size: 13px;
-  color: #64748b;
-  margin-bottom: 14px;
-}
-
-.code-block {
-  background: #0f172a;
-  color: #e2e8f0;
-  padding: 16px;
-  border-radius: 8px;
-  font-size: 12px;
-  overflow: auto;
-}
+  .code-block {
+    background: var(--gray-900);
+    color: var(--gray-200);
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    overflow: auto;
+  }
 </style>

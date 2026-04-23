@@ -10,6 +10,7 @@
   flex-direction: column;
   gap: 24px;
 }
+
 .index-header {
   display: flex;
   justify-content: space-between;
@@ -63,11 +64,7 @@
       min-width: 26px;
       height: 26px;
       padding: 0 10px;
-      background: linear-gradient(
-        135deg,
-        var(--PrimaryColor),
-        var(--PrimaryColor-hover)
-      );
+      background: linear-gradient(135deg, var(--PrimaryColor), var(--PrimaryColor-hover));
       color: white;
       border-radius: var(--radius-full);
       font-size: 0.75rem;
@@ -81,7 +78,7 @@
   align-items: center;
   gap: 8px;
   padding: 16px;
-  background: #4faf7c;
+  background: var(--PrimaryColor);
   color: white;
   border-radius: 55px;
   font-size: 0.875rem;

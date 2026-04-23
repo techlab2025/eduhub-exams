@@ -32,6 +32,7 @@ const SKIP = [
   /\/assets\//,
   /\/styles\//,
   /\/icons\//, // SVG icon components — visual only
+  /\/base\//, // framework layer
 ];
 
 function skip(rel) {

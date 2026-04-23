@@ -19,7 +19,7 @@
     {
       showPercentage: true,
       showBytes: false,
-      color: '#6366f1',
+      color: 'var(--PrimaryColor)',
     },
   );
 
@@ -138,7 +138,7 @@
 
   .progress-bar {
     height: 12px;
-    background: #e2e8f0;
+    background: var(--gray-200);
     border-radius: 6px;
     overflow: hidden;
     position: relative;
@@ -172,12 +172,12 @@
 
   .progress-message,
   .progress-bytes {
-    color: #64748b;
+    color: var(--gray-500);
   }
 
   .progress-percentage {
     font-weight: 600;
-    color: #1e293b;
+    color: var(--gray-800);
   }
 
   /* Complete Message */
@@ -185,7 +185,7 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 500;
-    color: #22c55e;
+    color: var(--success);
   }
 
   /* Animations */
@@ -198,6 +198,7 @@
     100% {
       transform: scale(1);
     }
+
     50% {
       transform: scale(1.1);
     }
@@ -205,16 +206,16 @@
 
   @media (prefers-color-scheme: dark) {
     .progress-bar {
-      background: #334155;
+      background: var(--gray-700);
     }
 
     .progress-percentage {
-      color: #f1f5f9;
+      color: var(--gray-100);
     }
 
     .progress-message,
     .progress-bytes {
-      color: #94a3b8;
+      color: var(--gray-400);
     }
   }
 </style>

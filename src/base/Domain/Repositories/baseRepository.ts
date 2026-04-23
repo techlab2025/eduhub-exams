@@ -12,12 +12,7 @@ import type Params from '@/base/Core/Params/params';
 import { HttpStatusCode } from 'axios';
 import { ErrorModel, ErrorType } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
 import type BaseApiService from '@/base/Data/ApiService/baseApiService';
-import type {
-  ApiCallOptions,
-  ApiResponse,
-  CrudType,
-  CustomEndpointConfig,
-} from '@/base/Data/ApiService/baseApiService';
+import type { ApiCallOptions, ApiResponse } from '@/base/Data/ApiService/baseApiService';
 import PaginationModel from '@/base/Core/Models/paginationModel';
 import {
   BadGatewayException,
@@ -28,7 +23,6 @@ import {
   InternalServerException,
   MethodNotAllowedException,
   NetworkDisconnectException,
-  NotAcceptableException,
   NotFoundException,
   NotImplementedException,
   RequestTimeoutException,
@@ -38,7 +32,7 @@ import {
   CancelledRequestException,
   ValidationException,
 } from '@/base/Core/Constants/exceptionConstants';
-import { env, EnvironmentManager } from '@/base/Core/Config';
+import { env } from '@/base/Core/Config';
 import ErrorHandler from '@/base/Core/NetworkStructure/errors/errorHandler';
 
 /**
@@ -78,11 +72,11 @@ export interface ExecuteOptions {
  * class ProductRepository extends BaseRepository<ProductModel, ProductModel[]> {
  *   protected get apiService() { return ProductApiService.getInstance(); }
  *
- *   protected parseItem(data: any): ProductModel {
+ *   protected parseItem(data: unknown): ProductModel {
  *     return ProductModel.fromMap(data);
  *   }
  *
- *   protected parseList(data: any): ProductModel[] {
+ *   protected parseList(data: unknown): ProductModel[] {
  *     return data.map((item: any) => ProductModel.fromMap(item));
  *   }
  *
@@ -105,12 +99,12 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Parse a single item from API response data.
    */
-  protected abstract parseItem(data: any): T;
+  protected abstract parseItem(data: unknown): T;
 
   /**
    * Parse a list of items from API response data.
    */
-  protected abstract parseList(data: any): TList;
+  protected abstract parseList(data: unknown): TList;
 
   /**
    * Default configuration for the repository.
@@ -330,7 +324,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
    */
   private processListResponse(
     httpResponse: ApiResponse,
-    retryFn?: () => Promise<DataState<TList>>,
+    _retryFn?: () => Promise<DataState<TList>>,
   ): DataState<TList> {
     const isSuccess = this.isSuccessStatus(httpResponse.statusCode, httpResponse.data);
 
@@ -387,7 +381,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
    */
   private processItemResponse(
     httpResponse: ApiResponse,
-    retryFn?: () => Promise<DataState<T>>,
+    _retryFn?: () => Promise<DataState<T>>,
   ): DataState<T> {
     const isSuccess = this.isSuccessStatus(httpResponse.statusCode, httpResponse.data);
     const dataKey = this.config.dataKey || 'data';

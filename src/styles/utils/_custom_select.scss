@@ -1,5 +1,5 @@
-@use "../variables" as *;
-@use "../mixins/border" as *;
+@use '../variables' as *;
+@use '../mixins/border' as *;
 
 .p-accordionpanel {
   border-color: var(--gray-100) !important;
@@ -12,7 +12,7 @@
   font-family: var(--font-family);
   font-size: var(--sm-size);
   font-weight: $BaseFontSemiBoldWeight;
-  padding: var(--xs-size-3);
+  padding: $XsSize;
   margin-top: var(--xs-size-3);
 
   &:focus {
@@ -132,7 +132,9 @@
   background-color: var(--PrimaryColor) !important;
   border: none !important;
 
-  svg { display: none !important; }
+  svg {
+    display: none !important;
+  }
 }
 
 .p-checkbox-box.p-highlight {
@@ -211,12 +213,15 @@
     font-family: var(--font-family);
   }
 
-  span { width: fit-content; }
+  span {
+    width: fit-content;
+  }
 }
 
 .p-datepicker-input,
 .text-input,
 .ql-editor,
+/* stylelint-disable-next-line selector-id-pattern */
 #SerialNumber {
   &::placeholder {
     font-weight: 300 !important;

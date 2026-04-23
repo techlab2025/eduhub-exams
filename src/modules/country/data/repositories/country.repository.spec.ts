@@ -1,11 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import CountryRepository from './country.repository';
 import CountryTestFactory from '../../__tests__/country.test-factory';
-import {
-  DataSuccess,
-  DataFailed,
-  DataEmpty,
-} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { DataSuccess, DataEmpty } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import CountryModel from '../../core/models/country.model';
 import { env } from '@/base/Core/Config';
 

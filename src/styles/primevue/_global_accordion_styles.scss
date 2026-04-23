@@ -12,7 +12,7 @@
 }
 
 .p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader,
-.p-accordionpanel:not(.p-accordionpanel-active):not(.p-disabled) > .p-accordionheader:hover {
+.p-accordionpanel:not(.p-accordionpanel-active, .p-disabled) > .p-accordionheader:hover {
   color: var(--PrimaryColor) !important;
 
   svg path {

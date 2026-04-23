@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import AddBranch from "@/shared/icons/AddBranch.vue";
-import FolderIcon from "@/shared/icons/FolderIcon.vue";
-import { ref } from "vue";
-export interface TreeNode {
-  id: number | string;
-  label: string;
-  children?: TreeNode[];
-}
-const props = defineProps<{
-  node: TreeNode;
-}>();
-const emit = defineEmits(["handleItemClick"]);
+  import AddBranch from '@/shared/icons/AddBranch.vue';
+  import FolderIcon from '@/shared/icons/FolderIcon.vue';
+  import { ref } from 'vue';
+  export interface TreeNode {
+    id: number | string;
+    label: string;
+    children?: TreeNode[];
+  }
+  const props = defineProps<{
+    node: TreeNode;
+  }>();
+  const emit = defineEmits(['handleItemClick']);
 
-const isOpen = ref(false);
+  const isOpen = ref(false);
 
-const hasChildren = props.node.children && props.node.children.length > 0;
+  const hasChildren = props.node.children && props.node.children.length > 0;
 
-const toggle = () => {
-  if (hasChildren) isOpen.value = !isOpen.value;
-};
+  const toggle = () => {
+    if (hasChildren) isOpen.value = !isOpen.value;
+  };
 </script>
 
 <template>
@@ -28,7 +28,7 @@ const toggle = () => {
         {{ isOpen ? "📂" : "📁" }}
         {{ node.label }}
       </span> -->
-      <span class="tree-label-item" v-if="hasChildren" @click="toggle">
+      <span v-if="hasChildren" class="tree-label-item" @click="toggle">
         <AddBranch />
         <FolderIcon />
         <span>
@@ -46,33 +46,33 @@ const toggle = () => {
         v-for="child in node.children"
         :key="child.id"
         :node="child"
-        @handleItemClick="$emit('handleItemClick', $event)"
+        @handle-item-click="emit('handleItemClick', $event)"
       />
     </div>
   </div>
 </template>
 
 <style scoped>
-.tree-item {
-  padding-left: 10px;
-}
+  .tree-item {
+    padding-left: 10px;
+  }
 
-.tree-label {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-}
-.tree-label-item{
+  .tree-label {
+    cursor: pointer;
     display: flex;
-  align-items: center;
-  gap: 6px;
-}
+    align-items: center;
+    gap: 6px;
+  }
 
-.tree-children {
-  margin-left: 15px;
-  border-left: 1px dashed #ccc;
-  padding-left: 10px;
-}
+  .tree-label-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tree-children {
+    margin-left: 15px;
+    border-left: 1px dashed #ccc;
+    padding-left: 10px;
+  }
 </style>

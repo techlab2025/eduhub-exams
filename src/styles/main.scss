@@ -3,9 +3,9 @@
    ============================================================================= */
 
 /* ── Core ──────────────────────────────────────────────────────── */
-@use "variables" as *;
-@use "normalize";
-@use "fonts" as *;
+@use 'variables' as *;
+@use 'normalize';
+@use 'fonts' as *;
 
 /* ── Utilities ─────────────────────────────────────────────────── */
 @use 'utils/fonts';
@@ -100,7 +100,7 @@ body {
 }
 
 .p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader,
-.p-accordionpanel:not(.p-accordionpanel-active):not(.p-disabled) > .p-accordionheader:hover {
+.p-accordionpanel:not(.p-accordionpanel-active, .p-disabled) > .p-accordionheader:hover {
   color: var(--PrimaryColor) !important;
 
   svg path {
@@ -165,13 +165,16 @@ body {
   height: 8px !important;
   border-radius: 50px !important;
 }
+
 .p-drawer .p-drawer-header {
   background-color: var(--sidebar-bg) !important;
   display: none;
 }
+
 .p-drawer .p-drawer-content {
   background-color: var(--sidebar-bg) !important;
   padding: 0 !important;
+
   .sidebar {
     width: 100% !important;
   }

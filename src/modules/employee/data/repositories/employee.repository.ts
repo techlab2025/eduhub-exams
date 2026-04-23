@@ -1,21 +1,8 @@
-<<<<<<< HEAD
-import BaseRepository from '@/base/Domain/Repositories/baseRepository';
-import type { RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import EmployeeModel from '../../core/models/employee.model';
 import EmployeeApiService from '../api/employee.api-service';
-import type IEmployeeRepo from '../../domain/repositories/employee.repo';
-=======
-import BaseRepository, {
-  type RepositoryConfig,
-} from "@/base/Domain/Repositories/baseRepository";
-import EmployeeModel from "../../core/models/employee.model";
-import EmployeeApiService from "../api/employee.api-service";
->>>>>>> origin/dev
 
-export default class EmployeeRepository extends BaseRepository<
-  EmployeeModel,
-  EmployeeModel[]
-> {
+export default class EmployeeRepository extends BaseRepository<EmployeeModel, EmployeeModel[]> {
   private static instance: EmployeeRepository;
 
   protected get apiService() {
@@ -25,8 +12,8 @@ export default class EmployeeRepository extends BaseRepository<
   protected get config(): RepositoryConfig {
     return {
       hasPagination: true,
-      dataKey: "data",
-      paginationKey: "meta",
+      dataKey: 'data',
+      paginationKey: 'meta',
     };
   }
 

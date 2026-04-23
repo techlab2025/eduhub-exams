@@ -25,9 +25,9 @@
     { key: 'flag', label: 'Flag', width: '30%' },
   ];
 
-// Pagination state
-const perPage = ref(10);
-const word = ref("");
+  // Pagination state
+  const perPage = ref(10);
+  const word = ref('');
 
   const fetchCountries = async (page: number = 1, word: string = '') => {
     const state = await controller.fetchList(
@@ -85,37 +85,20 @@ const word = ref("");
   const FormStore = useFormsStore();
   const formRoute = '/countries/add';
 
-  await fetchCountries(
-    route.query.page ? Number(route.query.page) : 1,
-    word.value,
-  );
-});
-
-const deleteCountry = async (id: number) => {
-  await controller.delete(new DeleteCountryParams(id));
-  await fetchCountries();
-};
-
-const FormStore = useFormsStore();
-const formRoute = "/countries/add";
-
-const isDraft = computed(() => {
-  const data = FormStore?.formData[formRoute] ?? {};
-  return (
-    Object.keys(data).length === 0 ||
-    Object.values(data).every((v) => v == null)
-  );
-});
-const SelectedRow = ref<CountryModel[]>([]);
-const setSelectef = (items: CountryModel[]) => {
-  SelectedRow.value = items;
-};
-
-const deleteSelected = () => {
-  SelectedRow.value.forEach((item) => {
-    deleteCountry(item.id!);
+  const isDraft = computed(() => {
+    const data = FormStore?.formData[formRoute] ?? {};
+    return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
-};
+  const SelectedRow = ref<CountryModel[]>([]);
+  const setSelectef = (items: CountryModel[]) => {
+    SelectedRow.value = items;
+  };
+
+  const deleteSelected = () => {
+    SelectedRow.value.forEach((item) => {
+      deleteCountry(item.id!);
+    });
+  };
 </script>
 
 <template>
@@ -148,7 +131,7 @@ const deleteSelected = () => {
       </div>
       <div class="flex gap-10">
         <router-link :to="formRoute" class="btn-add">
-          <span>{{ isDraft ? "Add Country" : "Continue Adding" }}</span>
+          <span>{{ isDraft ? 'Add Country' : 'Continue Adding' }}</span>
           <svg
             width="18"
             height="18"
@@ -161,11 +144,7 @@ const deleteSelected = () => {
             <path d="M12 5v14M5 12h14" />
           </svg>
         </router-link>
-        <button
-          v-if="SelectedRow.length > 0"
-          @click="deleteSelected"
-          class="btn-add"
-        >
+        <button v-if="SelectedRow.length > 0" class="btn-add" @click="deleteSelected">
           <span>delete</span>
         </button>
       </div>

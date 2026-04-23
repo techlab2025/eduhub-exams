@@ -1,10 +1,12 @@
-@use "../variables" as *;
-@use "../mixins/border" as *;
+@use '../variables' as *;
+@use '../mixins/border' as *;
 
 .btn-danger {
   background-color: var(--BgWhite);
   color: var(--Red);
+
   @include border($BaseBorderWidth, var(--Red), solid, var(--xl-size-base));
+
   font-weight: $BaseFontSemiBoldWeight;
 
   &:hover {

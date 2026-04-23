@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import ArrowIcons from '../icons/ArrowIcons.vue'
+  import ArrowIcons from '../icons/ArrowIcons.vue';
 
-interface BreadCramp {
-  title: string
-  link: string
-}
+  interface BreadCramp {
+    title: string;
+    link: string;
+  }
 
-defineProps<{
-  BreadCramps: BreadCramp[]
-}>()
+  defineProps<{
+    BreadCramps: BreadCramp[];
+  }>();
 </script>
 
 <template>
@@ -23,22 +23,24 @@ defineProps<{
 </template>
 
 <style scoped>
-.breadcrumbs ul {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 0.25rem;
-}
-.breadcrumbs li {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-.breadcrumbs a {
-  text-decoration: none;
-  color: inherit;
-}
+  .breadcrumbs ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0.25rem;
+  }
+
+  .breadcrumbs li {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .breadcrumbs a {
+    text-decoration: none;
+    color: inherit;
+  }
 </style>

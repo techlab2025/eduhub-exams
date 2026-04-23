@@ -1,9 +1,10 @@
-@use "../../../../styles/mixins/grid" as *;
-@use "../../../../styles/mixins/flex" as *;
-@use "../../../../styles/variables" as *;
+@use '../../../../styles/mixins/grid' as *;
+@use '../../../../styles/mixins/flex' as *;
+@use '../../../../styles/variables' as *;
 
 .login {
   @include grid(2, 1fr, 10px);
+
   width: 100%;
   min-height: 100vh;
   background-color: white;
@@ -11,6 +12,7 @@
 
   @media screen and (max-width: 1179px) {
     @include flex(column-reverse, wrap, center, center);
+
     gap: var(--md-size);
     padding: var(--md-size);
   }
@@ -102,12 +104,14 @@
 
   .login-logo {
     @include flex(row, wrap, center, center);
+
     width: 100%;
     height: 100%;
     color: white;
-    background-color: #0d1b2a; // your navy color
+    background-color: var(--gray-900); // your navy color
     border-radius: 40px; // top-left · top-right · bottom-left · bottom-right=0
     position: relative;
+
     @media (max-width: 1000px) {
       display: none;
     }
@@ -154,6 +158,7 @@
 
   .login-form {
     @include flex(column, wrap, center, center);
+
     width: 100%;
     padding: var(--md-size);
     background-color: var(--BgWhite);
@@ -162,6 +167,7 @@
 
     @media screen and (max-width: 1179px) {
       @include flex(column, wrap, center, center);
+
       gap: var(--md-size);
       border-radius: var(--radius-sm);
       width: 70%;
@@ -174,6 +180,7 @@
     /* ── Title ─────────────────────────────────────────── */
     .title {
       @include flex(column, wrap, center, center);
+
       gap: 5rem;
 
       @media screen and (max-width: 1179px) {
@@ -182,28 +189,30 @@
 
       .logo {
         @include flex(row, wrap, center, center);
+
         gap: var(--xs-size-3);
 
         h2 {
           font-size: var(--xl-size-1);
-          font-family: "Bold", sans-serif;
+          font-family: 'Bold', sans-serif;
           color: var(--gray-900);
         }
       }
 
       .text {
         @include flex(column, wrap, center, center);
+
         width: 100%;
         text-align: center;
 
         p {
-          font-family: "Bold", sans-serif;
+          font-family: 'Bold', sans-serif;
           font-size: var(--xl-size-base);
           color: var(--gray-900);
         }
 
         span {
-          font-family: "Regular", sans-serif;
+          font-family: 'Regular', sans-serif;
           font-size: var(--md-size-base);
           color: var(--gray-400);
         }
@@ -212,6 +221,7 @@
 
     .tabs {
       @include flex(row, wrap, center, center);
+
       width: 100%;
       gap: 1rem;
       margin-block: 2rem;
@@ -223,7 +233,7 @@
         cursor: pointer;
         transition: var(--transition);
         width: fit-content;
-        font-family: "Regular", sans-serif;
+        font-family: 'Regular', sans-serif;
         font-size: 1rem;
         color: var(--gray-700);
         border-radius: var(--radius-sm) var(--radius-sm) 0 0;
@@ -231,7 +241,7 @@
         &.active {
           background-color: var(--PrimaryColor);
           color: var(--BgWhite);
-          font-family: "Bold", sans-serif;
+          font-family: 'Bold', sans-serif;
           box-shadow: var(--shadow);
         }
 
@@ -243,6 +253,7 @@
 
     .inputs {
       @include flex(column, wrap, center, center);
+
       width: 100%;
       gap: var(--md-size);
       margin-block: var(--xl-size-1);
@@ -268,7 +279,7 @@
           }
 
           &::placeholder {
-            font-family: "Regular", sans-serif;
+            font-family: 'Regular', sans-serif;
             font-size: var(--md-size-base);
             color: var(--gray-400);
           }

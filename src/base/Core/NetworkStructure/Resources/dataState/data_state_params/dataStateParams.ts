@@ -17,7 +17,7 @@ interface DataSuccessParams<T> {
   message?: string | null;
 }
 
-interface DataFailedParams<T> {
+interface DataFailedParams {
   error?: ErrorModel | null;
 }
 

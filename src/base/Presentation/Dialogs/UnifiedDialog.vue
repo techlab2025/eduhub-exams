@@ -14,27 +14,102 @@
   const isClosing = ref(false);
   let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
 
-// Watch for dialog changes
-watch(currentDialog, (newDialog) => {
-  if (newDialog) {
-    isVisible.value = true;
-    isClosing.value = false;
+  // Watch for dialog changes
+  watch(currentDialog, (newDialog) => {
+    if (newDialog) {
+      isVisible.value = true;
+      isClosing.value = false;
 
-    // Clear existing timer
-    if (autoCloseTimer) clearTimeout(autoCloseTimer);
+      // Clear existing timer
+      if (autoCloseTimer) clearTimeout(autoCloseTimer);
 
-    // Auto-close logic
-    const duration = newDialog.duration ?? 3000;
-    if (duration > 0) {
-      autoCloseTimer = setTimeout(() => {
-        handleClose();
-      }, duration);
+      // Auto-close logic
+      const duration = newDialog.duration ?? 3000;
+      if (duration > 0) {
+        autoCloseTimer = setTimeout(() => {
+          handleClose();
+        }, duration);
+      }
+    }
+  });
+
+  watch(isLoading, (loading) => {
+    if (loading) {
+      isVisible.value = true;
+      isClosing.value = false;
+    } else if (!currentDialog.value) {
+      closeWithAnimation();
+    }
+  });
+
+  // Computed properties
+  const dialogType = computed(() => currentDialog.value?.type || DialogType.INFO);
+
+  const dialogIcon = computed(() => {
+    return currentDialog.value?.icon || DIALOG_ICONS[dialogType.value];
+  });
+
+  const dialogImage = computed(() => {
+    return currentDialog.value?.image;
+  });
+
+  const dialogColor = computed(() => {
+    return DIALOG_COLORS[dialogType.value];
+  });
+
+  const dialogTitle = computed(() => {
+    if (isLoading.value && !currentDialog.value) {
+      return '';
+    }
+    return currentDialog.value?.title || '';
+  });
+
+  const dialogMessage = computed(() => {
+    if (isLoading.value && !currentDialog.value) {
+      return loadingMessage.value;
+    }
+    return currentDialog.value?.message || '';
+  });
+
+  const showProgress = computed(() => {
+    return (
+      currentDialog.value?.type === DialogType.PROGRESS ||
+      (isLoading.value && loadingProgress.value > 0)
+    );
+  });
+
+  const progressValue = computed(() => {
+    if (currentDialog.value?.progress !== undefined) {
+      return currentDialog.value.progress;
+    }
+    return loadingProgress.value;
+  });
+
+  const showCloseButton = computed(() => {
+    if (isLoading.value && !currentDialog.value) {
+      return false;
+    }
+    return currentDialog.value?.showClose ?? true;
+  });
+
+  const showActions = computed(() => {
+    return currentDialog.value?.actions && currentDialog.value.actions.length > 0;
+  });
+
+  // Methods
+  function closeWithAnimation() {
+    isClosing.value = true;
+    isVisible.value = false;
+
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = null;
     }
   }
 
   function handleAfterLeave() {
-    isClosing.value = false;
-    dialogManager.closeDialog();
+    // isClosing.value = false;
+    // dialogManager.closeDialog();
   }
 
   function handleClose() {
@@ -65,56 +140,10 @@ watch(currentDialog, (newDialog) => {
     }
   }
 
-const showProgress = computed(() => {
-  return (
-    currentDialog.value?.type === DialogType.PROGRESS ||
-    (isLoading.value && loadingProgress.value > 0)
-  );
-});
-
-const progressValue = computed(() => {
-  if (currentDialog.value?.progress !== undefined) {
-    return currentDialog.value.progress;
-  }
-  return loadingProgress.value;
-});
-
-const showCloseButton = computed(() => {
-  if (isLoading.value && !currentDialog.value) {
-    return false;
-  }
-  return currentDialog.value?.showClose ?? true;
-});
-
-const showActions = computed(() => {
-  return currentDialog.value?.actions && currentDialog.value.actions.length > 0;
-});
-
-// Methods
-function closeWithAnimation() {
-  isClosing.value = true;
-  isVisible.value = false;
-
-  if (autoCloseTimer) {
-    clearTimeout(autoCloseTimer);
-    autoCloseTimer = null;
-  }
-}
-
-function handleAfterLeave() {
-  // isClosing.value = false;
-  // dialogManager.closeDialog();
-}
-
-function handleClose() {
-  if (currentDialog.value?.onCancel) {
-    currentDialog.value.onCancel();
-  }
-  closeWithAnimation();
-}
-
-function handleBackdropClick() {
-  if (currentDialog.value?.closeOnBackdrop !== false && !isLoading.value) {
+  function handleConfirm() {
+    if (currentDialog.value?.onConfirm) {
+      currentDialog.value.onConfirm();
+    }
     handleClose();
   }
 
@@ -261,220 +290,20 @@ function handleBackdropClick() {
 </template>
 
 <style scoped>
-/* Backdrop */
-.unified-dialog-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  /* Backdrop */
+  .unified-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--black-opacity-50, rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(4px);
 
-  &.is-closing {
-    display: none;
-  }
-}
-
-/* Dialog Container */
-.unified-dialog {
-  position: relative;
-  width: 90%;
-  max-width: 400px;
-  padding: 2rem;
-  background: var(--bg-main);
-  border-radius: 16px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  text-align: center;
-}
-
-/* Close Button */
-.dialog-close {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  font-size: 1.5rem;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.dialog-close:hover {
-  background: #f1f5f9;
-  color: #334155;
-}
-
-/* Icon */
-.dialog-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 2rem;
-  color: white;
-}
-
-/* Image */
-.dialog-image {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 1rem;
-  display: block;
-  object-fit: contain;
-}
-
-/* Title */
-.dialog-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1e293b;
-}
-
-/* Message */
-.dialog-message {
-  margin: 0 0 1.5rem;
-  font-size: 1rem;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-/* Progress */
-.dialog-progress,
-.loading-progress {
-  margin-bottom: 1.5rem;
-}
-
-.progress-bar {
-  height: 8px;
-  background: #e2e8f0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: var(--color-primary, #6366f1);
-  border-radius: 4px;
-  transition: width 0.3s ease;
-}
-
-.progress-text {
-  display: block;
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: #64748b;
-}
-
-/* Actions */
-.dialog-actions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-}
-
-.dialog-action {
-  flex: 1;
-  max-width: 150px;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.dialog-action:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.dialog-action-primary {
-  background: var(--color-primary, #6366f1);
-  color: white;
-}
-
-.dialog-action-primary:hover:not(:disabled) {
-  background: #4f46e5;
-}
-
-.dialog-action-secondary {
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.dialog-action-secondary:hover:not(:disabled) {
-  background: #e2e8f0;
-}
-
-.dialog-action-danger {
-  background: #ef4444;
-  color: white;
-}
-
-.dialog-action-danger:hover:not(:disabled) {
-  background: #dc2626;
-}
-
-.dialog-action-text {
-  background: transparent;
-  color: #6366f1;
-}
-
-.dialog-action-text:hover:not(:disabled) {
-  background: #f1f5f9;
-}
-
-/* Loading */
-.dialog-loading {
-  padding: 1rem;
-  text-align: center;
-}
-
-.loading-spinner {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 1rem;
-  border: 3px solid #e2e8f0;
-  border-top-color: var(--color-primary, #6366f1);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.loading-message {
-  margin: 0 0 1rem;
-  color: #64748b;
-}
-
-.action-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+    &.is-closing {
+      display: none;
+    }
   }
 
   /* Dialog Container */
@@ -483,7 +312,7 @@ function handleBackdropClick() {
     width: 90%;
     max-width: 400px;
     padding: 2rem;
-    background: white;
+    background: var(--bg-main);
     border-radius: 16px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     text-align: center;
@@ -503,14 +332,14 @@ function handleBackdropClick() {
     border: none;
     border-radius: 50%;
     font-size: 1.5rem;
-    color: #64748b;
+    color: var(--gray-500);
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .dialog-close:hover {
-    background: #f1f5f9;
-    color: #334155;
+    background: var(--gray-100);
+    color: var(--gray-700);
   }
 
   /* Icon */
@@ -540,14 +369,14 @@ function handleBackdropClick() {
     margin: 0 0 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--gray-800);
   }
 
   /* Message */
   .dialog-message {
     margin: 0 0 1.5rem;
     font-size: 1rem;
-    color: #64748b;
+    color: var(--gray-500);
     line-height: 1.5;
   }
 
@@ -559,14 +388,14 @@ function handleBackdropClick() {
 
   .progress-bar {
     height: 8px;
-    background: #e2e8f0;
+    background: var(--gray-200);
     border-radius: 4px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
-    background: var(--color-primary, #6366f1);
+    background: var(--PrimaryColor);
     border-radius: 4px;
     transition: width 0.3s ease;
   }
@@ -575,7 +404,7 @@ function handleBackdropClick() {
     display: block;
     margin-top: 0.5rem;
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--gray-500);
   }
 
   /* Actions */
@@ -607,39 +436,39 @@ function handleBackdropClick() {
   }
 
   .dialog-action-primary {
-    background: var(--color-primary, #6366f1);
+    background: var(--PrimaryColor);
     color: white;
   }
 
   .dialog-action-primary:hover:not(:disabled) {
-    background: #4f46e5;
+    background: var(--PrimaryColor-hover);
   }
 
   .dialog-action-secondary {
-    background: #f1f5f9;
-    color: #475569;
+    background: var(--gray-100);
+    color: var(--gray-600);
   }
 
   .dialog-action-secondary:hover:not(:disabled) {
-    background: #e2e8f0;
+    background: var(--gray-200);
   }
 
   .dialog-action-danger {
-    background: #ef4444;
+    background: var(--danger);
     color: white;
   }
 
   .dialog-action-danger:hover:not(:disabled) {
-    background: #dc2626;
+    background: var(--danger-dark);
   }
 
   .dialog-action-text {
     background: transparent;
-    color: #6366f1;
+    color: var(--PrimaryColor);
   }
 
   .dialog-action-text:hover:not(:disabled) {
-    background: #f1f5f9;
+    background: var(--gray-100);
   }
 
   /* Loading */
@@ -652,15 +481,15 @@ function handleBackdropClick() {
     width: 48px;
     height: 48px;
     margin: 0 auto 1rem;
-    border: 3px solid #e2e8f0;
-    border-top-color: var(--color-primary, #6366f1);
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--PrimaryColor);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 
   .loading-message {
     margin: 0 0 1rem;
-    color: #64748b;
+    color: var(--gray-500);
   }
 
   .action-spinner {
@@ -703,37 +532,37 @@ function handleBackdropClick() {
   /* Dark mode support */
   @media (prefers-color-scheme: dark) {
     .unified-dialog {
-      background: #1e293b;
+      background: var(--gray-800);
     }
 
     .dialog-title {
-      color: #f1f5f9;
+      color: var(--gray-100);
     }
 
     .dialog-message {
-      color: #94a3b8;
+      color: var(--gray-400);
     }
 
     .dialog-close {
-      color: #94a3b8;
+      color: var(--gray-400);
     }
 
     .dialog-close:hover {
-      background: #334155;
-      color: #f1f5f9;
+      background: var(--gray-700);
+      color: var(--gray-100);
     }
 
     .dialog-action-secondary {
-      background: #334155;
-      color: #e2e8f0;
+      background: var(--gray-700);
+      color: var(--gray-200);
     }
 
     .dialog-action-secondary:hover:not(:disabled) {
-      background: #475569;
+      background: var(--gray-600);
     }
 
     .progress-bar {
-      background: #334155;
+      background: var(--gray-700);
     }
   }
 </style>

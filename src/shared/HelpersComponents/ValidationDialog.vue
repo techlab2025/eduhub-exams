@@ -42,16 +42,15 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--overlay-bg);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
   }
 
-<<<<<<< HEAD
   .dialog-content {
-    background: #fff;
+    background: var(--bg-main);
     padding: 20px;
     border-radius: 8px;
     text-align: center;
@@ -62,28 +61,12 @@
   .dialog-message {
     margin-bottom: 20px;
     font-size: 16px;
-    color: black !important;
+    color: var(--gray-900) !important;
   }
-=======
-.dialog-content {
-  background: var(--bg-main);
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-  max-width: 400px;
-  width: 90%;
-}
-
-.dialog-message {
-  margin-bottom: 20px;
-  font-size: 16px;
-  color: var(--gray-900) !important;
-}
->>>>>>> origin/dev
 
   .dialog-close-btn {
-    background: #007bff;
-    color: #fff;
+    background: var(--PrimaryColor);
+    color: var(--BgWhite);
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -92,6 +75,6 @@
   }
 
   .dialog-close-btn:hover {
-    background: #0056b3;
+    background: var(--PrimaryColor-dark);
   }
 </style>

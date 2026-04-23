@@ -93,7 +93,7 @@ class DataSuccess<T> extends DataState<T> {
  * Failed data state
  */
 class DataFailed<T> extends DataState<T> {
-  constructor({ error }: DataFailedParams<T>) {
+  constructor({ error }: DataFailedParams) {
     super({ error });
   }
 }

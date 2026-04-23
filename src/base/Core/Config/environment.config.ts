@@ -65,7 +65,7 @@ export const environments: Record<EnvironmentStage, EnvironmentConfig> = {
  * Get the default environment based on VITE_APP_ENV or defaults to development
  */
 export function getDefaultStage(): EnvironmentStage {
-  let envVar = import.meta.env?.VITE_APP_ENV;
+  const envVar = import.meta.env?.VITE_APP_ENV;
   if (envVar && isValidStage(envVar)) {
     return envVar as EnvironmentStage;
   }

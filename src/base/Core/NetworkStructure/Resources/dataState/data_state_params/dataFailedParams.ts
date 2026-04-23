@@ -1,5 +1,5 @@
-import type { ErrorModel } from "@/base/Core/NetworkStructure/Resources/errors/errorModel";
+import type { ErrorModel } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
 
-export default interface DataFailedParams<T> {
+export default interface DataFailedParams {
   error?: ErrorModel | null;
 }

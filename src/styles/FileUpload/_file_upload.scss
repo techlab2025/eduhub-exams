@@ -1,14 +1,16 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
-@use "../mixins/grid" as *;
+@use '../variables' as *;
+@use '../mixins/flex' as *;
+@use '../mixins/grid' as *;
 
 .multi-image-uploader {
   @include flex-column(nowrap, center, center);
+
   gap: var(--xl-size-base);
   width: 100%;
 
   .input-image {
     @include flex-row(nowrap, center, center);
+
     width: 100%;
     border: 2px dashed var(--gray-200);
     border-radius: var(--xl-size-1);
@@ -26,7 +28,9 @@
 
     .input-label-images {
       cursor: pointer;
+
       @include flex-row(nowrap, center, center);
+
       gap: 10px;
 
       span {
@@ -77,10 +81,11 @@
         height: 100%;
         border-radius: var(--xs-size);
         z-index: 10000;
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: var(--black-alpha-60);
         backdrop-filter: blur(2px);
         transition: var(--transition);
         cursor: pointer;
+
         @include flex-column(nowrap, center, center);
 
         span {

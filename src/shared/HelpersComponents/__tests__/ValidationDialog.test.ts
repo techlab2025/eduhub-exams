@@ -1,10 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
-import ValidationDialog from '../ValidationDialog.vue'
+import { describe, it, expect } from 'vitest';
+import { mount } from '@vue/test-utils';
+import ValidationDialog from '../ValidationDialog.vue';
 
 // Mock the ValidationService
 vi.mock('@/base/Presentation/Utils/validationService', () => {
-  const { ref } = require('vue')
+  const { ref } = require('vue');
   return {
     default: {
       isOpen: ref(false),
@@ -12,62 +12,61 @@ vi.mock('@/base/Presentation/Utils/validationService', () => {
       openDialog: vi.fn(),
       clearValidation: vi.fn(),
     },
-  }
-})
+  };
+});
 
-import ValidationService from '@/base/Presentation/Utils/validationService'
+import ValidationService from '@/base/Presentation/Utils/validationService';
 
-const createWrapper = () =>
-  mount(ValidationDialog)
+const createWrapper = () => mount(ValidationDialog);
 
 describe('ValidationDialog', () => {
   it('renders without crashing', () => {
-    const wrapper = createWrapper()
-    expect(wrapper.exists()).toBe(true)
-  })
+    const wrapper = createWrapper();
+    expect(wrapper.exists()).toBe(true);
+  });
 
   it('is hidden when isOpen is false', () => {
-    ValidationService.isOpen.value = false
-    const wrapper = createWrapper()
-    expect(wrapper.find('.dialog-overlay').exists()).toBe(false)
-  })
+    ValidationService.isOpen.value = false;
+    const wrapper = createWrapper();
+    expect(wrapper.find('.dialog-overlay').exists()).toBe(false);
+  });
 
   it('is visible when isOpen is true', () => {
-    ValidationService.isOpen.value = true
-    ValidationService.message.value = 'Required field'
-    const wrapper = createWrapper()
-    expect(wrapper.find('.dialog-overlay').exists()).toBe(true)
-  })
+    ValidationService.isOpen.value = true;
+    ValidationService.message.value = 'Required field';
+    const wrapper = createWrapper();
+    expect(wrapper.find('.dialog-overlay').exists()).toBe(true);
+  });
 
   it('displays the validation message', () => {
-    ValidationService.isOpen.value = true
-    ValidationService.message.value = 'Name is required'
-    const wrapper = createWrapper()
-    expect(wrapper.find('.dialog-message').text()).toBe('Name is required')
-  })
+    ValidationService.isOpen.value = true;
+    ValidationService.message.value = 'Name is required';
+    const wrapper = createWrapper();
+    expect(wrapper.find('.dialog-message').text()).toBe('Name is required');
+  });
 
   it('renders close button when visible', () => {
-    ValidationService.isOpen.value = true
-    ValidationService.message.value = 'Error'
-    const wrapper = createWrapper()
-    expect(wrapper.find('.dialog-close-btn').text()).toBe('Close')
-  })
+    ValidationService.isOpen.value = true;
+    ValidationService.message.value = 'Error';
+    const wrapper = createWrapper();
+    expect(wrapper.find('.dialog-close-btn').text()).toBe('Close');
+  });
 
   it('calls clearValidation when close button clicked', async () => {
-    ValidationService.isOpen.value = true
-    ValidationService.message.value = 'Error'
-    const wrapper = createWrapper()
+    ValidationService.isOpen.value = true;
+    ValidationService.message.value = 'Error';
+    const wrapper = createWrapper();
 
-    await wrapper.find('.dialog-close-btn').trigger('click')
-    expect(ValidationService.clearValidation).toHaveBeenCalled()
-  })
+    await wrapper.find('.dialog-close-btn').trigger('click');
+    expect(ValidationService.clearValidation).toHaveBeenCalled();
+  });
 
   it('calls clearValidation when overlay clicked', async () => {
-    ValidationService.isOpen.value = true
-    ValidationService.message.value = 'Error'
-    const wrapper = createWrapper()
+    ValidationService.isOpen.value = true;
+    ValidationService.message.value = 'Error';
+    const wrapper = createWrapper();
 
-    await wrapper.find('.dialog-overlay').trigger('click')
-    expect(ValidationService.clearValidation).toHaveBeenCalled()
-  })
-})
+    await wrapper.find('.dialog-overlay').trigger('click');
+    expect(ValidationService.clearValidation).toHaveBeenCalled();
+  });
+});

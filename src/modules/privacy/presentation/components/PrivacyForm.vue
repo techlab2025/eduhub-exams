@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
-import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import MultiLangInput from "@/shared/MultiLangInput.vue";
-import PrivacyController from "../controllers/privacy.controller";
-import AddPrivacyParams from "../../core/params/add.privacy.params";
+  import { ref, onMounted, onUnmounted } from 'vue';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
+  import PrivacyController from '../controllers/privacy.controller';
+  import AddPrivacyParams from '../../core/params/add.privacy.params';
 
-const emit = defineEmits(["update:data"]);
+  const emit = defineEmits(['update:data']);
 
-const data = ref<Record<string, string>>();
+  const data = ref<Record<string, string>>();
 
-const updateData = () => {
-  emit("update:data", data.value);
-};
+  const updateData = () => {
+    emit('update:data', data.value);
+  };
 
-// ─── Init ───────────────────────────────
-onMounted(() => {
-  updateData();
-});
+  // ─── Init ───────────────────────────────
+  onMounted(() => {
+    updateData();
+  });
 
-const privacyController = PrivacyController.getInstance();
-const SubmitData = () => {
-  privacyController.create(
-    new AddPrivacyParams({
-      privacy: data.value!,
-    }),
-  );
-};
+  const privacyController = PrivacyController.getInstance();
+  const SubmitData = () => {
+    privacyController.create(
+      new AddPrivacyParams({
+        privacy: data.value!,
+      }),
+    );
+  };
 
-const ShowPrivacy = async () => {
-  const result = await privacyController.fetchList();
+  const ShowPrivacy = async () => {
+    const result = await privacyController.fetchList();
 
-  if (result instanceof DataSuccess) {
-    data.value = result.data[0].privacy;
-  }
-};
+    if (result instanceof DataSuccess) {
+      data.value = result.data[0].privacy;
+    }
+  };
 
-onMounted(() => {
-  ShowPrivacy();
-});
+  onMounted(() => {
+    ShowPrivacy();
+  });
 
-onUnmounted(() => {
-  data.value = {};
-});
+  onUnmounted(() => {
+    data.value = {};
+  });
 </script>
 
 <template>
@@ -57,11 +57,11 @@ onUnmounted(() => {
       <!-- Question -->
       <div class="field">
         <MultiLangInput
-          @update:modelValue="data = $event"
-          :fieldKey="`privacy`"
+          :field-key="`privacy`"
           :label="`privacy`"
           :languages="['en', 'ar', 'fr']"
-          :modelValue="data"
+          :model-value="data"
+          @update:model-value="data = $event"
         />
       </div>
     </div>
@@ -74,112 +74,113 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-.btn-container {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  .btn-primary {
-    width: 50%;
-  }
-}
+  .btn-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 
-.faq-container {
-  background: var(--bg-main);
-  border: 1px solid var(--border-weak);
-  border-radius: 16px;
-  padding: 20px;
-}
-
-/* Header */
-.faq-header {
-  margin-bottom: 16px;
-
-  h3 {
-    font-size: 1.2rem;
-    font-weight: 800;
-    margin: 0;
-  }
-
-  p {
-    font-size: 0.85rem;
-    color: var(--gray-400);
-  }
-}
-
-/* List */
-.faq-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Card */
-.faq-card {
-  border: 1px solid var(--border-weak);
-  border-radius: 12px;
-  padding: 16px;
-  background: var(--gray-50);
-  transition: 0.25s;
-
-  &:hover {
-    border-color: var(--PrimaryColor);
-    background: var(--bg-main);
-  }
-}
-
-/* Header inside card */
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-
-/* Fields */
-.field {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-
-  label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  textarea {
-    resize: none;
-    min-height: 80px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border-weak);
-    background: white;
-    transition: 0.2s;
-
-    &:focus {
-      outline: none;
-      border-color: var(--PrimaryColor);
-      box-shadow: 0 0 0 2px var(--PrimaryColor-light);
+    .btn-primary {
+      width: 50%;
     }
   }
-}
 
-/* Buttons */
-.add-btn {
-  margin-top: 16px;
-  width: 50%;
-  padding: 10px;
-  border-radius: 10px;
-  background: var(--PrimaryColor);
-  color: white;
-  font-weight: 700;
-  cursor: pointer;
-}
+  .faq-container {
+    background: var(--bg-main);
+    border: 1px solid var(--border-weak);
+    border-radius: 16px;
+    padding: 20px;
+  }
 
-.delete-btn {
-  background: transparent;
-  border: none;
-  color: red;
-  cursor: pointer;
-}
+  /* Header */
+  .faq-header {
+    margin-bottom: 16px;
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: var(--gray-400);
+    }
+  }
+
+  /* List */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Card */
+  .faq-card {
+    border: 1px solid var(--border-weak);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--gray-50);
+    transition: 0.25s;
+
+    &:hover {
+      border-color: var(--PrimaryColor);
+      background: var(--bg-main);
+    }
+  }
+
+  /* Header inside card */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  /* Fields */
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    textarea {
+      resize: none;
+      min-height: 80px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-weak);
+      background: white;
+      transition: 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: var(--PrimaryColor);
+        box-shadow: 0 0 0 2px var(--PrimaryColor-light);
+      }
+    }
+  }
+
+  /* Buttons */
+  .add-btn {
+    margin-top: 16px;
+    width: 50%;
+    padding: 10px;
+    border-radius: 10px;
+    background: var(--PrimaryColor);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+  }
 </style>

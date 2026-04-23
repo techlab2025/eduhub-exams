@@ -37,7 +37,7 @@
 
   button {
     padding: 8px 16px;
-    background-color: #007bff;
+    background-color: var(--PrimaryColor);
     color: white;
     border: none;
     border-radius: 4px;
@@ -47,6 +47,6 @@
   }
 
   button:hover {
-    background-color: #0056b3;
+    background-color: var(--PrimaryColor-dark);
   }
 </style>

@@ -338,6 +338,7 @@
     .form-fields {
       grid-template-columns: 1fr;
     }
+
     .checkbox-group {
       grid-column: span 1;
     }
