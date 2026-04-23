@@ -1,5 +1,18 @@
 # Document
 
+## Document Type
+
+```json enumr
+[
+    "id": 1,
+    "title": "Document Type 1",
+    "id": 2,
+    "title": "Document Type 2",
+    "id": 3,
+    "title": "Document Type 3",
+]
+```
+
 ## Add Document
 
 ```json
@@ -8,7 +21,7 @@
     "subject_id": number,
     "stage_id": number,
     "unit_ids": number[],
-    "documentType": number,
+    "document_type_id": number,
     "isAllUnits": boolean
 }
 ```
@@ -22,7 +35,7 @@
     "subject_id": number,
     "stage_id": number,
     "unit_ids": number[],
-    "documentType": number,
+    "document_type_id": number,
     "isAllUnits": boolean
 }
 ```

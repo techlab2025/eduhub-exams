@@ -96,21 +96,21 @@
     gap: 10px;
   }
 
-  .email-form {
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-  }
+.email-form {
+  padding: 20px;
+  border: 1px solid var(--border-weak);
+  border-radius: 4px;
+  background-color: var(--bg-section);
+}
 
-  .email-form input,
-  .email-form select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+.email-form input,
+.email-form select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-weak);
+  border-radius: 4px;
+}
 
   .form-actions {
     display: flex;

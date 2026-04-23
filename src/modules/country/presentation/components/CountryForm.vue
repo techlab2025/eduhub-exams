@@ -1,77 +1,60 @@
 <script setup lang="ts">
-  import { onMounted, ref, watch } from 'vue';
-  import { onBeforeRouteLeave, useRoute } from 'vue-router';
-  import { useFormsStore } from '@/stores/formsStore';
-  import type CountryModel from '../../core/models/country.model';
-  import AddCountryParams from '../../core/params/add.country.params';
+import { onMounted, ref, watch } from "vue";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
+import { useFormsStore } from "@/stores/formsStore";
+import type CountryModel from "../../core/models/country.model";
+import AddCountryParams from "../../core/params/add.country.params";
+import MultiLangInput from "@/shared/MultiLangInput.vue";
 
-  const emit = defineEmits(['updateData']);
+const emit = defineEmits(["updateData"]);
 
   const { country, formKey } = defineProps<{
     country?: CountryModel;
     formKey?: string;
   }>();
 
-  const FormStore = useFormsStore();
-  onBeforeRouteLeave((to, from) => {
-    const savedData = FormStore.getFormData(formKey!);
-    if (savedData && to.path !== from.path) {
-      FormStore.showReturnWarning(formKey!);
+const FormStore = useFormsStore();
+onBeforeRouteLeave((to, from) => {
+  const savedData = FormStore.getFormData(formKey!);
+  if (savedData && to.path !== from.path) {
+    FormStore.showReturnWarning(formKey!);
+  }
+});
+
+// Form state
+const title = ref<string>("");
+const code = ref<string>("");
+const flag = ref<string>("");
+
+watch(
+  () => country,
+  (newCountry) => {
+    if (newCountry) {
+      title.value = newCountry.title;
+      code.value = newCountry.code;
+      flag.value = newCountry.flag;
     }
   });
+  const params = new AddCountryParams(title.value!, code.value, flag.value);
+  emit("updateData", params);
+};
 
   // Form state
   const title = ref<string>('');
   const code = ref<string>('');
   const flag = ref<string>('');
 
-  watch(
-    () => country,
-    (newCountry) => {
-      if (newCountry) {
-        title.value = newCountry.title;
-        code.value = newCountry.code;
-        flag.value = newCountry.flag;
-      }
-    },
-    { immediate: true },
-  );
-
-  const route = useRoute();
-
-  const updateData = () => {
-    FormStore.setFormData(formKey!, {
-      title: title.value,
-      code: code.value,
-      flag: flag.value,
-    });
-    const params = new AddCountryParams(title.value, code.value, flag.value);
-    emit('updateData', params);
-  };
-
-  const resetForm = () => {
-    title.value = '';
-    code.value = '';
-    flag.value = '';
-  };
-
-  onMounted(() => {
-    const saved = FormStore.getFormData(formKey!);
-    if (saved) {
-      title.value = saved.title;
-      code.value = saved.code;
-      flag.value = saved.flag;
-      updateData();
-    } else {
-      resetForm();
-    }
-  });
-
-  const UploadedFiles = ref<string[]>([]);
-  const handleFilesChange = (files: any) => {
-    UploadedFiles.value = files.map((f: any) => f);
-    console.log(UploadedFiles.value);
-  };
+onMounted(() => {
+  const saved = FormStore.getFormData(formKey!);
+  if (saved) {
+    title.value = saved.title;
+    code.value = saved.code;
+    flag.value = saved.flag;
+    updateData();
+  } else {
+    resetForm();
+  }
+});
 </script>
 
 <template>

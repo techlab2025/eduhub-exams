@@ -9,7 +9,13 @@
 .email-page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 10px;
+}
+.flex {
+  display: flex;
+}
+.gap-10 {
+  gap: 10px;
 }
 
 /* ── Page Header ───────────────────────────────────────────── */
@@ -237,18 +243,21 @@
   letter-spacing: 0.02em;
   transition: all 0.2s ease;
 
-  &[data-type='1'],
-  &[data-type='work'] {
-    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
-    color: #4338ca;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  &[data-type="1"],
+  &[data-type="work"] {
+    background: var(--chip-work-bg, linear-gradient(135deg, #eef2ff, #e0e7ff));
+    color: var(--chip-work-text, #4338ca);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  &[data-type='2'],
-  &[data-type='personal'] {
-    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-    color: #16a34a;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  &[data-type="2"],
+  &[data-type="personal"] {
+    background: var(
+      --chip-personal-bg,
+      linear-gradient(135deg, #f0fdf4, #dcfce7)
+    );
+    color: var(--chip-personal-text, #16a34a);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   &:not([data-type]) {

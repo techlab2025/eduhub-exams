@@ -7,7 +7,9 @@ import NavigationBarMobile from "./SubComponents/NavigationBarMobile.vue";
 
 <template>
   <main class="content">
-    <SidebarNavigation />
+    <div class="sidebar-container">
+      <SidebarNavigation />
+    </div>
     <section class="content-wrapper">
       <Navbar />
       <div class="main-content">

@@ -49,6 +49,7 @@
     z-index: 9999;
   }
 
+<<<<<<< HEAD
   .dialog-content {
     background: #fff;
     padding: 20px;
@@ -63,6 +64,22 @@
     font-size: 16px;
     color: black !important;
   }
+=======
+.dialog-content {
+  background: var(--bg-main);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.dialog-message {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: var(--gray-900) !important;
+}
+>>>>>>> origin/dev
 
   .dialog-close-btn {
     background: #007bff;

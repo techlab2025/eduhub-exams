@@ -6,11 +6,8 @@
   @include grid(2, 1fr, 10px);
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    var(--PrimaryColor-dark) 0%,
-    var(--bg-sidebar) 100%
-  );
+  background-color: white;
+  padding: 20px;
 
   @media screen and (max-width: 1179px) {
     @include flex(column-reverse, wrap, center, center);
@@ -18,89 +15,141 @@
     padding: var(--md-size);
   }
 
-  .images {
+  // .images {
+  //   @include flex(row, wrap, center, center);
+  //   position: relative;
+  //   width: 100%;
+  //   height: 100%;
+
+  //   @media screen and (max-width: 1179px) {
+  //     display: none;
+  //   }
+
+  //   .login-image {
+  //     @include flex(row, wrap, center, center);
+  //     position: relative;
+  //     width: 100%;
+  //     height: 100%;
+
+  //     .top-glass-card,
+  //     .bottom-glass-card {
+  //       @include flex(column, nowrap, flex-start, flex-start);
+  //       position: absolute;
+  //       width: 272px;
+  //       padding: var(--xs-size-3) var(--md-size);
+  //       gap: var(--xs-size-2);
+  //       border-radius: var(--radius-lg);
+  //       background: rgba(255, 255, 255, 0.12);
+  //       backdrop-filter: blur(10px);
+  //       border: 1px solid rgba(255, 255, 255, 0.15);
+
+  //       p {
+  //         color: var(--BgWhite);
+  //         font-size: var(--md-size);
+
+  //         @media screen and (min-width: 1101px) and (max-width: 1350px) {
+  //           width: 80%;
+  //         }
+  //       }
+
+  //       span {
+  //         color: rgba(255, 255, 255, 0.75);
+  //         font-family: "Light";
+  //       }
+  //     }
+
+  //     .top-glass-card {
+  //       top: 13%;
+  //       transform: translateX(-48%);
+
+  //       p {
+  //         font-family: "Regular";
+
+  //         @media screen and (min-width: 1101px) and (max-width: 1440px) {
+  //           width: 80%;
+  //         }
+  //       }
+  //     }
+
+  //     .bottom-glass-card {
+  //       bottom: 10%;
+  //       left: 68%;
+  //       transform: translateX(-48%);
+
+  //       p {
+  //         font-family: "Regular";
+
+  //         @media screen and (min-width: 1101px) and (max-width: 1440px) {
+  //           width: 80%;
+  //         }
+  //       }
+  //     }
+
+  //     img {
+  //       @media screen and (min-width: 1101px) and (max-width: 1350px) {
+  //         width: 100%;
+  //         height: 55%;
+  //       }
+  //     }
+  //   }
+
+  //   svg {
+  //     position: absolute;
+  //     bottom: 1rem;
+  //     left: 1rem;
+  //   }
+  // }
+
+  .login-logo {
     @include flex(row, wrap, center, center);
-    position: relative;
     width: 100%;
     height: 100%;
-
-    @media screen and (max-width: 1179px) {
+    color: white;
+    background-color: #0d1b2a; // your navy color
+    border-radius: 40px; // top-left · top-right · bottom-left · bottom-right=0
+    position: relative;
+    @media (max-width: 1000px) {
       display: none;
     }
+    // overflow: hidden; // critical — allows ::after to bleed outside
+    // &::after {
+    //   content: "";
+    //   position: absolute;
+    //   top: 0px;
+    //   right: -20px;
+    //   width: 40px;
+    //   height: 90%;
+    //   rotate: 1deg;
+    //   background-color: white;
+    // }
 
-    .login-image {
-      @include flex(row, wrap, center, center);
-      position: relative;
-      width: 100%;
-      height: 100%;
-
-      .top-glass-card,
-      .bottom-glass-card {
-        @include flex(column, nowrap, flex-start, flex-start);
-        position: absolute;
-        width: 272px;
-        padding: var(--xs-size-3) var(--md-size);
-        gap: var(--xs-size-2);
-        border-radius: var(--radius-lg);
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-
-        p {
-          color: var(--BgWhite);
-          font-size: var(--md-size);
-
-          @media screen and (min-width: 1101px) and (max-width: 1350px) {
-            width: 80%;
-          }
-        }
-
-        span {
-          color: rgba(255, 255, 255, 0.75);
-          font-family: "Light";
-        }
-      }
-
-      .top-glass-card {
-        top: 13%;
-        transform: translateX(-48%);
-
-        p {
-          font-family: "Regular";
-
-          @media screen and (min-width: 1101px) and (max-width: 1440px) {
-            width: 80%;
-          }
-        }
-      }
-
-      .bottom-glass-card {
-        bottom: 10%;
-        left: 68%;
-        transform: translateX(-48%);
-
-        p {
-          font-family: "Regular";
-
-          @media screen and (min-width: 1101px) and (max-width: 1440px) {
-            width: 80%;
-          }
-        }
-      }
-
-      img {
-        @media screen and (min-width: 1101px) and (max-width: 1350px) {
-          width: 100%;
-          height: 55%;
-        }
-      }
-    }
-
-    svg {
-      position: absolute;
-      bottom: 1rem;
-      left: 1rem;
-    }
+    // &::before {
+    //   content: "";
+    //   position: absolute;
+    //   bottom: 13px;
+    //   right: 25px;
+    //   width: 106px;
+    //   height: 145px;
+    //   border-radius: 50%;
+    //   background: rgba(0, 0, 0, 0);
+    //   box-shadow: 53px 53px 0 0 white;
+    // }
+    // .login-icon {
+    //   position: absolute;
+    //   top: 10%;
+    //   right: 0;
+    //   transform: translateY(-30%);
+    //   rotate: 36deg;
+    //   animation: Movelogo 2s ease-in-out forwards;
+    //   @keyframes Movelogo {
+    //     0% {
+    //       transform: translateX(0);
+    //     }
+    //     100% {
+    //       transform: translateX(1000px);
+    //     }
+    //   }
+    // }
   }
 
   .login-form {

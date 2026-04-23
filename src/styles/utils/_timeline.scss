@@ -27,7 +27,7 @@ $timeline: (
   //     #{map-get($timeline, bg-dark)} 0%,
   //     #1a1a2e 100%
   //   );
-  background-color: white;
+  background-color: var(--bg-body);
   min-height: 100vh;
   overflow-x: hidden;
 }

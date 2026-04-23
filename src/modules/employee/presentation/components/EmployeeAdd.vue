@@ -55,11 +55,6 @@
 </template>
 
 <style scoped lang="scss">
-  .employee-add-page {
-    padding: 24px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
 
   .actions {
     margin-top: 24px;

@@ -30,12 +30,13 @@ export default class CountryRepository extends BaseRepository<CountryModel, Coun
   protected get mockList(): CountryModel[] {
     return [
       CountryModel.example,
-      { ...CountryModel.example, title: 'Country 2', code: 'CO2', flag: '🇨🇴' },
-      {
+      { ...CountryModel.example, title: "Country 2", code: "CO2", id: 2, flag: "🇨🇴" },
+        {
         ...CountryModel.example,
-        title: 'Country 10',
-        code: 'CO10',
-        flag: '🇨🇴',
+        title: "Country 10",
+        code: "CO10",
+        id: 10,
+        flag: "🇨🇴",
       },
     ];
   }

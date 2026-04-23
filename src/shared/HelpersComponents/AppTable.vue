@@ -158,6 +158,7 @@ const copyToClipboard = async (value: unknown) => {
 
         <!-- Body -->
         <tbody>
+          <slot name="CustomRow"></slot>
           <tr v-if="items.length === 0">
             <td
               :colspan="
@@ -227,30 +228,31 @@ const copyToClipboard = async (value: unknown) => {
 <style lang="scss" scoped>
 /* ── Wrapper ────────────────────────────────────────────────── */
 .app-table-wrapper {
-  border-radius: var(--radius-lg);
+  border-radius: 10px 10px 0 0;
   overflow: hidden;
-  background: var(--bg-main);
-  border: 1px solid var(--border-strong);
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.04),
-    0 8px 32px rgba(0, 0, 0, 0.03);
+  // background: #f5f5f5;
+  // border: 1px solid var(--border-strong);
+  // box-shadow:
+  //   0 1px 3px rgba(0, 0, 0, 0.04),
+  //   0 8px 32px rgba(0, 0, 0, 0.03);
   position: relative;
+  // padding: 24px;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(99, 102, 241, 0.15),
-      transparent
-    );
-    pointer-events: none;
-  }
+  // &::before {
+  //   content: "";
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   right: 0;
+  //   height: 1px;
+  //   background: linear-gradient(
+  //     90deg,
+  //     transparent,
+  //     rgba(99, 102, 241, 0.15),
+  //     transparent
+  //   );
+  //   pointer-events: none;
+  // }
 }
 
 .table-responsive {
@@ -290,12 +292,13 @@ const copyToClipboard = async (value: unknown) => {
     z-index: 10;
 
     tr th {
-      background: linear-gradient(
-        180deg,
-        var(--gray-50) 0%,
-        var(--gray-100) 100%
-      );
-      padding: 14px 16px;
+      // background: linear-gradient(
+      //   180deg,
+      //   var(--gray-50) 0%,
+      //   var(--gray-100) 100%
+      // );
+      background: var(--gray-100);
+      padding: 24px;
       text-align: left;
       color: var(--gray-600);
       font-weight: 700;

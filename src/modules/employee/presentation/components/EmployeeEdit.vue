@@ -60,11 +60,11 @@
 </template>
 
 <style scoped lang="scss">
-  .employee-edit-page {
-    padding: 24px;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+// .employee-edit-page {
+//   padding: 24px;
+//   max-width: 1000px;
+//   margin: 0 auto;
+// }
 
   .actions {
     margin-top: 24px;

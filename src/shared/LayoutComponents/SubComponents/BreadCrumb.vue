@@ -127,9 +127,15 @@
     GetFullPath();
   });
 
-  onUnmounted(() => {
-    removeGuard();
-  });
+  // Add current route if not duplicate
+  if (!seenPaths.has(route.path) && currentRouteName !== "Home App") {
+    items.value.push({
+      label: currentRouteName,
+      url: undefined,
+      // icon: route.meta.icon,
+    });
+  }
+};
 
   watch(
     () => route.fullPath,
@@ -151,16 +157,12 @@
 <template>
   <div class="breadcrump-container">
     <div class="breadcrump">
-      <button v-if="!IsHome" class="sidebar-back" @click="RouterBack">
-        <BackIcon class="icon" />
-        <span>back</span>
-      </button>
       <Breadcrumb :model="items">
         <template #item="{ item }">
           <router-link :to="String(item.url)" class="breadcrumb-link">
-            <span v-if="item.icon">
+            <!-- <span v-if="item.icon">
               <component :is="item.icon" />
-            </span>
+            </span> -->
             <span>
               {{ item.label }}
             </span>
