@@ -169,6 +169,31 @@
   --PrimaryColor-alpha-60: rgba(79, 175, 124, 0.6);
   --PrimaryColor-alpha-80: rgba(79, 175, 124, 0.8);
 
+  /* ── Indigo accent (form card decorations) ─────────────────── */
+  --indigo-alpha-6: rgba(99, 102, 241, 0.06);
+  --indigo-alpha-12: rgba(99, 102, 241, 0.12);
+  --indigo-alpha-15: rgba(99, 102, 241, 0.15);
+  --indigo-light-alpha-40: rgba(238, 242, 255, 0.4);
+
+  /* ── White alpha ───────────────────────────────────────────── */
+  --white-alpha-50: rgba(255, 255, 255, 0.5);
+
+  /* ── Warning light alpha ───────────────────────────────────── */
+  --warning-light-alpha-50: rgba(254, 243, 199, 0.5);
+
+  /* ── Gray-200 alpha (dividers) ─────────────────────────────── */
+  --gray-200-alpha-30: rgba(226, 232, 240, 0.3);
+
+  /* ── CRUD wrapper component tokens ──────────────────────────── */
+  --input-file-border: #d9dbe9;
+  --crud-border: #dddddd;
+  --crud-muted-text: #666666;
+  --btn-action-bg: #007bff;
+  --btn-action-hover: #0056b3;
+  --error-bg: #f8d7da;
+  --error-text: #721c24;
+  --error-border: #f5c6cb;
+
   /* ── Transition ────────────────────────────────────────────── */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -344,3 +369,26 @@ $Shadow4: var(--shadow-xl);
 $Transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 $TransitionFast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 $TransitionSlow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+/* Indigo accent */
+$IndigoAlpha6: var(--indigo-alpha-6);
+$IndigoAlpha12: var(--indigo-alpha-12);
+$IndigoAlpha15: var(--indigo-alpha-15);
+$IndigoLightAlpha40: var(--indigo-light-alpha-40);
+
+/* White / Warning alpha */
+$WhiteAlpha50: var(--white-alpha-50);
+$WarningLightAlpha50: var(--warning-light-alpha-50);
+
+/* Gray-200 alpha */
+$Gray200Alpha30: var(--gray-200-alpha-30);
+
+/* CRUD wrapper tokens */
+$InputFileBorder: var(--input-file-border);
+$CrudBorder: var(--crud-border);
+$CrudMutedText: var(--crud-muted-text);
+$BtnActionBg: var(--btn-action-bg);
+$BtnActionHover: var(--btn-action-hover);
+$ErrorBg: var(--error-bg);
+$ErrorText: var(--error-text);
+$ErrorBorder: var(--error-border);

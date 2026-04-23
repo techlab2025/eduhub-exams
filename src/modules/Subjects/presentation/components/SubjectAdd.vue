@@ -1,57 +1,51 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import AppButton from "@/shared/HelpersComponents/AppButton.vue";
-import IconAccept from "@/shared/icons/IconAccept.vue";
-import { useRoute } from "vue-router";
-import SubjectController from "../controllers/subject.controller";
-import type AddSubjectParams from "../../core/params/add.subject.params";
-import SubjectForm from "./SubjectForm.vue";
+  import { ref } from 'vue';
+  import AppButton from '@/shared/HelpersComponents/AppButton.vue';
+  import IconAccept from '@/shared/icons/IconAccept.vue';
+  import { useRoute } from 'vue-router';
+  import SubjectController from '../controllers/subject.controller';
+  import type AddSubjectParams from '../../core/params/add.subject.params';
+  import SubjectForm from './SubjectForm.vue';
 
-// Controller instance
-const controller = SubjectController.getInstance();
-const route = useRoute();
-const formKey = route.fullPath;
-// Form state
-const params = ref<AddSubjectParams | null>(null);
-/**
- * Save (create or update) email
- */
-const saveEmail = async () => {
-  try {
-    if (!params.value) {
-      console.error("No email parameters to save");
-      return;
+  // Controller instance
+  const controller = SubjectController.getInstance();
+  const route = useRoute();
+  const formKey = route.fullPath;
+  // Form state
+  const params = ref<AddSubjectParams | null>(null);
+  /**
+   * Save (create or update) email
+   */
+  const saveEmail = async () => {
+    try {
+      if (!params.value) {
+        console.error('No email parameters to save');
+        return;
+      }
+
+      const paramsToSave = params.value;
+
+      await controller.create(paramsToSave, undefined, formKey);
+    } catch (error) {
+      console.error('Error saving email:', error);
     }
+  };
 
-    const paramsToSave = params.value;
-
-    await controller.create(paramsToSave, undefined, formKey);
-  } catch (error) {
-    console.error("Error saving email:", error);
-  }
-};
-
-const updateData = (updatedParams: AddSubjectParams) => {
-  params.value = updatedParams;
-  // saveEmail();
-};
+  const updateData = (updatedParams: AddSubjectParams) => {
+    params.value = updatedParams;
+    // saveEmail();
+  };
 </script>
 
 <template>
   <div class="email-crud-example">
     <SubjectForm
-      :formKey="formKey"
+      :form-key="formKey"
       :subject="controller.itemData.value!"
-      @updateData="updateData"
+      @update-data="updateData"
     />
 
-    <AppButton
-      title="Save Email"
-      @click="saveEmail"
-      size="sm"
-      icon="right"
-      type="submit"
-    >
+    <AppButton title="Save Email" size="sm" icon="right" type="submit" @click="saveEmail">
       Save Subject
 
       <template #icon>
@@ -67,83 +61,84 @@ const updateData = (updatedParams: AddSubjectParams) => {
 </template>
 
 <style scoped>
-:deep(.input-file) {
-  border: 1px solid #d9dbe9 !important;
-  padding: 11px;
-  border-radius: 20px !important;
-  cursor: pointer;
-}
-.email-crud-example {
-  padding: 20px;
-  /* max-width: 800px; */
-  margin: 0 auto;
-}
+  :deep(.input-file) {
+    border: 1px solid var(--input-file-border) !important;
+    padding: 11px;
+    border-radius: 20px !important;
+    cursor: pointer;
+  }
 
-.email-list {
-  margin-bottom: 30px;
-}
+  .email-crud-example {
+    padding: 20px;
+    /* max-width: 800px; */
+    margin: 0 auto;
+  }
 
-.email-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
+  .email-list {
+    margin-bottom: 30px;
+  }
 
-.email-type {
-  color: #666;
-  font-size: 0.9em;
-}
+  .email-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--crud-border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
 
-.actions {
-  display: flex;
-  gap: 10px;
-}
+  .email-type {
+    color: var(--crud-muted-text);
+    font-size: 0.9em;
+  }
 
-.email-form {
-  padding: 20px;
-  border: 1px solid var(--border-weak);
-  border-radius: 4px;
-  background-color: var(--bg-section);
-}
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
 
-.email-form input,
-.email-form select {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid var(--border-weak);
-  border-radius: 4px;
-}
+  .email-form {
+    padding: 20px;
+    border: 1px solid var(--border-weak);
+    border-radius: 4px;
+    background-color: var(--bg-section);
+  }
 
-.form-actions {
-  display: flex;
-  gap: 10px;
-}
+  .email-form input,
+  .email-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-weak);
+    border-radius: 4px;
+  }
 
-button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-}
+  .form-actions {
+    display: flex;
+    gap: 10px;
+  }
 
-button:hover {
-  background-color: #0056b3;
-}
+  button {
+    padding: 8px 16px;
+    background-color: var(--btn-action-bg);
+    color: var(--BgWhite);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
 
-.error {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-}
+  button:hover {
+    background-color: var(--btn-action-hover);
+  }
+
+  .error {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
+    border-radius: 4px;
+  }
 </style>

@@ -1,22 +1,19 @@
-import BaseController from "@/base/Presentation/Controller/baseController";
-import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
-import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
-import type Params from "@/base/Core/Params/params";
-import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import router from "@/router";
-import { useFormsStore } from "@/stores/formsStore";
-import UnitRepository from "../../data/repositories/unit.repository";
-import type UnitModel from "../../core/models/unit.model";
+import BaseController from '@/base/Presentation/Controller/baseController';
+import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import type Params from '@/base/Core/Params/params';
+import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import router from '@/router';
+import { useFormsStore } from '@/stores/formsStore';
+import UnitRepository from '../../data/repositories/unit.repository';
+import type UnitModel from '../../core/models/unit.model';
 
 /**
  * Unit Controller for managing unities
  *
  * This controller provides methods for CRUD operations on unities.
  */
-export default class UnitController extends BaseController<
-  UnitModel,
-  UnitModel[]
-> {
+export default class UnitController extends BaseController<UnitModel, UnitModel[]> {
   private static instance: UnitController;
 
   protected get repository() {
@@ -57,7 +54,7 @@ export default class UnitController extends BaseController<
 
     const result = await super.create(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: "Unities" });
+      router.push({ name: 'Unities' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
@@ -70,7 +67,7 @@ export default class UnitController extends BaseController<
 
     const result = await super.update(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: "Unities" });
+      router.push({ name: 'Unities' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
