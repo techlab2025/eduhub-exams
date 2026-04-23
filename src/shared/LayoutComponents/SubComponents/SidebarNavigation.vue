@@ -47,6 +47,21 @@ const menu = ref<MenuSection[]>([
         name: "Terms Conditions",
         icon: SettingIcon,
       },
+      {
+        link: "/stages",
+        name: "Stages",
+        icon: SettingIcon,
+      },
+      {
+        link: "/subjects",
+        name: "Subjects",
+        icon: SettingIcon,
+      },
+      {
+        link: "/units",
+        name: "Units",
+        icon: SettingIcon,
+      },
     ],
   },
   {

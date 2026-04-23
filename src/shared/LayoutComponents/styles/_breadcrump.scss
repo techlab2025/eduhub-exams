@@ -65,7 +65,7 @@
           .breadcrumb-link {
             span {
               text-transform: capitalize;
-              color: var(--breadcrumb-text, #0f172a) !important;
+              color: var(--breadcrumb-text, var(--bg-sidebar)) !important;
               font-size: 18px;
               font-weight: 600;
               font-family: 'Light';
@@ -76,7 +76,7 @@
             .breadcrumb-link {
               // .p-breadcrumb-item-label {
               span {
-                color: var(--breadcrumb-first-text, #16a34a) !important;
+                color: var(--breadcrumb-first-text, var(--green)) !important;
                 font-size: 14px;
                 font-weight: 500;
               }
@@ -87,14 +87,14 @@
           &:last-child {
             .p-breadcrumb-item-link {
               .p-breadcrumb-item-label {
-                color: var(--PrimaryColor-light) !important;
+                color: var(--PrimaryColor) !important;
               }
             }
           }
         }
 
         .p-breadcrumb-separator {
-          color: var(--breadcrumb-separator, #a5a5a5) !important;
+          color: var(--breadcrumb-separator, var(--breadcrumb-separator)) !important;
 
           svg {
             width: 15px;

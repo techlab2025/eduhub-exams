@@ -2941,6 +2941,7 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 14px;
   font-weight: 500;
 }
+<<<<<<< HEAD
 .breadcrump-container
   .breadcrump
   .p-breadcrumb
@@ -2949,6 +2950,10 @@ body::-webkit-scrollbar-thumb:hover {
   .p-breadcrumb-item-link
   .p-breadcrumb-item-label {
   color: var(--PrimaryColor-light) !important;
+=======
+.breadcrump-container .breadcrump .p-breadcrumb .p-breadcrumb-list .p-breadcrumb-item:last-child .p-breadcrumb-item-link .p-breadcrumb-item-label {
+  color: var(--PrimaryColor) !important;
+>>>>>>> origin/dev
 }
 .breadcrump-container .breadcrump .p-breadcrumb .p-breadcrumb-list .p-breadcrumb-separator {
   color: var(--breadcrumb-separator, #a5a5a5) !important;
