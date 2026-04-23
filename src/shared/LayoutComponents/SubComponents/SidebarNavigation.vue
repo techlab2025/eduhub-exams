@@ -4,6 +4,7 @@ import { ref, type Component } from "vue";
 import SettingIcon from "@/shared/icons/SidebarIcons/SettingIcon.vue";
 import DocumentIcon from "@/shared/icons/BreadcrumbIcons/DocumentIcon.vue";
 import TechlabLogo from "@/assets/images/TechlabLogo.png";
+import Terms from "@/shared/icons/SidebarIcons/Terms.vue";
 const route = useRoute();
 const emit = defineEmits(["clickItem"]);
 interface MenuItem {
@@ -41,6 +42,11 @@ const menu = ref<MenuSection[]>([
         link: "/privacy",
         name: "Privacy",
         icon: SettingIcon,
+      },
+      {
+        link: "/terms-conditions",
+        name: "Terms Conditions",
+        icon: Terms,
       },
     ],
   },
