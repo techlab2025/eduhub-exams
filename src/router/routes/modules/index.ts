@@ -5,6 +5,7 @@ import { documentRoutes } from "./document";
 import { faqsRoutes } from "./faqs";
 import { privacyRoutes } from "./privacy";
 import { termsConditionsRoutes } from "./terms-conditions";
+import { stagesRoutes } from "./stages";
 
 export const dashboardRoutes: RouteRecordRaw[] = [
   ...countryRoutes,
@@ -13,4 +14,5 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...faqsRoutes,
   ...privacyRoutes,
   ...termsConditionsRoutes,
+  ...stagesRoutes,
 ];
