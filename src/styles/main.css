@@ -2939,7 +2939,7 @@ body::-webkit-scrollbar-thumb:hover {
   font-weight: 500;
 }
 .breadcrump-container .breadcrump .p-breadcrumb .p-breadcrumb-list .p-breadcrumb-item:last-child .p-breadcrumb-item-link .p-breadcrumb-item-label {
-  color: var(--PrimaryColor-light) !important;
+  color: var(--PrimaryColor) !important;
 }
 .breadcrump-container .breadcrump .p-breadcrumb .p-breadcrumb-list .p-breadcrumb-separator {
   color: var(--breadcrumb-separator, #a5a5a5) !important;
