@@ -37,6 +37,11 @@ const menu = ref<MenuSection[]>([
         name: "Faqs",
         icon: SettingIcon,
       },
+      {
+        link: "/privacy",
+        name: "Privacy",
+        icon: SettingIcon,
+      },
     ],
   },
   {

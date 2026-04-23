@@ -1,37 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
-import FaqsController from "../controllers/faqs.controller";
-import AddFaqsParams from "../../core/params/add.faqs.params";
-import FaqsDetailsParams from "../../core/params/faqs.details.params";
 import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
 import MultiLangInput from "@/shared/MultiLangInput.vue";
+import PrivacyController from "../controllers/privacy.controller";
+import AddPrivacyParams from "../../core/params/add.privacy.params";
 
 const emit = defineEmits(["update:data"]);
 
-type FaqItem = {
-  question: Record<string, string>;
-  answer: Record<string, string>;
-};
+const data = ref<Record<string, string>>();
 
-const createEmptyItem = (): FaqItem => ({
-  question: {},
-  answer: {},
-});
-
-const data = ref<FaqItem[]>([createEmptyItem()]);
-
-// ─── Add / Remove ───────────────────────
-const addNewItem = () => {
-  data.value.push(createEmptyItem());
-  updateData();
-};
-
-const removeItem = (index: number) => {
-  data.value.splice(index, 1);
-  updateData();
-};
-
-// ─── Update ─────────────────────────────
 const updateData = () => {
   emit("update:data", data.value);
 };
@@ -41,34 +18,29 @@ onMounted(() => {
   updateData();
 });
 
-const faqsController = FaqsController.getInstance();
+const privacyController = PrivacyController.getInstance();
 const SubmitData = () => {
-  faqsController.create(
-    
-    new AddFaqsParams({
-      faqs: data.value.map((el) => {
-        return new FaqsDetailsParams({
-          question: el.question,
-          answer: el.answer,
-        });
-      }),
+  privacyController.create(
+    new AddPrivacyParams({
+      privacy: data.value!,
     }),
   );
 };
 
-const ShowFaqs = async () => {
-  const result = await faqsController.fetchList();
+const ShowPrivacy = async () => {
+  const result = await privacyController.fetchList();
+
   if (result instanceof DataSuccess) {
-    data.value = result.data;
+    data.value = result.data[0].privacy;
   }
 };
 
 onMounted(() => {
-  ShowFaqs();
+  ShowPrivacy();
 });
 
 onUnmounted(() => {
-  data.value = [];
+  data.value = {};
 });
 </script>
 
@@ -76,53 +48,26 @@ onUnmounted(() => {
   <div class="faq-container">
     <!-- Header -->
     <div class="faq-header">
-      <h3>FAQs</h3>
+      <h3>Privacy</h3>
       <p>Add questions and answers dynamically</p>
     </div>
 
     <!-- List -->
     <div class="faq-list">
-      <div v-for="(item, index) in data" :key="index" class="faq-card">
-        <!-- Card Header -->
-        <div class="card-header">
-          <span>FAQ #{{ index + 1 }}</span>
-
-          <button
-            v-if="data.length > 1"
-            class="delete-btn"
-            @click="removeItem(index)"
-          >
-            ✕
-          </button>
-        </div>
-
-        <!-- Question -->
-        <div class="field">
-          <MultiLangInput
-            @update:modelValue="item.question = $event"
-            :fieldKey="`question`"
-            :label="`question`"
-            :languages="['en', 'ar', 'fr']"
-            :modelValue="item.question"
-          />
-        </div>
-
-        <!-- Answer -->
-        <div class="field">
-          <MultiLangInput
-            @update:modelValue="item.answer = $event"
-            :fieldKey="`answer`"
-            :label="`answer`"
-            :languages="['en', 'ar', 'fr']"
-            :modelValue="item.answer"
-          />
-        </div>
+      <!-- Question -->
+      <div class="field">
+        <MultiLangInput
+          @update:modelValue="data = $event"
+          :fieldKey="`privacy`"
+          :label="`privacy`"
+          :languages="['en', 'ar', 'fr']"
+          :modelValue="data"
+        />
       </div>
     </div>
 
     <!-- Add Button -->
     <div class="btn-container">
-      <button class="add-btn" @click="addNewItem">+ Add FAQ</button>
       <button class="add-btn" @click="SubmitData">Save</button>
     </div>
   </div>
