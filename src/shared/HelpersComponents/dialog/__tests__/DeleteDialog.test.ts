@@ -65,6 +65,8 @@ describe('DeleteDialog', () => {
           InputText: true,
           Dialog: true,
           Toast: true,
+          Select: true,
+          MultiSelect: true,
           Dropdown: true,
           FileUpload: true,
           Card: true,

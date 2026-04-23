@@ -51,6 +51,9 @@ describe('TreeItem', () => {
 
   it('renders without crashing', () => {
     const wrapper = mount(TreeItem, {
+      props: {
+        node: { id: 1, label: 'Root Node', children: [] }
+      },
       global: {
         stubs: {
           Teleport: true,
@@ -65,6 +68,8 @@ describe('TreeItem', () => {
           InputText: true,
           Dialog: true,
           Toast: true,
+          Select: true,
+          MultiSelect: true,
           Dropdown: true,
           FileUpload: true,
           Card: true,

@@ -5,6 +5,10 @@ import CountryAdd from '../CountryAdd.vue';
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
+  onBeforeRouteLeave: vi.fn(),
+  onBeforeRouteUpdate: vi.fn(),
+  onBeforeRouteLeave: vi.fn(),
+  onBeforeRouteUpdate: vi.fn(),
   useRouter: () => ({
     push: vi.fn(),
     replace: vi.fn(),
@@ -65,6 +69,8 @@ describe('CountryAdd', () => {
           InputText: true,
           Dialog: true,
           Toast: true,
+          Select: true,
+          MultiSelect: true,
           Dropdown: true,
           FileUpload: true,
           Card: true,
