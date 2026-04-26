@@ -2939,10 +2939,15 @@ body::-webkit-scrollbar-thumb:hover {
 /* ── Core ──────────────────────────────────────────────────────── */
 .breadcrump-container {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   margin-bottom: 12px;
   background-image: var(
@@ -3007,6 +3012,9 @@ body::-webkit-scrollbar-thumb:hover {
   font-weight: 600;
   font-family: 'Light';
   cursor: pointer;
+}
+.breadcrump-container .breadcrump .p-breadcrumb .p-breadcrumb-list .p-breadcrumb-item span.mode-2 {
+  color: var(--Black) !important;
 }
 .breadcrump-container
   .breadcrump
@@ -4439,6 +4447,164 @@ body::-webkit-scrollbar-thumb:hover {
 /* ── Core ──────────────────────────────────────────────────────── */
 .employee-form-card {
   /* Form specific styles if not in Vue file */
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.feature-header-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px;
+  max-height: 60px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20px;
+}
+.feature-header-container .header-img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  -o-object-position: center;
+  object-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  opacity: 0.18;
+}
+.feature-header-container .actions {
+  position: relative;
+  z-index: 999;
+}
+.feature-header-container .content {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: relative;
+  z-index: 999;
+  width: 100%;
+  margin-bottom: 12px;
+  background: transparent;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-family: 'Regular';
+}
+.feature-header-container .content .breadcrump {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.feature-header-container .content .breadcrump .info-dialog {
+  width: 30px;
+  height: 30px;
+}
+.feature-header-container .content .breadcrump .sidebar-back {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-3);
+  color: var(--gray-600);
+  font-size: var(--sm-size);
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.feature-header-container .content .breadcrump .sidebar-back .icon {
+  border-radius: 50%;
+  padding: var(--xs-size-4);
+  width: 30px;
+  height: 30px;
+}
+.feature-header-container .content .breadcrump .p-breadcrumb {
+  width: 100%;
+  text-transform: capitalize;
+  padding: 0 !important;
+  background-color: transparent !important;
+}
+.feature-header-container .content .breadcrump .p-breadcrumb .p-breadcrumb-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+.feature-header-container
+  .content
+  .breadcrump
+  .p-breadcrumb
+  .p-breadcrumb-list
+  .p-breadcrumb-item
+  span {
+  text-transform: capitalize;
+  color: var(--PrimaryColor) !important;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Light';
+  cursor: pointer;
+}
+.feature-header-container
+  .content
+  .breadcrump
+  .p-breadcrumb
+  .p-breadcrumb-list
+  .p-breadcrumb-item
+  span.mode-2 {
+  color: var(--Black) !important;
+}
+.feature-header-container
+  .content
+  .breadcrump
+  .p-breadcrumb
+  .p-breadcrumb-list
+  .p-breadcrumb-item:first-child
+  span {
+  color: var(--breadcrumb-first-text, var(--green)) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+.feature-header-container
+  .content
+  .breadcrump
+  .p-breadcrumb
+  .p-breadcrumb-list
+  .p-breadcrumb-item:last-child
+  span {
+  font-size: 16px;
+  color: var(--PrimaryColor) !important;
+}
+.feature-header-container
+  .content
+  .breadcrump
+  .p-breadcrumb
+  .p-breadcrumb-list
+  .p-breadcrumb-separator {
+  color: var(--breadcrumb-separator, var(--breadcrumb-separator)) !important;
+}
+.feature-header-container
+  .content
+  .breadcrump
+  .p-breadcrumb
+  .p-breadcrumb-list
+  .p-breadcrumb-separator
+  svg {
+  width: 15px;
+  height: 15px;
 }
 
 /* ── Pages ─────────────────────────────────────────────────────── */

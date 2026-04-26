@@ -1,8 +1,7 @@
 <script setup lang="ts">
-  import BreadCrumb from './SubComponents/BreadCrumb.vue';
   import SidebarNavigation from './SubComponents/SidebarNavigation.vue';
   import Navbar from './SubComponents/Navbar.vue';
-  // import NavigationBarMobile from './SubComponents/NavigationBarMobile.vue';
+  import FeatureHeader from '../FeatureHeader/FeatureHeader.vue';
 </script>
 
 <template>
@@ -13,10 +12,9 @@
     <section class="content-wrapper">
       <Navbar />
       <div class="main-content">
-        <BreadCrumb />
+        <FeatureHeader />
         <slot />
       </div>
-      <!-- <NavigationBarMobile class="mobile-nav" /> -->
     </section>
   </main>
 </template>

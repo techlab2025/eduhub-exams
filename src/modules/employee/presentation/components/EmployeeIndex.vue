@@ -31,15 +31,13 @@
     { key: 'isSuperadmin', label: 'Superadmin', width: '10%' },
   ];
 
-// Pagination state
-const perPage = ref(10);
-const word = ref("");
+  // Pagination state
+  const perPage = ref(10);
+  const word = ref('');
 
-const fetchEmployees = async (page: number = 1, wordStr: string = "") => {
-  await controller.fetchList(
-    new IndexEmployeeParams(wordStr || word.value, page, perPage.value),
-  );
-};
+  const fetchEmployees = async (page: number = 1, wordStr: string = '') => {
+    await controller.fetchList(new IndexEmployeeParams(wordStr || word.value, page, perPage.value));
+  };
 
   const Search = debounce(() => {
     router.push({
@@ -115,7 +113,7 @@ const fetchEmployees = async (page: number = 1, wordStr: string = "") => {
         </div>
       </div>
       <router-link :to="formRoute" class="btn-add">
-        <span>{{ isDraft ? "Add Employee" : "Continue Adding" }}</span>
+        <span>{{ isDraft ? 'Add Employee' : 'Continue Adding' }}</span>
         <svg
           width="18"
           height="18"
@@ -142,10 +140,8 @@ const fetchEmployees = async (page: number = 1, wordStr: string = "") => {
             striped
           >
             <template #cell-isSuperadmin="{ item }">
-              <span
-                :class="['status-badge', item.isSuperadmin ? 'admin' : 'user']"
-              >
-                {{ item.isSuperadmin ? "Yes" : "No" }}
+              <span :class="['status-badge', item.isSuperadmin ? 'admin' : 'user']">
+                {{ item.isSuperadmin ? 'Yes' : 'No' }}
               </span>
             </template>
 
@@ -166,12 +162,8 @@ const fetchEmployees = async (page: number = 1, wordStr: string = "") => {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                    />
-                    <path
-                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                    />
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </router-link>
 

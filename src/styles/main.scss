@@ -41,6 +41,7 @@
 /* ── Modules ───────────────────────────────────────────────────── */
 @use '../modules/country/presentation/styles/country_imports';
 @use '../modules/employee/presentation/styles/employee_imports';
+@use '../shared/FeatureHeader/styles/_feature_header';
 
 /* ── Pages ─────────────────────────────────────────────────────── */
 @use '../modules/auth/presentation/styles/login';
