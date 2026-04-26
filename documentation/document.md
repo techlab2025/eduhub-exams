@@ -18,11 +18,12 @@
 ```json
 {
     "title": string,
-    "subject_id": number,
-    "stage_id": number,
-    "unit_ids": number[],
+    "description":string,
+    "ref_number":number,
+    "tag":string,
+    "image":string[],
+    "files":string[],
     "document_type_id": number,
-    "isAllUnits": boolean
 }
 ```
 
@@ -32,11 +33,12 @@
 {
     "document_id": number,
     "title": string,
-    "subject_id": number,
-    "stage_id": number,
-    "unit_ids": number[],
+    "description":string,
+    "ref_number":number,
+    "tag":string,
+    "image":string[],
+    "files":string[],
     "document_type_id": number,
-    "isAllUnits": boolean
 }
 ```
 
