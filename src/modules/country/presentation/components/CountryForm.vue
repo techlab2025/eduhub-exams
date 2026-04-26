@@ -78,16 +78,12 @@
     <!-- ── Card Header ───────────────────────────────────── -->
     <header class="form-header">
       <div class="header-text">
-        <h3>{{ route.params.id ? 'Edit Country' : 'Add New Country' }}</h3>
+        <h3>{{ route.params.id ? $t('Edit Country') : $t('Add New Country') }}</h3>
         <p class="header-subtitle">
-          {{
-            route.params.id
-              ? 'Update the country details below'
-              : 'Fill in the country name, code and flag'
-          }}
+          {{ route.params.id ? $t('update_country_details') : $t('fill_country_details') }}
         </p>
       </div>
-      <span v-if="route.params.id" class="edit-badge">Editing</span>
+      <span v-if="route.params.id" class="edit-badge">{{ $t('Editing') }}</span>
     </header>
 
     <!-- ── Divider ───────────────────────────────────────── -->
@@ -97,13 +93,13 @@
     <div class="form-fields">
       <!-- Email Field -->
       <div class="field-group">
-        <label class="field-label" for="title"> Country Title </label>
+        <label class="field-label" for="title"> {{ $t('Country Title') }} </label>
         <div class="input-wrap">
           <input
             id="title"
             v-model="title"
             type="text"
-            placeholder="Country Title"
+            :placeholder="$t('Country Title')"
             class="field-input"
             @input="updateData"
           />
@@ -111,13 +107,13 @@
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="code"> Country Code </label>
+        <label class="field-label" for="code"> {{ $t('Country Code') }} </label>
         <div class="input-wrap">
           <input
             id="code"
             v-model="code"
             type="text"
-            placeholder="Country Code"
+            :placeholder="$t('Country Code')"
             class="field-input"
             @input="updateData"
           />
@@ -125,13 +121,13 @@
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="flag"> Country Flag </label>
+        <label class="field-label" for="flag"> {{ $t('Country Flag') }} </label>
         <div class="input-wrap">
           <input
             id="flag"
             v-model="flag"
             type="text"
-            placeholder="Country Flag"
+            :placeholder="$t('Country Flag')"
             class="field-input"
             @input="updateData"
           />

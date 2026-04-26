@@ -3,15 +3,15 @@
   import AppButton from '@/shared/HelpersComponents/AppButton.vue';
   import IconAccept from '@/shared/icons/IconAccept.vue';
   import { useRoute } from 'vue-router';
-  import type CountryParams from '../../core/params/ad.email.params';
   import CountryController from '../controllers/country.controller';
   import CountryForm from './CountryForm.vue';
+  import type AddCountryParams from '../../core/params/add.country.params';
   // Controller instance
   const controller = CountryController.getInstance();
   const route = useRoute();
   const formKey = route.fullPath;
   // Form state
-  const params = ref<CountryParams | null>(null);
+  const params = ref<AddCountryParams | null>(null);
   /**
    * Save (create or update) email
    */
@@ -30,7 +30,7 @@
     }
   };
 
-  const updateData = (updatedParams: CountryParams) => {
+  const updateData = (updatedParams: AddCountryParams) => {
     params.value = updatedParams;
     // saveEmail();
   };
@@ -44,8 +44,8 @@
       @update-data="updateData"
     />
 
-    <AppButton title="Save Email" size="sm" icon="right" type="submit" @click="saveEmail">
-      Save Country
+    <AppButton :title="$t('Save')" size="sm" icon="right" type="submit" @click="saveEmail">
+      {{ $t('Save') }}
 
       <template #icon>
         <IconAccept />

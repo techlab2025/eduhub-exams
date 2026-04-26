@@ -38,7 +38,7 @@
   <div class="email-crud-example">
     <CountryForm :country="controller.itemData.value!" @update-data="updateData" />
 
-    <button type="button" @click="saveEmail">Save Email</button>
+    <button type="button" @click="saveEmail">{{ $t('Save') }}</button>
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error">

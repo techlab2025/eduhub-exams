@@ -4107,12 +4107,12 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .login .login-form .inputs .input-wrapper input {
   width: 100%;
-  padding: 1rem 1rem 1rem 2.3rem;
+  padding: 1rem 1rem 1rem 1.5rem;
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-md);
   transition: var(--transition-fast);
-  color: var(--gray-800);
-  background-color: var(--gray-50);
+  color: var(--Black) !important;
+  background-color: var(--BgWhite) !important;
 }
 .login .login-form .inputs .input-wrapper input:focus {
   outline: none;
@@ -4140,7 +4140,7 @@ body::-webkit-scrollbar-thumb:hover {
 .login .login-form .inputs .input-wrapper .icon-eye {
   position: absolute;
   top: 1rem;
-  right: 1rem;
+  right: 2.5rem;
   height: 25px;
   width: 25px;
   cursor: pointer;

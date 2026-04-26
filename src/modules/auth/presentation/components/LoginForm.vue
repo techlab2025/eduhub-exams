@@ -1,10 +1,10 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  // import { useRouter } from 'vue-router'
   import LoginController from '../controllers/login.controller';
   import LoginParams from '../../core/params/login.params';
-  // import LoginIcon from "@/shared/icons/LoginIcon.vue";
   import logo from '@/assets/images/TechlabLogo.png';
+  import CloseEyeIcon from '@/shared/icons/Login/CloseEyeIcon.vue';
+  import OpenEyeIcon from '@/shared/icons/Login/OpenEyeIcon.vue';
 
   const email = ref('');
   const password = ref('');
@@ -27,29 +27,24 @@
     <form class="login-form" @submit.prevent="login">
       <div class="title">
         <div class="logo">
-          <!-- <img src="@/assets/images/logo.svg" width="22" alt="logo" /> -->
           <h2>HSE.Cloud.Ai</h2>
         </div>
-
         <div class="text">
-          <p>{{ $t('Log in now') }}</p>
+          <p>{{ $t('Login_now') }}</p>
           <span>{{ $t('Please enter your email and password to log in') }}</span>
         </div>
       </div>
-
       <div class="inputs">
         <div class="input-wrapper">
-          <!-- <Email class="icon " /> -->
           <input
             id="email"
             v-model="email"
-            class="input py"
+            class="input"
             :placeholder="$t('Enter Your Mail')"
             type="email"
           />
         </div>
         <div class="input-wrapper">
-          <!-- <Loca class="icon" /> -->
           <input
             id="password"
             v-model="password"
@@ -57,8 +52,12 @@
             :placeholder="$t('Enter Password')"
             class="input py"
           />
-          <!-- <CloseEye class="icon-eye" v-if="isPasswordVisible" @click="isPasswordVisible = !isPasswordVisible" /> -->
-          <!-- <EyeIcon class="icon-eye" v-else @click="isPasswordVisible = !isPasswordVisible" /> -->
+          <CloseEyeIcon
+            v-if="isPasswordVisible"
+            class="icon-eye"
+            @click="isPasswordVisible = !isPasswordVisible"
+          />
+          <OpenEyeIcon v-else class="icon-eye" @click="isPasswordVisible = !isPasswordVisible" />
         </div>
       </div>
       <button type="submit" class="btn btn-primary">{{ $t('login') }}</button>

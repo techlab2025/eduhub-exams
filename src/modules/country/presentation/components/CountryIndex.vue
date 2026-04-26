@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { onMounted, ref, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
@@ -14,16 +15,17 @@
 
   // Controller instance
   const controller = CountryController.getInstance();
+  const { t } = useI18n();
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
 
   // Table headers
-  const headers: TableHeader[] = [
-    { key: 'title', label: 'Title', width: '30%', sortable: true },
-    { key: 'code', label: 'Code', width: '30%' },
-    { key: 'flag', label: 'Flag', width: '30%' },
-  ];
+  const headers = computed<TableHeader[]>(() => [
+    { key: 'title', label: t('Title'), width: '30%', sortable: true },
+    { key: 'code', label: t('Code'), width: '30%' },
+    { key: 'flag', label: t('Flag'), width: '30%' },
+  ]);
 
   // Pagination state
   const perPage = ref(10);
@@ -122,7 +124,7 @@
           </span>
           <input
             v-model="word"
-            placeholder="Search by country name or code…"
+            :placeholder="$t('search_by_country_name_or_code')"
             class="search-input"
             type="text"
             @input="Search"
@@ -131,7 +133,7 @@
       </div>
       <div class="flex gap-10">
         <router-link :to="formRoute" class="btn-add">
-          <span>{{ isDraft ? 'Add Country' : 'Continue Adding' }}</span>
+          <span>{{ isDraft ? $t('Add Country') : $t('Continue Adding') }}</span>
           <svg
             width="18"
             height="18"
@@ -145,7 +147,7 @@
           </svg>
         </router-link>
         <button v-if="SelectedRow.length > 0" class="btn-add" @click="deleteSelected">
-          <span>delete</span>
+          <span>{{ $t('Delete') }}</span>
         </button>
       </div>
     </div>
@@ -174,7 +176,7 @@
                 <router-link
                   class="action-btn edit"
                   :to="`/countries/edit/${item.id}`"
-                  title="Edit"
+                  :title="$t('Edit')"
                 >
                   <svg
                     width="15"
@@ -192,7 +194,7 @@
                 </router-link>
                 <DeleteDialog @delete="deleteCountry(item.id!)">
                   <template #Dialog>
-                    <button class="action-btn delete" title="Delete">
+                    <button class="action-btn delete" :title="$t('Delete')">
                       <svg
                         width="15"
                         height="15"
@@ -236,8 +238,8 @@
             <rect x="2" y="4" width="20" height="16" rx="2" />
             <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
           </svg>
-          <h3>No emails yet</h3>
-          <p>Add the first employee email to get started</p>
+          <h3>{{ $t('no_countries_yet') }}</h3>
+          <p>{{ $t('add_first_country') }}</p>
           <router-link :to="formRoute" class="btn-add empty-cta">
             <svg
               width="18"
@@ -250,7 +252,7 @@
             >
               <path d="M12 5v14M5 12h14" />
             </svg>
-            <span>Add Email</span>
+            <span>{{ $t('Add Country') }}</span>
           </router-link>
         </div>
       </template>
