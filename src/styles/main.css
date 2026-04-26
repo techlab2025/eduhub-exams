@@ -4488,7 +4488,7 @@ body::-webkit-scrollbar-thumb:hover {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: #fff;
+  color: var(--white);
 }
 .login .login-logo {
   display: flex;
