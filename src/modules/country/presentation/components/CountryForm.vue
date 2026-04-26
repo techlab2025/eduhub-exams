@@ -4,7 +4,6 @@
   import { useFormsStore } from '@/stores/formsStore';
   import type CountryModel from '../../core/models/country.model';
   import AddCountryParams from '../../core/params/add.country.params';
-  // import MultiLangInput from '@/shared/MultiLangInput.vue';
 
   const emit = defineEmits(['updateData']);
 
@@ -17,6 +16,7 @@
 
   onBeforeRouteLeave((to, from) => {
     const savedData = FormStore.getFormData(formKey!);
+
     if (savedData && to.path !== from.path) {
       FormStore.showReturnWarning(formKey!);
     }
@@ -48,7 +48,11 @@
       flag: flag.value,
     });
 
-    const params = new AddCountryParams(title.value!, code.value, flag.value);
+    const params = new AddCountryParams({
+      title: title.value!,
+      code: code.value,
+      flag: flag.value,
+    });
 
     emit('updateData', params);
   };

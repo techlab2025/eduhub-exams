@@ -9,7 +9,6 @@
 
   const items = computed(() => {
     const breadcrumb = buildBreadcrumb(route, router);
-
     return breadcrumb;
   });
 
@@ -25,7 +24,11 @@
 <template>
   <div class="breadcrump-container">
     <div class="breadcrump">
-      <Breadcrumb :model="items" />
+      <Breadcrumb :model="items">
+        <template #item="{ item }">
+          <span @click="$router.push(item.url!)">{{ item.label }}</span>
+        </template>
+      </Breadcrumb>
     </div>
   </div>
 </template>

@@ -45,6 +45,7 @@
 /* ── Pages ─────────────────────────────────────────────────────── */
 @use '../modules/auth/presentation/styles/login';
 @use 'error/error';
+@use 'toast/tosat';
 
 /* =============================================================================
    GLOBAL OVERRIDES & BASE STYLES

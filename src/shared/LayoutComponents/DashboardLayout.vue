@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import BreadCrumb from "./SubComponents/BreadCrumb.vue";
-import SidebarNavigation from "./SubComponents/SidebarNavigation.vue";
-import Navbar from "./SubComponents/Navbar.vue";
-import NavigationBarMobile from "./SubComponents/NavigationBarMobile.vue";
+  import BreadCrumb from './SubComponents/BreadCrumb.vue';
+  import SidebarNavigation from './SubComponents/SidebarNavigation.vue';
+  import Navbar from './SubComponents/Navbar.vue';
+  import NavigationBarMobile from './SubComponents/NavigationBarMobile.vue';
 </script>
 
 <template>
@@ -13,7 +13,7 @@ import NavigationBarMobile from "./SubComponents/NavigationBarMobile.vue";
     <section class="content-wrapper">
       <Navbar />
       <div class="main-content">
-        <BreadCrumb  :BreadCramps="[]" />
+        <BreadCrumb />
         <slot />
       </div>
       <NavigationBarMobile class="mobile-nav" />
@@ -22,13 +22,13 @@ import NavigationBarMobile from "./SubComponents/NavigationBarMobile.vue";
 </template>
 
 <style scoped>
-.mobile-nav {
-  display: none;
-}
-
-@media (max-width: 600px) {
   .mobile-nav {
-    display: block;
+    display: none;
   }
-}
+
+  @media (max-width: 600px) {
+    .mobile-nav {
+      display: block;
+    }
+  }
 </style>

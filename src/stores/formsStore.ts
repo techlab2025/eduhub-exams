@@ -1,44 +1,88 @@
-// stores/formsStore.ts
-import { defineStore } from "pinia";
-import { dialogManager } from "@/base/Presentation/Dialogs/dialog.manager";
-import router from "@/router";
-import { ref } from "vue";
-
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
 export const useFormsStore = defineStore(
-  "forms",
+  'forms',
   () => {
     const formData = ref<Record<string, any>>({});
+
     const setFormData = (key: string, data: any) => {
+      const isAllDataEmpty = ref(true);
       formData.value[key] = data;
+      const arr = Object.values(formData.value[key]);
+      arr.map((el: any) => {
+        if (el.length > 0) {
+          isAllDataEmpty.value = false;
+        }
+      });
+      if (isAllDataEmpty.value) {
+        clearFormData(key);
+      }
     };
 
     const getFormData = (key: string) => {
       return formData.value[key];
     };
+
     const clearFormData = (key: string) => {
       formData.value[key] = null;
     };
+
     const hasUnsavedChanges = (key: string) => {
       const data = formData.value[key];
-      return data && (data.email !== "" || data.type !== undefined);
+      return data && (data.email !== '' || data.type !== undefined);
     };
+
     const showReturnWarning = (targetPath: string) => {
-      if (
-        Object.keys(formData.value[targetPath] ?? {}).length === 0 ||
-        Object.values(formData.value[targetPath] ?? {}).every((v) => v == null)
-      ) {
-        return;
-      }
-      dialogManager.toastInfo("Click here to return to the form", {
-        title: "Unsaved Changes",
-        duration: 15000,
-        onClick: () => {
-          if (targetPath) {
-            router.push(targetPath);
-          }
-        },
+      const toast = useToast();
+
+      toast.add({
+        severity: 'info',
+        summary: 'Unsaved Changes',
+        detail: 'Click here to return to the form',
+        life: 4000,
+      });
+
+      const observer = new MutationObserver(() => {
+        const toastDialog = document.querySelector('.p-toast .p-toast-message-text');
+        if (toastDialog && !toastDialog.querySelector('.return-btn')) {
+          const BtnsContainer = document.createElement('div');
+          const SaveDatabutton = document.createElement('button');
+          const ClearDatabutton = document.createElement('button');
+
+          BtnsContainer.className = 'return-btn-container';
+          BtnsContainer.style.display = 'flex';
+          BtnsContainer.style.gap = '10px';
+          BtnsContainer.style.justifyContent = 'space-between';
+
+          SaveDatabutton.innerText = 'Save Data';
+          ClearDatabutton.innerText = 'Clear Data';
+
+          SaveDatabutton.className = 'return-btn';
+          ClearDatabutton.className = 'return-btn';
+
+          SaveDatabutton.onclick = () => {
+            toast.removeAllGroups();
+          };
+
+          ClearDatabutton.onclick = () => {
+            clearFormData(targetPath);
+            toast.removeAllGroups();
+          };
+
+          BtnsContainer.appendChild(SaveDatabutton);
+          BtnsContainer.appendChild(ClearDatabutton);
+          toastDialog.appendChild(BtnsContainer);
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
       });
     };
+
     return {
       formData,
       setFormData,
@@ -50,9 +94,8 @@ export const useFormsStore = defineStore(
   },
   {
     persist: {
-      key: "forms",
+      key: 'forms',
       storage: sessionStorage,
     },
   },
 );
-

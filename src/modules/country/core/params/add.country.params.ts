@@ -15,10 +15,10 @@ export default class AddCountryParams implements Params {
     flag: { required: true, minLength: 2, maxLength: 100 },
   });
 
-  constructor(title: string, code: string, flag: string) {
-    this.title = title;
-    this.code = code;
-    this.flag = flag;
+  constructor(data: { title: string; code: string; flag: string }) {
+    this.title = data.title;
+    this.code = data.code;
+    this.flag = data.flag;
   }
 
   toMap(): { [p: string]: any } {

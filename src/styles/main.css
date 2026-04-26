@@ -97,6 +97,9 @@
   --breadcrump-text-color: black;
   --sidebar-bg: #0f172a;
   --sidebar-text-color: #b8b8b8;
+  --toast-bg: #93c0ec7c;
+  --toast-text-color: #0369a1;
+  --white: white;
   /* ── Typography ────────────────────────────────────────────── */
   --font-family:
     'URW DIN Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -2997,25 +3000,19 @@ body::-webkit-scrollbar-thumb:hover {
   width: 100%;
   gap: 12px;
 }
-.breadcrump-container
-  .breadcrump
-  .p-breadcrumb
-  .p-breadcrumb-list
-  .p-breadcrumb-item
-  .breadcrumb-link
-  span {
+.breadcrump-container .breadcrump .p-breadcrumb .p-breadcrumb-list .p-breadcrumb-item span {
   text-transform: capitalize;
-  color: var(--breadcrumb-text, var(--bg-sidebar)) !important;
-  font-size: 18px;
+  color: var(--PrimaryColor) !important;
+  font-size: 15px;
   font-weight: 600;
   font-family: 'Light';
+  cursor: pointer;
 }
 .breadcrump-container
   .breadcrump
   .p-breadcrumb
   .p-breadcrumb-list
   .p-breadcrumb-item:first-child
-  .breadcrumb-link
   span {
   color: var(--breadcrumb-first-text, var(--green)) !important;
   font-size: 14px;
@@ -3026,8 +3023,8 @@ body::-webkit-scrollbar-thumb:hover {
   .p-breadcrumb
   .p-breadcrumb-list
   .p-breadcrumb-item:last-child
-  .p-breadcrumb-item-link
-  .p-breadcrumb-item-label {
+  span {
+  font-size: 16px;
   color: var(--PrimaryColor) !important;
 }
 .breadcrump-container .breadcrump .p-breadcrumb .p-breadcrumb-list .p-breadcrumb-separator {
@@ -4762,6 +4759,34 @@ body::-webkit-scrollbar-thumb:hover {
   z-index: 5;
   transition: background 0.05s ease;
   mix-blend-mode: overlay;
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.return-btn {
+  color: var(--info-text) !important;
+  border-radius: 5px !important;
+  padding: 5px 10px !important;
+  cursor: pointer !important;
+  border: 1px solid var(--info-dark) !important;
+  transition: all 0.3s ease;
+  width: 50%;
+}
+.return-btn:hover {
+  background-color: var(--info-dark) !important;
+  color: var(--white) !important;
+  border-color: var(--info-dark) !important;
+}
+
+.p-toast-message-info {
+  background-color: var(--toast-bg) !important;
+  color: var(--toast-text-color) !important;
+}
+
+.p-toast-detail {
+  color: var(--toast-text-color) !important;
 }
 
 /* =============================================================================

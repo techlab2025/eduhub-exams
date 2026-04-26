@@ -22,7 +22,6 @@ class EnvironmentManager {
   private _config: Ref<EnvironmentConfig>;
 
   private constructor() {
-    console.log(getDefaultStage(), 'getDefaultStage()');
     const initialStage = getDefaultStage();
     this._stage = ref(initialStage);
     this._config = ref(environments[initialStage]);
