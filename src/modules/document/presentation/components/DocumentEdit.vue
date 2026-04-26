@@ -6,9 +6,8 @@
   import DocumentController from '../controllers/document.controller';
   import DocumentForm from './DocumentForm.vue';
   import ShowDocumentParams from '../../core/params/show.document.params';
-  import type EditDocumentParams from '../../core/params/edit.document.params';
+  import EditDocumentParams from '../../core/params/edit.document.params';
   import type AddDocumentParams from '../../core/params/add.document.params';
-  import EditDocumentParamsClass from '../../core/params/edit.document.params';
 
   const controller = DocumentController.getInstance();
   const route = useRoute();
@@ -22,19 +21,19 @@
   };
 
   const updateData = (updatedParams: AddDocumentParams) => {
-    params.value = new EditDocumentParamsClass(
-      Number(route.params.id),
-      updatedParams.title,
-      updatedParams.subject_id,
-      updatedParams.stage_id,
-      updatedParams.unit_ids,
-      updatedParams.document_type_id,
-      updatedParams.isAllUnits,
-    );
+    params.value = new EditDocumentParams({
+      document_id: Number(route.params.id),
+      title: updatedParams.title,
+      subject_id: updatedParams.subject_id,
+      stage_id: updatedParams.stage_id,
+      unit_ids: updatedParams.unit_ids,
+      document_type_id: updatedParams.document_type_id,
+      isAllUnits: updatedParams.isAllUnits,
+    });
   };
 
   onMounted(async () => {
-    await controller.fetchOne(new ShowDocumentParams(Number(route.params.id)));
+    await controller.fetchOne(new ShowDocumentParams({ document_id: Number(route.params.id) }));
   });
 </script>
 

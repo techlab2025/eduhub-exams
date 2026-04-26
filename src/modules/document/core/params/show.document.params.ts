@@ -1,5 +1,5 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export default class ShowDocumentParams implements Params {
   public document_id: number;
@@ -8,8 +8,8 @@ export default class ShowDocumentParams implements Params {
     document_id: { required: true },
   });
 
-  constructor(document_id: number) {
-    this.document_id = document_id;
+  constructor(data: { document_id: number }) {
+    this.document_id = data.document_id;
   }
 
   toMap(): { [p: string]: any } {

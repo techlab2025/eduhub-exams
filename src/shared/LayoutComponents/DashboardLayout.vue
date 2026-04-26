@@ -2,7 +2,7 @@
   import BreadCrumb from './SubComponents/BreadCrumb.vue';
   import SidebarNavigation from './SubComponents/SidebarNavigation.vue';
   import Navbar from './SubComponents/Navbar.vue';
-  import NavigationBarMobile from './SubComponents/NavigationBarMobile.vue';
+  // import NavigationBarMobile from './SubComponents/NavigationBarMobile.vue';
 </script>
 
 <template>
@@ -16,7 +16,7 @@
         <BreadCrumb />
         <slot />
       </div>
-      <NavigationBarMobile class="mobile-nav" />
+      <!-- <NavigationBarMobile class="mobile-nav" /> -->
     </section>
   </main>
 </template>

@@ -1,5 +1,5 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export default class EditDocumentParams implements Params {
   public document_id: number;
@@ -18,22 +18,22 @@ export default class EditDocumentParams implements Params {
     document_type_id: { required: true },
   });
 
-  constructor(
-    document_id: number,
-    title: string,
-    subject_id: number,
-    stage_id: number,
-    unit_ids: number[],
-    document_type_id: number,
-    isAllUnits: boolean,
-  ) {
-    this.document_id = document_id;
-    this.title = title;
-    this.subject_id = subject_id;
-    this.stage_id = stage_id;
-    this.unit_ids = unit_ids;
-    this.document_type_id = document_type_id;
-    this.isAllUnits = isAllUnits;
+  constructor(data: {
+    document_id: number;
+    title: string;
+    subject_id: number;
+    stage_id: number;
+    unit_ids: number[];
+    document_type_id: number;
+    isAllUnits: boolean;
+  }) {
+    this.document_id = data.document_id;
+    this.title = data.title;
+    this.subject_id = data.subject_id;
+    this.stage_id = data.stage_id;
+    this.unit_ids = data.unit_ids;
+    this.document_type_id = data.document_type_id;
+    this.isAllUnits = data.isAllUnits;
   }
 
   toMap(): { [p: string]: any } {
