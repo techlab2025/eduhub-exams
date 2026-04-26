@@ -4,7 +4,6 @@ import DashboardLayout from '../DashboardLayout.vue';
 import BreadCrumb from '../SubComponents/BreadCrumb.vue';
 import SidebarNavigation from '../SubComponents/SidebarNavigation.vue';
 import Navbar from '../SubComponents/Navbar.vue';
-import NavigationBarMobile from '../SubComponents/NavigationBarMobile.vue';
 
 describe('DashboardLayout.vue', () => {
   it('renders the layout components', () => {
@@ -17,7 +16,6 @@ describe('DashboardLayout.vue', () => {
     expect(wrapper.findComponent(SidebarNavigation).exists()).toBe(true);
     expect(wrapper.findComponent(Navbar).exists()).toBe(true);
     expect(wrapper.findComponent(BreadCrumb).exists()).toBe(true);
-    expect(wrapper.findComponent(NavigationBarMobile).exists()).toBe(true);
   });
 
   it('renders the default slot content', () => {
