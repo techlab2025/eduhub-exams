@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useToast } from 'primevue/usetoast';
+import { useRouter } from 'vue-router';
 export const useFormsStore = defineStore(
   'forms',
   () => {
@@ -35,12 +36,11 @@ export const useFormsStore = defineStore(
 
     const showReturnWarning = (targetPath: string) => {
       const toast = useToast();
-
+      const router = useRouter();
       toast.add({
         severity: 'info',
         summary: 'Unsaved Changes',
         detail: 'Click here to return to the form',
-        life: 4000,
       });
 
       const observer = new MutationObserver(() => {
@@ -55,13 +55,14 @@ export const useFormsStore = defineStore(
           BtnsContainer.style.gap = '10px';
           BtnsContainer.style.justifyContent = 'space-between';
 
-          SaveDatabutton.innerText = 'Save Data';
+          SaveDatabutton.innerText = 'Return to Form';
           ClearDatabutton.innerText = 'Clear Data';
 
           SaveDatabutton.className = 'return-btn';
           ClearDatabutton.className = 'return-btn';
 
           SaveDatabutton.onclick = () => {
+            router.push(targetPath);
             toast.removeAllGroups();
           };
 
