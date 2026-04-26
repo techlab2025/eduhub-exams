@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import CountryIndex from '../CountryIndex.vue';
@@ -24,6 +24,15 @@ vi.mock('vue-router', () => ({
     beforeEach: vi.fn(),
   })),
   createWebHistory: vi.fn(),
+}));
+
+// Mock vue-i18n
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({
+    t: (key: string) => key,
+    d: (d: any) => d,
+    n: (n: any) => n,
+  }),
 }));
 
 // Mock PrimeVue
