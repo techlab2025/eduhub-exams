@@ -62,7 +62,7 @@ describe('CountryController', () => {
     it('should call repository.create and redirect to Countries on success', async () => {
       const mockCountry = CountryTestFactory.createMockCountry({ id: 1 });
       const successState = new DataSuccess(mockCountry);
-      const params = new AddCountryParams('Egypt', 'EG', '🇪🇬');
+      const params = new AddCountryParams({ title: 'Egypt', code: 'EG', flag: '🇪🇬' });
       mockRepository.create.mockResolvedValue(successState);
 
       const result = await controller.create(params);

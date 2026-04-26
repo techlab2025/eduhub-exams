@@ -37,7 +37,7 @@ describe('AddCountryParams', () => {
     });
 
     const result = params.validate();
-    expect(result).toBe(true);
+    expect(result.isValid).toBe(true);
   });
 
   it('should fail validation with short title', () => {
@@ -48,6 +48,6 @@ describe('AddCountryParams', () => {
     });
 
     const result = params.validate();
-    expect(result).toBe(false);
+    expect(result.isValid).toBe(false);
   });
 });

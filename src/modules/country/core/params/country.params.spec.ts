@@ -6,14 +6,14 @@ import ShowCountryParams from './show.country.params';
 describe('Country Params', () => {
   describe('AddCountryParams', () => {
     it('should create valid params', () => {
-      const params = new AddCountryParams('Egypt', 'EG', '🇪🇬');
+      const params = new AddCountryParams({ title: 'Egypt', code: 'EG', flag: '🇪🇬' });
       expect(params.title).toBe('Egypt');
       expect(params.code).toBe('EG');
       expect(params.flag).toBe('🇪🇬');
     });
 
     it('should convert to map correctly', () => {
-      const params = new AddCountryParams('Egypt', 'EG', '🇪🇬');
+      const params = new AddCountryParams({ title: 'Egypt', code: 'EG', flag: '🇪🇬' });
       const map = params.toMap();
       expect(map).toEqual({
         title: 'Egypt',
@@ -23,12 +23,12 @@ describe('Country Params', () => {
     });
 
     it('should pass validation for valid params', () => {
-      const params = new AddCountryParams('Egypt', 'EG', '🇪🇬');
+      const params = new AddCountryParams({ title: 'Egypt', code: 'EG', flag: '🇪🇬' });
       expect(params.validate().isValid).toBe(true);
     });
 
     it('should fail validation for invalid params', () => {
-      const params = new AddCountryParams('', '', '');
+      const params = new AddCountryParams({ title: '', code: '', flag: '' });
       expect(params.validate().isValid).toBe(false);
     });
   });
