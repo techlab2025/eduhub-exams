@@ -115,6 +115,11 @@
     @media (max-width: 1000px) {
       display: none;
     }
+
+    .logo {
+      width: 40%;
+      height: 40%;
+    }
     // overflow: hidden; // critical — allows ::after to bleed outside
     // &::after {
     //   content: "";

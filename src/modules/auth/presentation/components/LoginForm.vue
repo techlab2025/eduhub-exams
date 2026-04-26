@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
-// import { useRouter } from 'vue-router'
-import LoginController from "../controllers/login.controller";
-import LoginParams from "../../core/params/login.params";
-// import LoginIcon from "@/shared/icons/LoginIcon.vue";
+  import { ref } from 'vue';
+  // import { useRouter } from 'vue-router'
+  import LoginController from '../controllers/login.controller';
+  import LoginParams from '../../core/params/login.params';
+  // import LoginIcon from "@/shared/icons/LoginIcon.vue";
+  import logo from '@/assets/images/TechlabLogo.png';
 
   const email = ref('');
   const password = ref('');
@@ -21,11 +22,9 @@ import LoginParams from "../../core/params/login.params";
 <template>
   <section class="login">
     <div class="login-logo">
-      <!-- <LoginIcon class="login-icon" /> -->
-      <span>logo</span>
-      <!-- <img src="@/assets/images/logo.svg" width="22" alt="logo" /> -->
+      <img :src="logo" width="22" alt="logo" class="logo" />
     </div>
-    <form @submit.prevent="login" class="login-form">
+    <form class="login-form" @submit.prevent="login">
       <div class="title">
         <div class="logo">
           <!-- <img src="@/assets/images/logo.svg" width="22" alt="logo" /> -->

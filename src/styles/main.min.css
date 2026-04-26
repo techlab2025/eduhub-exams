@@ -3981,6 +3981,10 @@ body::-webkit-scrollbar-thumb:hover {
     display: none;
   }
 }
+.login .login-logo .logo {
+  width: 40%;
+  height: 40%;
+}
 .login .login-form {
   display: flex;
   flex-direction: column;
