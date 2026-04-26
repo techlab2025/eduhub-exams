@@ -17,6 +17,23 @@
     padding: var(--md-size);
   }
 
+  .card {
+    background: linear-gradient(180deg, #0b1a2b, #081220);
+    border-radius: 40px;
+    clip-path: polygon(0% 0%, 100% 0%, 92% 100%, 0% 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-logo {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+  }
+
   .login-logo {
     @include flex(row, wrap, center, center);
 
@@ -27,13 +44,19 @@
     border-radius: 40px; // top-left · top-right · bottom-left · bottom-right=0
     position: relative;
 
-    @media (max-width: 1000px) {
+    @media (max-width: 1180px) {
       display: none;
     }
 
     .logo {
-      width: 40%;
-      height: 40%;
+      width: 60%;
+      height: 50%;
+      transition: all 0.5s ease-in-out;
+
+      @media (max-width: 1400px) {
+        width: 40%;
+        height: 30%;
+      }
     }
   }
 

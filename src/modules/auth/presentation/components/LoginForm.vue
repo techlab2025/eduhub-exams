@@ -21,9 +21,12 @@
 
 <template>
   <section class="login">
-    <div class="login-logo">
-      <img :src="logo" width="22" alt="logo" class="logo" />
+    <div class="card">
+      <div class="login-logo">
+        <img :src="logo" width="22" alt="logo" class="logo" />
+      </div>
     </div>
+
     <form class="login-form" @submit.prevent="login">
       <div class="title">
         <div class="logo">

@@ -4475,6 +4475,21 @@ body::-webkit-scrollbar-thumb:hover {
     padding: var(--md-size);
   }
 }
+.login .card {
+  background: linear-gradient(180deg, #0b1a2b, #081220);
+  border-radius: 40px;
+  clip-path: polygon(0% 0%, 100% 0%, 92% 100%, 0% 100%);
+  position: relative;
+  overflow: hidden;
+}
+.login .login-logo {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+}
 .login .login-logo {
   display: flex;
   flex-direction: row;
@@ -4488,14 +4503,21 @@ body::-webkit-scrollbar-thumb:hover {
   border-radius: 40px;
   position: relative;
 }
-@media (max-width: 1000px) {
+@media (max-width: 1180px) {
   .login .login-logo {
     display: none;
   }
 }
 .login .login-logo .logo {
-  width: 40%;
-  height: 40%;
+  width: 60%;
+  height: 50%;
+  transition: all 0.5s ease-in-out;
+}
+@media (max-width: 1400px) {
+  .login .login-logo .logo {
+    width: 40%;
+    height: 30%;
+  }
 }
 .login .login-form {
   display: flex;
