@@ -270,8 +270,10 @@
   display: flex;
   gap: 6px;
   justify-content: center;
+
   .configuration-btn {
     @include flex-row(nowrap, center, center);
+
     border: 1px solid var(--PrimaryColor);
     color: var(--PrimaryColor);
     padding: 4px 14px;
@@ -355,6 +357,7 @@
 .fade-leave-to {
   opacity: 0;
 }
+
 .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-handle {
   background-color: var(--white) !important;
 }

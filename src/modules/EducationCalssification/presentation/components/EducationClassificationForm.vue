@@ -60,7 +60,7 @@
     if (saved) {
       title.value = saved.title;
       updateData();
-    } else {
+    } else if (!country) {
       resetForm();
     }
   });
@@ -122,6 +122,7 @@
     width: 20%;
     margin-top: 25px;
   }
+
   .education-classification-form-card {
     background: var(--bg-main);
     border-radius: var(--radius-xl);
@@ -169,6 +170,7 @@
       display: flex;
       align-items: center;
       gap: 3px;
+
       svg {
         width: 26px;
         height: 26px;

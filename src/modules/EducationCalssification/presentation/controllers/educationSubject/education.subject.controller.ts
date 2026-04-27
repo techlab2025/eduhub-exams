@@ -5,22 +5,17 @@ import type Params from '@/base/Core/Params/params';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
-import EducationConfigurationRepository from '@/modules/EducationCalssification/data/repositories/educationConfiguration/education.configuration.repository';
-import type EducationClassificationModel from '@/modules/EducationCalssification/core/models/education.classification.model';
+import EducationSubjectRepository from '@/modules/EducationCalssification/data/repositories/educationSubject/education.subject.repository';
+import type EducationSubjectConfigurationModel from '@/modules/EducationCalssification/core/models/EducationConfiguration/education.subject.configuration.model';
 
-/**
- * Country Controller for managing countries
- *
- * This controller provides methods for CRUD operations on countries.
- */
 export default class EducationSubjectController extends BaseController<
-  EducationClassificationModel,
-  EducationClassificationModel[]
+  EducationSubjectConfigurationModel,
+  EducationSubjectConfigurationModel
 > {
   private static instance: EducationSubjectController;
 
   protected get repository() {
-    return EducationConfigurationRepository.getInstance();
+    return EducationSubjectRepository.getInstance();
   }
 
   /**

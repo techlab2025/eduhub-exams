@@ -52,3 +52,37 @@
   ],
 }
 ```
+
+## Response
+
+```json
+{
+    "educationClassificatioId": number,
+    "numberOfBranches": number,
+    "translation": {
+        "singular_title": {
+            "ar": string,
+            "en": string
+        },
+        "plural_title": {
+            "ar": string,
+            "en": string
+        }
+    },
+    "branches": [
+        {
+            "level_number": number,
+            "translation": {
+                "singular_title": {
+                    "ar": string,
+                    "en": string
+                },
+                "plural_title": {
+                    "ar": string,
+                    "en": string
+                }
+            }
+        }
+    ]
+}
+```

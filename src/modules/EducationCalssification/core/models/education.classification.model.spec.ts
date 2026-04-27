@@ -26,6 +26,7 @@ describe('EducationClassificationModel', () => {
 
       expect(model.id).toBe(5);
       expect(model.title).toBe('Higher Education');
+      expect(model.created_at).toBe('2023-06-01');
       expect(model.status).toBe(false);
     });
 

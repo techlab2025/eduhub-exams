@@ -13,16 +13,15 @@
   import AddEducationSubjectParams from '../../core/params/EducationSubjects/add.educationSubject.params';
   import EducationConfigurationController from '../controllers/educationConfiguration/education.configuration.controller';
   import EducationSubjectController from '../controllers/educationSubject/education.subject.controller';
+  import EducationConfigurationModel from '../../core/models/EducationConfiguration/education.configuration.model';
+  import EducationSubjectConfigurationModel from '../../core/models/EducationConfiguration/education.subject.configuration.model';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
   const emit = defineEmits([
     'updateData',
     'save-education-classification',
     'save-education-subjects',
   ]);
-  type Branch = {
-    singular: Record<string, string>;
-    plural: Record<string, string>;
-  };
   const { country, formKey } = defineProps<{
     country?: EducationClassificationModel;
     formKey?: string;
@@ -88,6 +87,10 @@
   const ConfigurationNumberOfBranchs = ref<number>(0);
   const subjectNumberOfBranchs = ref<number>(0);
 
+  type Branch = { singular: Record<string, string>; plural: Record<string, string> };
+  const configurationInitialBranches = ref<Branch[]>([]);
+  const subjectInitialBranches = ref<Branch[]>([]);
+
   const ApplyConfigurationBranchs = () => {
     emit('save-education-classification');
     ConfigurationNumberOfBranchs.value = ConfigurationnumberOfBranchs.value;
@@ -144,6 +147,48 @@
     const controller = EducationSubjectController.getInstance();
     await controller.create(params);
   };
+
+  const fillConfigurationForm = (data: EducationConfigurationModel) => {
+    ConfigurationnumberOfBranchs.value = data.numberOfBranches;
+    ConfigurationNumberOfBranchs.value = data.numberOfBranches;
+    configurationInitialBranches.value = data.branches.map((branch) => ({
+      singular: { ...branch.translation.SingularTitle },
+      plural: { ...branch.translation.PluralTitle },
+    }));
+  };
+
+  const fillSubjectForm = (data: EducationSubjectConfigurationModel) => {
+    SubjectnumberOfBranchs.value = data.numberOfBranches;
+    subjectNumberOfBranchs.value = data.numberOfBranches;
+    subject_title_Singular.value = { ...data.translation.SingularTitle };
+    subject_title_Plural.value = { ...data.translation.PluralTitle };
+    subjectInitialBranches.value = data.branches.map((branch) => ({
+      singular: { ...branch.translation.SingularTitle },
+      plural: { ...branch.translation.PluralTitle },
+    }));
+  };
+
+  const controller = EducationConfigurationController.getInstance();
+  const subjectController = EducationSubjectController.getInstance();
+
+  onMounted(async () => {
+    const [configResult, subjectResult] = await Promise.all([
+      controller.fetchList(),
+      subjectController.fetchList(),
+    ]);
+
+    if (configResult instanceof DataSuccess && configResult.data) {
+      fillConfigurationForm(configResult.data);
+    } else {
+      fillConfigurationForm(EducationConfigurationModel.example);
+    }
+
+    if (subjectResult instanceof DataSuccess && subjectResult.data) {
+      fillSubjectForm(subjectResult.data);
+    } else {
+      fillSubjectForm(EducationSubjectConfigurationModel.example);
+    }
+  });
 </script>
 
 <template>
@@ -181,8 +226,9 @@
       </div>
 
       <SingularPluralForm
-        :numberOfBranches="ConfigurationNumberOfBranchs"
+        :number-of-branches="ConfigurationNumberOfBranchs"
         :label="$t('name of branch')"
+        :initial-branches="configurationInitialBranches"
         @update="GetConfigurationBranchs"
       />
     </div>
@@ -240,8 +286,9 @@
         </button>
       </div>
       <SingularPluralForm
-        :numberOfBranches="subjectNumberOfBranchs"
+        :number-of-branches="subjectNumberOfBranchs"
         :label="$t('name of subjects')"
+        :initial-branches="subjectInitialBranches"
         @update="GetSubjectBranchs"
       />
     </div>

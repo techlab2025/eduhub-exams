@@ -1,10 +1,12 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins/flex' as *;
+
 .education-classification-configuration-form-container {
   display: flex;
   gap: 10px;
   flex-direction: column;
   width: 100%;
+
   .save-btn {
     background-color: var(--PrimaryColor);
     display: flex;
@@ -20,10 +22,12 @@
     transition: all 0.3s ease;
     width: 20%;
     margin-top: 25px;
+
     @media (max-width: 1000px) {
       width: 100%;
     }
   }
+
   .education-classification-form-card {
     background: var(--bg-main);
     border-radius: var(--radius-xl);
@@ -71,6 +75,7 @@
       display: flex;
       align-items: center;
       gap: 3px;
+
       svg {
         width: 26px;
         height: 26px;
@@ -134,9 +139,11 @@
     grid-column: span 3;
     gap: 8px;
     width: 80%;
+
     &:nth-child(3) {
       margin-top: 10px;
     }
+
     @media (max-width: 1000px) {
       width: 100%;
     }

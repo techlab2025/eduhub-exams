@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import CountryAdd from '../CountryAdd.vue';
+import CountryAdd from '../EducationClassificationAdd.vue';
 
 // Mock vue-router
 vi.mock('vue-router', () => ({

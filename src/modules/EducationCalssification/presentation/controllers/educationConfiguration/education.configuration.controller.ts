@@ -6,16 +6,11 @@ import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/da
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import EducationConfigurationRepository from '@/modules/EducationCalssification/data/repositories/educationConfiguration/education.configuration.repository';
-import type EducationClassificationModel from '@/modules/EducationCalssification/core/models/education.classification.model';
+import type EducationConfigurationModel from '@/modules/EducationCalssification/core/models/EducationConfiguration/education.configuration.model';
 
-/**
- * Country Controller for managing countries
- *
- * This controller provides methods for CRUD operations on countries.
- */
 export default class EducationConfigurationController extends BaseController<
-  EducationClassificationModel,
-  EducationClassificationModel[]
+  EducationConfigurationModel,
+  EducationConfigurationModel
 > {
   private static instance: EducationConfigurationController;
 

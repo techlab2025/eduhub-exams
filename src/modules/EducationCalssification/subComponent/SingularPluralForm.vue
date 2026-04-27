@@ -2,24 +2,25 @@
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import { reactive, watch } from 'vue';
 
+  type Branch = {
+    singular: Record<string, string>;
+    plural: Record<string, string>;
+  };
+
   const props = defineProps<{
     numberOfBranches: number;
     label: string;
+    initialBranches?: Branch[];
   }>();
 
   const emit = defineEmits<{
     (e: 'update', value: Branch[]): void;
   }>();
 
-  type Branch = {
-    singular: Record<string, string>;
-    plural: Record<string, string>;
-  };
-
   const branches = reactive<Branch[]>(
-    Array.from({ length: props.numberOfBranches }, () => ({
-      singular: {},
-      plural: {},
+    Array.from({ length: props.numberOfBranches }, (_, i) => ({
+      singular: { ...props.initialBranches?.[i]?.singular },
+      plural: { ...props.initialBranches?.[i]?.plural },
     })),
   );
 
@@ -30,8 +31,22 @@
 
       for (let i = 0; i < newVal; i++) {
         branches.push({
-          singular: { en: '', ar: '' },
-          plural: { en: '', ar: '' },
+          singular: { ...props.initialBranches?.[i]?.singular } ?? { en: '', ar: '' },
+          plural: { ...props.initialBranches?.[i]?.plural } ?? { en: '', ar: '' },
+        });
+      }
+    },
+  );
+
+  watch(
+    () => props.initialBranches,
+    (newInitial) => {
+      if (!newInitial?.length) return;
+      branches.length = 0;
+      for (let i = 0; i < props.numberOfBranches; i++) {
+        branches.push({
+          singular: { ...newInitial[i]?.singular },
+          plural: { ...newInitial[i]?.plural },
         });
       }
     },
@@ -66,7 +81,7 @@
         />
       </div>
     </div>
-    <button class="save-btn" @click="SaveData" v-if="numberOfBranches">
+    <button v-if="numberOfBranches" class="save-btn" @click="SaveData">
       {{ $t('save') }}
     </button>
   </div>
@@ -76,6 +91,7 @@
   .save-btn {
     width: 100%;
   }
+
   .branches {
     display: flex;
     flex-direction: column;

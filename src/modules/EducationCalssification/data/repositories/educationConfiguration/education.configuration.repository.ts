@@ -1,16 +1,10 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import EducationConfigurationApiService from '../../api/education.configuration/education.configuration.api-service';
-import EducationClassificationModel from '@/modules/EducationCalssification/core/models/education.classification.model';
+import EducationConfigurationModel from '@/modules/EducationCalssification/core/models/EducationConfiguration/education.configuration.model';
 
-/**
- * Country Repository for API data operations
- *
- * This repository handles all data access for countries,
- * including parsing API responses and error handling.
- */
 export default class EducationConfigurationRepository extends BaseRepository<
-  EducationClassificationModel,
-  EducationClassificationModel[]
+  EducationConfigurationModel,
+  EducationConfigurationModel
 > {
   private static instance: EducationConfigurationRepository;
 
@@ -20,24 +14,20 @@ export default class EducationConfigurationRepository extends BaseRepository<
 
   protected get config(): RepositoryConfig {
     return {
-      hasPagination: true,
+      hasPagination: false,
       dataKey: 'data',
       paginationKey: 'meta',
     };
   }
 
-  protected get mockItem(): EducationClassificationModel {
-    return EducationClassificationModel.example;
+  protected get mockItem(): EducationConfigurationModel {
+    return EducationConfigurationModel.example;
   }
 
-  protected get mockList(): EducationClassificationModel[] {
-    return [{ ...EducationClassificationModel.example }];
+  protected get mockList(): EducationConfigurationModel {
+    return EducationConfigurationModel.example;
   }
 
-  /**
-   * Get singleton instance
-   * @returns CountryRepository instance
-   */
   static getInstance(): EducationConfigurationRepository {
     if (!EducationConfigurationRepository.instance) {
       EducationConfigurationRepository.instance = new EducationConfigurationRepository();
@@ -45,19 +35,11 @@ export default class EducationConfigurationRepository extends BaseRepository<
     return EducationConfigurationRepository.instance;
   }
 
-  protected parseItem(data: any): EducationClassificationModel {
-    return EducationClassificationModel.fromJson(data);
+  protected parseItem(data: any): EducationConfigurationModel {
+    return EducationConfigurationModel.fromJson(data);
   }
 
-  protected parseList(data: any): EducationClassificationModel[] {
-    if (!Array.isArray(data)) return [];
-    return data.reduce((acc: EducationClassificationModel[], item) => {
-      try {
-        if (item != null) {
-          acc.push(this.parseItem(item));
-        }
-      } catch {}
-      return acc;
-    }, []);
+  protected parseList(data: any): EducationConfigurationModel {
+    return EducationConfigurationModel.fromJson(data);
   }
 }

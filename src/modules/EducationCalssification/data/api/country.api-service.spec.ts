@@ -1,20 +1,20 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import CountryApiService from './country.api-service';
-import { CountryEndpoints } from './country.api.endpoints';
+import EducationClassificationApiService from './educationClassification.api-service';
+import { EducationClassificationEndpoints } from './educationClassification.api.endpoints';
 
-const endpoints = new CountryEndpoints();
+const endpoints = new EducationClassificationEndpoints();
 
-describe('CountryApiService', () => {
-  let service: CountryApiService;
+describe('EducationClassificationApiService', () => {
+  let service: EducationClassificationApiService;
 
   beforeEach(() => {
-    service = CountryApiService.getInstance();
+    service = EducationClassificationApiService.getInstance();
   });
 
   describe('singleton pattern', () => {
     it('should return the same instance', () => {
-      const instance1 = CountryApiService.getInstance();
-      const instance2 = CountryApiService.getInstance();
+      const instance1 = EducationClassificationApiService.getInstance();
+      const instance2 = EducationClassificationApiService.getInstance();
 
       expect(instance1).toBe(instance2);
     });
