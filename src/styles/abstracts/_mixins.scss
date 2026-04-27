@@ -1,6 +1,7 @@
 // abstracts/_mixins.scss
 // All shared mixins — 4 existing + 5 new (from SCSS-ARCHITECTURE.md)
 // Zero CSS output — pure tools only
+@use 'sass:map';
 
 // ── Existing ──────────────────────────────────────────────────────────────
 
@@ -114,7 +115,6 @@
 
 /// Responsive breakpoint (min-width)
 /// @param {string} $breakpoint - xs | sm | md | lg | xl | 2xl
-@use 'sass:map';
 
 @mixin respond-to($breakpoint) {
   $breakpoints: (

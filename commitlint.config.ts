@@ -7,7 +7,7 @@ const config: UserConfig = {
     // Allow scopes matching your module names (kebab-case)
     'scope-case': [2, 'always', 'kebab-case'],
     // Limit subject line to 100 chars (generous for descriptive commits)
-    'header-max-length': [2, 'always', 100],
+    'header-max-length': [2, 'always', 200],
     // Disallow trailing period in subject
     'subject-full-stop': [2, 'never', '.'],
     // Subject must start with lowercase

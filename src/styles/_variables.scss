@@ -5,7 +5,7 @@
 :root {
   /* ── Primary ───────────────────────────────────────────────── */
   --PrimaryColor: #4faf7c;
-  --PrimaryColor-hover: #4f46e5;
+  --PrimaryColor-hover: #24385c;
   --PrimaryColor-active: #4338ca;
   --PrimaryColor-light: #eef2ff;
   --PrimaryColor-dark: #3730a3;
@@ -63,6 +63,7 @@
   --gray-800: #1e293b;
   --gray-900: #0f172a;
   --gray-950: #020617;
+  --border-color: #e6e6e6;
 
   /* ── Legacy alias (backward compat) ────────────────────────── */
   --header-page-color: #0f172a;
@@ -78,6 +79,8 @@
   --Gray-4: #cbd5e1;
   --Gray-2: #f1f5f9;
   --Gray-3: #64748b;
+  --gray-5: #5d5d5d;
+  --Gray-6: #4b4b4b;
   --breadcrumb-separator: #a5a5a5;
   --GrayText-1: #475569;
   --GrayText: #475569;
@@ -102,6 +105,8 @@
   --toast-bg: #93c0ec7c;
   --toast-text-color: #0369a1;
   --white: white;
+  --placeholder-text: #7a7a7a;
+  --baseInputPadding: 12px;
 
   /* ── Typography ────────────────────────────────────────────── */
   --font-family:
@@ -290,12 +295,17 @@ html.dark {
 
 /* Colors */
 $PrimaryColor: var(--PrimaryColor);
+$PrimaryColorHover: var(--PrimaryColor-hover);
 $SecondaryColor: var(--SecondaryColor);
 $White: var(--BgWhite);
 $Gray-1: var(--Gray-1);
 $Gray-2: var(--Gray-2);
 $DelayColor: var(--delay-color);
 $Gray-3: var(--Gray-3);
+$Gray-5: var(--gray-5);
+$Gray-6: var(--Gray-6);
+$PlaceholderText: var(--placeholder-text);
+$BaseInputPadding: var(--baseInputPadding);
 $Green: var(--green);
 $greenDone: var(--green-done);
 $GrayText-1: var(--GrayText-1);
@@ -329,6 +339,7 @@ $BreadcrumpIconColor: var(--breadcrump-icon-color);
 $BreadcrumpTextColor: var(--breadcrump-text-color);
 $SidebarBg: var(--sidebar-bg);
 $SidebarTextColor: var(--sidebar-text-color);
+$BorderColor: var(--border-color);
 
 /* Sizes */
 $XsSize: var(--xs-size); //6px

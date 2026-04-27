@@ -170,6 +170,10 @@ $timeline: (
   display: flex;
   align-items: center;
   gap: 1rem;
+  -webkit-backdrop-filter: blur(10px);
+  -moz-backdrop-filter: blur(10px);
+  -o-backdrop-filter: blur(10px);
+  -ms-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   transition: map-get($timeline, transition);
   cursor: default;

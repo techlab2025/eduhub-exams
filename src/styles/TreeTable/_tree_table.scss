@@ -388,6 +388,10 @@
 
   color: var(--PrimaryColor);
   z-index: 3;
+  -webkit-backdrop-filter: blur(8px);
+  -moz-backdrop-filter: blur(8px);
+  -o-backdrop-filter: blur(8px);
+  -ms-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   box-shadow: 0 2px 8px var(--black-alpha-8);
   transition: var(--transition);

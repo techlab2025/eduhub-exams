@@ -30,7 +30,7 @@
     color: var(--gray-800);
     font-size: var(--sm-size);
     font-weight: $BaseFontSemiBoldWeight;
-    padding: var(--md-size);
+    padding: $XsSize4;
 
     @include border($BaseBorderWidth, var(--gray-200), solid, var(--md-size));
 
