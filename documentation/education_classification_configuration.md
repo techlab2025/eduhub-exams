@@ -8,6 +8,7 @@
   "number_of_branches": number,
   "education_classification_configuration_branches": [
     {
+      "level_number": number,
       "education_classification_singular_title": {
         ar: string,
         en: string

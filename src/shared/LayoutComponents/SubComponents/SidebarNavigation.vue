@@ -1,80 +1,86 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-import { ref, type Component } from "vue";
-import SettingIcon from "@/shared/icons/SidebarIcons/SettingIcon.vue";
-import DocumentIcon from "@/shared/icons/BreadcrumbIcons/DocumentIcon.vue";
-import TechlabLogo from "@/assets/images/TechlabLogo.png";
-const route = useRoute();
-const emit = defineEmits(["clickItem"]);
-interface MenuItem {
-  link: string;
-  name: string;
-  icon?: Component;
-  badge?: string;
-  hasArrow?: boolean;
-}
-interface MenuSection {
-  group: string;
-  items: MenuItem[];
-}
+  import { useRoute } from 'vue-router';
+  import { ref, type Component } from 'vue';
+  import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
+  import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
+  import TechlabLogo from '@/assets/images/TechlabLogo.png';
+  import EducationClassificationIcon from '@/shared/icons/SidebarIcons/EducationClassificationIcon.vue';
+  const route = useRoute();
+  const emit = defineEmits(['clickItem']);
+  interface MenuItem {
+    link: string;
+    name: string;
+    icon?: Component;
+    badge?: string;
+    hasArrow?: boolean;
+  }
+  interface MenuSection {
+    group: string;
+    items: MenuItem[];
+  }
 
-const menu = ref<MenuSection[]>([
-  {
-    group: "Overview",
-    items: [
-      {
-        link: "/employees",
-        name: "Employees",
-        icon: SettingIcon,
-      },
-      {
-        link: "/documents",
-        name: "Documents",
-        icon: DocumentIcon,
-      },
-      {
-        link: "/faqs",
-        name: "Faqs",
-        icon: SettingIcon,
-      },
-      {
-        link: "/privacy",
-        name: "Privacy",
-        icon: SettingIcon,
-      },
-      {
-        link: "/terms-conditions",
-        name: "Terms Conditions",
-        icon: SettingIcon,
-      },
-      {
-        link: "/stages",
-        name: "Stages",
-        icon: SettingIcon,
-      },
-      {
-        link: "/subjects",
-        name: "Subjects",
-        icon: SettingIcon,
-      },
-      {
-        link: "/units",
-        name: "Units",
-        icon: SettingIcon,
-      },
-    ],
-  },
-  {
-    group: "location",
-    items: [
-      {
-        link: "/countries",
-        name: "Countries",
-        icon: SettingIcon,
-      },
-    ],
-  },
-]);
+  const menu = ref<MenuSection[]>([
+    {
+      group: 'Overview',
+      items: [
+        {
+          link: '/education-classifications',
+          name: 'Education Classifications',
+          icon: EducationClassificationIcon,
+        },
+        {
+          link: '/employees',
+          name: 'Employees',
+          icon: SettingIcon,
+        },
+        {
+          link: '/documents',
+          name: 'Documents',
+          icon: DocumentIcon,
+        },
+        {
+          link: '/faqs',
+          name: 'Faqs',
+          icon: SettingIcon,
+        },
+        {
+          link: '/privacy',
+          name: 'Privacy',
+          icon: SettingIcon,
+        },
+        {
+          link: '/terms-conditions',
+          name: 'Terms Conditions',
+          icon: SettingIcon,
+        },
+        {
+          link: '/stages',
+          name: 'Stages',
+          icon: SettingIcon,
+        },
+        {
+          link: '/subjects',
+          name: 'Subjects',
+          icon: SettingIcon,
+        },
+        {
+          link: '/units',
+          name: 'Units',
+          icon: SettingIcon,
+        },
+      ],
+    },
+    {
+      group: 'location',
+      items: [
+        {
+          link: '/countries',
+          name: 'Countries',
+          icon: SettingIcon,
+        },
+      ],
+    },
+  ]);
 </script>
 <template>
   <aside class="sidebar">

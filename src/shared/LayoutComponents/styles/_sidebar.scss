@@ -37,7 +37,6 @@
 
     .menu {
       @include flex-column(nowrap, flex-start, stretch);
-
       gap: 12px;
 
       .group-title {
@@ -51,14 +50,12 @@
 
       .menu-item {
         @include flex-row(nowrap, flex-start, center);
-
         gap: 12px;
         padding: 10px 20px;
         margin: 0 10px;
-        // border-radius: 10px;
         color: $SidebarTextColor;
         transition: 0.2s;
-        font-size: $MdSize;
+        font-size: 14px;
         font-weight: $BaseFontSemiBoldWeight;
         font-family: 'Light';
 

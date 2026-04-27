@@ -1,13 +1,14 @@
-import type { RouteRecordRaw } from "vue-router";
-import { countryRoutes } from "./country";
-import { employeeRoutes } from "./employee";
-import { documentRoutes } from "./document";
-import { faqsRoutes } from "./faqs";
-import { privacyRoutes } from "./privacy";
-import { termsConditionsRoutes } from "./terms-conditions";
-import { stagesRoutes } from "./stages";
-import { subjectsRoutes } from "./subjects";
-import { unitsRoutes } from "./units";
+import type { RouteRecordRaw } from 'vue-router';
+import { countryRoutes } from './country';
+import { employeeRoutes } from './employee';
+import { documentRoutes } from './document';
+import { faqsRoutes } from './faqs';
+import { privacyRoutes } from './privacy';
+import { termsConditionsRoutes } from './terms-conditions';
+import { stagesRoutes } from './stages';
+import { subjectsRoutes } from './subjects';
+import { unitsRoutes } from './units';
+import { educationClassificationRoutes } from './education-classification';
 
 export const dashboardRoutes: RouteRecordRaw[] = [
   ...countryRoutes,
@@ -18,5 +19,6 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...termsConditionsRoutes,
   ...stagesRoutes,
   ...subjectsRoutes,
-  ...unitsRoutes
+  ...unitsRoutes,
+  ...educationClassificationRoutes,
 ];
