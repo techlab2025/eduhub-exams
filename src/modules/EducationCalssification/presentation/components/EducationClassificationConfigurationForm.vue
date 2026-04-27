@@ -7,9 +7,22 @@
   import FolderCrudIcon from '@/shared/icons/FolderCrudIcon.vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import SingularPluralForm from '../../subComponent/SingularPluralForm.vue';
+  import ConfigurationParams from '../../core/params/EducationConfiguration/Configuration.params';
+  import AddEducationConfigurationParams from '../../core/params/EducationConfiguration/add.educationConfiguration.params';
+  import TranslationParams from '../../core/params/translation.params';
+  import AddEducationSubjectParams from '../../core/params/EducationSubjects/add.educationSubject.params';
+  import EducationConfigurationController from '../controllers/educationConfiguration/education.configuration.controller';
+  import EducationSubjectController from '../controllers/educationSubject/education.subject.controller';
 
-  const emit = defineEmits(['updateData', 'save-education-classification']);
-
+  const emit = defineEmits([
+    'updateData',
+    'save-education-classification',
+    'save-education-subjects',
+  ]);
+  type Branch = {
+    singular: Record<string, string>;
+    plural: Record<string, string>;
+  };
   const { country, formKey } = defineProps<{
     country?: EducationClassificationModel;
     formKey?: string;
@@ -69,13 +82,67 @@
     }
   });
 
-  const title_Singular = ref<Record<string, string>>({});
-  const title_Plural = ref<Record<string, string>>({});
+  const subject_title_Singular = ref<Record<string, string>>({});
+  const subject_title_Plural = ref<Record<string, string>>({});
 
   const ConfigurationNumberOfBranchs = ref<number>(0);
+  const subjectNumberOfBranchs = ref<number>(0);
+
   const ApplyConfigurationBranchs = () => {
     emit('save-education-classification');
     ConfigurationNumberOfBranchs.value = ConfigurationnumberOfBranchs.value;
+  };
+  const ApplySubjectBranchs = () => {
+    emit('save-education-subjects');
+    subjectNumberOfBranchs.value = SubjectnumberOfBranchs.value;
+  };
+
+  const GetConfigurationBranchs = async (branches: Branch[]) => {
+    const configurationBranches: ConfigurationParams[] = [];
+    branches.forEach((branch, index) => {
+      configurationBranches.push(
+        new ConfigurationParams({
+          levelNumber: index + 1,
+          translation: new TranslationParams({
+            SingularTitle: branch.singular,
+            PluralTitle: branch.plural,
+          }),
+        }),
+      );
+    });
+    const params = new AddEducationConfigurationParams({
+      educationClassificatioId: 1,
+      numberOfBranches: ConfigurationNumberOfBranchs.value,
+      branches: configurationBranches,
+    });
+    const controller = EducationConfigurationController.getInstance();
+    await controller.create(params);
+  };
+
+  const GetSubjectBranchs = async (branches: Branch[]) => {
+    const configurationBranches: ConfigurationParams[] = [];
+    branches.forEach((branch, index) => {
+      configurationBranches.push(
+        new ConfigurationParams({
+          levelNumber: index + 1,
+          translation: new TranslationParams({
+            SingularTitle: branch.singular,
+            PluralTitle: branch.plural,
+          }),
+        }),
+      );
+    });
+    const params = new AddEducationSubjectParams({
+      educationClassificatioId: 1,
+      numberOfBranches: SubjectnumberOfBranchs.value,
+      branches: configurationBranches,
+      translation: new TranslationParams({
+        SingularTitle: subject_title_Singular.value,
+        PluralTitle: subject_title_Plural.value,
+      }),
+    });
+    const controller = EducationSubjectController.getInstance();
+    await controller.create(params);
   };
 </script>
 
@@ -116,7 +183,7 @@
       <SingularPluralForm
         :numberOfBranches="ConfigurationNumberOfBranchs"
         :label="$t('name of branch')"
-        @update="console.log($event, 'evenet')"
+        @update="GetConfigurationBranchs"
       />
     </div>
     <div class="education-classification-form-card">
@@ -139,8 +206,8 @@
               :field-key="`title_Singular`"
               :label="`subjects name (Singular)`"
               :languages="['en', 'ar']"
-              :model-value="title_Singular"
-              @update:model-value="title_Singular = $event"
+              :model-value="subject_title_Singular"
+              @update:model-value="subject_title_Singular = $event"
             />
           </div>
         </div>
@@ -150,8 +217,8 @@
               :field-key="`title_Plural`"
               :label="`subjects name (Plural)`"
               :languages="['en', 'ar']"
-              :model-value="title_Plural"
-              @update:model-value="title_Plural = $event"
+              :model-value="subject_title_Plural"
+              @update:model-value="subject_title_Plural = $event"
             />
           </div>
         </div>
@@ -168,10 +235,15 @@
             />
           </div>
         </div>
-        <button class="save-btn" @click="emit('save-education-classification')">
+        <button class="save-btn" @click="ApplySubjectBranchs">
           {{ $t('apply') }}
         </button>
       </div>
+      <SingularPluralForm
+        :numberOfBranches="subjectNumberOfBranchs"
+        :label="$t('name of subjects')"
+        @update="GetSubjectBranchs"
+      />
     </div>
   </div>
 </template>

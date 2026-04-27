@@ -1,13 +1,12 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
-  import CountryController from '../controllers/country.controller';
   import type EditCountryParams from '../../core/params/edit.country.params';
-  import CountryForm from './CountryForm.vue';
-  import ShowCountryParams from '../../core/params/show.country.params';
+  import EducationClassificationController from '../controllers/educationClassification.controller';
+  import ShowEducationClassificationParams from '../../core/params/show.educationClassification.params';
 
   // Controller instance
-  const controller = CountryController.getInstance();
+  const controller = EducationClassificationController.getInstance();
 
   // Form state
   const params = ref<EditCountryParams | null>(null);
@@ -30,7 +29,9 @@
 
   const route = useRoute();
   onMounted(async () => {
-    await controller.fetchOne(new ShowCountryParams(Number(route.params.id)));
+    await controller.fetchOne(
+      new ShowEducationClassificationParams({ id: Number(route.params.id) }),
+    );
   });
 </script>
 
