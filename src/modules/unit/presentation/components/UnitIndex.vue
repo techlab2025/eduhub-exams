@@ -1,109 +1,100 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
-import DataStatusBuilder from "@/shared/DataStatues/DataStatusBuilder.vue";
-import AppTable, {
-  type TableHeader,
-} from "@/shared/HelpersComponents/AppTable.vue";
-import Pagination from "@/shared/HelpersComponents/Pagination.vue";
-import { useRoute, useRouter } from "vue-router";
-import { debounce } from "@/base/Presentation/Utils/debouced";
-import { useFormsStore } from "@/stores/formsStore";
-import DeleteDialog from "@/shared/HelpersComponents/dialog/DeleteDialog.vue";
-import UnitController from "../controllers/unit.controller";
-import IndexUnitParams from "../../core/params/index.unit.params";
-import DeleteUnitParams from "../../core/params/delete.unit.params";
-import type UnitModel from "../../core/models/unit.model";
+  import { onMounted, ref, computed } from 'vue';
+  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+  import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
+  import Pagination from '@/shared/HelpersComponents/Pagination.vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { debounce } from '@/base/Presentation/Utils/debouced';
+  import { useFormsStore } from '@/stores/formsStore';
+  import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
+  import UnitController from '../controllers/unit.controller';
+  import IndexUnitParams from '../../core/params/index.unit.params';
+  import DeleteUnitParams from '../../core/params/delete.unit.params';
+  import type UnitModel from '../../core/models/unit.model';
 
-// Controller instance
-const controller = UnitController.getInstance();
-const state = computed(() => controller.listState.value);
-const router = useRouter();
-const route = useRoute();
+  // Controller instance
+  const controller = UnitController.getInstance();
+  const state = computed(() => controller.listState.value);
+  const router = useRouter();
+  const route = useRoute();
 
-// Table headers
-const headers: TableHeader[] = [
-  { key: "title", label: "Title", width: "40%", sortable: true },
-  { key: "Subject", label: "Subject", width: "30%" },
-  { key: "Stage", label: "Stage", width: "30%" },
-];
+  // Table headers
+  const headers: TableHeader[] = [
+    { key: 'title', label: 'Title', width: '40%', sortable: true },
+    { key: 'Subject', label: 'Subject', width: '30%' },
+    { key: 'Stage', label: 'Stage', width: '30%' },
+  ];
 
-// Pagination state
-const perPage = ref(10);
-const word = ref("");
+  // Pagination state
+  const perPage = ref(10);
+  const word = ref('');
 
-const fetchUnits = async (page: number = 1, word: string = "") => {
-  const state = await controller.fetchList(
-    new IndexUnitParams(
-      word,
-      route.query.page ? Number(route.query.page) : page,
-      perPage.value,
-    ),
-  );
-  console.log(state, "state");
-};
+  const fetchUnits = async (page: number = 1, word: string = '') => {
+    const state = await controller.fetchList(
+      new IndexUnitParams(word, route.query.page ? Number(route.query.page) : page, perPage.value),
+    );
+    console.log(state, 'state');
+  };
 
-const Search = debounce(() => {
-  router.push({
-    query: {
-      ...route.query,
-      page: Number(route.query.page ?? 1),
-      word: word.value || undefined,
-    },
+  const Search = debounce(() => {
+    router.push({
+      query: {
+        ...route.query,
+        page: Number(route.query.page ?? 1),
+        word: word.value || undefined,
+      },
+    });
+
+    fetchUnits(1, word.value);
   });
 
-  fetchUnits(1, word.value);
-});
+  const onPageChange = (page: number) => {
+    fetchUnits(page);
+    router.push({
+      query: {
+        ...route.query,
+        page: String(page),
+        word: word.value,
+      },
+    });
+  };
 
-const onPageChange = (page: number) => {
-  fetchUnits(page);
-  router.push({
-    query: {
-      ...route.query,
-      page: String(page),
-      word: word.value,
-    },
+  const onPerPageChange = (count: number) => {
+    perPage.value = count;
+    fetchUnits(1);
+  };
+
+  // Fetch emails on component mount
+  onMounted(async () => {
+    if (route.query.word) {
+      word.value = String(route.query.word);
+    }
+
+    await fetchUnits(route.query.page ? Number(route.query.page) : 1, word.value);
   });
-};
 
-const onPerPageChange = (count: number) => {
-  perPage.value = count;
-  fetchUnits(1);
-};
+  const deleteUnit = async (id: number) => {
+    await controller.delete(new DeleteUnitParams(id));
+    await fetchUnits();
+  };
 
-// Fetch emails on component mount
-onMounted(async () => {
-  if (route.query.word) {
-    word.value = String(route.query.word);
-  }
+  const FormStore = useFormsStore();
+  const formRoute = computed(() => `/${route.params.country_code}/units/add`);
 
-  await fetchUnits(route.query.page ? Number(route.query.page) : 1, word.value);
-});
-
-const deleteUnit = async (id: number) => {
-  await controller.delete(new DeleteUnitParams(id));
-  await fetchUnits();
-};
-
-const FormStore = useFormsStore();
-const formRoute = "/units/add";
-
-const isDraft = computed(() => {
-  const data = FormStore?.formData[formRoute] ?? {};
-  return (
-    Object.keys(data).length === 0 ||
-    Object.values(data).every((v) => v == null)
-  );
-});
-const SelectedRow = ref<UnitModel[]>([]);
-const setSelectef = (items: UnitModel[]) => {
-  SelectedRow.value = items;
-};
-
-const deleteSelected = () => {
-  SelectedRow.value.forEach((item) => {
-    deleteUnit(item.id!);
+  const isDraft = computed(() => {
+    const data = FormStore?.formData[formRoute.value] ?? {};
+    return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
-};
+  const SelectedRow = ref<UnitModel[]>([]);
+  const setSelectef = (items: UnitModel[]) => {
+    SelectedRow.value = items;
+  };
+
+  const deleteSelected = () => {
+    SelectedRow.value.forEach((item) => {
+      deleteUnit(item.id!);
+    });
+  };
 </script>
 
 <template>
@@ -136,7 +127,7 @@ const deleteSelected = () => {
       </div>
       <div class="flex gap-10">
         <router-link :to="formRoute" class="btn-add">
-          <span>{{ isDraft ? "Add Unit" : "Continue Adding" }}</span>
+          <span>{{ isDraft ? 'Add Unit' : 'Continue Adding' }}</span>
           <svg
             width="18"
             height="18"
@@ -149,21 +140,14 @@ const deleteSelected = () => {
             <path d="M12 5v14M5 12h14" />
           </svg>
         </router-link>
-        <button
-          v-if="SelectedRow.length > 0"
-          @click="deleteSelected"
-          class="btn-add"
-        >
+        <button v-if="SelectedRow.length > 0" class="btn-add" @click="deleteSelected">
           <span>delete</span>
         </button>
       </div>
     </div>
 
     <!-- ═══ Table ═══ -->
-    <DataStatusBuilder
-      :controller="state"
-      :on-retry="async () => await fetchUnits()"
-    >
+    <DataStatusBuilder :controller="state" :on-retry="async () => await fetchUnits()">
       <template #success="{ data }">
         <div class="table-frame">
           <AppTable
@@ -189,11 +173,7 @@ const deleteSelected = () => {
 
             <template #actions="{ item }">
               <div class="row-actions">
-                <router-link
-                  class="action-btn edit"
-                  :to="`/units/edit/${item.id}`"
-                  title="Edit"
-                >
+                <router-link class="action-btn edit" :to="`/units/edit/${item.id}`" title="Edit">
                   <svg
                     width="15"
                     height="15"
@@ -204,12 +184,8 @@ const deleteSelected = () => {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                    />
-                    <path
-                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                    />
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </router-link>
                 <DeleteDialog @delete="deleteUnit(item.id!)">

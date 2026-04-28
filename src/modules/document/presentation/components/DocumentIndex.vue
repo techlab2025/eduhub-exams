@@ -79,10 +79,10 @@
   };
 
   const FormStore = useFormsStore();
-  const formRoute = '/documents/add';
+  const formRoute = computed(() => `/${route.params.country_code}/documents/add`);
 
   const isDraft = computed(() => {
-    const data = FormStore?.formData[formRoute] ?? {};
+    const data = FormStore?.formData[formRoute.value] ?? {};
     return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
 </script>

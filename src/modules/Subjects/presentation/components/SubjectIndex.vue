@@ -1,111 +1,103 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
-import DataStatusBuilder from "@/shared/DataStatues/DataStatusBuilder.vue";
-import AppTable, {
-  type TableHeader,
-} from "@/shared/HelpersComponents/AppTable.vue";
-import Pagination from "@/shared/HelpersComponents/Pagination.vue";
-import { useRoute, useRouter } from "vue-router";
-import { debounce } from "@/base/Presentation/Utils/debouced";
-import { useFormsStore } from "@/stores/formsStore";
-import DeleteDialog from "@/shared/HelpersComponents/dialog/DeleteDialog.vue";
-import SubjectController from "../controllers/subject.controller";
-import IndexSubjectParams from "../../core/params/index.subject.params";
-import DeleteSubjectParams from "../../core/params/delete.subject.params";
-import type SubjectModel from "../../core/models/subject.model";
+  import { onMounted, ref, computed } from 'vue';
+  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+  import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
+  import Pagination from '@/shared/HelpersComponents/Pagination.vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { debounce } from '@/base/Presentation/Utils/debouced';
+  import { useFormsStore } from '@/stores/formsStore';
+  import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
+  import SubjectController from '../controllers/subject.controller';
+  import IndexSubjectParams from '../../core/params/index.subject.params';
+  import DeleteSubjectParams from '../../core/params/delete.subject.params';
+  import type SubjectModel from '../../core/models/subject.model';
 
-// Controller instance
-const controller = SubjectController.getInstance();
-const state = computed(() => controller.listState.value);
-const router = useRouter();
-const route = useRoute();
+  // Controller instance
+  const controller = SubjectController.getInstance();
+  const state = computed(() => controller.listState.value);
+  const router = useRouter();
+  const route = useRoute();
 
-// Table headers
-const headers: TableHeader[] = [
-  { key: "title", label: "Title", width: "50%", sortable: true },
-  { key: "Stage", label: "Stage", width: "50%" },
-];
+  // Table headers
+  const headers: TableHeader[] = [
+    { key: 'title', label: 'Title', width: '50%', sortable: true },
+    { key: 'Stage', label: 'Stage', width: '50%' },
+  ];
 
-// Pagination state
-const perPage = ref(10);
-const word = ref("");
+  // Pagination state
+  const perPage = ref(10);
+  const word = ref('');
 
-const fetchSubjects = async (page: number = 1, word: string = "") => {
-  const state = await controller.fetchList(
-    new IndexSubjectParams(
-      word,
-      route.query.page ? Number(route.query.page) : page,
-      perPage.value,
-    ),
-  );
-  console.log(state, "state");
-};
+  const fetchSubjects = async (page: number = 1, word: string = '') => {
+    const state = await controller.fetchList(
+      new IndexSubjectParams(
+        word,
+        route.query.page ? Number(route.query.page) : page,
+        perPage.value,
+      ),
+    );
+    console.log(state, 'state');
+  };
 
-const Search = debounce(() => {
-  router.push({
-    query: {
-      ...route.query,
-      page: Number(route.query.page ?? 1),
-      word: word.value || undefined,
-    },
+  const Search = debounce(() => {
+    router.push({
+      query: {
+        ...route.query,
+        page: Number(route.query.page ?? 1),
+        word: word.value || undefined,
+      },
+    });
+
+    fetchSubjects(1, word.value);
   });
 
-  fetchSubjects(1, word.value);
-});
+  const onPageChange = (page: number) => {
+    fetchSubjects(page);
+    router.push({
+      query: {
+        ...route.query,
+        page: String(page),
+        word: word.value,
+      },
+    });
+  };
 
-const onPageChange = (page: number) => {
-  fetchSubjects(page);
-  router.push({
-    query: {
-      ...route.query,
-      page: String(page),
-      word: word.value,
-    },
+  const onPerPageChange = (count: number) => {
+    perPage.value = count;
+    fetchSubjects(1);
+  };
+
+  // Fetch emails on component mount
+  onMounted(async () => {
+    if (route.query.word) {
+      word.value = String(route.query.word);
+    }
+
+    await fetchSubjects(route.query.page ? Number(route.query.page) : 1, word.value);
   });
-};
 
-const onPerPageChange = (count: number) => {
-  perPage.value = count;
-  fetchSubjects(1);
-};
+  const deleteCountry = async (id: number) => {
+    await controller.delete(new DeleteSubjectParams(id));
+    await fetchSubjects();
+  };
 
-// Fetch emails on component mount
-onMounted(async () => {
-  if (route.query.word) {
-    word.value = String(route.query.word);
-  }
+  const FormStore = useFormsStore();
+  const formRoute = computed(() => `/${route.params.country_code}/subjects/add`);
 
-  await fetchSubjects(
-    route.query.page ? Number(route.query.page) : 1,
-    word.value,
-  );
-});
-
-const deleteCountry = async (id: number) => {
-  await controller.delete(new DeleteSubjectParams(id));
-  await fetchSubjects();
-};
-
-const FormStore = useFormsStore();
-const formRoute = "/subjects/add";
-
-const isDraft = computed(() => {
-  const data = FormStore?.formData[formRoute] ?? {};
-  return (
-    Object.keys(data).length === 0 ||
-    Object.values(data).every((v) => v == null)
-  );
-});
-const SelectedRow = ref<SubjectModel[]>([]);
-const setSelectef = (items: SubjectModel[]) => {
-  SelectedRow.value = items;
-};
-
-const deleteSelected = () => {
-  SelectedRow.value.forEach((item) => {
-    deleteCountry(item.id!);
+  const isDraft = computed(() => {
+    const data = FormStore?.formData[formRoute.value] ?? {};
+    return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
-};
+  const SelectedRow = ref<SubjectModel[]>([]);
+  const setSelectef = (items: SubjectModel[]) => {
+    SelectedRow.value = items;
+  };
+
+  const deleteSelected = () => {
+    SelectedRow.value.forEach((item) => {
+      deleteCountry(item.id!);
+    });
+  };
 </script>
 
 <template>
@@ -138,7 +130,7 @@ const deleteSelected = () => {
       </div>
       <div class="flex gap-10">
         <router-link :to="formRoute" class="btn-add">
-          <span>{{ isDraft ? "Add Subject" : "Continue Adding" }}</span>
+          <span>{{ isDraft ? 'Add Subject' : 'Continue Adding' }}</span>
           <svg
             width="18"
             height="18"
@@ -151,21 +143,14 @@ const deleteSelected = () => {
             <path d="M12 5v14M5 12h14" />
           </svg>
         </router-link>
-        <button
-          v-if="SelectedRow.length > 0"
-          @click="deleteSelected"
-          class="btn-add"
-        >
+        <button v-if="SelectedRow.length > 0" class="btn-add" @click="deleteSelected">
           <span>delete</span>
         </button>
       </div>
     </div>
 
     <!-- ═══ Table ═══ -->
-    <DataStatusBuilder
-      :controller="state"
-      :on-retry="async () => await fetchSubjects()"
-    >
+    <DataStatusBuilder :controller="state" :on-retry="async () => await fetchSubjects()">
       <template #success="{ data }">
         <div class="table-frame">
           <AppTable
@@ -187,11 +172,7 @@ const deleteSelected = () => {
 
             <template #actions="{ item }">
               <div class="row-actions">
-                <router-link
-                  class="action-btn edit"
-                  :to="`/stages/edit/${item.id}`"
-                  title="Edit"
-                >
+                <router-link class="action-btn edit" :to="`/stages/edit/${item.id}`" title="Edit">
                   <svg
                     width="15"
                     height="15"
@@ -202,12 +183,8 @@ const deleteSelected = () => {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                    />
-                    <path
-                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                    />
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </router-link>
                 <DeleteDialog @delete="deleteCountry(item.id!)">
