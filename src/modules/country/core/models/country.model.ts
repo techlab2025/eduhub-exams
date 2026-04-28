@@ -11,6 +11,7 @@ export default class CountryModel extends TitleModel {
     super(data.title, data.id);
     this.code = data.code;
     this.flag = data.flag;
+    Object.freeze(this);
   }
 
   static fromJson(json: any): CountryModel {
@@ -29,7 +30,7 @@ export default class CountryModel extends TitleModel {
   static example: CountryModel = new CountryModel({
     id: 1,
     title: 'Egypt',
-    code: 'eg',
+    code: 'EG',
     flag: '/src/assets/images/egypt.png',
   });
 }
