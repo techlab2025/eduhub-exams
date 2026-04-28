@@ -1,112 +1,115 @@
 <script setup lang="ts">
-  import { onMounted, ref, computed } from 'vue';
-  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
-  import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
-  import Pagination from '@/shared/HelpersComponents/Pagination.vue';
-  import { useRoute, useRouter } from 'vue-router';
-  import { debounce } from '@/base/Presentation/Utils/debouced';
-  import { useFormsStore } from '@/stores/formsStore';
-  import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
-  import IndexStageParams from '../../core/params/index.stage.params';
-  import StageController from '../controllers/stage.controller';
-  import DeleteStageParams from '../../core/params/delete.stage.params';
-  import type StageModel from '../../core/models/stage.model'; // eslint-disable-line @typescript-eslint/no-unused-vars
-  import { EducationType } from '../../core/constants/educationtype.enum';
+    import { onMounted, ref, computed } from 'vue';
+    import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+    import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
+    import Pagination from '@/shared/HelpersComponents/Pagination.vue';
+    import { useRoute, useRouter } from 'vue-router';
+    import { debounce } from '@/base/Presentation/Utils/debouced';
+    import { useFormsStore } from '@/stores/formsStore';
+    import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
+    import IndexStageParams from '../../core/params/index.stage.params';
+    import StageController from '../controllers/stage.controller';
+    import DeleteStageParams from '../../core/params/delete.stage.params';
+    import type StageModel from '../../core/models/stage.model'; // eslint-disable-line @typescript-eslint/no-unused-vars
+    import { EducationType } from '../../core/constants/educationtype.enum';
 
-  // Controller instance
-  const controller = StageController.getInstance();
-  const state = computed(() => controller.listState.value);
-  const router = useRouter();
-  const route = useRoute();
+    // Controller instance
+    const controller = StageController.getInstance();
+    const state = computed(() => controller.listState.value);
+    const router = useRouter();
+    const route = useRoute();
 
-  // Table headers
-  const headers: TableHeader[] = [
-    { key: 'title', label: 'Title', width: '50%', sortable: true },
-    { key: 'EducationType', label: 'Education Type', width: '50%' },
-  ];
+    // Table headers
+    const headers: TableHeader[] = [
+      { key: 'title', label: 'Title', width: '50%', sortable: true },
+      { key: 'EducationType', label: 'Education Type', width: '50%' },
+    ];
 
-  // Pagination state
-  const perPage = ref(10);
-  const word = ref('');
+    // Pagination state
+    const perPage = ref(10);
+    const word = ref('');
 
-  const fetchStages = async (page: number = 1, word: string = '') => {
-    const state = await controller.fetchList(
-      new IndexStageParams(word, route.query.page ? Number(route.query.page) : page, perPage.value),
-    );
-    console.log(state, 'state');
-  };
+    const fetchStages = async (page: number = 1, word: string = '') => {
+      const state = await controller.fetchList(
+        new IndexStageParams(word, route.query.page ? Number(route.query.page) : page, perPage.value),
+      );
+      console.log(state, 'state');
+    };
 
-  const Search = debounce(() => {
-    router.push({
-      query: {
-        ...route.query,
-        page: Number(route.query.page ?? 1),
-        word: word.value || undefined,
-      },
+    const Search = debounce(() => {
+      router.push({
+        query: {
+          ...route.query,
+          page: Number(route.query.page ?? 1),
+          word: word.value || undefined,
+        },
+      });
+
+      fetchStages(1, word.value);
     });
 
-    fetchStages(1, word.value);
-  });
+    const onPageChange = (page: number) => {
+      fetchStages(page);
+      router.push({
+        query: {
+          ...route.query,
+          page: String(page),
+          word: word.value,
+        },
+      });
+    };
 
-  const onPageChange = (page: number) => {
-    fetchStages(page);
-    router.push({
-      query: {
-        ...route.query,
-        page: String(page),
-        word: word.value,
-      },
+    const onPerPageChange = (count: number) => {
+      perPage.value = count;
+      fetchStages(1);
+    };
+
+    // Fetch emails on component mount
+    onMounted(async () => {
+      if (route.query.word) {
+        word.value = String(route.query.word);
+      }
+
+      await fetchStages(route.query.page ? Number(route.query.page) : 1, word.value);
     });
-  };
 
-  const onPerPageChange = (count: number) => {
-    perPage.value = count;
-    fetchStages(1);
-  };
+    const deleteCountry = async (id: number) => {
+      await controller.delete(new DeleteStageParams(id));
+      await fetchStages();
+    };
 
-  // Fetch emails on component mount
-  onMounted(async () => {
-    if (route.query.word) {
-      word.value = String(route.query.word);
-    }
+    const FormStore = useFormsStore();
+    const formRoute = computed(() => `/${route.params.country_code}/stages/add`);
 
-    await fetchStages(route.query.page ? Number(route.query.page) : 1, word.value);
-  });
+    const isDraft = computed(() => {
+      const data = FormStore?.formData[formRoute.value] ?? {};
+  <<<<<<< HEAD
 
-  const deleteCountry = async (id: number) => {
-    await controller.delete(new DeleteStageParams(id));
-    await fetchStages();
-  };
-
-  const FormStore = useFormsStore();
-  const formRoute = computed(() => `/${route.params.country_code}/stages/add`);
-
-  const isDraft = computed(() => {
-    const data = FormStore?.formData[formRoute.value] ?? {};
-
-    return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
-  });
-  const SelectedRow = ref<StageModel[]>([]);
-  const setSelectef = (items: StageModel[]) => {
-    SelectedRow.value = items;
-  };
-
-  const deleteSelected = () => {
-    SelectedRow.value.forEach((item) => {
-      deleteCountry(item.id!);
+  =======
+  >>>>>>> 750dfe2 (fix: form route → changed from a plain string to perfix for country code and add unit test for all indexs)
+      return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
     });
-  };
+    const SelectedRow = ref<StageModel[]>([]);
+    const setSelectef = (items: StageModel[]) => {
+      SelectedRow.value = items;
+    };
 
-  const GetEducationType = (Type: EducationType) => {
-    switch (Type) {
-      case EducationType.General:
-        return 'General';
-      case EducationType.Technical:
-        return 'Technical';
-      default:
-        return 'Unknown';
-    }
-  };
+    const deleteSelected = () => {
+      SelectedRow.value.forEach((item) => {
+        deleteCountry(item.id!);
+      });
+    };
+
+    const GetEducationType = (Type: EducationType) => {
+      switch (Type) {
+        case EducationType.General:
+          return 'General';
+        case EducationType.Technical:
+          return 'Technical';
+        default:
+          return 'Unknown';
+      }
+    };
 </script>
 
 <template>
