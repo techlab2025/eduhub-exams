@@ -17,15 +17,6 @@
 
   // const props = defineProps({
 
-  // const { open } = defineProps({
-  //   open: {
-  //     type: Boolean,
-  //     default: true,
-  //   },
-  // });
-
-  // const emit = defineEmits(['open']);
-
   const userStore = useUserStore();
   const themeStore = useThemeStore();
   const router = useRouter();

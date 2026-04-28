@@ -85,7 +85,11 @@
 
   const FormStore = useFormsStore();
 
+<<<<<<< HEAD
   const formRoute = computed(() => `/${route.params.country_code}/countries/add`);
+=======
+  const formRoute = '/countries/add';
+>>>>>>> 67854ee (build:  perfix route country with valid code and unit test)
 
   const isDraft = computed(() => {
     const data = FormStore?.formData[formRoute.value] ?? {};
