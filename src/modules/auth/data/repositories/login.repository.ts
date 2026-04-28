@@ -50,4 +50,8 @@ export default class LoginRepository extends BaseRepository<LoginModel, never> {
       (data) => this.parseItem(data),
     );
   }
+
+  protected get mockItem(): LoginModel {
+    return LoginModel.example;
+  }
 }

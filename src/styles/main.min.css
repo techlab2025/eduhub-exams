@@ -2167,7 +2167,8 @@ html[dir='rtl'] .input-search .icon-remove {
 }
 .search-field .search-input {
   width: 100%;
-  padding: var(--xs-size-4) var(--baseInputPadding) var(--baseInputPadding) var(--baseInputPadding);
+  padding: var(--baseInputPadding) var(--baseInputPadding) var(--baseInputPadding)
+    calc(var(--baseInputPadding) * 3.5);
   border: 1px solid var(--border-color);
   border-radius: var(--xl-size-1);
   font-size: var(--sm-size);
@@ -4448,7 +4449,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .country-card.active {
   border-color: var(--PrimaryColor);
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.0509803922);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.0509803922);
 }
 .country-card .flag-container {
   position: relative;

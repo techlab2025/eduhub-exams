@@ -28,7 +28,7 @@ const router = createRouter({
           path: '',
           name: 'Home App',
           component: () => import('@/views/AppLayout.vue'),
-          children: [...dashboardRoutes],
+          children: [{ path: '', redirect: { name: 'Countries' } }, ...dashboardRoutes],
           meta: { icon: HomeIcon },
         },
       ],

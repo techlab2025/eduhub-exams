@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useRoute } from 'vue-router';
-  import { type Component } from 'vue';
+  import { type Component, computed } from 'vue';
   import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
   import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
   import TechlabLogo from '@/assets/images/TechlabLogo.png';
@@ -18,7 +18,7 @@
     items: MenuItem[];
   }
 
-  const menu: MenuSection[] = [
+  const baseMenu: MenuSection[] = [
     {
       group: 'Overview',
       items: [
@@ -75,6 +75,18 @@
       ],
     },
   ];
+
+  const countryCode = computed(() => (route.params?.country_code as string) || '');
+
+  const menu = computed<MenuSection[]>(() =>
+    baseMenu.map((group) => ({
+      ...group,
+      items: group.items.map((item) => ({
+        ...item,
+        link: countryCode.value ? `/${countryCode.value}${item.link}` : item.link,
+      })),
+    })),
+  );
 </script>
 <template>
   <aside class="sidebar">
