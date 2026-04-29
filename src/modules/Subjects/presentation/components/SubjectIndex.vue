@@ -82,7 +82,9 @@
   };
 
   const FormStore = useFormsStore();
-  const formRoute = '/subjects/add';
+  const formRoute = computed(() => `/${route.params.country_code}/subjects/add`);
+
+
 
   const isDraft = computed(() => {
     const data = FormStore?.formData[formRoute] ?? {};

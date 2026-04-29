@@ -1,5 +1,6 @@
-import type { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
-import { useUserStore } from "@/stores/user";
+import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+import { useCountryStore } from '@/stores/country';
 
 export function authGuard(
   to: RouteLocationNormalized,
@@ -7,20 +8,38 @@ export function authGuard(
   next: NavigationGuardNext,
 ): void {
   const userData = useUserStore();
+  const countryStore = useCountryStore();
 
-  // Not authenticated - redirect to login
-  if (to.name !== "Login" && !userData.isAuth) {
-    return next({ path: "/login" });
+  if (to.path === '/choose-country' || to.path === '/not-found') {
+    return next();
   }
 
-  // Already authenticated - redirect to dashboard based on user type
-  if (to.name === 'Login' && userData.isAuth) {
-    // Derive redirect path based on user type
-    // Users with type 1 (EMPLOYEE) go to organization, others to admin
-    const userType = userData.user?.type;
-    const redirectPath = userType === 1 ? '/organization' : '/admin';
-    return next({ path: redirectPath })
+  const country = to.params.country_code as string | undefined;
+
+  if (!country) {
+    return next('/choose-country');
   }
 
-  next()
+  countryStore.setCountryCode(country);
+
+  const countries = ['eg', 'EG', 'sa', 'SA', 'kw', 'KW', 'om', 'OM', 'bh', 'BH', 'qa', 'QA'];
+
+  if (!countries.includes(country)) {
+    return next('/choose-country');
+  }
+
+  const isLoginPage = to.path.endsWith('/login');
+
+  if (!userData.isAuth && !isLoginPage) {
+    return next({
+      name: 'Login',
+      params: { country_code: country },
+    });
+  }
+
+  if (isLoginPage && userData.isAuth) {
+    return next({ path: `/${country}/` });
+  }
+
+  next();
 }

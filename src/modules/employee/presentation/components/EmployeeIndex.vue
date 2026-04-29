@@ -19,7 +19,7 @@
   const route = useRoute();
 
   const FormStore = useFormsStore();
-  const formRoute = '/employees/add';
+  const formRoute = computed(() => `/${route.params.country_code}/employees/add`);
 
   // Table headers
   const headers: TableHeader[] = [
@@ -79,7 +79,7 @@
   };
 
   const isDraft = computed(() => {
-    const data = FormStore?.formData[formRoute] ?? {};
+    const data = FormStore?.formData[formRoute.value] ?? {};
     return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
 </script>

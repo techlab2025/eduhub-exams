@@ -13,6 +13,9 @@
   import Drawer from 'primevue/drawer';
   import SidebarNavigation from './SidebarNavigation.vue';
   import HeaderSidebarIcon from '@/shared/icons/HeaderIcons/HeaderSidebarIcon.vue';
+  // import TechlabLogo from "@/assets/images/TechlabLogo.png";
+
+  // const props = defineProps({
 
   // const { open } = defineProps({
   //   open: {

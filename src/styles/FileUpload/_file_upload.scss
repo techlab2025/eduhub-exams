@@ -82,6 +82,10 @@
         border-radius: var(--xs-size);
         z-index: 10000;
         background-color: var(--black-alpha-60);
+        -webkit-backdrop-filter: blur(2px);
+        -moz-backdrop-filter: blur(2px);
+        -o-backdrop-filter: blur(2px);
+        -ms-backdrop-filter: blur(2px);
         backdrop-filter: blur(2px);
         transition: var(--transition);
         cursor: pointer;

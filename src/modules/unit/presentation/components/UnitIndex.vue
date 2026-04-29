@@ -79,7 +79,7 @@
   };
 
   const FormStore = useFormsStore();
-  const formRoute = '/units/add';
+  const formRoute = computed(() => `/${route.params.country_code}/units/add`);
 
   const isDraft = computed(() => {
     const data = FormStore?.formData[formRoute] ?? {};

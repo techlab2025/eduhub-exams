@@ -25,6 +25,7 @@
 @use 'utils/tabs_selections';
 @use 'utils/permission';
 @use 'utils/crop';
+@use 'utils/search_input';
 
 /* ── Layout ────────────────────────────────────────────────────── */
 @use '../shared/LayoutComponents/styles/layout_imports';
@@ -48,6 +49,9 @@
 @use '../modules/auth/presentation/styles/login';
 @use 'error/error';
 @use 'toast/tosat';
+
+/* ── Auth ─────────────────────────────────────────────────────── */
+@use 'auth/auth_imports';
 
 /* =============================================================================
    GLOBAL OVERRIDES & BASE STYLES

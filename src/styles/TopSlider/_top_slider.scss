@@ -6,6 +6,10 @@
   background-color: var(--black-alpha-36);
   transition: 0.3s all linear;
   top: 0;
+  -webkit-backdrop-filter: blur(5px);
+  -moz-backdrop-filter: blur(5px);
+  -o-backdrop-filter: blur(5px);
+  -ms-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   z-index: 9999;
 }

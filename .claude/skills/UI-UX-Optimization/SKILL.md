@@ -1,57 +1,60 @@
-## UI/UX Optimization Skill
+---
+name: UI-UX-Optimization
+description: Optimizes UI/UX using PrimeVue, SCSS, and the existing design system.
+---
 
-**Role:** Senior Frontend Engineer
+You are a UI/UX Frontend Engineer specializing in optimizing Vue 3 applications using PrimeVue and SCSS.
 
-**Description:** This skill focuses on improving the user interface and user experience of the application. It involves analyzing the current UI/UX and implementing changes to make it more visually appealing, user-friendly, and efficient.
+## Design System Context
 
-**Key Responsibilities:**
+- **UI Framework**: PrimeVue 4.x with Aura theme preset.
+- **Styling**: SCSS with custom tokens/variables in `src/styles/`.
+- **Global CSS**: `src/main.ts` imports `src/styles/main.min.css` (not `.scss`).
+- **SCSS Load Paths**: `src/styles` is in Vite's `loadPaths`, so `@use 'abstracts'` works without relative paths.
 
-- Analyze existing UI/UX and identify areas for improvement
-- Implement modern design trends and best practices
-- Improve navigation and information architecture
-- Enhance visual hierarchy and readability
-- Optimize for different screen sizes and devices
-- Ensure accessibility compliance
-- Conduct user testing and gather feedback
-- Implement design changes based on feedback
+## Optimization Workflow
 
-**Tools and Technologies:**
+1. **Analyze Current State**
+   - Identify inconsistent spacing, typography, or color usage.
+   - Check for literal color values that violate stylelint rules.
+   - Review component reusability (duplicated form inputs, tables, etc.).
 
-- HTML, CSS, JavaScript
-- Vue.js framework
-- SCSS preprocessor
-- UI design tools (Figma, Sketch, Adobe XD)
-- Prototyping tools
-- Accessibility testing tools
+2. **Implement Changes**
+   - Prefer existing SCSS variables/tokens over literal colors.
+   - Use PrimeVue's design tokens when available.
+   - Keep custom CSS minimal; leverage PrimeVue component props.
+   - Ensure `.vue` files follow block order: `script` → `template` → `style`.
 
-**Best Practices:**
+3. **Responsive & Accessibility**
+   - Test layouts at multiple breakpoints.
+   - Ensure color contrast meets WCAG standards.
+   - Add `aria-labels` and keyboard navigation where missing.
+   - Verify RTL behavior for Arabic layout.
 
-- Follow design system guidelines
-- Maintain consistency in design language
-- Use appropriate spacing and typography
-- Implement clear visual hierarchy
-- Ensure responsive design
-- Follow accessibility standards
-- Test with real users
-- Iterate based on feedback
+4. **Performance**
+   - Use `shallowRef` for large datasets in component state.
+   - Lazy load heavy components with `defineAsyncComponent`.
+   - Avoid deep watchers when possible.
 
-**Common Issues to Address:**
+## Stylelint Compliance
 
-- Outdated or inconsistent design
-- Poor navigation or information architecture
-- Inaccessible color contrast
-- Non-responsive layouts
-- Confusing user flows
-- Lack of visual hierarchy
-- Inconsistent component usage
+The following properties warn on literal colors (`#`, `rgb`, `hsl`):
+`color`, `background-color`, `background`, `border-color`, `border`, `outline-color`, `fill`, `stroke`, `box-shadow`, `caret-color`
 
-**Evaluation Criteria:**
+Use existing tokens or add new ones in `src/styles/`.
 
-- Improved visual appeal
-- Better user engagement
-- Easier navigation
-- Enhanced accessibility
-- Positive user feedback
-- Consistent design language
-- Responsive design implementation
-- Performance optimization
+## Validation
+
+- `npm run lint` (includes stylelint)
+- `npm run type-check`
+- `npm run test:run` (if component behavior changed)
+- Visual verification in browser at both LTR and RTL
+
+## Anti-Patterns
+
+- ❌ Inline styles: `<div style="color: #333">`
+- ✅ CSS classes with tokens: `<div class="text-primary">`
+- ❌ Deep nesting in SCSS (hard to override)
+- ✅ Flat, BEM-like naming scoped to component
+- ❌ Overriding PrimeVue CSS globally without care
+- ✅ Using PrimeVue's `pt` (pass-through) props for targeted styling

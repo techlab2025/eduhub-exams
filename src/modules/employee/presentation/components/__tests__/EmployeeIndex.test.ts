@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import EmployeeIndex from '../EmployeeIndex.vue';
@@ -6,8 +6,9 @@ import EmployeeIndex from '../EmployeeIndex.vue';
 // Mock dependencies
 vi.mock('vue-router', () => ({
   useRoute: () => ({
+    params: { country_code: 'eg' },
     query: { page: '1', word: '' },
-    fullPath: '/employees',
+    fullPath: '/eg/employees',
   }),
   useRouter: () => ({
     push: vi.fn(),

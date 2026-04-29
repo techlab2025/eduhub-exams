@@ -19,7 +19,7 @@
     items: MenuItem[];
   }
 
-  const menu = ref<MenuSection[]>([
+  const baseMenu: MenuSection[] = [
     {
       group: 'Overview',
       items: [
@@ -80,6 +80,19 @@
         },
       ],
     },
+  ];
+
+  const countryCode = computed(() => (route.params?.country_code as string) || '');
+
+  const menu = computed<MenuSection[]>(() =>
+    baseMenu.map((group) => ({
+      ...group,
+      items: group.items.map((item) => ({
+        ...item,
+        link: countryCode.value ? `/${countryCode.value}${item.link}` : item.link,
+      })),
+    })),
+  );
   ]);
 </script>
 <template>
@@ -103,7 +116,7 @@
             :to="item.link"
             class="menu-item"
             :class="{ active: route.path === item.link }"
-            @click="$emit('clickItem')"
+            @click="emit('clickItem')"
           >
             <component :is="item.icon" class="icon" />
 

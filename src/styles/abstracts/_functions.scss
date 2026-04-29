@@ -1,5 +1,6 @@
 // abstracts/_functions.scss
 // Pure SCSS functions — no CSS output
+@use 'sass:map';
 
 // ── rem conversion ──────────────────────────────────────────────────────────
 @use 'sass:math';
@@ -9,8 +10,6 @@
 }
 
 // ── z-index lookup ──────────────────────────────────────────────────────────
-// Usage: z(modal)
-@use 'sass:map';
 
 $_z-index: (
   'dropdown': 100,
