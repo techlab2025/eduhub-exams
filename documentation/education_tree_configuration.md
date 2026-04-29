@@ -34,8 +34,8 @@
 
 ```json
 {
-    "classification_id"?:number,
   "branch_id"?:number,
   "branch_title": string,
+  "education_classification_id"?:number
 }
 ```
