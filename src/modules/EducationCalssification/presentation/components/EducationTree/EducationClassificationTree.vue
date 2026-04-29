@@ -52,7 +52,7 @@
 
   async function handleAddType(name: string) {
     const newNode: TreeNode = { id: '0', name, level: 0, children: [] };
-    educationTypes.value.push(newNode);
+    // educationTypes.value.push(newNode);
     const AddBranchParams = new AddEducationConfigurationTreeParams({
       education_classification_id: Number(route.params.id),
       branch_title: name,
@@ -175,6 +175,8 @@
       <template v-if="selectedType">
         <div class="right-header">
           <div class="right-title">
+            <span>{{ selectedType.name }}</span>
+
             <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
               <rect x="3" y="3" width="14" height="14" rx="2" stroke="#4caf50" stroke-width="1.5" />
               <path
@@ -184,10 +186,9 @@
                 stroke-linecap="round"
               />
             </svg>
-            <span>{{ selectedType.name }}</span>
-            <span class="level-badge"
+            <!-- <span class="level-badge"
               >Level {{ selectedType.level + 1 }} / {{ maxLevels + 1 }}</span
-            >
+            > -->
           </div>
           <!-- Add Branch only if we haven't reached max depth -->
           <button

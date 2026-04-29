@@ -190,6 +190,27 @@
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* ── Additional standard colors for UI consistency ────────── */
+  --standard-white: #ffffff;
+  --standard-black: #121212;
+  --gray-50-std: #f9fafb;
+  --gray-100-std: #f3f4f6;
+  --gray-200-std: #e5e7eb;
+  --gray-400-std: #9ca3af;
+  --gray-500-std: #6b7280;
+  --gray-700-std: #374151;
+  --gray-900-std: #111827;
+  --color-dark-gray: #5d5d5d;
+  --color-light-gray: #f5f5f5;
+  --color-placeholder: #c4c9d0;
+  --color-border-light: #aab0b8;
+  --success-green-std: #4caf50;
+  --success-green-hover-std: #43a047;
+  --success-green-light-std: #f0faf0;
+  --success-green-lighter-std: #e8f5e9;
+  --color-near-white-f0: #f0f0f0;
+  --indigo-100: #e0e7ff;
+  --green-100: #dcfce7;
 }
 
 /* =============================================================================
@@ -267,6 +288,7 @@ html.dark {
    SCSS VARIABLE MAPPINGS (for existing codebase compat)
    ============================================================================= */
 /* Colors */
+/* Standard UI Colors */
 /* Sizes */
 /* Font */
 /* Border */
@@ -4599,13 +4621,13 @@ body::-webkit-scrollbar-thumb:hover {
   transition: all 0.2s ease;
 }
 .type-chip[data-type="1"], .type-chip[data-type=work] {
-  background: var(--chip-work-bg, linear-gradient(135deg, #eef2ff, #e0e7ff));
-  color: var(--chip-work-text, #4338ca);
+  background: var(--chip-work-bg, linear-gradient(135deg, var(--PrimaryColor-light), var(--indigo-100)));
+  color: var(--chip-work-text, var(--PrimaryColor-active));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .type-chip[data-type="2"], .type-chip[data-type=personal] {
-  background: var(--chip-personal-bg, linear-gradient(135deg, #f0fdf4, #dcfce7));
-  color: var(--chip-personal-text, #16a34a);
+  background: var(--chip-personal-bg, linear-gradient(135deg, var(--success-light), var(--green-100)));
+  color: var(--chip-personal-text, var(--success));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .type-chip:not([data-type]) {
@@ -4957,17 +4979,21 @@ body::-webkit-scrollbar-thumb:hover {
   }
 }
 
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
 .education-tree {
   display: flex;
-  height: 100vh;
-  background: #f9fafb;
+  height: 80vh;
+  background: var(--gray-50-std);
   font-family: "Regular";
   width: 100%;
 }
 .education-tree .left-panel {
   width: 50%;
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
+  background: var(--standard-white);
+  border-right: 1px solid var(--gray-200-std);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -4977,19 +5003,19 @@ body::-webkit-scrollbar-thumb:hover {
   align-items: center;
   gap: 8px;
   padding: 12px 14px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-near-white-f0);
 }
 .education-tree .search-box {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #f5f5f5;
+  background: var(--color-light-gray);
   border-radius: 8px;
   padding: 7px 10px;
 }
 .education-tree .search-icon {
-  color: #9ca3af;
+  color: var(--gray-400-std);
   width: 16px;
   height: 16px;
   flex-shrink: 0;
@@ -4999,31 +5025,31 @@ body::-webkit-scrollbar-thumb:hover {
   background: transparent;
   outline: none;
   font-size: 12px;
-  color: #374151;
+  color: var(--gray-700-std);
   width: 100%;
 }
 .education-tree .search-input::-moz-placeholder {
-  color: #aab0b8;
+  color: var(--color-border-light);
 }
 .education-tree .search-input::placeholder {
-  color: #aab0b8;
+  color: var(--color-border-light);
 }
 .education-tree .filter-btn {
   display: flex;
   align-items: center;
   gap: 5px;
   padding: 7px 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--gray-200-std);
   border-radius: 8px;
-  background: #fff;
+  background: var(--standard-white);
   font-size: 12px;
-  color: #374151;
+  color: var(--gray-700-std);
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s;
 }
 .education-tree .filter-btn:hover {
-  background: #f9fafb;
+  background: var(--gray-50-std);
 }
 .education-tree {
   /* Empty State */
@@ -5044,13 +5070,13 @@ body::-webkit-scrollbar-thumb:hover {
 .education-tree .empty-title {
   font-size: 20px;
   font-weight: 700;
-  color: #121212;
+  color: var(--standard-black);
   margin: 0;
 }
 .education-tree .empty-desc {
   font-size: 16px;
   font-weight: 500;
-  color: #5d5d5d;
+  color: var(--color-dark-gray);
   margin: 0;
   line-height: 1.5;
 }
@@ -5067,7 +5093,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .education-tree .bottom-bar {
   padding: 12px 14px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-near-white-f0);
 }
 .education-tree {
   /* Right Panel */
@@ -5083,8 +5109,8 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--standard-white);
+  border: 1px solid var(--gray-200-std);
   border-radius: 10px;
   padding: 12px 16px;
   margin-bottom: 12px;
@@ -5095,7 +5121,7 @@ body::-webkit-scrollbar-thumb:hover {
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #111827;
+  color: var(--gray-900-std);
   direction: rtl;
 }
 .education-tree .right-empty {
@@ -5106,7 +5132,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .education-tree .hint-text {
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--gray-400-std);
 }
 .education-tree .right-placeholder {
   flex: 1;
@@ -5114,14 +5140,14 @@ body::-webkit-scrollbar-thumb:hover {
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--gray-400-std);
 }
 .education-tree {
   /* Buttons */
 }
 .education-tree .btn-primary {
-  background: #4caf50;
-  color: #fff;
+  background: var(--success-green-std);
+  color: var(--standard-white);
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
@@ -5131,7 +5157,7 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s, transform 0.1s;
 }
 .education-tree .btn-primary:hover {
-  background: #43a047;
+  background: var(--success-green-hover-std);
 }
 .education-tree .btn-primary:active {
   transform: scale(0.98);
@@ -5143,9 +5169,9 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: #fff;
-  color: #4caf50;
-  border: 1.5px solid #4caf50;
+  background: var(--standard-white);
+  color: var(--success-green-std);
+  border: 1.5px solid var(--success-green-std);
   border-radius: 20px;
   padding: 6px 14px;
   font-size: 12px;
@@ -5154,10 +5180,14 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s;
 }
 .education-tree .btn-outlined:hover {
-  background: #f0faf0;
+  background: var(--success-green-light-std);
 }
 
 /* Left Panel */
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
 .tree-node-wrapper {
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -5177,10 +5207,10 @@ body::-webkit-scrollbar-thumb:hover {
   min-height: 36px;
 }
 .tree-node-wrapper .node-row:hover {
-  background: #f0faf0;
+  background: var(--success-green-light-std);
 }
 .tree-node-wrapper .node-row.is-selected {
-  background: #e8f5e9;
+  background: var(--success-green-lighter-std);
 }
 .tree-node-wrapper .toggle-btn {
   border: none;
@@ -5189,7 +5219,7 @@ body::-webkit-scrollbar-thumb:hover {
   padding: 2px;
   display: flex;
   align-items: center;
-  color: #6b7280;
+  color: var(--gray-500-std);
   flex-shrink: 0;
 }
 .tree-node-wrapper .toggle-spacer {
@@ -5199,15 +5229,15 @@ body::-webkit-scrollbar-thumb:hover {
 .tree-node-wrapper .level-label {
   font-size: 10px;
   font-weight: 600;
-  color: #6b7280;
-  background: #f3f4f6;
+  color: var(--gray-500-std);
+  background: var(--gray-100-std);
   border-radius: 4px;
   padding: 1px 5px;
   white-space: nowrap;
 }
 .tree-node-wrapper .node-name {
   font-size: 13px;
-  color: #111827;
+  color: var(--gray-900-std);
   font-weight: 500;
   flex: 1;
   overflow: hidden;
@@ -5228,14 +5258,14 @@ body::-webkit-scrollbar-thumb:hover {
   padding: 3px;
   display: flex;
   align-items: center;
-  color: #9ca3af;
+  color: var(--gray-400-std);
   border-radius: 4px;
   transition: background 0.15s;
   flex-shrink: 0;
 }
 .tree-node-wrapper .icon-btn:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--gray-200-std);
+  color: var(--gray-700-std);
 }
 .tree-node-wrapper {
   /* Slide-down transition */
@@ -5256,8 +5286,12 @@ body::-webkit-scrollbar-thumb:hover {
   max-height: 2000px;
 }
 
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
 .p-dialog.add-education-type-dialog {
-  background: #fff;
+  background: var(--standard-white);
   border-radius: 16px;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
@@ -5280,19 +5314,19 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.add-education-type-dialog .dialog-title {
   font-size: 20px;
   font-weight: 700;
-  color: #121212;
+  color: var(--standard-black);
   margin: 0 0 4px;
 }
 .p-dialog.add-education-type-dialog .dialog-subtitle {
   font-size: 16px;
   font-weight: 500;
-  color: #5d5d5d;
+  color: var(--color-dark-gray);
   margin: 0;
   line-height: 1.4;
 }
 .p-dialog.add-education-type-dialog .dialog-divider {
   height: 1px;
-  background: #f0f0f0;
+  background: var(--color-near-white-f0);
   margin: 0 20px;
 }
 .p-dialog.add-education-type-dialog .dialog-body {
@@ -5304,30 +5338,30 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.add-education-type-dialog .field-label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--gray-700-std);
 }
 .p-dialog.add-education-type-dialog .field-input {
   width: 100%;
   padding: 11px 14px;
-  border: 1.5px solid #e5e7eb;
+  border: 1.5px solid var(--gray-200-std);
   border-radius: 10px;
   font-size: 13px;
-  color: #111827;
+  color: var(--gray-900-std);
   outline: none;
-  background: #fafafa;
+  background: var(--Gray-5);
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
 .p-dialog.add-education-type-dialog .field-input:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
-  background: #fff;
+  border-color: var(--success-green-std);
+  box-shadow: 0 0 0 3px rgba(var(--success-green-std), 0.12);
+  background: var(--standard-white);
 }
 .p-dialog.add-education-type-dialog .field-input::-moz-placeholder {
-  color: #c4c9d0;
+  color: var(--color-placeholder);
 }
 .p-dialog.add-education-type-dialog .field-input::placeholder {
-  color: #c4c9d0;
+  color: var(--color-placeholder);
 }
 .p-dialog.add-education-type-dialog .dialog-footer {
   display: flex;
@@ -5335,8 +5369,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog.add-education-type-dialog .btn-confirm {
   flex: 1;
-  background: #4caf50;
-  color: #fff;
+  background: var(--success-green-std);
+  color: var(--standard-white);
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -5346,7 +5380,7 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s, transform 0.1s;
 }
 .p-dialog.add-education-type-dialog .btn-confirm:hover:not(:disabled) {
-  background: #43a047;
+  background: var(--success-green-hover-std);
 }
 .p-dialog.add-education-type-dialog .btn-confirm:active:not(:disabled) {
   transform: scale(0.98);
@@ -5357,8 +5391,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog.add-education-type-dialog .btn-cancel {
   flex: 1;
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--gray-100-std);
+  color: var(--gray-700-std);
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -5368,7 +5402,7 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s;
 }
 .p-dialog.add-education-type-dialog .btn-cancel:hover {
-  background: #e5e7eb;
+  background: var(--gray-200-std);
 }
 .p-dialog.add-education-type-dialog {
   /* Transitions */
@@ -5396,8 +5430,12 @@ body::-webkit-scrollbar-thumb:hover {
   opacity: 0;
 }
 
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
 .p-dialog.add-branch-dialog {
-  background: #fff !important;
+  background: var(--standard-white) !important;
   border-radius: 16px;
   width: 100%;
   overflow: hidden;
@@ -5424,13 +5462,13 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog .dialog-header-text .dialog-title {
   font-size: 20px;
   font-weight: 600;
-  color: #121212;
+  color: var(--standard-black);
   margin: 0 0 4px;
 }
 .p-dialog .dialog-header-text .dialog-subtitle {
   font-size: 13px;
   font-weight: 500;
-  color: #5d5d5d;
+  color: var(--color-dark-gray);
   margin: 0;
   line-height: 1.4;
 }
@@ -5443,31 +5481,31 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog .field-label {
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--gray-700-std);
   text-transform: none;
 }
 .p-dialog .field-input {
   width: 100%;
   padding: 11px 14px;
-  border: 1.5px solid #e5e7eb;
+  border: 1.5px solid var(--gray-200-std);
   border-radius: 10px;
   font-size: 13px;
-  color: #111827;
+  color: var(--gray-900-std);
   outline: none;
-  background: #fafafa;
+  background: var(--Gray-5);
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
 .p-dialog .field-input:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
-  background: #fff;
+  border-color: var(--success-green-std);
+  box-shadow: 0 0 0 3px rgba(var(--success-green-std), 0.12);
+  background: var(--standard-white);
 }
 .p-dialog .field-input::-moz-placeholder {
-  color: #c4c9d0;
+  color: var(--color-placeholder);
 }
 .p-dialog .field-input::placeholder {
-  color: #c4c9d0;
+  color: var(--color-placeholder);
 }
 .p-dialog .dialog-footer {
   display: flex;
@@ -5475,8 +5513,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog .btn-confirm {
   flex: 1;
-  background: #4caf50;
-  color: #fff;
+  background: var(--success-green-std);
+  color: var(--standard-white);
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -5486,7 +5524,7 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s, transform 0.1s;
 }
 .p-dialog .btn-confirm:hover:not(:disabled) {
-  background: #43a047;
+  background: var(--success-green-hover-std);
 }
 .p-dialog .btn-confirm:active:not(:disabled) {
   transform: scale(0.98);
@@ -5497,8 +5535,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog .btn-cancel {
   flex: 1;
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--gray-100-std);
+  color: var(--gray-700-std);
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -5508,7 +5546,7 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s;
 }
 .p-dialog .btn-cancel:hover {
-  background: #e5e7eb;
+  background: var(--gray-200-std);
 }
 .p-dialog .overlay-fade-enter-active,
 .p-dialog .overlay-fade-leave-active {
