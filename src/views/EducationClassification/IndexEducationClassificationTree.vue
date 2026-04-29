@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import EducationClassificationTree from '@/modules/EducationClassification/presentation/components/EducationTree/EducationClassificationTree.vue';
+import EducationStagesTree from '@/modules/EducationClassification/presentation/components/EducationStages/EducationStagesTree.vue';
 </script>
 
 <template>
-  <EducationClassificationTree />
+  <EducationStagesTree />
 </template>
