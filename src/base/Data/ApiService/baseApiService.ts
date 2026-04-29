@@ -72,6 +72,14 @@ export interface ApiCallOptions extends ExtendedCallOptions {
 
   /** Use POST instead of the default method */
   usePost?: boolean;
+
+  /**
+   * Override the global env.useStaticData for this call only.
+   * Pass `true` to force mock data even in development mode.
+   * Pass `false` to force a real API call even in test mode.
+   * Omit to follow the global VITE_APP_ENV setting.
+   */
+  useStaticData?: boolean;
 }
 
 /**

@@ -142,7 +142,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
    * Fetch list of items with optional pagination.
    */
   async index(params?: Params, options?: ApiCallOptions): Promise<DataState<TList>> {
-    if (env.useStaticData) {
+    if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess<TList>({ data: this.mockList });
     }
 
@@ -160,7 +160,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
    * Fetch single item by ID.
    */
   async show(params?: Params, options?: ApiCallOptions): Promise<DataState<T>> {
-    if (env.useStaticData) {
+    if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess<T>({ data: this.mockItem });
     }
 
@@ -182,7 +182,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
     options?: ApiCallOptions,
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
-    if (env.useStaticData) {
+    if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess<T>({ data: this.mockItem });
     }
 
@@ -204,7 +204,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
     options?: ApiCallOptions,
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
-    if (env.useStaticData) {
+    if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess<T>({ data: this.mockItem });
     }
 
@@ -222,7 +222,7 @@ export default abstract class BaseRepository<T, TList = T[]> {
    * Delete item by ID.
    */
   async delete(params?: Params, options?: ApiCallOptions): Promise<DataState<void>> {
-    if (env.useStaticData) {
+    if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess<void>({});
     }
 
