@@ -1,3 +1,4 @@
+import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import BaseController from '@/base/Presentation/Controller/baseController';
@@ -29,7 +30,7 @@ export default class EducationStageController extends BaseController<
       showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
-      autoRetry: true,
+      autoRetry: false,
       maxAutoRetries: 1,
     };
   }
@@ -49,8 +50,10 @@ export default class EducationStageController extends BaseController<
     return EducationStageController.instance;
   }
 
-  // async create(params: Params, options?: ApiCallOptions, formKey?: string) {
-  //   const result = await super.create(params, { ...options, useStaticData: true });
-  //   return result;
-  // }
+  async create(params: Params, options?: ApiCallOptions) {
+    const result = await super.create(params, { ...options, useStaticData: false });
+    return result;
+  }
+
+
 }
