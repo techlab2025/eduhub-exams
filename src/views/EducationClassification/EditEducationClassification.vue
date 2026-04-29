@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import EducationClassificationEdit from '@/modules/EducationCalssification/presentation/components/EducationClassificationEdit.vue';
+  import EducationClassificationEdit from '@/modules/EducationClassification/presentation/components/EducationClassificationEdit.vue';
 </script>
 
 <template>

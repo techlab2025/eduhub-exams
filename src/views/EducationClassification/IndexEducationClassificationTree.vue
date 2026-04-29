@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import EducationClassificationTree from '@/modules/EducationCalssification/presentation/components/EducationTree/EducationClassificationTree.vue';
+  import EducationClassificationTree from '@/modules/EducationClassification/presentation/components/EducationTree/EducationClassificationTree.vue';
 </script>
 
 <template>
