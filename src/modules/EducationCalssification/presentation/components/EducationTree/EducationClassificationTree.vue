@@ -51,15 +51,11 @@
   }
 
   async function handleAddType(name: string) {
-    const newNode: TreeNode = { id: '0', name, level: 0, children: [] };
-    // educationTypes.value.push(newNode);
-
     const AddBranchParams = new AddEducationConfigurationTreeParams({
       education_classification_id: Number(route.params.id),
       branch_title: name,
     });
     await controller.create(AddBranchParams);
-    selectedType.value = newNode;
     showAddTypeDialog.value = false;
   }
 
@@ -165,9 +161,7 @@
 
       <!-- Bottom Add Button -->
       <div v-if="educationTypes.length > 0" class="bottom-bar">
-        <button class="btn-primary btn-full" @click="openAddTypeDialog">
-          Add New Education Type
-        </button>
+        <button class="btn btn-primary" @click="openAddTypeDialog">Add New Education Type</button>
       </div>
     </div>
 
@@ -187,13 +181,6 @@
                 stroke-linecap="round"
               />
             </svg>
-
-            <!-- <span class="level-badge"
-              >Level {{ selectedType.level + 1 }} / {{ maxLevels + 1 }}</span
-            > -->
-
-            <span>{{ selectedType.name }}</span>
-
           </div>
           <!-- Add Branch only if we haven't reached max depth -->
           <button
@@ -201,7 +188,10 @@
             class="btn-outlined"
             @click="openAddBranchDialog({ node: selectedType, level: selectedType.level + 1 })"
           >
-            <span>+</span> Add Branch
+            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+              <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
+              <path d="M10 7v6M7 10h6" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
           </button>
         </div>
 

@@ -76,8 +76,10 @@
     />
 
     <div class="dialog-footer">
-      <button class="btn-confirm" :disabled="!inputValue.trim()" @click="handleConfirm">Add</button>
-      <button class="btn-cancel" @click="dialogVisible = false">Cancel</button>
+      <button class="btn btn-primary" :disabled="!inputValue.trim()" @click="handleConfirm">
+        Add
+      </button>
+      <button class="btn btn-secondary" @click="dialogVisible = false">Cancel</button>
     </div>
   </Dialog>
 </template>

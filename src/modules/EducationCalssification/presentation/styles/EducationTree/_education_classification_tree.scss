@@ -201,13 +201,14 @@
     gap: 4px;
     background: $StandardWhite;
     color: $SuccessGreen-std;
-    border: 1.5px solid $SuccessGreen-std;
+    // border: 1.5px solid $SuccessGreen-std;
     border-radius: 20px;
-    padding: 6px 14px;
+    // padding: 1px;
     font-size: 12px;
     font-weight: 500;
+    height: 20px;
+    width: 20px;
     cursor: pointer;
-    transition: background 0.2s;
   }
 
   .btn-outlined:hover {

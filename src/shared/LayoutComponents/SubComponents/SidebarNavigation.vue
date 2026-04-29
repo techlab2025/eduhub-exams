@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useRoute } from 'vue-router';
-  import { ref, type Component } from 'vue';
+  import { computed, type Component } from 'vue';
   import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
   import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
   import TechlabLogo from '@/assets/images/TechlabLogo.png';
@@ -93,7 +93,6 @@
       })),
     })),
   );
-  ]);
 </script>
 <template>
   <aside class="sidebar">

@@ -116,6 +116,7 @@
     await controller.toggleStatus(new ToggleStatusEducationClassificationParams({ id: id }));
     await fetchEducationClassifications();
   };
+  const countryCode = computed(() => (route.params?.country_code as string) || '');
 </script>
 
 <template>
@@ -126,7 +127,6 @@
 
     <!-- ═══ Table ═══ -->
     <DataStatusBuilder
-      v-if="state.data?.length! > 0"
       :controller="state"
       :on-retry="async () => await fetchEducationClassifications()"
     >
@@ -156,14 +156,14 @@
             <template #actions="{ item }">
               <div class="row-actions">
                 <router-link
-                  :to="`/education-classifications-configuration/${item.id}`"
+                  :to="`/${countryCode}/education-classifications-configuration/${item.id}`"
                   class="configuration-btn"
                 >
                   <AddIcon />
                   {{ $t('add_configuration') }}
                 </router-link>
                 <router-link
-                  :to="`/education-classifications-tree/${item.id}`"
+                  :to="`/${countryCode}/education-classifications-tree/${item.id}`"
                   class="configuration-btn"
                 >
                   <AddIcon />
