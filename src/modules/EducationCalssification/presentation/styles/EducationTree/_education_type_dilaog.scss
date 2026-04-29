@@ -1,9 +1,12 @@
+@use '../../../../../styles/variables' as *;
+
 .p-dialog.add-education-type-dialog {
-  background: #fff;
+  background: $StandardWhite;
   border-radius: 16px;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+
   .dialog-header {
     display: flex;
     align-items: flex-start;
@@ -23,21 +26,21 @@
   .dialog-title {
     font-size: 20px;
     font-weight: 700;
-    color: #121212;
+    color: $StandardBlack;
     margin: 0 0 4px;
   }
 
   .dialog-subtitle {
     font-size: 16px;
     font-weight: 500;
-    color: #5d5d5d;
+    color: $ColorDarkGray;
     margin: 0;
     line-height: 1.4;
   }
 
   .dialog-divider {
     height: 1px;
-    background: #f0f0f0;
+    background: $ColorNearWhite-f0;
     margin: 0 20px;
   }
 
@@ -51,18 +54,18 @@
   .field-label {
     font-size: 13px;
     font-weight: 600;
-    color: #374151;
+    color: $Gray-700-std;
   }
 
   .field-input {
     width: 100%;
     padding: 11px 14px;
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid $Gray-200-std;
     border-radius: 10px;
     font-size: 13px;
-    color: #111827;
+    color: $Gray-900-std;
     outline: none;
-    background: #fafafa;
+    background: $Gray-5;
     transition:
       border-color 0.2s,
       box-shadow 0.2s;
@@ -70,13 +73,13 @@
   }
 
   .field-input:focus {
-    border-color: #4caf50;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
-    background: #fff;
+    border-color: $SuccessGreen-std;
+    box-shadow: 0 0 0 3px rgba($SuccessGreen-std, 0.12);
+    background: $StandardWhite;
   }
 
   .field-input::placeholder {
-    color: #c4c9d0;
+    color: $ColorPlaceholder;
   }
 
   .dialog-footer {
@@ -87,8 +90,8 @@
 
   .btn-confirm {
     flex: 1;
-    background: #4caf50;
-    color: #fff;
+    background: $SuccessGreen-std;
+    color: $StandardWhite;
     border: none;
     border-radius: 10px;
     padding: 12px;
@@ -101,7 +104,7 @@
   }
 
   .btn-confirm:hover:not(:disabled) {
-    background: #43a047;
+    background: $SuccessGreenHover-std;
   }
 
   .btn-confirm:active:not(:disabled) {
@@ -115,8 +118,8 @@
 
   .btn-cancel {
     flex: 1;
-    background: #f3f4f6;
-    color: #374151;
+    background: $Gray-100-std;
+    color: $Gray-700-std;
     border: none;
     border-radius: 10px;
     padding: 12px;
@@ -127,7 +130,7 @@
   }
 
   .btn-cancel:hover {
-    background: #e5e7eb;
+    background: $Gray-200-std;
   }
 
   /* Transitions */

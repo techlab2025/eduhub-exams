@@ -1,14 +1,15 @@
-import BaseController from "@/base/Presentation/Controller/baseController";
-import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
-import type LoginModel from "../../core/models/user.model";
-import LoginRepository from "../../data/repositories/login.repository";
-import type Params from "@/base/Core/Params/params";
+import BaseController from '@/base/Presentation/Controller/baseController';
+import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
+import type LoginModel from '../../core/models/user.model';
+import LoginRepository from '../../data/repositories/login.repository';
+import type Params from '@/base/Core/Params/params';
 import {
-  DataState,
+  type DataState,
   DataFailed,
-} from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import { useUserStore } from "@/stores/user";
-import router from "@/router";
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { useUserStore } from '@/stores/user';
+import router from '@/router';
+import { type ErrorModel } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
 
 /**
  * Email Controller for managing employee emails
@@ -67,10 +68,10 @@ export default class LoginController extends BaseController<LoginModel, never> {
 
       this.handleItemResponse(response, 'Logged in successfully');
       if (response.data) this.userStore.setUser(response.data);
-      router.push("/");
+      router.push('/');
       return response;
-    } catch (error: any) {
-      const failed = new DataFailed<LoginModel>({ error });
+    } catch (error: unknown) {
+      const failed = new DataFailed<LoginModel>({ error: error as ErrorModel });
       this.setItemState(failed);
       this.handleErrorResponse(failed);
       return failed;

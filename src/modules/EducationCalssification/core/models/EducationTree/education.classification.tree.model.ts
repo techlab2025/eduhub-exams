@@ -21,15 +21,17 @@ export default class EducationClassificationTreeModel {
    * @param json - Raw JSON data from API
    * @returns CountryModel instance
    */
-  static fromJson(json: any): EducationClassificationTreeModel {
+  static fromJson(json: Record<string, unknown>): EducationClassificationTreeModel {
     if (!json) {
-      throw new Error('Cannot create CountryModel from null or undefined');
+      throw new Error('Cannot create EducationClassificationTreeModel from null or undefined');
     }
 
     return new EducationClassificationTreeModel({
-      id: json.id,
-      number_of_branches: json.number_of_branches,
-      branches: json.branches.map((el: any) => BranchesModel.fromJson(el)),
+      id: json.id as number,
+      number_of_branches: json.number_of_branches as number,
+      branches: (json.branches as Record<string, unknown>[]).map((el: Record<string, unknown>) =>
+        BranchesModel.fromJson(el),
+      ),
     });
   }
 

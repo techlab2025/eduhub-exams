@@ -21,16 +21,16 @@ export default class EducationClassificationModel {
    * @param json - Raw JSON data from API
    * @returns CountryModel instance
    */
-  static fromJson(json: any): EducationClassificationModel {
+  static fromJson(json: Record<string, unknown>): EducationClassificationModel {
     if (!json) {
       throw new Error('Cannot create CountryModel from null or undefined');
     }
 
     return new EducationClassificationModel({
-      id: json.id,
-      title: json.title,
-      created_at: json.created_at,
-      status: json.status,
+      id: json.id as number,
+      title: json.title as string,
+      created_at: json.created_at as string,
+      status: json.status as boolean,
     });
   }
 

@@ -19,15 +19,17 @@ export default class BranchesModel {
    * @param json - Raw JSON data from API
    * @returns CountryModel instance
    */
-  static fromJson(json: any): BranchesModel {
+  static fromJson(json: Record<string, unknown>): BranchesModel {
     if (!json) {
-      throw new Error('Cannot create CountryModel from null or undefined');
+      throw new Error('Cannot create BranchesModel from null or undefined');
     }
 
     return new BranchesModel({
-      branch_id: json.branch_id,
-      branch_title: json.branch_title,
-      branches: json.branches,
+      branch_id: json.branch_id as number,
+      branch_title: json.branch_title as string,
+      branches: (json.branches as Record<string, unknown>[]).map((el) =>
+        BranchesModel.fromJson(el),
+      ),
     });
   }
 

@@ -150,7 +150,7 @@
             </template>
 
             <template #cell-status="{ item }">
-              <ToggleSwitch v-model="item.status" @update:modelValue="ToggleStatus(item.id!)" />
+              <ToggleSwitch v-model="item.status" @update:model-value="ToggleStatus(item.id!)" />
             </template>
 
             <template #actions="{ item }">
@@ -210,7 +210,6 @@
                 </DeleteDialog>
               </div>
             </template>
-            
           </AppTable>
         </div>
 

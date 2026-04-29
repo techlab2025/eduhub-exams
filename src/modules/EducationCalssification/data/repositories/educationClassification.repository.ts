@@ -39,7 +39,7 @@ export default class EducationClassificationRepository extends BaseRepository<
         ...EducationClassificationModel.example,
         title: 'Secondary education',
         id: 2,
-        
+
         status: false,
       },
     ];
@@ -56,11 +56,11 @@ export default class EducationClassificationRepository extends BaseRepository<
     return EducationClassificationRepository.instance;
   }
 
-  protected parseItem(data: any): EducationClassificationModel {
-    return EducationClassificationModel.fromJson(data);
+  protected parseItem(data: unknown): EducationClassificationModel {
+    return EducationClassificationModel.fromJson(data as Record<string, unknown>);
   }
 
-  protected parseList(data: any): EducationClassificationModel[] {
+  protected parseList(data: unknown): EducationClassificationModel[] {
     if (!Array.isArray(data)) return [];
     return data.reduce((acc: EducationClassificationModel[], item) => {
       try {

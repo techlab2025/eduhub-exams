@@ -1,10 +1,5 @@
 import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
-import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
-import type Params from '@/base/Core/Params/params';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-import router from '@/router';
-import { useFormsStore } from '@/stores/formsStore';
 import type EducationClassificationTreeModel from '@/modules/EducationCalssification/core/models/EducationTree/education.classification.tree.model';
 import EducationTreeRepository from '@/modules/EducationCalssification/data/repositories/EducationTree/education.configuration.tree.repository';
 

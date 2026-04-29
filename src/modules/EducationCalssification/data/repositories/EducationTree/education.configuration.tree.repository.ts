@@ -136,11 +136,11 @@ export default class EducationTreeRepository extends BaseRepository<
     return EducationTreeRepository.instance;
   }
 
-  protected parseItem(data: any): EducationClassificationTreeModel {
-    return EducationClassificationTreeModel.fromJson(data);
+  protected parseItem(data: unknown): EducationClassificationTreeModel {
+    return EducationClassificationTreeModel.fromJson(data as Record<string, unknown>);
   }
 
-  protected parseList(data: any): EducationClassificationTreeModel[] {
+  protected parseList(data: unknown): EducationClassificationTreeModel[] {
     if (!Array.isArray(data)) return [];
     return data.reduce((acc: EducationClassificationTreeModel[], item) => {
       try {
