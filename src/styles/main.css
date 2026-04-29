@@ -5393,7 +5393,7 @@ body::-webkit-scrollbar-thumb:hover {
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
 .p-dialog.add-education-type-dialog {
-  background: #fff;
+  background: var(--white);
 }
 .p-dialog.add-education-type-dialog .p-dialog.add-education-type-dialog {
   background: var(--standard-white);
@@ -5560,8 +5560,6 @@ body::-webkit-scrollbar-thumb:hover {
   overflow: hidden;
 }
 .p-dialog {
-  font-family: 'Regular';
-  font-family: 'Regular';
   font-family: 'Regular';
 }
 .p-dialog .dialog-header {

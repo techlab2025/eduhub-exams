@@ -1,11 +1,10 @@
 @use '../../../../../styles/variables' as *;
 
 .p-dialog.add-education-type-dialog {
-  background: #fff;
+  background: var(--white);
 
   .p-dialog.add-education-type-dialog {
     background: $StandardWhite;
-
     border-radius: 16px;
     width: 100%;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
@@ -30,7 +29,6 @@
     .dialog-title {
       font-size: 20px;
       font-weight: 700;
-
       color: $StandardBlack;
       margin: 0 0 4px;
     }
@@ -38,9 +36,7 @@
     .dialog-subtitle {
       font-size: 16px;
       font-weight: 500;
-
       color: $ColorDarkGray;
-
       margin: 0;
       line-height: 1.4;
     }
