@@ -1,2 +1,5 @@
 @use 'education_classification_index';
 @use 'education_classification_form';
+@use './EducationTree/education_classification_tree';
+@use './EducationTree/education_type_item';
+@use './EducationTree/education_type_dilaog';
