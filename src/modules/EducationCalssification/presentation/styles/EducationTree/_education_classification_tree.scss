@@ -2,22 +2,17 @@
 
 .education-tree {
   display: flex;
+
   height: 80vh;
+
   background: $Gray-50-std;
   font-family: 'Regular';
   width: 100%;
 
   .left-panel {
     width: 50%;
-    // width: 340px;
-    // min-width: 280px;
-<<<<<<< HEAD
     background: $StandardWhite;
     border-right: 1px solid $Gray-200-std;
-=======
-    background: #fff;
-    border-right: 1px solid #e5e7eb;
->>>>>>> 4ad8906 (build: new tree configuration)
     display: flex;
     flex-direction: column;
     position: relative;
@@ -99,22 +94,16 @@
   .empty-title {
     font-size: 20px;
     font-weight: 700;
-<<<<<<< HEAD
+
     color: $StandardBlack;
-=======
-    color: #121212;
->>>>>>> 4ad8906 (build: new tree configuration)
+
     margin: 0;
   }
 
   .empty-desc {
     font-size: 16px;
     font-weight: 500;
-<<<<<<< HEAD
     color: $ColorDarkGray;
-=======
-    color: #5d5d5d;
->>>>>>> 4ad8906 (build: new tree configuration)
     margin: 0;
     line-height: 1.5;
   }
