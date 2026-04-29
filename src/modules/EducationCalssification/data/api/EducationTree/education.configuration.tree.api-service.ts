@@ -20,6 +20,7 @@ export default class EducationTreeApiService extends BaseApiService {
   protected get endpoints(): Partial<ApiEndpoints> {
     return {
       index: this.educationTreeEndpoints.index,
+      create: this.educationTreeEndpoints.add,
     };
   }
 }

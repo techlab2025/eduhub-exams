@@ -1,22 +1,9 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 16px;
-
-  .dialog {
-    background: #fff;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-  }
-
+.p-dialog.add-education-type-dialog {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
   .dialog-header {
     display: flex;
     align-items: flex-start;
@@ -34,15 +21,16 @@
   }
 
   .dialog-title {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 700;
-    color: #111827;
+    color: #121212;
     margin: 0 0 4px;
   }
 
   .dialog-subtitle {
-    font-size: 12px;
-    color: #6b7280;
+    font-size: 16px;
+    font-weight: 500;
+    color: #5d5d5d;
     margin: 0;
     line-height: 1.4;
   }
@@ -54,7 +42,7 @@
   }
 
   .dialog-body {
-    padding: 20px;
+    padding: 12px !important;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -94,7 +82,7 @@
   .dialog-footer {
     display: flex;
     gap: 10px;
-    padding: 0 20px 20px;
+    // padding: 0 20px 20px;
   }
 
   .btn-confirm {

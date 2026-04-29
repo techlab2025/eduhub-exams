@@ -39,6 +39,7 @@ export default class EducationClassificationRepository extends BaseRepository<
         ...EducationClassificationModel.example,
         title: 'Secondary education',
         id: 2,
+        
         status: false,
       },
     ];

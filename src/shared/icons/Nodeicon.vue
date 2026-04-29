@@ -1,10 +1,17 @@
 <script setup lang="ts">
-  defineProps<{ level: number }>();
+  defineProps<{ level: number; maxLevels: number }>();
 </script>
 
 <template>
   <!-- Level 0: Education Type (folder icon) -->
-  <svg v-if="level === 0" viewBox="0 0 20 20" fill="none" width="16" height="16" class="node-icon">
+  <svg
+    v-if="level != maxLevels"
+    viewBox="0 0 20 20"
+    fill="none"
+    width="16"
+    height="16"
+    class="node-icon"
+  >
     <path
       d="M3 7a2 2 0 012-2h3.5l1.5 1.5H15a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"
       stroke="#4caf50"

@@ -52,29 +52,29 @@ export default class EducationTreeController extends BaseController<
     return EducationTreeController.instance;
   }
 
-  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
-    const FormStore = useFormsStore();
+  // async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+  //   const FormStore = useFormsStore();
 
-    const result = await super.create(params, options);
-    if (result instanceof DataSuccess) {
-      router.push({ name: 'EducationClassifications' });
-      if (formKey) {
-        FormStore.clearFormData(formKey);
-      }
-    }
-    return result;
-  }
+  //   const result = await super.create(params, options);
+  //   if (result instanceof DataSuccess) {
+  //     router.push({ name: 'EducationClassifications' });
+  //     if (formKey) {
+  //       FormStore.clearFormData(formKey);
+  //     }
+  //   }
+  //   return result;
+  // }
 
-  async update(params: Params, options?: ApiCallOptions, formKey?: string) {
-    const FormStore = useFormsStore();
+  // async update(params: Params, options?: ApiCallOptions, formKey?: string) {
+  //   const FormStore = useFormsStore();
 
-    const result = await super.update(params, options);
-    if (result instanceof DataSuccess) {
-      router.push({ name: 'EducationClassifications' });
-      if (formKey) {
-        FormStore.clearFormData(formKey);
-      }
-    }
-    return result;
-  }
+  //   const result = await super.update(params, options);
+  //   if (result instanceof DataSuccess) {
+  //     router.push({ name: 'EducationClassifications' });
+  //     if (formKey) {
+  //       FormStore.clearFormData(formKey);
+  //     }
+  //   }
+  //   return result;
+  // }
 }

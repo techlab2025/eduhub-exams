@@ -6,6 +6,8 @@
   import EducationTreeController from '../../controllers/EducationTree/education.configuration.tree.controller';
   import { useRoute } from 'vue-router';
   import FetchTreeConfigurationTreeParams from '@/modules/EducationCalssification/core/params/EducationTree/fetch.tree.configuration.params';
+  import type BranchesModel from '@/modules/EducationCalssification/core/models/EducationTree/branches.model';
+  import AddEducationConfigurationTreeParams from '@/modules/EducationCalssification/core/params/EducationTree/add.education.configuration.tree.params';
 
   interface TreeNode {
     id: string;
@@ -13,7 +15,19 @@
     level: number;
     children: TreeNode[];
   }
+  const controller = EducationTreeController.getInstance();
 
+  /** Recursively converts a BranchesModel (and all its nested branches) into a TreeNode. */
+  function mapBranch(branch: BranchesModel, level: number): TreeNode {
+    return {
+      id: String(branch.branch_id),
+      name: branch.branch_title,
+      level,
+      children: branch.branches.map((child) => mapBranch(child, level + 1)),
+    };
+  }
+
+  const route = useRoute();
   const educationTypes = ref<TreeNode[]>([]);
   const searchQuery = ref('');
   const showAddTypeDialog = ref(false);
@@ -21,22 +35,10 @@
   const selectedType = ref<TreeNode | null>(null);
   const branchDialogLevel = ref(1);
   const branchDialogParent = ref<TreeNode | null>(null);
+  const branchDialogBranchId = ref<number | undefined>(undefined);
+  const maxLevels = ref(0);
 
-  let idCounter = 1;
-  const genId = () => `node-${idCounter++}`;
-
-  const filteredTypes = computed(() => {
-    if (!searchQuery.value.trim()) return educationTypes.value;
-    const q = searchQuery.value.toLowerCase();
-    const filterNode = (node: TreeNode): TreeNode | null => {
-      if (node.name.toLowerCase().includes(q)) return node;
-      const filteredChildren = node.children.map(filterNode).filter(Boolean) as TreeNode[];
-      if (filteredChildren.length > 0) return { ...node, children: filteredChildren };
-      return null;
-    };
-    return educationTypes.value.map(filterNode).filter(Boolean) as TreeNode[];
-  });
-
+  const filteredTypes = ref<TreeNode[]>([]);
   function openAddTypeDialog() {
     showAddTypeDialog.value = true;
   }
@@ -44,62 +46,52 @@
   function openAddBranchDialog({ node, level }: { node: TreeNode; level: number }) {
     branchDialogParent.value = node;
     branchDialogLevel.value = level;
+    branchDialogBranchId.value = Number(node.id);
     showAddBranchDialog.value = true;
   }
 
-  function handleAddType(name: string) {
-    const newNode: TreeNode = { id: genId(), name, level: 0, children: [] };
+  async function handleAddType(name: string) {
+    const newNode: TreeNode = { id: '0', name, level: 0, children: [] };
     educationTypes.value.push(newNode);
+    const AddBranchParams = new AddEducationConfigurationTreeParams({
+      education_classification_id: Number(route.params.id),
+      branch_title: name,
+    });
+    await controller.create(AddBranchParams);
     selectedType.value = newNode;
     showAddTypeDialog.value = false;
   }
 
-  function handleAddBranch(name: string) {
+  async function handleAddBranch(data: { name: string; level: number; branchId?: number }) {
     if (!branchDialogParent.value) return;
-    const newNode: TreeNode = {
-      id: genId(),
-      name,
-      level: branchDialogLevel.value,
-      children: [],
-    };
-    branchDialogParent.value.children.push(newNode);
     showAddBranchDialog.value = false;
+    const AddBranchParams = new AddEducationConfigurationTreeParams({
+      education_classification_id: Number(route.params.id),
+      branch_id: data.branchId,
+      branch_title: data.name,
+    });
+    await controller.create(AddBranchParams);
   }
 
+  /** Select any node regardless of depth; leaf nodes will open the right-panel edit area. */
   function selectNode(node: TreeNode) {
-    if (node.level === 0) selectedType.value = node;
+    selectedType.value = node;
   }
 
-  const route = useRoute();
-  const controller = EducationTreeController.getInstance();
   const FetchEducationTreeParams = new FetchTreeConfigurationTreeParams({
     education_classification_id: Number(route.params.id),
   });
   const state = computed(() => controller.listState);
   onMounted(async () => {
     await controller.fetchList(FetchEducationTreeParams);
-    educationTypes.value = state.value.value.data.map((item) => {
-      return {
-        id: item.id,
-        name: item.branches[0]?.branch_title,
-        level: item.branches[0],
-        children: item.branches.map((branch) => {
-          return {
-            id: branch.branch_id,
-            name: branch.branch_title,
-            level: 1,
-            children: branch.branches.map((subBranch) => {
-              return {
-                id: subBranch.branch_id,
-                name: subBranch.branch_title,
-                level: 2,
-                children: [],
-              };
-            }),
-          };
-        }),
-      };
-    });
+
+    const data = state.value.value.data;
+    if (!data) return;
+    maxLevels.value = data[0]?.number_of_branches ?? 0;
+    educationTypes.value = data.flatMap((item) =>
+      item.branches.map((branch) => mapBranch(branch, 0)),
+    );
+    filteredTypes.value = educationTypes.value;
   });
 </script>
 <template>
@@ -162,6 +154,8 @@
           v-for="type in filteredTypes"
           :key="type.id"
           :node="type"
+          :branch-id="type.id"
+          :max-levels="maxLevels"
           @add-branch="openAddBranchDialog($event)"
           @add-sub="openAddBranchDialog($event)"
           @select="selectNode($event)"
@@ -191,20 +185,44 @@
               />
             </svg>
             <span>{{ selectedType.name }}</span>
+            <span class="level-badge"
+              >Level {{ selectedType.level + 1 }} / {{ maxLevels + 1 }}</span
+            >
           </div>
+          <!-- Add Branch only if we haven't reached max depth -->
           <button
+            v-if="selectedType.level < maxLevels - 1"
             class="btn-outlined"
-            @click="openAddBranchDialog({ node: selectedType, level: 1 })"
+            @click="openAddBranchDialog({ node: selectedType, level: selectedType.level + 1 })"
           >
             <span>+</span> Add Branch
           </button>
         </div>
-        <div v-if="selectedType.children.length === 0" class="right-empty">
+
+        <!-- Leaf node: placeholder for future edit UI -->
+        <div v-if="selectedType.level >= maxLevels - 1" class="right-leaf">
+          <svg viewBox="0 0 64 64" fill="none" width="56" height="56">
+            <rect x="8" y="8" width="48" height="48" rx="6" fill="#e8f5e9" />
+            <path
+              d="M20 32h24M20 22h24M20 42h16"
+              stroke="#4caf50"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <p class="right-leaf-title">{{ selectedType.name }}</p>
+          <p class="hint-text">
+            This is a final-level branch. The edit interface will be available here soon.
+          </p>
+        </div>
+
+        <!-- Non-leaf node with no children yet -->
+        <div v-else-if="selectedType.children.length === 0" class="right-empty">
           <p class="hint-text">No branches yet. Click "+ Add Branch" to get started.</p>
         </div>
       </template>
       <div v-else class="right-placeholder">
-        <p>Select an education type to view details</p>
+        <p>Select a branch from the tree to view details</p>
       </div>
     </div>
 
@@ -215,6 +233,7 @@
     <AddBranchDialog
       v-model:visible="showAddBranchDialog"
       :level="branchDialogLevel"
+      :branch-id="branchDialogBranchId"
       @confirm="handleAddBranch"
     />
   </div>

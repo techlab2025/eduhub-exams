@@ -1,22 +1,14 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 16px;
+@use '../../../../../styles/mixins/flex' as *;
 
-  .dialog {
-    background: #fff;
+.p-dialog {
+  &.add-branch-dialog {
+    background: #fff !important;
     border-radius: 16px;
     width: 100%;
-    max-width: 380px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    // max-width: 380px;
     overflow: hidden;
   }
-
+  font-family: 'Regular';
   .dialog-header {
     display: flex;
     align-items: flex-start;
@@ -28,22 +20,26 @@
     flex-shrink: 0;
   }
 
-  .dialog-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 4px;
-  }
+  .dialog-header-text {
+    @include flex-column(nowrap, flex-start, flex-start);
+    .dialog-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #121212;
+      margin: 0 0 4px;
+    }
 
-  .dialog-subtitle {
-    font-size: 12px;
-    color: #6b7280;
-    margin: 0;
-    line-height: 1.4;
+    .dialog-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: #5d5d5d;
+      margin: 0;
+      line-height: 1.4;
+    }
   }
 
   .dialog-body {
-    padding: 4px 20px 20px;
+    padding: 20px !important;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -53,6 +49,7 @@
     font-size: 13px;
     font-weight: 600;
     color: #374151;
+    text-transform: none;
   }
 
   .field-input {
@@ -83,7 +80,7 @@
   .dialog-footer {
     display: flex;
     gap: 10px;
-    padding: 0 20px 20px;
+    // padding: 0 20px 20px;
   }
 
   .btn-confirm {

@@ -35,7 +35,7 @@ export default class EducationClassificationTreeModel {
 
   static example: EducationClassificationTreeModel = new EducationClassificationTreeModel({
     id: 1,
-    number_of_branches: 1,
+    number_of_branches: 4,
     branches: [BranchesModel.example],
   });
 }

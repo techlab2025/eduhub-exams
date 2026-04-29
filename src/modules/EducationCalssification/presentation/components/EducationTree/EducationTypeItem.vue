@@ -7,9 +7,10 @@
     name: string;
     level: number;
     children: TreeNode[];
+    // maxLevel: number;
   }
 
-  const props = defineProps<{ node: TreeNode }>();
+  const props = defineProps<{ node: TreeNode; maxLevels: number }>();
   const emit = defineEmits<{
     (e: 'add-branch', payload: { node: TreeNode; level: number }): void;
     (e: 'add-sub', payload: { node: TreeNode; level: number }): void;
@@ -64,7 +65,9 @@
       <span v-else class="toggle-spacer" />
 
       <!-- Node Icon -->
-      <NodeIcon :level="node.level" />
+      <!-- :maxLevel="ndoe" -->
+
+      <NodeIcon :level="node.level" :maxLevels="maxLevels" />
 
       <!-- Level Label -->
       <span v-if="node.level > 0" class="level-label">Branch {{ node.level }}</span>
@@ -74,8 +77,13 @@
 
       <span class="spacer" />
 
-      <!-- Add Child Button -->
-      <button class="icon-btn" title="Add child" @click.stop="emitAdd">
+      <!-- Add Child Button — hidden at the deepest allowed level -->
+      <button
+        v-if="node.level < maxLevels - 1"
+        class="icon-btn"
+        title="Add child"
+        @click.stop="emitAdd"
+      >
         <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
           <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
           <path d="M10 7v6M7 10h6" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round" />
@@ -99,6 +107,7 @@
           v-for="child in node.children"
           :key="child.id"
           :node="child"
+          :max-levels="maxLevels"
           @add-branch="$emit('add-branch', $event)"
           @add-sub="$emit('add-sub', $event)"
           @select="$emit('select', $event)"
