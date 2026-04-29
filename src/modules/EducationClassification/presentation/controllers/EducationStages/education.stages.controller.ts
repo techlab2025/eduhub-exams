@@ -1,3 +1,5 @@
+import type Params from '@/base/Core/Params/params';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import EducationStageModel from '@/modules/EducationClassification/core/models/EducationStage/education.stages.model';
@@ -46,4 +48,9 @@ export default class EducationStageController extends BaseController<
     }
     return EducationStageController.instance;
   }
+
+  // async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+  //   const result = await super.create(params, { ...options, useStaticData: true });
+  //   return result;
+  // }
 }
