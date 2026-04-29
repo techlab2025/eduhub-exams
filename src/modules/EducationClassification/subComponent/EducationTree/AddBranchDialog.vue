@@ -7,7 +7,10 @@
     visible: boolean;
     level: number;
     branchId?: number;
+    branchName?: string;
   }>();
+
+  const displayName = computed(() => props.branchName ?? `Branch ${props.level}`);
 
   const emit = defineEmits<{
     (e: 'update:visible', val: boolean): void;
@@ -58,18 +61,18 @@
         <NewBranchIcon />
       </div>
       <div class="dialog-header-text">
-        <h3 class="dialog-title">Add A New Branch</h3>
-        <p class="dialog-subtitle">Enter Your Preferred Branch Name Within The Tree</p>
+        <h3 class="dialog-title">Add A New {{ displayName }}</h3>
+        <p class="dialog-subtitle">Enter Your Preferred {{ displayName }} Name Within The Tree</p>
       </div>
     </template>
 
-    <label class="field-label" :for="`branch-input-${level}`">Branch Name</label>
+    <label class="field-label" :for="`branch-input-${level}`">{{ displayName }} Name</label>
     <input
       :id="`branch-input-${level}`"
       ref="inputRef"
       v-model="inputValue"
       type="text"
-      :placeholder="`Enter Branch Name`"
+      :placeholder="`Enter ${displayName} Name`"
       class="field-input"
       @keydown.enter="handleConfirm"
       @keydown.esc="dialogVisible = false"

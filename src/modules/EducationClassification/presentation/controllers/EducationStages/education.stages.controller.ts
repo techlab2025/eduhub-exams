@@ -1,4 +1,7 @@
-import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import {
+  DataSuccess,
+  type DataState,
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import BaseController from '@/base/Presentation/Controller/baseController';
@@ -54,6 +57,44 @@ export default class EducationStageController extends BaseController<
     const result = await super.create(params, { ...options, useStaticData: false });
     return result;
   }
-
-
+  async newfetchList(
+    params?: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<EducationStageModel[]>> {
+    const result = await super.fetchList(params, { ...options, useStaticData: false });
+    result.data = [
+      new EducationStageModel({
+        stage_id: 5,
+        has_children: false,
+        stage_title: 'new',
+      }),
+      new EducationStageModel({
+        stage_id: 6,
+        has_children: false,
+        stage_title: 'new 2',
+      }),
+      new EducationStageModel({
+        stage_id: 7,
+        has_children: false,
+        stage_title: 'new 3',
+      }),
+      new EducationStageModel({
+        stage_id: 8,
+        has_children: false,
+        stage_title: 'new 4',
+      }),
+      new EducationStageModel({
+        stage_id: 9,
+        has_children: false,
+        stage_title: 'new 5',
+      }),
+      new EducationStageModel({
+        stage_id: 10,
+        has_children: false,
+        stage_title: 'new 6',
+      }),
+    ];
+    console.log(result, 'result');
+    return result;
+  }
 }

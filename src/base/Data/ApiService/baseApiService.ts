@@ -1,11 +1,11 @@
-import type Params from "@/base/Core/Params/params";
+import type Params from '@/base/Core/Params/params';
 import ServicesInterface, {
   CrudType,
   type ApiResponse,
   type ExtendedCallOptions,
   type ProgressCallback,
-} from "./apiServiceInterface";
-import { env } from "@/base/Core/Config/index";
+} from './apiServiceInterface';
+import { env } from '@/base/Core/Config/index';
 
 /**
  * Configuration for API endpoints supporting CRUD operations.
@@ -148,7 +148,7 @@ export default abstract class BaseApiService extends ServicesInterface {
    */
   private resolveEndpoint(endpoint: string | undefined): string {
     if (!endpoint) {
-      throw new Error("Endpoint not configured");
+      throw new Error('Endpoint not configured');
     }
     return endpoint;
   }
@@ -217,9 +217,7 @@ export default abstract class BaseApiService extends ServicesInterface {
     const mergedOptions = this.mergeOptions({
       ...options,
       enableRetry: isAutoRetry,
-
     });
-
 
     return this.call({
       url,
@@ -264,10 +262,7 @@ export default abstract class BaseApiService extends ServicesInterface {
    * Delete item (POST request with Params in body).
    * The ID should be included in the Params.
    */
-  async delete(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<ApiResponse> {
+  async delete(params?: Params, options?: ApiCallOptions): Promise<ApiResponse> {
     const url = this.resolveEndpoint(this.endpoints.delete);
     const mergedOptions = this.mergeOptions({
       ...options,
@@ -294,15 +289,10 @@ export default abstract class BaseApiService extends ServicesInterface {
     options?: ApiCallOptions,
     isAutoRetry?: boolean,
   ): Promise<ApiResponse<T>> {
-
-
     const mergedOptions = this.mergeOptions({
       ...options,
       enableRetry: isAutoRetry,
-
     });
-
-
 
     return this.call({
       url: config.url,
@@ -348,9 +338,7 @@ export default abstract class BaseApiService extends ServicesInterface {
   async batch(
     requests: Array<{ config: CustomEndpointConfig; options?: ApiCallOptions }>,
   ): Promise<ApiResponse[]> {
-    const promises = requests.map(({ config, options }) =>
-      this.custom(config, options),
-    );
+    const promises = requests.map(({ config, options }) => this.custom(config, options));
 
     return Promise.all(promises);
   }
@@ -404,9 +392,7 @@ export default abstract class BaseApiService extends ServicesInterface {
         // Wait before retrying
         if (attempt < retryConfig.maxAttempts - 1) {
           if (env.isLoggingEnabled) {
-            console.log(
-              `[BaseApiService] Retry attempt ${attempt + 1}/${retryConfig.maxAttempts}`,
-            );
+            console.log(`[BaseApiService] Retry attempt ${attempt + 1}/${retryConfig.maxAttempts}`);
           }
           await new Promise((resolve) => setTimeout(resolve, delay));
           delay *= retryConfig.backoffMultiplier;
@@ -414,7 +400,7 @@ export default abstract class BaseApiService extends ServicesInterface {
       }
     }
 
-    throw lastError || new Error("Request failed after retries");
+    throw lastError || new Error('Request failed after retries');
   }
 
   // =========================================================================
