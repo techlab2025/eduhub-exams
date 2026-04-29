@@ -24,7 +24,11 @@ export default class AddEducationConfigurationTreeParams implements Params {
     this.branch_title = data.branch_title;
   }
 
+<<<<<<< HEAD
   toMap(): Record<string, unknown> {
+=======
+  toMap(): { [p: string]: any } {
+>>>>>>> 4ad8906 (build: new tree configuration)
     return {
       education_classification_id: this.education_classification_id,
       branch_id: this.branch_id,

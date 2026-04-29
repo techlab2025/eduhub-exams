@@ -1,12 +1,20 @@
+<<<<<<< HEAD
 @use '../../../../../styles/variables' as *;
 
 .p-dialog.add-education-type-dialog {
   background: $StandardWhite;
+=======
+.p-dialog.add-education-type-dialog {
+  background: #fff;
+>>>>>>> 4ad8906 (build: new tree configuration)
   border-radius: 16px;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4ad8906 (build: new tree configuration)
   .dialog-header {
     display: flex;
     align-items: flex-start;
@@ -26,14 +34,22 @@
   .dialog-title {
     font-size: 20px;
     font-weight: 700;
+<<<<<<< HEAD
     color: $StandardBlack;
+=======
+    color: #121212;
+>>>>>>> 4ad8906 (build: new tree configuration)
     margin: 0 0 4px;
   }
 
   .dialog-subtitle {
     font-size: 16px;
     font-weight: 500;
+<<<<<<< HEAD
     color: $ColorDarkGray;
+=======
+    color: #5d5d5d;
+>>>>>>> 4ad8906 (build: new tree configuration)
     margin: 0;
     line-height: 1.4;
   }

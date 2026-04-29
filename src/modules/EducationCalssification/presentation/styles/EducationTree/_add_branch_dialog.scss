@@ -1,17 +1,28 @@
+<<<<<<< HEAD
 @use '../../../../../styles/variables' as *;
+=======
+>>>>>>> 4ad8906 (build: new tree configuration)
 @use '../../../../../styles/mixins/flex' as *;
 
 .p-dialog {
   &.add-branch-dialog {
+<<<<<<< HEAD
     background: $StandardWhite !important;
+=======
+    background: #fff !important;
+>>>>>>> 4ad8906 (build: new tree configuration)
     border-radius: 16px;
     width: 100%;
     // max-width: 380px;
     overflow: hidden;
   }
+<<<<<<< HEAD
 
   font-family: 'Regular';
 
+=======
+  font-family: 'Regular';
+>>>>>>> 4ad8906 (build: new tree configuration)
   .dialog-header {
     display: flex;
     align-items: flex-start;
@@ -25,6 +36,7 @@
 
   .dialog-header-text {
     @include flex-column(nowrap, flex-start, flex-start);
+<<<<<<< HEAD
 
     .dialog-title {
       font-size: 20px;
@@ -37,6 +49,19 @@
       font-size: 13px;
       font-weight: 500;
       color: $ColorDarkGray;
+=======
+    .dialog-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #121212;
+      margin: 0 0 4px;
+    }
+
+    .dialog-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: #5d5d5d;
+>>>>>>> 4ad8906 (build: new tree configuration)
       margin: 0;
       line-height: 1.4;
     }
@@ -52,7 +77,11 @@
   .field-label {
     font-size: 13px;
     font-weight: 600;
+<<<<<<< HEAD
     color: $Gray-700-std;
+=======
+    color: #374151;
+>>>>>>> 4ad8906 (build: new tree configuration)
     text-transform: none;
   }
 

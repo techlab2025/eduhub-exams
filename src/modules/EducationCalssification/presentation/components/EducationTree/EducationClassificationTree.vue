@@ -52,7 +52,11 @@
 
   async function handleAddType(name: string) {
     const newNode: TreeNode = { id: '0', name, level: 0, children: [] };
+<<<<<<< HEAD
     // educationTypes.value.push(newNode);
+=======
+    educationTypes.value.push(newNode);
+>>>>>>> 4ad8906 (build: new tree configuration)
     const AddBranchParams = new AddEducationConfigurationTreeParams({
       education_classification_id: Number(route.params.id),
       branch_title: name,
@@ -186,9 +190,16 @@
                 stroke-linecap="round"
               />
             </svg>
+<<<<<<< HEAD
             <!-- <span class="level-badge"
               >Level {{ selectedType.level + 1 }} / {{ maxLevels + 1 }}</span
             > -->
+=======
+            <span>{{ selectedType.name }}</span>
+            <span class="level-badge"
+              >Level {{ selectedType.level + 1 }} / {{ maxLevels + 1 }}</span
+            >
+>>>>>>> 4ad8906 (build: new tree configuration)
           </div>
           <!-- Add Branch only if we haven't reached max depth -->
           <button

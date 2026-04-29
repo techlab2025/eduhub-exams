@@ -67,7 +67,11 @@
       <!-- Node Icon -->
       <!-- :maxLevel="ndoe" -->
 
+<<<<<<< HEAD
       <NodeIcon :level="node.level" :max-levels="maxLevels" />
+=======
+      <NodeIcon :level="node.level" :maxLevels="maxLevels" />
+>>>>>>> 4ad8906 (build: new tree configuration)
 
       <!-- Level Label -->
       <span v-if="node.level > 0" class="level-label">Branch {{ node.level }}</span>

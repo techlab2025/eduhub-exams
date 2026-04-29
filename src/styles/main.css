@@ -4621,6 +4621,7 @@ body::-webkit-scrollbar-thumb:hover {
   transition: all 0.2s ease;
 }
 .type-chip[data-type="1"], .type-chip[data-type=work] {
+<<<<<<< HEAD
   background: var(--chip-work-bg, linear-gradient(135deg, var(--PrimaryColor-light), var(--indigo-100)));
   color: var(--chip-work-text, var(--PrimaryColor-active));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -4628,6 +4629,15 @@ body::-webkit-scrollbar-thumb:hover {
 .type-chip[data-type="2"], .type-chip[data-type=personal] {
   background: var(--chip-personal-bg, linear-gradient(135deg, var(--success-light), var(--green-100)));
   color: var(--chip-personal-text, var(--success));
+=======
+  background: var(--chip-work-bg, linear-gradient(135deg, #eef2ff, #e0e7ff));
+  color: var(--chip-work-text, #4338ca);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.type-chip[data-type="2"], .type-chip[data-type=personal] {
+  background: var(--chip-personal-bg, linear-gradient(135deg, #f0fdf4, #dcfce7));
+  color: var(--chip-personal-text, #16a34a);
+>>>>>>> 4ad8906 (build: new tree configuration)
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .type-chip:not([data-type]) {
@@ -4985,15 +4995,25 @@ body::-webkit-scrollbar-thumb:hover {
 /* ── Core ──────────────────────────────────────────────────────── */
 .education-tree {
   display: flex;
+<<<<<<< HEAD
   height: 80vh;
   background: var(--gray-50-std);
+=======
+  height: 100vh;
+  background: #f9fafb;
+>>>>>>> 4ad8906 (build: new tree configuration)
   font-family: "Regular";
   width: 100%;
 }
 .education-tree .left-panel {
   width: 50%;
+<<<<<<< HEAD
   background: var(--standard-white);
   border-right: 1px solid var(--gray-200-std);
+=======
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+>>>>>>> 4ad8906 (build: new tree configuration)
   display: flex;
   flex-direction: column;
   position: relative;
@@ -5070,13 +5090,21 @@ body::-webkit-scrollbar-thumb:hover {
 .education-tree .empty-title {
   font-size: 20px;
   font-weight: 700;
+<<<<<<< HEAD
   color: var(--standard-black);
+=======
+  color: #121212;
+>>>>>>> 4ad8906 (build: new tree configuration)
   margin: 0;
 }
 .education-tree .empty-desc {
   font-size: 16px;
   font-weight: 500;
+<<<<<<< HEAD
   color: var(--color-dark-gray);
+=======
+  color: #5d5d5d;
+>>>>>>> 4ad8906 (build: new tree configuration)
   margin: 0;
   line-height: 1.5;
 }
@@ -5286,12 +5314,17 @@ body::-webkit-scrollbar-thumb:hover {
   max-height: 2000px;
 }
 
+<<<<<<< HEAD
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
 .p-dialog.add-education-type-dialog {
   background: var(--standard-white);
+=======
+.p-dialog.add-education-type-dialog {
+  background: #fff;
+>>>>>>> 4ad8906 (build: new tree configuration)
   border-radius: 16px;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
@@ -5314,13 +5347,21 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.add-education-type-dialog .dialog-title {
   font-size: 20px;
   font-weight: 700;
+<<<<<<< HEAD
   color: var(--standard-black);
+=======
+  color: #121212;
+>>>>>>> 4ad8906 (build: new tree configuration)
   margin: 0 0 4px;
 }
 .p-dialog.add-education-type-dialog .dialog-subtitle {
   font-size: 16px;
   font-weight: 500;
+<<<<<<< HEAD
   color: var(--color-dark-gray);
+=======
+  color: #5d5d5d;
+>>>>>>> 4ad8906 (build: new tree configuration)
   margin: 0;
   line-height: 1.4;
 }
@@ -5348,11 +5389,16 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 13px;
   color: var(--gray-900-std);
   outline: none;
+<<<<<<< HEAD
   background: var(--Gray-5);
+=======
+  background: #fafafa;
+>>>>>>> 4ad8906 (build: new tree configuration)
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
 .p-dialog.add-education-type-dialog .field-input:focus {
+<<<<<<< HEAD
   border-color: var(--success-green-std);
   box-shadow: 0 0 0 3px rgba(var(--success-green-std), 0.12);
   background: var(--standard-white);
@@ -5362,6 +5408,17 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog.add-education-type-dialog .field-input::placeholder {
   color: var(--color-placeholder);
+=======
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
+  background: #fff;
+}
+.p-dialog.add-education-type-dialog .field-input::-moz-placeholder {
+  color: #c4c9d0;
+}
+.p-dialog.add-education-type-dialog .field-input::placeholder {
+  color: #c4c9d0;
+>>>>>>> 4ad8906 (build: new tree configuration)
 }
 .p-dialog.add-education-type-dialog .dialog-footer {
   display: flex;
@@ -5380,7 +5437,11 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s, transform 0.1s;
 }
 .p-dialog.add-education-type-dialog .btn-confirm:hover:not(:disabled) {
+<<<<<<< HEAD
   background: var(--success-green-hover-std);
+=======
+  background: #43a047;
+>>>>>>> 4ad8906 (build: new tree configuration)
 }
 .p-dialog.add-education-type-dialog .btn-confirm:active:not(:disabled) {
   transform: scale(0.98);
@@ -5402,7 +5463,11 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s;
 }
 .p-dialog.add-education-type-dialog .btn-cancel:hover {
+<<<<<<< HEAD
   background: var(--gray-200-std);
+=======
+  background: #e5e7eb;
+>>>>>>> 4ad8906 (build: new tree configuration)
 }
 .p-dialog.add-education-type-dialog {
   /* Transitions */
@@ -5430,12 +5495,17 @@ body::-webkit-scrollbar-thumb:hover {
   opacity: 0;
 }
 
+<<<<<<< HEAD
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
 .p-dialog.add-branch-dialog {
   background: var(--standard-white) !important;
+=======
+.p-dialog.add-branch-dialog {
+  background: #fff !important;
+>>>>>>> 4ad8906 (build: new tree configuration)
   border-radius: 16px;
   width: 100%;
   overflow: hidden;
@@ -5462,13 +5532,21 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog .dialog-header-text .dialog-title {
   font-size: 20px;
   font-weight: 600;
+<<<<<<< HEAD
   color: var(--standard-black);
+=======
+  color: #121212;
+>>>>>>> 4ad8906 (build: new tree configuration)
   margin: 0 0 4px;
 }
 .p-dialog .dialog-header-text .dialog-subtitle {
   font-size: 13px;
   font-weight: 500;
+<<<<<<< HEAD
   color: var(--color-dark-gray);
+=======
+  color: #5d5d5d;
+>>>>>>> 4ad8906 (build: new tree configuration)
   margin: 0;
   line-height: 1.4;
 }
@@ -5481,22 +5559,36 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog .field-label {
   font-size: 13px;
   font-weight: 600;
+<<<<<<< HEAD
   color: var(--gray-700-std);
+=======
+  color: #374151;
+>>>>>>> 4ad8906 (build: new tree configuration)
   text-transform: none;
 }
 .p-dialog .field-input {
   width: 100%;
   padding: 11px 14px;
+<<<<<<< HEAD
   border: 1.5px solid var(--gray-200-std);
   border-radius: 10px;
   font-size: 13px;
   color: var(--gray-900-std);
   outline: none;
   background: var(--Gray-5);
+=======
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #111827;
+  outline: none;
+  background: #fafafa;
+>>>>>>> 4ad8906 (build: new tree configuration)
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
 .p-dialog .field-input:focus {
+<<<<<<< HEAD
   border-color: var(--success-green-std);
   box-shadow: 0 0 0 3px rgba(var(--success-green-std), 0.12);
   background: var(--standard-white);
@@ -5506,6 +5598,17 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog .field-input::placeholder {
   color: var(--color-placeholder);
+=======
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
+  background: #fff;
+}
+.p-dialog .field-input::-moz-placeholder {
+  color: #c4c9d0;
+}
+.p-dialog .field-input::placeholder {
+  color: #c4c9d0;
+>>>>>>> 4ad8906 (build: new tree configuration)
 }
 .p-dialog .dialog-footer {
   display: flex;
@@ -5513,8 +5616,13 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog .btn-confirm {
   flex: 1;
+<<<<<<< HEAD
   background: var(--success-green-std);
   color: var(--standard-white);
+=======
+  background: #4caf50;
+  color: #fff;
+>>>>>>> 4ad8906 (build: new tree configuration)
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -5524,7 +5632,11 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s, transform 0.1s;
 }
 .p-dialog .btn-confirm:hover:not(:disabled) {
+<<<<<<< HEAD
   background: var(--success-green-hover-std);
+=======
+  background: #43a047;
+>>>>>>> 4ad8906 (build: new tree configuration)
 }
 .p-dialog .btn-confirm:active:not(:disabled) {
   transform: scale(0.98);
@@ -5535,8 +5647,13 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog .btn-cancel {
   flex: 1;
+<<<<<<< HEAD
   background: var(--gray-100-std);
   color: var(--gray-700-std);
+=======
+  background: #f3f4f6;
+  color: #374151;
+>>>>>>> 4ad8906 (build: new tree configuration)
   border: none;
   border-radius: 10px;
   padding: 12px;
@@ -5546,7 +5663,11 @@ body::-webkit-scrollbar-thumb:hover {
   transition: background 0.2s;
 }
 .p-dialog .btn-cancel:hover {
+<<<<<<< HEAD
   background: var(--gray-200-std);
+=======
+  background: #e5e7eb;
+>>>>>>> 4ad8906 (build: new tree configuration)
 }
 .p-dialog .overlay-fade-enter-active,
 .p-dialog .overlay-fade-leave-active {
