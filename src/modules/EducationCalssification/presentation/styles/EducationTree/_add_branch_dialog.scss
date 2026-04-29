@@ -1,4 +1,5 @@
 @use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins/flex' as *;
 
 .p-dialog {
   &.add-branch-dialog {
@@ -8,10 +9,6 @@
     // max-width: 380px;
     overflow: hidden;
   }
-
-  font-family: 'Regular';
-
-  font-family: 'Regular';
 
   font-family: 'Regular';
 
@@ -40,6 +37,7 @@
       font-size: 13px;
       font-weight: 500;
       color: $ColorDarkGray;
+
       .dialog-title {
         font-size: 20px;
         font-weight: 600;
@@ -50,9 +48,7 @@
       .dialog-subtitle {
         font-size: 13px;
         font-weight: 500;
-
         color: $ColorDarkGray;
-
         margin: 0;
         line-height: 1.4;
       }
