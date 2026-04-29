@@ -82,7 +82,7 @@
   const formRoute = computed(() => `/${route.params.country_code}/units/add`);
 
   const isDraft = computed(() => {
-    const data = FormStore?.formData[formRoute.value] ?? {};
+    const data = FormStore?.formData[formRoute] ?? {};
     return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
   const SelectedRow = ref<UnitModel[]>([]);

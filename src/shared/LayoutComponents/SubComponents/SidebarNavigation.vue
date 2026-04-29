@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { useRoute } from 'vue-router';
-  import { type Component, computed } from 'vue';
+  import { ref, type Component } from 'vue';
   import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
   import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
   import TechlabLogo from '@/assets/images/TechlabLogo.png';
+  import EducationClassificationIcon from '@/shared/icons/SidebarIcons/EducationClassificationIcon.vue';
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
@@ -22,6 +23,11 @@
     {
       group: 'Overview',
       items: [
+        {
+          link: '/education-classifications',
+          name: 'Education Classifications',
+          icon: EducationClassificationIcon,
+        },
         {
           link: '/employees',
           name: 'Employees',
@@ -87,6 +93,7 @@
       })),
     })),
   );
+  ]);
 </script>
 <template>
   <aside class="sidebar">

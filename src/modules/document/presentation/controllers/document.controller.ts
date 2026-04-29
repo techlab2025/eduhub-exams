@@ -1,17 +1,14 @@
-import BaseController from "@/base/Presentation/Controller/baseController";
-import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
-import DocumentModel from "../../core/models/document.model";
-import DocumentRepository from "../../data/repositories/document.repository";
-import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
-import type Params from "@/base/Core/Params/params";
-import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import router from "@/router";
-import { useFormsStore } from "@/stores/formsStore";
+import BaseController from '@/base/Presentation/Controller/baseController';
+import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
+import type DocumentModel from '../../core/models/document.model';
+import DocumentRepository from '../../data/repositories/document.repository';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import type Params from '@/base/Core/Params/params';
+import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import router from '@/router';
+import { useFormsStore } from '@/stores/formsStore';
 
-export default class DocumentController extends BaseController<
-  DocumentModel,
-  DocumentModel[]
-> {
+export default class DocumentController extends BaseController<DocumentModel, DocumentModel[]> {
   private static instance: DocumentController;
 
   protected get repository() {
@@ -44,7 +41,7 @@ export default class DocumentController extends BaseController<
 
     const result = await super.create(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: "Documents" });
+      router.push({ name: 'Documents' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
@@ -57,7 +54,7 @@ export default class DocumentController extends BaseController<
 
     const result = await super.update(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: "Documents" });
+      router.push({ name: 'Documents' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }

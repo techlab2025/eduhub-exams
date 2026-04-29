@@ -9,6 +9,7 @@ import {
 } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import { useUserStore } from '@/stores/user';
 import router from '@/router';
+import { type ErrorModel } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
 
 /**
  * Email Controller for managing employee emails
@@ -69,9 +70,10 @@ export default class LoginController extends BaseController<LoginModel, never> {
       if (response.data) this.userStore.setUser(response.data);
       const countryCode = router.currentRoute.value.params.country_code as string;
       router.push(`/${countryCode}/`);
+
       return response;
-    } catch (error: any) {
-      const failed = new DataFailed<LoginModel>({ error });
+    } catch (error: unknown) {
+      const failed = new DataFailed<LoginModel>({ error: error as ErrorModel });
       this.setItemState(failed);
       this.handleErrorResponse(failed);
       return failed;

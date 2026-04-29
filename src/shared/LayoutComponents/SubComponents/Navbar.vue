@@ -16,6 +16,8 @@
   // import TechlabLogo from "@/assets/images/TechlabLogo.png";
 
   // const props = defineProps({
+
+  // const { open } = defineProps({
   //   open: {
   //     type: Boolean,
   //     default: true,
@@ -29,7 +31,7 @@
   const router = useRouter();
   const logout = () => {
     userStore.logout();
-    router.push('/choose-country');
+    router.push('/login');
   };
 
   const isDropMenuOpen = ref(false);

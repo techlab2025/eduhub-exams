@@ -83,6 +83,7 @@
 
   const isDraft = computed(() => {
     const data = FormStore?.formData[formRoute.value] ?? {};
+
     return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
   const SelectedRow = ref<StageModel[]>([]);
