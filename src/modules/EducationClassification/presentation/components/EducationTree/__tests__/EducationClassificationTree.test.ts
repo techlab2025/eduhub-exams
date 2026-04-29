@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { mount, flushPromises } from '@vue/test-utils';
 import EducationClassificationTree from '../EducationClassificationTree.vue';
 import EducationTreeController from '../../../controllers/EducationTree/education.configuration.tree.controller';
 import { ref } from 'vue';
@@ -95,6 +95,8 @@ describe('EducationClassificationTree', () => {
 
   it('updates type dialog visibility on child emit', async () => {
     const wrapper = mountComponent();
+    // Open it first
+    await wrapper.find('.btn-primary').trigger('click');
     const typeDialog = wrapper.getComponent({ name: 'AddEducationTypeDialog' });
 
     await typeDialog.vm.$emit('update:visible', false);
@@ -104,10 +106,17 @@ describe('EducationClassificationTree', () => {
   it('opens add branch dialog when branch button is clicked', async () => {
     // We need to mock list data to see an item with an add branch button
     mockController.listState.value = {
-      data: [{ id: '1', name: 'Root', level: 0, children: [] }],
+      data: [
+        {
+          id: 1,
+          number_of_branches: 2,
+          branches: [{ branch_id: 1, branch_title: 'Root', branches: [] }],
+        },
+      ],
     };
 
     const wrapper = mountComponent();
+    await flushPromises();
     // Since we mock EducationTypeItem, we just emit the event from it
     const typeItem = wrapper.getComponent({ name: 'EducationTypeItem' });
     await typeItem.vm.$emit('add-branch', { node: { id: '1' }, level: 1 });

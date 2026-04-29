@@ -88,6 +88,6 @@ describe('Navbar.vue', () => {
     const logoutItem = wrapper.find('.dropdown-menu li');
     await logoutItem.trigger('click');
 
-    expect(mockPush).toHaveBeenCalledWith('/choose-country');
+    expect(mockPush).toHaveBeenCalledWith('/login');
   });
 });

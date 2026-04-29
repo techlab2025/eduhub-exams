@@ -12,7 +12,7 @@ describe('EditEducationClassificationParams', () => {
     const params = new EditEducationClassificationParams(1, 'Higher Education');
 
     const map = params.toMap();
-    expect(map).toEqual({ title: 'Higher Education' });
+    expect(map).toEqual({ id: 1, title: 'Higher Education' });
   });
 
   it('should validate correctly with valid data', () => {

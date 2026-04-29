@@ -86,7 +86,7 @@
     if (!data) return;
     maxLevels.value = data[0]?.number_of_branches ?? 0;
     educationTypes.value = data.flatMap((item) =>
-      item.branches.map((branch) => mapBranch(branch, 0)),
+      (item.branches || []).map((branch) => mapBranch(branch, 0)),
     );
     filteredTypes.value = educationTypes.value;
   });
@@ -223,10 +223,15 @@
     </div>
 
     <!-- Add Education Type Dialog -->
-    <AddEducationTypeDialog v-model:visible="showAddTypeDialog" @confirm="handleAddType" />
+    <AddEducationTypeDialog
+      v-if="showAddTypeDialog"
+      v-model:visible="showAddTypeDialog"
+      @confirm="handleAddType"
+    />
 
     <!-- Add Branch Dialog -->
     <AddBranchDialog
+      v-if="showAddBranchDialog"
       v-model:visible="showAddBranchDialog"
       :level="branchDialogLevel"
       :branch-id="branchDialogBranchId"

@@ -13,8 +13,8 @@ describe('IndexEducationClassificationParams', () => {
     const map = params.toMap();
     expect(map).toMatchObject({
       word: 'test',
-      pageNumber: 2,
-      perPage: 20,
+      page: 2,
+      per_page: 20,
     });
   });
 });
