@@ -336,27 +336,27 @@ ul {
   list-style: none;
 }
 @font-face {
-  font-family: 'URW DIN Arabic';
+  font-family: 'Thin';
   src: url('./fonts/URW/URW DIN Arabic Thin.ttf') format('truetype');
   font-weight: 100;
 }
 @font-face {
-  font-family: 'URW DIN Arabic';
+  font-family: 'Light';
   src: url('./fonts/URW/URW DIN Arabic Light.ttf') format('truetype');
   font-weight: 300;
 }
 @font-face {
-  font-family: 'URW DIN Arabic';
+  font-family: 'Medium';
   src: url('./fonts/URW/URW DIN Arabic Medium.ttf') format('truetype');
   font-weight: 500;
 }
 @font-face {
-  font-family: 'URW DIN Arabic';
+  font-family: 'Bold';
   src: url('./fonts/URW/URW DIN Arabic Bold.ttf') format('truetype');
   font-weight: 700;
 }
 @font-face {
-  font-family: 'URW DIN Arabic';
+  font-family: 'Demi';
   src: url('./fonts/URW/URW DIN Arabic Cond Demi.ttf') format('truetype');
   font-weight: 600;
 }
@@ -5860,6 +5860,294 @@ body::-webkit-scrollbar-thumb:hover {
   border: none;
   color: red;
   cursor: pointer;
+}
+.employee-form-card {
+  background: var(--bg-main);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-strong);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  position: relative;
+}
+.employee-form-card .form-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px 16px;
+}
+.employee-form-card .form-header .header-text {
+  flex: 1;
+}
+.employee-form-card .form-header .header-text h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.employee-form-card .form-header .header-text .header-subtitle {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-bottom: 0;
+}
+.employee-form-card .form-header .edit-badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--warning-light), rgba(254, 243, 199, 0.5));
+  color: var(--warning-dark);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.employee-form-card .form-divider {
+  height: 1px;
+  margin: 0 24px;
+  background: linear-gradient(90deg, var(--border-weak), rgba(226, 232, 240, 0.3), transparent);
+}
+.employee-form-card .form-fields {
+  padding: 20px 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.employee-form-card .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.employee-form-card .checkbox-group {
+  grid-column: span 2;
+  flex-direction: row;
+  align-items: center;
+}
+.employee-form-card .field-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.employee-form-card .field-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-weak);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  outline: none;
+  transition: all 0.25s ease;
+}
+.employee-form-card .field-input:focus {
+  border-color: var(--PrimaryColor);
+  background: var(--bg-main);
+  box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+}
+.employee-form-card .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+.employee-form-card .checkbox-label input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--PrimaryColor);
+}
+@media (max-width: 600px) {
+  .employee-form-card .form-fields {
+    grid-template-columns: 1fr;
+  }
+  .employee-form-card .checkbox-group {
+    grid-column: span 1;
+  }
+}
+.email-form-card {
+  background: var(--bg-main);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-strong);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 8px 32px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  position: relative;
+}
+.email-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.15), transparent);
+  pointer-events: none;
+}
+.email-form-card .form-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px 16px;
+}
+.email-form-card .form-header .header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--PrimaryColor-light), rgba(238, 242, 255, 0.4));
+  color: var(--PrimaryColor);
+  flex-shrink: 0;
+  box-shadow:
+    0 2px 6px rgba(99, 102, 241, 0.12),
+    inset 0 1px 0 hsla(0, 0%, 100%, 0.5);
+}
+.email-form-card .form-header .header-text {
+  flex: 1;
+}
+.email-form-card .form-header .header-text h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.email-form-card .form-header .header-text .header-subtitle {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-bottom: 0;
+}
+.email-form-card .form-header .edit-badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--warning-light), rgba(254, 243, 199, 0.5));
+  color: var(--warning-dark);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.5);
+}
+.email-form-card .form-divider {
+  height: 1px;
+  margin: 0 24px;
+  background: linear-gradient(90deg, var(--border-weak), rgba(226, 232, 240, 0.3), transparent);
+}
+.email-form-card .form-fields {
+  padding: 20px 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.email-form-card .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.email-form-card .field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.email-form-card .field-label svg {
+  color: var(--PrimaryColor);
+  flex-shrink: 0;
+}
+.email-form-card .input-wrap {
+  position: relative;
+}
+.email-form-card .field-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-weak);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  outline: none;
+  transition: all 0.25s ease;
+  font-family: var(--font-family);
+}
+.email-form-card .field-input::placeholder {
+  color: var(--gray-400);
+}
+.email-form-card .field-input:focus {
+  border-color: var(--PrimaryColor);
+  background: var(--bg-main);
+  box-shadow:
+    0 0 0 3px var(--PrimaryColor-light),
+    0 2px 8px rgba(99, 102, 241, 0.06);
+}
+.email-form-card .field-input:hover:not(:focus) {
+  border-color: var(--gray-300);
+  background: var(--bg-main);
+}
+.email-form-card :deep(.myacc) {
+  border: none;
+}
+.email-form-card :deep(.AccordionPanel) {
+  border: 1px solid var(--border-weak) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--gray-50);
+}
+.email-form-card :deep(.AccordionPanel):hover {
+  border-color: var(--PrimaryColor) !important;
+}
+.email-form-card :deep(.AccordionHeader) {
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0);
+  border: none;
+  font-weight: 600;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 0.9rem;
+}
+.email-form-card :deep(.AccordionHeader):hover {
+  background: var(--PrimaryColor-light);
+  color: var(--PrimaryColor);
+}
+.email-form-card :deep(.AccordionContent) {
+  background: var(--bg-main);
+  color: var(--gray-600);
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+@media (max-width: 600px) {
+  .email-form-card .form-header {
+    padding: 16px;
+    flex-wrap: wrap;
+  }
+  .email-form-card .form-fields {
+    padding: 16px;
+    gap: 16px;
+  }
+  .email-form-card .form-divider {
+    margin: 0 16px;
+  }
+  .email-form-card .edit-badge {
+    display: none;
+  }
 }
 html {
   scroll-behavior: smooth;

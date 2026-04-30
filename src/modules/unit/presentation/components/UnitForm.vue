@@ -209,7 +209,7 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<!-- <style lang="scss" scoped>
   /* ═══════════════════════════════════════════
    EMAIL FORM — Luxury Card Design
    ═══════════════════════════════════════════ */
@@ -428,7 +428,7 @@
       display: none;
     }
   }
-</style>
+</style> -->
 <!-- .p-select{
   padding4PX
 
