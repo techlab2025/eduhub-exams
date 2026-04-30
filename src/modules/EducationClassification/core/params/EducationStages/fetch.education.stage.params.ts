@@ -18,11 +18,10 @@ export default class FetchEducationStageParams implements Params {
   }
 
   toMap(): { [p: string]: any } {
-    const map: { [key: string]: any } = {
+    return {
       classification_id: this.classification_id,
+      parent_id: this.parent_id ?? null,
     };
-    if (this.parent_id) map.parent_id = this.parent_id;
-    return map;
   }
 
   validate() {

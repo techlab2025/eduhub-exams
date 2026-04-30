@@ -24,8 +24,7 @@
     computed(() => Infinity),
   );
 
-  const canAddChild = computed(() => props.node.depth < maxDepth.value);
-
+  const canAddChild = computed(() => props.node.depth +1 < maxDepth.value);
   const isOpen = ref(false);
 
   async function handleRowClick() {

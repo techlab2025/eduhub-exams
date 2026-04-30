@@ -6,11 +6,7 @@ export default class EducationStageModel {
   public readonly stage_title: string;
   public readonly has_children: boolean;
 
-  constructor(data: {
-    stage_id: number;
-    stage_title: string;
-    has_children: boolean;
-  }) {
+  constructor(data: { stage_id: number; stage_title: string; has_children: boolean }) {
     this.stage_id = data.stage_id;
     this.stage_title = data.stage_title;
     this.has_children = data.has_children;
@@ -35,9 +31,9 @@ export default class EducationStageModel {
     });
   }
 
-  static example: EducationStageModel = new EducationStageModel({
-    stage_id: 1,
-    stage_title: 'جامعى',
-    has_children: true,
-  });
+  // static example: EducationStageModel = new EducationStageModel({
+  //   stage_id: 1,
+  //   stage_title: 'جامعى',
+  //   has_children: true,
+  // });
 }

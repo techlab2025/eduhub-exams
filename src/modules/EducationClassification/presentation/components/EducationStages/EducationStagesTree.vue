@@ -59,7 +59,7 @@
   async function fetchRoot() {
     const params = new FetchEducationStageParams({ classification_id: classificationId });
     const result = await controller.fetchList(params);
-    if (result instanceof DataSuccess && rootNodes.value.length === 0) {
+    if (result instanceof DataSuccess) {
       rootNodes.value = (result.data ?? []).map((s: EducationStageModel) => makeNode(s, 0));
     }
   }
@@ -85,7 +85,7 @@
     selectedNode.value = node;
     if (!node.stage.has_children) return;
     if (node.isLoaded && node.children.length > 0) return;
-    const result = await controller.newfetchList(
+    const result = await controller.fetchList(
       new FetchEducationStageParams({
         classification_id: classificationId,
         parent_id: node.stage.stage_id,

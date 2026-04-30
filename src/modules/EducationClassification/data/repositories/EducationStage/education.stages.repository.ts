@@ -27,15 +27,13 @@ export default class EducationStageRepository extends BaseRepository<
     };
   }
 
-  protected get mockItem(): EducationStageModel {
-    return EducationStageModel.example;
-  }
+  // protected get mockItem(): EducationStageModel {
+  //   return EducationStageModel.example;
+  // }
 
-  protected get mockList(): EducationStageModel[] {
-    return [
-      { ...EducationStageModel.example },
-    ];
-  }
+  // protected get mockList(): EducationStageModel[] {
+  //   return [EducationStageModel.example];
+  // }
 
   protected get testStoreIdField(): string {
     return 'stage_id';
@@ -45,8 +43,10 @@ export default class EducationStageRepository extends BaseRepository<
     const map = params.toMap();
     return {
       stage_id: Date.now(),
-      stage_title: map.title as string,
+      stage_title: map.title,
       has_children: false,
+      classification_id: map.classification_id,
+      parent_id: map.parent_id ?? null,
     };
   }
 
@@ -69,9 +69,7 @@ export default class EducationStageRepository extends BaseRepository<
     if (!Array.isArray(data)) return [];
     return data.reduce((acc: EducationStageModel[], item) => {
       try {
-        if (item != null) {
-          acc.push(this.parseItem(item));
-        }
+        if (item != null) acc.push(this.parseItem(item));
       } catch {}
       return acc;
     }, []);
