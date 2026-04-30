@@ -45,8 +45,9 @@
       flex: 1;
 
       h3 {
-        font-size: 1.1rem;
-        font-weight: 800;
+        font-size: $MdSize;
+        font-weight: $BaseFontWeightBold;
+        font-family: 'bold';
         color: var(--gray-900);
         margin: 0;
         letter-spacing: -0.01em;
@@ -54,7 +55,9 @@
 
       .header-subtitle {
         margin-top: 2px;
-        font-size: 0.8rem;
+        font-size: $SmSize;
+        font-weight: $BaseFontMediumWeight;
+        font-family: 'medium';
         color: var(--gray-400);
         margin-bottom: 0;
       }

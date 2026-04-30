@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<style scoped>
+<!-- <style scoped>
   .email-crud-example {
     padding: 20px;
     /* max-width: 800px; */
@@ -121,4 +121,4 @@
     border: 1px solid var(--error-border);
     border-radius: 4px;
   }
-</style>
+</style> -->

@@ -107,7 +107,9 @@
     border-radius: 10px;
     background: var(--PrimaryColor);
     color: white;
-    font-weight: 700;
+    font-family: 'medium';
+    font-size: $SmSize;
+    font-weight: $BaseFontSemiBoldWeight;
     cursor: pointer;
   }
 
@@ -116,5 +118,8 @@
     border: none;
     color: red;
     cursor: pointer;
+    font-family: 'medium';
+    font-size: $SmSize;
+    font-weight: $BaseFontSemiBoldWeight;
   }
 }

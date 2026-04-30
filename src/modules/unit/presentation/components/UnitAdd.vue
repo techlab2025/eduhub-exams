@@ -64,9 +64,8 @@
     cursor: pointer;
   }
 
-  .email-crud-example {
+  /* .email-crud-example {
     padding: 20px;
-    /* max-width: 800px; */
     margin: 0 auto;
   }
 
@@ -136,5 +135,5 @@
     color: var(--error-text);
     border: 1px solid var(--error-border);
     border-radius: 4px;
-  }
+  } */
 </style>
