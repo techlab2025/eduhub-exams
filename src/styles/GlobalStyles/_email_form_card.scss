@@ -1,3 +1,6 @@
+@use '../variables' as *;
+@use '../mixins/flex' as *;
+
 .email-form-card {
   background: var(--bg-main);
   border-radius: var(--radius-xl);

@@ -356,11 +356,6 @@ ul {
   font-weight: 700;
 }
 @font-face {
-  font-family: 'Demi';
-  src: url('./fonts/URW/URW DIN Arabic Cond Demi.ttf') format('truetype');
-  font-weight: 600;
-}
-@font-face {
   font-family: 'extra-bold';
   src: url('./../../assets/fonts/URW/URW-DIN-Arabic-Black.ttf') format('truetype');
 }
@@ -5721,7 +5716,6 @@ body::-webkit-scrollbar-thumb:hover {
   padding-right: 50px;
   border: 1px solid var(--border-weak);
   border-radius: var(--radius-md);
-  color: var(--gray-800);
   background: var(--gray-50);
   outline: none;
   transition: all 0.25s ease;
@@ -6021,15 +6015,18 @@ body::-webkit-scrollbar-thumb:hover {
   flex: 1;
 }
 .email-form-card .form-header .header-text h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: var(--md-size);
+  font-weight: 700;
+  font-family: 'bold';
   color: var(--gray-900);
   margin: 0;
   letter-spacing: -0.01em;
 }
 .email-form-card .form-header .header-text .header-subtitle {
   margin-top: 2px;
-  font-size: 0.8rem;
+  font-size: var(--sm-size);
+  font-weight: 500;
+  font-family: 'medium';
   color: var(--gray-400);
   margin-bottom: 0;
 }
@@ -6156,6 +6153,68 @@ body::-webkit-scrollbar-thumb:hover {
   .email-form-card .edit-badge {
     display: none;
   }
+}
+.email-crud-example {
+  padding: 20px;
+  margin: 0 auto;
+}
+.email-crud-example .email-list {
+  margin-bottom: 30px;
+}
+.email-crud-example .email-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.email-crud-example .email-type {
+  color: var(--gray-600);
+  font-size: 0.9em;
+}
+.email-crud-example .actions {
+  display: flex;
+  gap: 10px;
+}
+.email-crud-example .email-form {
+  padding: 20px;
+  border: 1px solid var(--border-weak);
+  border-radius: 4px;
+  background-color: var(--bg-section);
+}
+.email-crud-example .email-form input,
+.email-crud-example .email-form select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-weak);
+  border-radius: 4px;
+}
+.email-crud-example .form-actions {
+  display: flex;
+  gap: 10px;
+}
+.email-crud-example button {
+  padding: 8px 16px;
+  background-color: var(--PrimaryColor);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.email-crud-example button:hover {
+  background-color: var(--PrimaryColor-dark);
+}
+.email-crud-example .error {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: var(--danger-light);
+  color: var(--danger-dark);
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
 }
 html {
   scroll-behavior: smooth;
