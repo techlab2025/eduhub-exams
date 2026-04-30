@@ -34,6 +34,7 @@ import {
 } from '@/base/Core/Constants/exceptionConstants';
 import { env } from '@/base/Core/Config';
 import ErrorHandler from '@/base/Core/NetworkStructure/errors/errorHandler';
+import { testStorage } from '@/base/Data/TestStorage/testStorageService';
 
 /**
  * Configuration for repository response parsing.
@@ -134,6 +135,38 @@ export default abstract class BaseRepository<T, TList = T[]> {
     throw new Error(`${this.constructor.name}: mockList not implemented for test mode`);
   }
 
+  /**
+   * Convert create/update params into a raw object whose shape matches the API
+   * response item format (i.e. what `parseItem` expects). Override in subclass
+   * repositories to enable full localStorage persistence in test mode.
+   *
+   * Returning `null` (default) falls back to the existing `mockItem` behaviour.
+   */
+  protected paramsToStorageItem(_params: Params): Record<string, unknown> | null {
+    return null;
+  }
+
+  /**
+   * Name used to namespace this repository's data in localStorage.
+   * Defaults to the class name — override only if two repositories share the same name.
+   */
+  protected get testStoreName(): string {
+    return this.constructor.name;
+  }
+
+  /**
+   * ID field name inside a stored item, used for update/delete.
+   * Override when the model uses a non-standard ID field.
+   */
+  protected get testStoreIdField(): string {
+    return 'id';
+  }
+
+  /** Extract the ID value from delete/update params. */
+  protected testStoreIdFromParams(_params: Params): unknown {
+    return (_params.toMap() as Record<string, unknown>)[this.testStoreIdField];
+  }
+
   // =========================================================================
   // CRUD Operations
   // =========================================================================
@@ -141,8 +174,26 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Fetch list of items with optional pagination.
    */
+  // Pagination/meta keys that should never be used to filter stored entries
+  private static readonly STORAGE_IGNORE_KEYS = new Set([
+    'page', 'per_page', 'with_pagination', 'word',
+  ]);
+
   async index(params?: Params, options?: ApiCallOptions): Promise<DataState<TList>> {
     if (options?.useStaticData ?? env.useStaticData) {
+      const rawFilter = params?.toMap() ?? {};
+      const filter = Object.fromEntries(
+        Object.entries(rawFilter).filter(([k]) => !BaseRepository.STORAGE_IGNORE_KEYS.has(k)),
+      );
+      const stored = testStorage.getMatchingItems(this.testStoreName, filter);
+      if (stored.length > 0) {
+        try {
+          return new DataSuccess<TList>({ data: this.parseList(stored) });
+        } catch {
+          // stored data doesn't parse — fall through to mockList
+        }
+      }
+      // add data from local store context to the mock 
       return new DataSuccess<TList>({ data: this.mockList });
     }
 
@@ -161,6 +212,17 @@ export default abstract class BaseRepository<T, TList = T[]> {
    */
   async show(params?: Params, options?: ApiCallOptions): Promise<DataState<T>> {
     if (options?.useStaticData ?? env.useStaticData) {
+      if (params) {
+        const filter = params.toMap();
+        const stored = testStorage.getMatchingItems(this.testStoreName, filter);
+        if (stored.length > 0) {
+          try {
+            return new DataSuccess<T>({ data: this.parseItem(stored[0]) });
+          } catch {
+            // fall through to mockItem
+          }
+        }
+      }
       return new DataSuccess<T>({ data: this.mockItem });
     }
 
@@ -183,6 +245,15 @@ export default abstract class BaseRepository<T, TList = T[]> {
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
     if (options?.useStaticData ?? env.useStaticData) {
+      const storageItem = this.paramsToStorageItem(params);
+      if (storageItem !== null) {
+        testStorage.addItem(this.testStoreName, storageItem, params.toMap());
+        try {
+          return new DataSuccess<T>({ data: this.parseItem(storageItem) });
+        } catch {
+          // fall through to mockItem
+        }
+      }
       return new DataSuccess<T>({ data: this.mockItem });
     }
 
@@ -205,6 +276,24 @@ export default abstract class BaseRepository<T, TList = T[]> {
     isAutoRetry?: boolean,
   ): Promise<DataState<T>> {
     if (options?.useStaticData ?? env.useStaticData) {
+      if (params) {
+        const storageItem = this.paramsToStorageItem(params);
+        if (storageItem !== null) {
+          const idValue = this.testStoreIdFromParams(params);
+          testStorage.updateItem(
+            this.testStoreName,
+            this.testStoreIdField,
+            idValue,
+            storageItem,
+            params.toMap(),
+          );
+          try {
+            return new DataSuccess<T>({ data: this.parseItem(storageItem) });
+          } catch {
+            // fall through to mockItem
+          }
+        }
+      }
       return new DataSuccess<T>({ data: this.mockItem });
     }
 
@@ -223,6 +312,13 @@ export default abstract class BaseRepository<T, TList = T[]> {
    */
   async delete(params?: Params, options?: ApiCallOptions): Promise<DataState<void>> {
     if (options?.useStaticData ?? env.useStaticData) {
+      if (params) {
+        testStorage.removeItem(
+          this.testStoreName,
+          this.testStoreIdField,
+          this.testStoreIdFromParams(params),
+        );
+      }
       return new DataSuccess<void>({});
     }
 

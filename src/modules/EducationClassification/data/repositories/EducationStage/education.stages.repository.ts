@@ -1,6 +1,7 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import EducationStageApiService from '../../api/EducationStage/education.stage.api-service';
 import EducationStageModel from '@/modules/EducationClassification/core/models/EducationStage/education.stages.model';
+import type Params from '@/base/Core/Params/params';
 
 /**
  * Education Classification Repository for API data operations
@@ -31,7 +32,22 @@ export default class EducationStageRepository extends BaseRepository<
   }
 
   protected get mockList(): EducationStageModel[] {
-    return [{ ...EducationStageModel.example }];
+    return [
+      { ...EducationStageModel.example },
+    ];
+  }
+
+  protected get testStoreIdField(): string {
+    return 'stage_id';
+  }
+
+  protected paramsToStorageItem(params: Params): Record<string, unknown> {
+    const map = params.toMap();
+    return {
+      stage_id: Date.now(),
+      stage_title: map.title as string,
+      has_children: false,
+    };
   }
 
   /**

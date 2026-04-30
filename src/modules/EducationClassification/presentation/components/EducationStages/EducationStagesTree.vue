@@ -33,7 +33,6 @@
 
   function getBranchName(parentDepth: number): string {
     const branches = educationConfig.value?.branches ?? [];
-    console.log(branches, 'branches');
     const branch = branches.find((b) => b.levelNumber === parentDepth + 1);
     if (!branch) return `Branch ${parentDepth + 1}`;
     const lang = locale.value === 'ar' ? 'ar' : 'en';
@@ -92,11 +91,10 @@
         parent_id: node.stage.stage_id,
       }),
     );
-      node.children = (result.data ?? []).map((s: EducationStageModel) =>
-        makeNode(s, node.depth + 1),
-      );
-      console.log(node.children, ' node.children');
-      node.isLoaded = true;
+    node.children = (result.data ?? []).map((s: EducationStageModel) =>
+      makeNode(s, node.depth + 1),
+    );
+    node.isLoaded = true;
   }
 
   function openAddChildDialog(stageId: number, level: number) {

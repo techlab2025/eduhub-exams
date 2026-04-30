@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k\\) for k in d.keys\\(\\)]\")",
-      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")",
+      "Bash(npx vue-tsc *)",
+      "Bash(xargs cat *)"
     ]
   }
 }

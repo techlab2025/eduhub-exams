@@ -44,6 +44,21 @@ export default class EducationClassificationRepository extends BaseRepository<
     ];
   }
 
+  protected get testStoreIdField(): string {
+    return 'title';
+  }
+
+  protected paramsToStorageItem(params: Params): Record<string, unknown> {
+    const map = params.toMap();
+    const id = Math.random();
+    return {
+      id: id,
+      title: map.title,
+      created_at: new Date().toISOString(),
+      status: map.status ?? true,
+    };
+  }
+
   /**
    * Get singleton instance
    * @returns EducationClassificationRepository instance
