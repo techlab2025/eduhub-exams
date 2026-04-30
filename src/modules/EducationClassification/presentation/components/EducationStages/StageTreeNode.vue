@@ -19,7 +19,10 @@
   const onExpand = inject<(node: StageNode) => Promise<void>>('stageOnExpand')!;
   const onSelect = inject<(node: StageNode) => Promise<void>>('stageOnSelect')!;
   const onAddChild = inject<(stageId: number, level: number) => void>('stageOnAddChild')!;
-  const maxDepth = inject<ComputedRef<number>>('maxDepth', computed(() => Infinity));
+  const maxDepth = inject<ComputedRef<number>>(
+    'maxDepth',
+    computed(() => Infinity),
+  );
 
   const canAddChild = computed(() => props.node.depth < maxDepth.value);
 
@@ -40,7 +43,7 @@
   }
 
   function handleAddChild() {
-    onAddChild(props.node.stage.stage_id, props.node.depth + 1);
+    onAddChild(props.node.stage.stage_id, props.node.depth + 2);
   }
 
   function isArabic(text: string) {
@@ -83,8 +86,9 @@
       <span v-else class="toggle-spacer" />
 
       <!-- Folder icon for nodes with children, document icon for leaves -->
+      <!-- node.stage.has_children || node.children.length > 0 -->
       <svg
-        v-if="node.stage.has_children || node.children.length > 0"
+        v-if="node.depth + 1 != maxDepth"
         viewBox="0 0 20 20"
         fill="none"
         width="16"
@@ -99,7 +103,16 @@
         />
       </svg>
       <svg v-else viewBox="0 0 20 20" fill="none" width="16" height="16" class="node-icon">
-        <rect x="4" y="3" width="12" height="14" rx="2" stroke="#4caf50" stroke-width="1.3" fill="none" />
+        <rect
+          x="4"
+          y="3"
+          width="12"
+          height="14"
+          rx="2"
+          stroke="#4caf50"
+          stroke-width="1.3"
+          fill="none"
+        />
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
       </svg>
 

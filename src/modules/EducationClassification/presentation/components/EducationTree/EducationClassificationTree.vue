@@ -71,8 +71,15 @@
   }
 
   /** Select any node regardless of depth; leaf nodes will open the right-panel edit area. */
-  function selectNode(node: TreeNode) {
+  async function selectNode(node: TreeNode) {
     selectedType.value = node;
+    const FetchEducationTreeParams = new FetchTreeConfigurationTreeParams({
+      parent_id: Number(node.id),
+    });
+    await controller.fetchList(FetchEducationTreeParams);
+
+    const data = state.value.value.data;
+    console.log(data, 'selectedType.value');
   }
 
   const FetchEducationTreeParams = new FetchTreeConfigurationTreeParams({

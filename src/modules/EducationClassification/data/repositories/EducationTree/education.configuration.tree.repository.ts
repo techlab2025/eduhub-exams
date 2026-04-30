@@ -33,6 +33,95 @@ export default class EducationTreeRepository extends BaseRepository<
 
   protected get mockList(): EducationClassificationTreeModel[] {
     return [
+      // new EducationClassificationTreeModel({
+      //   number_of_branches: 3,
+      //   id: 1,
+      //   branches: [
+      //     new BranchesModel({
+      //       branch_id: 2,
+      //       branch_title: 'حكومي',
+      //       branches: [
+      //         new BranchesModel({
+      //           branch_title: 'ابتدائي',
+      //           branch_id: 3,
+      //           branches: [
+      //             new BranchesModel({
+      //               branch_title: 'اولى',
+      //               branch_id: 6,
+      //               branches: [
+      //                 new BranchesModel({
+      //                   branch_title: 'عربي',
+      //                   branch_id: 12,
+      //                   branches: [],
+      //                 }),
+      //                 new BranchesModel({
+      //                   branch_title: 'رياضيات',
+      //                   branch_id: 13,
+      //                   branches: [],
+      //                 }),
+      //                 new BranchesModel({
+      //                   branch_title: 'علوم',
+      //                   branch_id: 14,
+      //                   branches: [],
+      //                 }),
+      //                 new BranchesModel({
+      //                   branch_title: 'دراسات اجتماعية',
+      //                   branch_id: 15,
+      //                   branches: [],
+      //                 }),
+      //                 new BranchesModel({
+      //                   branch_title: 'لغة انجليزية',
+      //                   branch_id: 16,
+      //                   branches: [],
+      //                 }),
+      //                 new BranchesModel({
+      //                   branch_title: 'تربية اسلامية',
+      //                   branch_id: 17,
+      //                   branches: [],
+      //                 }),
+      //               ],
+      //             }),
+      //             new BranchesModel({
+      //               branch_title: 'ثانية',
+      //               branch_id: 7,
+      //               branches: [],
+      //             }),
+      //             new BranchesModel({
+      //               branch_title: 'ثالثة',
+      //               branch_id: 8,
+      //               branches: [],
+      //             }),
+      //             new BranchesModel({
+      //               branch_title: 'رابعة',
+      //               branch_id: 9,
+      //               branches: [],
+      //             }),
+      //             new BranchesModel({
+      //               branch_title: 'خامسة',
+      //               branch_id: 10,
+      //               branches: [],
+      //             }),
+      //             new BranchesModel({
+      //               branch_title: 'سادسة',
+      //               branch_id: 11,
+      //               branches: [],
+      //             }),
+      //           ],
+      //         }),
+      //         new BranchesModel({
+      //           branch_title: 'اعدادي',
+      //           branch_id: 4,
+      //           branches: [],
+      //         }),
+      //         new BranchesModel({
+      //           branch_title: 'ثانوي',
+      //           branch_id: 5,
+      //           branches: [],
+      //         }),
+      //       ],
+      //     }),
+      //   ],
+      // }),
       new EducationClassificationTreeModel({
         number_of_branches: 3,
         id: 1,
@@ -40,85 +129,12 @@ export default class EducationTreeRepository extends BaseRepository<
           new BranchesModel({
             branch_id: 2,
             branch_title: 'حكومي',
-            branches: [
-              new BranchesModel({
-                branch_title: 'ابتدائي',
-                branch_id: 3,
-                branches: [
-                  new BranchesModel({
-                    branch_title: 'اولى',
-                    branch_id: 6,
-                    branches: [
-                      new BranchesModel({
-                        branch_title: 'عربي',
-                        branch_id: 12,
-                        branches: [],
-                      }),
-                      new BranchesModel({
-                        branch_title: 'رياضيات',
-                        branch_id: 13,
-                        branches: [],
-                      }),
-                      new BranchesModel({
-                        branch_title: 'علوم',
-                        branch_id: 14,
-                        branches: [],
-                      }),
-                      new BranchesModel({
-                        branch_title: 'دراسات اجتماعية',
-                        branch_id: 15,
-                        branches: [],
-                      }),
-                      new BranchesModel({
-                        branch_title: 'لغة انجليزية',
-                        branch_id: 16,
-                        branches: [],
-                      }),
-                      new BranchesModel({
-                        branch_title: 'تربية اسلامية',
-                        branch_id: 17,
-                        branches: [],
-                      }),
-                    ],
-                  }),
-                  new BranchesModel({
-                    branch_title: 'ثانية',
-                    branch_id: 7,
-                    branches: [],
-                  }),
-                  new BranchesModel({
-                    branch_title: 'ثالثة',
-                    branch_id: 8,
-                    branches: [],
-                  }),
-                  new BranchesModel({
-                    branch_title: 'رابعة',
-                    branch_id: 9,
-                    branches: [],
-                  }),
-                  new BranchesModel({
-                    branch_title: 'خامسة',
-                    branch_id: 10,
-                    branches: [],
-                  }),
-                  new BranchesModel({
-                    branch_title: 'سادسة',
-                    branch_id: 11,
-                    branches: [],
-                  }),
-                ],
-              }),
-              new BranchesModel({
-                branch_title: 'اعدادي',
-                branch_id: 4,
-                branches: [],
-              }),
-              new BranchesModel({
-                branch_title: 'ثانوي',
-                branch_id: 5,
-                branches: [],
-              }),
-            ],
+            branches: [],
+          }),
+          new BranchesModel({
+            branch_id: 3,
+            branch_title: 'اساسى',
+            branches: [],
           }),
         ],
       }),

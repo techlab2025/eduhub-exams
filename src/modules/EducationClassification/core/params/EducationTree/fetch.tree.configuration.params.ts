@@ -6,22 +6,22 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
  */
 export default class FetchTreeConfigurationTreeParams implements Params {
   public education_classification_id?: number;
-  public branch_id?: number;
+  public parent_id?: number;
 
   public static readonly validation = new ClassValidation().setRules({
     education_classification_id: { required: true, minLength: 1, maxLength: 100 },
-    branch_id: { required: true, minLength: 2, maxLength: 100 },
+    parent_id: { required: true, minLength: 2, maxLength: 100 },
   });
 
-  constructor(data: { education_classification_id?: number; branch_id?: number }) {
+  constructor(data: { education_classification_id?: number; parent_id?: number }) {
     this.education_classification_id = data.education_classification_id;
-    this.branch_id = data.branch_id;
+    this.parent_id = data.parent_id;
   }
 
   toMap(): { [p: string]: any } {
     return {
       education_classification_id: this.education_classification_id,
-      branch_id: this.branch_id,
+      parent_id: this.parent_id,
     };
   }
 
