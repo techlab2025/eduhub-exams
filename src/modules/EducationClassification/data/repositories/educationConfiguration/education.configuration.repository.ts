@@ -21,13 +21,13 @@ export default class EducationConfigurationRepository extends BaseRepository<
     };
   }
 
-  protected get mockItem(): EducationConfigurationModel {
-    return EducationConfigurationModel.example;
-  }
+  // protected get mockItem(): EducationConfigurationModel {
+  //   // return EducationConfigurationModel.example;
+  // }
 
-  protected get mockList(): EducationConfigurationModel {
-    return EducationConfigurationModel.example;
-  }
+  // protected get mockList(): EducationConfigurationModel {
+  //   // return EducationConfigurationModel.example;
+  // }
 
   protected get testStoreIdField(): string {
     return 'education_classification_id';

@@ -42,31 +42,31 @@ export default class EducationConfigurationModel {
     });
   }
 
-  static example: EducationConfigurationModel = new EducationConfigurationModel({
-    educationClassificatioId: 1,
-    numberOfBranches: 3,
-    branches: [
-      new ConfigurationParams({
-        levelNumber: 1,
-        translation: new TranslationParams({
-          SingularTitle: { en: 'Stage', ar: 'مرحلة' },
-          PluralTitle: { en: 'Stages', ar: 'مراحل' },
-        }),
-      }),
-      new ConfigurationParams({
-        levelNumber: 2,
-        translation: new TranslationParams({
-          SingularTitle: { en: 'Grade', ar: 'صف' },
-          PluralTitle: { en: 'Grades', ar: 'صفوف' },
-        }),
-      }),
-      new ConfigurationParams({
-        levelNumber: 3,
-        translation: new TranslationParams({
-          SingularTitle: { en: 'Term', ar: 'فصل' },
-          PluralTitle: { en: 'Terms', ar: 'فصول' },
-        }),
-      }),
-    ],
-  });
+  // static example: EducationConfigurationModel = new EducationConfigurationModel({
+  //   educationClassificatioId: 1,
+  //   numberOfBranches: 3,
+  //   branches: [
+  //     new ConfigurationParams({
+  //       levelNumber: 1,
+  //       translation: new TranslationParams({
+  //         SingularTitle: { en: 'Stage', ar: 'مرحلة' },
+  //         PluralTitle: { en: 'Stages', ar: 'مراحل' },
+  //       }),
+  //     }),
+  //     new ConfigurationParams({
+  //       levelNumber: 2,
+  //       translation: new TranslationParams({
+  //         SingularTitle: { en: 'Grade', ar: 'صف' },
+  //         PluralTitle: { en: 'Grades', ar: 'صفوف' },
+  //       }),
+  //     }),
+  //     new ConfigurationParams({
+  //       levelNumber: 3,
+  //       translation: new TranslationParams({
+  //         SingularTitle: { en: 'Term', ar: 'فصل' },
+  //         PluralTitle: { en: 'Terms', ar: 'فصول' },
+  //       }),
+  //     }),
+  //   ],
+  // });
 }

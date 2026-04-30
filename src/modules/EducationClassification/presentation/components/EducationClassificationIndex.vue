@@ -219,7 +219,6 @@
           @count-per-page="onPerPageChange"
         />
       </template>
-
       <template #empty>
         <div class="empty-state">
           <svg
@@ -236,20 +235,6 @@
           </svg>
           <h3>{{ $t('no_education_classifications_yet') }}</h3>
           <p>{{ $t('add_first_education_classification') }}</p>
-          <!-- <router-link  class="btn-add empty-cta">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            <span>{{ $t('Add Education Classification') }}</span>
-          </router-link> -->
         </div>
       </template>
     </DataStatusBuilder>

@@ -21,13 +21,13 @@ export default class EducationSubjectRepository extends BaseRepository<
     };
   }
 
-  protected get mockItem(): EducationSubjectConfigurationModel {
-    return EducationSubjectConfigurationModel.example;
-  }
+  // protected get mockItem(): EducationSubjectConfigurationModel {
+  //   return EducationSubjectConfigurationModel.example;
+  // }
 
-  protected get mockList(): EducationSubjectConfigurationModel {
-    return EducationSubjectConfigurationModel.example;
-  }
+  // protected get mockList(): EducationSubjectConfigurationModel {
+  //   return EducationSubjectConfigurationModel.example;
+  // }
 
   protected paramsToStorageItem(params: Params): Record<string, unknown> {
     const map = params.toMap();

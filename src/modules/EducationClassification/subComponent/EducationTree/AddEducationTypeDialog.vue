@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue';
 import Dialog from 'primevue/dialog';
+import EducationTypeIcon from '@/shared/icons/EducationTypeIcon.vue';
 
 const props = defineProps<{ visible: boolean, header: string }>();
 const emit = defineEmits<{
@@ -41,6 +42,7 @@ function handleConfirm() {
     <template #header>
       <div class="dialog-icon">
         <!-- <EducationTypeIcon /> -->
+         <EducationTypeIcon />
       </div>
       <div>
         <h3 class="dialog-title">{{ header }}</h3>

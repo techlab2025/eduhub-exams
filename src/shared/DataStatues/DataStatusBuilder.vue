@@ -247,14 +247,14 @@
     <!-- Failed State -->
     <div v-else-if="isFailed" class="status-failed">
       <slot name="failed" :error="currentState.error" :retry="handleRetry" :state="currentState">
-        <div v-if="inlineError" class="inline-error">
+        <!-- <div v-if="inlineError" class="inline-error">
           <span class="error-icon">⚠️</span>
           <span class="error-text">{{ errorMessage }}</span>
           <button v-if="retryFn || $attrs.onRetry" class="inline-retry" @click="handleRetry">
             Retry
           </button>
         </div>
-        <DataFailedState v-else />
+        <DataFailedState v-else /> -->
       </slot>
     </div>
 

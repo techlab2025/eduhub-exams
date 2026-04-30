@@ -28,21 +28,21 @@ export default class EducationClassificationRepository extends BaseRepository<
     };
   }
 
-  protected get mockItem(): EducationClassificationModel {
-    return EducationClassificationModel.example;
-  }
+  // protected get mockItem(): EducationClassificationModel {
+  //   return EducationClassificationModel.example;
+  // }
 
-  protected get mockList(): EducationClassificationModel[] {
-    return [
-      { ...EducationClassificationModel.example },
-      {
-        ...EducationClassificationModel.example,
-        title: 'Secondary education',
-        id: 2,
-        status: false,
-      },
-    ];
-  }
+  // protected get mockList(): EducationClassificationModel[] {
+  //   return [
+  //     { ...EducationClassificationModel.example },
+  //     {
+  //       ...EducationClassificationModel.example,
+  //       title: 'Secondary education',
+  //       id: 2,
+  //       status: false,
+  //     },
+  //   ];
+  // }
 
   protected get testStoreIdField(): string {
     return 'title';

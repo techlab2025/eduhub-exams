@@ -6,6 +6,7 @@
   import type { StageNode } from './StageTreeNode.vue';
   import AddEducationTypeDialog from '@/modules/EducationClassification/subComponent/EducationTree/AddEducationTypeDialog.vue';
   import AddBranchDialog from '@/modules/EducationClassification/subComponent/EducationTree/AddBranchDialog.vue';
+  import SubjectsPanel from '../EducationSubjects/SubjectsPanel.vue';
   import EducationStageController from '../../controllers/EducationStages/education.stages.controller';
   import EducationConfigurationController from '../../controllers/educationConfiguration/education.configuration.controller';
   import AddEducationStageParams from '@/modules/EducationClassification/core/params/EducationStages/add.education.stage.params';
@@ -214,63 +215,40 @@
     <!-- Right Panel -->
     <div class="right-panel">
       <template v-if="selectedNode">
-        <div class="right-header">
-          <div class="right-title">
-            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-              <rect x="3" y="3" width="14" height="14" rx="2" stroke="#4caf50" stroke-width="1.5" />
-              <path
-                d="M7 7h6M7 10h6M7 13h4"
-                stroke="#4caf50"
-                stroke-width="1.2"
-                stroke-linecap="round"
-              />
-            </svg>
-            <span>{{ selectedNode.stage.stage_title }}</span>
-          </div>
-          <button
-            v-if="selectedNode.depth < maxDepth"
-            class="btn-add-branch"
-            @click="openAddChildDialog(selectedNode.stage.stage_id, selectedNode.depth + 2)"
-          >
-            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-              <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
-              <path d="M10 7v6M7 10h6" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-          </button>
-        </div>
+        <!-- Final-depth stage: show subjects panel -->
+        <SubjectsPanel
+          v-if="selectedNode.depth + 1 === maxDepth"
+          :stage-id="selectedNode.stage.stage_id"
+          :stage-name="selectedNode.stage.stage_title"
+        />
 
-        <!-- Children list -->
-        <div v-if="selectedNode.children.length > 0" class="right-children">
-          <div
-            v-for="child in selectedNode.children"
-            :key="child.stage.stage_id"
-            class="right-child-row"
-          >
-            <svg viewBox="0 0 20 20" fill="none" width="16" height="16" class="child-icon">
-              <rect
-                x="4"
-                y="3"
-                width="12"
-                height="14"
-                rx="2"
-                stroke="#4caf50"
-                stroke-width="1.3"
-                fill="none"
-              />
-              <path
-                d="M7 8h6M7 11h6M7 14h4"
-                stroke="#4caf50"
-                stroke-width="1.1"
-                stroke-linecap="round"
-              />
-            </svg>
-            <span class="child-name">{{ child.stage.stage_title }}</span>
-            <span class="level-label">Branch {{ child.depth }}</span>
-            <span class="spacer" />
+        <!-- Non-final stage: show children list -->
+        <template v-else>
+          <div class="right-header">
+            <div class="right-title">
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                <rect
+                  x="3"
+                  y="3"
+                  width="14"
+                  height="14"
+                  rx="2"
+                  stroke="#4caf50"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M7 7h6M7 10h6M7 13h4"
+                  stroke="#4caf50"
+                  stroke-width="1.2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span>{{ selectedNode.stage.stage_title }}</span>
+            </div>
             <button
-              v-if="child.depth < maxDepth"
-              class="icon-btn"
-              @click="openAddChildDialog(child.stage.stage_id, child.depth + 3)"
+              v-if="selectedNode.depth < maxDepth"
+              class="btn-add-branch"
+              @click="openAddChildDialog(selectedNode.stage.stage_id, selectedNode.depth + 2)"
             >
               <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
                 <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
@@ -282,19 +260,65 @@
                 />
               </svg>
             </button>
-            <button class="icon-btn">
-              <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-                <circle cx="10" cy="5" r="1.2" />
-                <circle cx="10" cy="10" r="1.2" />
-                <circle cx="10" cy="15" r="1.2" />
-              </svg>
-            </button>
           </div>
-        </div>
 
-        <div v-else class="right-empty">
-          <p class="hint-text">No branches yet. Click "+ Add Branch" to get started.</p>
-        </div>
+          <!-- Children list -->
+          <div v-if="selectedNode.children.length > 0" class="right-children">
+            <div
+              v-for="child in selectedNode.children"
+              :key="child.stage.stage_id"
+              class="right-child-row"
+            >
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16" class="child-icon">
+                <rect
+                  x="4"
+                  y="3"
+                  width="12"
+                  height="14"
+                  rx="2"
+                  stroke="#4caf50"
+                  stroke-width="1.3"
+                  fill="none"
+                />
+                <path
+                  d="M7 8h6M7 11h6M7 14h4"
+                  stroke="#4caf50"
+                  stroke-width="1.1"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="child-name">{{ child.stage.stage_title }}</span>
+              <span class="level-label">Branch {{ child.depth }}</span>
+              <span class="spacer" />
+              <button
+                v-if="child.depth < maxDepth"
+                class="icon-btn"
+                @click="openAddChildDialog(child.stage.stage_id, child.depth + 3)"
+              >
+                <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                  <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
+                  <path
+                    d="M10 7v6M7 10h6"
+                    stroke="#4caf50"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+              <button class="icon-btn">
+                <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                  <circle cx="10" cy="5" r="1.2" />
+                  <circle cx="10" cy="10" r="1.2" />
+                  <circle cx="10" cy="15" r="1.2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div v-else class="right-empty">
+            <p class="hint-text">No branches yet. Click "+ Add Branch" to get started.</p>
+          </div>
+        </template>
       </template>
 
       <div v-else class="right-placeholder">
