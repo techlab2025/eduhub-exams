@@ -54,8 +54,9 @@
         padding: 14px var(--sm-size);
         text-align: start;
         color: var(--gray-600);
-        font-weight: 700;
-        font-size: 0.75rem;
+        font-weight: $BaseFontSemiBoldWeight;
+        font-size: $SmSize;
+        font-family: 'Medium';
         text-transform: uppercase;
         letter-spacing: 0.08em;
         border-bottom: 2px solid var(--border-weak);

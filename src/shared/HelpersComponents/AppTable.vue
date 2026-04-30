@@ -290,9 +290,10 @@
         background: var(--gray-100);
         padding: 24px;
         text-align: left;
-        color: var(--gray-600);
-        font-weight: 700;
-        font-size: 0.75rem;
+        color: var(--table-header-color);
+        font-weight: 600;
+        font-size: 12px;
+        font-family: 'Medium';
         text-transform: uppercase;
         letter-spacing: 0.08em;
         border-bottom: 2px solid var(--border-weak);
@@ -420,9 +421,10 @@
 
         td {
           padding: 14px 16px;
-          color: var(--gray-700);
-          font-size: 0.9rem;
+          color: var(--table-data-color);
+          font-size: 15px;
           font-weight: 500;
+          font-family: 'Medium';
           line-height: 1.5;
           transition: all 0.2s ease;
 

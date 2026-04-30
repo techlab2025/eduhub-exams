@@ -172,7 +172,10 @@
       color: var(--gray-900);
 
       &::placeholder {
-        color: var(--gray-400);
+        color: var(--search-input-color);
+        font-family: 'Medium';
+        font-weight: $BaseFontSemiBoldWeight;
+        font-size: $SmSize;
       }
 
       &:focus {

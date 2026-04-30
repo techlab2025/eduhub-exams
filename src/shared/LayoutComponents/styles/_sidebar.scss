@@ -42,11 +42,11 @@
 
       .group-title {
         font-size: $SmSize;
-        font-weight: $BaseFontMediumWeight;
+        font-weight: $BaseFontWeightBold;
         padding: 0 $XlSize;
-        margin-bottom: 5px;
-        color: $SidebarTextColor;
-        font-family: 'Regular';
+        margin-bottom: $XsSize4;
+        color: var(--sidebar-group-text-color);
+        font-family: 'bold';
       }
 
       .menu-item {
@@ -55,11 +55,11 @@
         gap: 12px;
         padding: 10px 20px;
         margin: 0 10px;
-        color: $SidebarTextColor;
+        color: var(--sidebar-menu-text-color);
         transition: 0.2s;
-        font-size: 14px;
+        font-size: $MdSize;
         font-weight: $BaseFontSemiBoldWeight;
-        font-family: 'Light';
+        font-family: 'Medium';
 
         .icon {
           width: 18px;

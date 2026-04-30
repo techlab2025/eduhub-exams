@@ -81,8 +81,9 @@
   background: var(--PrimaryColor);
   color: white;
   border-radius: 55px;
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-size: $MdSize;
+  font-weight: $BaseFontSemiBoldWeight;
+  font-family: 'Medium';
   text-decoration: none;
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
   transition: all 0.3s ease;

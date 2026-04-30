@@ -1,14 +1,29 @@
 @font-face {
-  font-family: 'Light';
-  src: url('./fonts/URW/URW\ DIN\ Arabic\ Light.ttf') format('truetype');
+  font-family: 'URW DIN Arabic';
+  src: url('./fonts/URW/URW DIN Arabic Thin.ttf') format('truetype');
+  font-weight: 100;
 }
 
 @font-face {
-  font-family: 'Regular';
-  src: url('./fonts/URW/URW\ DIN\ Arabic\ Medium.ttf') format('truetype');
+  font-family: 'URW DIN Arabic';
+  src: url('./fonts/URW/URW DIN Arabic Light.ttf') format('truetype');
+  font-weight: 300;
 }
 
 @font-face {
-  font-family: 'Bold';
-  src: url('./fonts/URW/URW\ DIN\ Arabic\ Bold.ttf') format('truetype');
+  font-family: 'URW DIN Arabic';
+  src: url('./fonts/URW/URW DIN Arabic Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'URW DIN Arabic';
+  src: url('./fonts/URW/URW DIN Arabic Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'URW DIN Arabic';
+  src: url('./fonts/URW/URW DIN Arabic Cond Demi.ttf') format('truetype');
+  font-weight: 600;
 }

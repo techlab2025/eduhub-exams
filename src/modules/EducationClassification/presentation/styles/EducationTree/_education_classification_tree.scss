@@ -45,7 +45,9 @@
     border: none;
     background: transparent;
     outline: none;
-    font-size: 12px;
+    font-family: 'Medium';
+    font-weight: $BaseFontSemiBoldWeight;
+    font-size: $SmSize;
     color: $Gray-700-std;
     width: 100%;
   }

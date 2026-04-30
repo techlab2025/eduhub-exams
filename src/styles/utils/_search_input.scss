@@ -20,13 +20,13 @@
     padding: $BaseInputPadding $BaseInputPadding $BaseInputPadding calc($BaseInputPadding * 3.5);
     border: 1px solid $BorderColor;
     border-radius: $XlSize2;
-    font-size: $SmSize;
     color: $Black;
     background: var(--bg-main);
     outline: none;
     transition: all 0.25s ease;
-    font-family: 'Regular';
-    font-weight: $BaseFontMediumWeight;
+    font-family: 'Medium';
+    font-weight: $BaseFontSemiBoldWeight;
+    font-size: $SmSize;
 
     &::placeholder {
       color: $PlaceholderText;
