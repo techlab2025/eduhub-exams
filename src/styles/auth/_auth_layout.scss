@@ -5,6 +5,7 @@
   min-height: calc(100vh - 108px);
   width: 100%;
   margin-inline: auto;
+  font-family: 'Meduim';
 
   @include flex-column(nowrap, center, center);
 
@@ -31,7 +32,7 @@
       color: $Gray-5;
       font-size: $MdSize;
       font-weight: $BaseFontMediumWeight;
-      font-family: 'Regular';
+      font-family: 'Medium';
     }
   }
 }

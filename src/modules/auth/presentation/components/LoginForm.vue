@@ -2,7 +2,7 @@
   import { ref } from 'vue';
   import LoginController from '../controllers/login.controller';
   import LoginParams from '../../core/params/login.params';
-  import logo from '@/assets/images/TechlabLogo.png';
+  // import logo from '@/assets/images/TechlabLogo.png';
   import CloseEyeIcon from '@/shared/icons/Login/CloseEyeIcon.vue';
   import OpenEyeIcon from '@/shared/icons/Login/OpenEyeIcon.vue';
 
@@ -21,24 +21,22 @@
 
 <template>
   <section class="login">
-    <div class="card">
+    <!-- <div class="card">
       <div class="login-logo">
         <img :src="logo" width="22" alt="logo" class="logo" />
       </div>
-    </div>
+    </div> -->
 
     <form class="login-form" @submit.prevent="login">
       <div class="title">
         <div class="logo">
-          <h2>HSE.Cloud.Ai</h2>
-        </div>
-        <div class="text">
-          <p>{{ $t('Login_now') }}</p>
-          <span>{{ $t('Please enter your email and password to log in') }}</span>
+          <h2>Welcome Back</h2>
+          <p>Access your dashboard to manage platform content and data</p>
         </div>
       </div>
       <div class="inputs">
         <div class="input-wrapper">
+          <label for="email">Email</label>
           <input
             id="email"
             v-model="email"
@@ -48,6 +46,7 @@
           />
         </div>
         <div class="input-wrapper">
+          <label for="password">password</label>
           <input
             id="password"
             v-model="password"
@@ -67,3 +66,12 @@
     </form>
   </section>
 </template>
+
+<style scoped>
+  .login {
+    background-image: url('../../../../assets/images/LoginBg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+</style>

@@ -120,7 +120,7 @@
 </script>
 
 <template>
-  <div class="email-page">
+  <div class="education-calssification-page">
     <div class="index-header">
       <EducationClassificationAdd />
     </div>

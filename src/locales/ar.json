@@ -22,5 +22,12 @@
     "no_documents_yet": "لا توجد وثائق بعد",
     "add_first_document": "أضف أول وثيقة للبدء",
     "documents": "الوثائق",
-    "optional": "اختياري"
+    "optional": "اختياري",
+    "Welcome Back": "مرحباً بعودتك",
+    "Access your dashboard to manage platform content and data": "ادخل إلى لوحة التحكم لإدارة محتوى المنصة وبياناتها",
+    "Phone Number": "رقم الهاتف",
+    "Enter Your Phone Number": "أدخل رقم هاتفك",
+    "Password": "كلمة المرور",
+    "Enter Your Password": "أدخل كلمة المرور",
+    "Log In": "تسجيل الدخول"
 }

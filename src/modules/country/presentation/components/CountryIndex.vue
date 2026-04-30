@@ -104,7 +104,7 @@
 </script>
 
 <template>
-  <div class="email-page">
+  <div class="country-page">
     <div class="index-header">
       <div class="toolbar">
         <div class="search-field">
@@ -169,7 +169,8 @@
               {{ item.title }}
             </template>
             <template #cell-flag="{ item }">
-              {{ item.flag }}
+              <!-- {{ item.flag }} -->
+              <img class="flag-img" :src="item.flag" alt="" />
             </template>
             <template #actions="{ item }">
               <div class="row-actions">
@@ -259,3 +260,10 @@
     </DataStatusBuilder>
   </div>
 </template>
+
+<style scoped>
+  .flag-img {
+    width: 40px;
+    height : 40px;
+  }
+</style>

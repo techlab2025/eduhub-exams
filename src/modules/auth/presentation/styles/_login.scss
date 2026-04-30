@@ -3,13 +3,13 @@
 @use '../../../../styles/variables' as *;
 
 .login {
-  @include grid(2, 1fr, 10px);
-
+  // @include grid(2, 1fr, 10px);
   width: 100%;
   min-height: 100vh;
   background-color: white;
   padding: 20px;
-
+  height: 300px;
+  @include flex(column, wrap, center, center);
   @media screen and (max-width: 1179px) {
     @include flex(column-reverse, wrap, center, center);
 
@@ -35,10 +35,10 @@
   }
 
   .login-logo {
-    @include flex(row, wrap, center, center);
+    // @include flex(row, wrap, center, center);
 
     width: 100%;
-    height: 100%;
+    height: 60%;
     color: white;
     background-color: var(--gray-900); // your navy color
     border-radius: 40px; // top-left · top-right · bottom-left · bottom-right=0
@@ -49,9 +49,21 @@
     }
 
     .logo {
-      width: 60%;
+      width: 50%;
       height: 50%;
       transition: all 0.5s ease-in-out;
+      @include flex-column(nowrap, center, center);
+
+      h2 {
+        color: #121212;
+        font-size: 40px;
+        font-weight: 700;
+      }
+      p {
+        color: #5d5d5d;
+        font-size: 16px;
+        font-weight: 500;
+      }
 
       @media (max-width: 1400px) {
         width: 40%;
@@ -61,18 +73,20 @@
   }
 
   .login-form {
-    @include flex(column, wrap, center, center);
+    @include flex(column, wrap, flex-start, center);
 
-    width: 100%;
+    width: 50%;
+    height: 55%;
     padding: var(--md-size);
     background-color: var(--BgWhite);
-    border-radius: var(--radius-xl) 0 0 var(--radius-xl);
-    box-shadow: var(--shadow-xl);
+    border-radius: 24px;
+    // box-shadow: var(--shadow-xl);
+    box-shadow: -2px 2px 37px #00000026;
+    padding: 30px 20px;
+    gap: 40px;
 
     @media screen and (max-width: 1179px) {
       @include flex(column, wrap, center, center);
-
-      gap: var(--md-size);
       border-radius: var(--radius-sm);
       width: 70%;
     }
@@ -92,14 +106,22 @@
       }
 
       .logo {
-        @include flex(row, wrap, center, center);
-
-        gap: var(--xs-size-3);
-
+        width: 100%;
+        transition: all 0.5s ease-in-out;
+        @include flex-column(nowrap, center, center);
+        gap: 10px;
         h2 {
-          font-size: var(--xl-size-1);
-          font-family: 'Bold', sans-serif;
-          color: var(--gray-900);
+          color: #121212;
+          font-size: 40px;
+          font-weight: 700;
+          text-align: center;
+        }
+        p {
+          text-align: center;
+
+          color: #5d5d5d;
+          font-size: 16px;
+          font-weight: 500;
         }
       }
 
@@ -157,20 +179,26 @@
 
     .inputs {
       @include flex(column, wrap, center, center);
-
       width: 100%;
-      gap: var(--md-size);
+      gap: 20px;
       margin-block: var(--xl-size-1);
 
       .input-wrapper {
         position: relative;
         width: 100%;
+        label {
+          font-family: 'Medium';
+
+          color: #121212;
+          font-size: 16px;
+          font-weight: 600;
+        }
 
         input {
           width: 100%;
           padding: 1rem 1rem 1rem 1.5rem;
           border: 1px solid var(--gray-200);
-          border-radius: var(--radius-md);
+          border-radius: 50px;
           transition: var(--transition-fast);
           color: var(--Black) !important;
           background-color: var(--BgWhite) !important;
@@ -179,7 +207,7 @@
             outline: none;
             border-color: var(--PrimaryColor);
             box-shadow: 0 0 0 3px var(--PrimaryColor-light);
-            background-color: var(--BgWhite);
+            background-color: var(--white);
           }
 
           &::placeholder {
@@ -199,7 +227,7 @@
 
         .icon-eye {
           position: absolute;
-          top: 1rem;
+          top: 2.2rem;
           right: 2.5rem;
           height: 25px;
           width: 25px;
