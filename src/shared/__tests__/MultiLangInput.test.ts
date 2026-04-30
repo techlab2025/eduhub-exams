@@ -79,4 +79,3 @@ describe('ComponentDemoPanel', () => {
     expect(wrapper.text()).toContain('Code');
   });
 });
-copy
