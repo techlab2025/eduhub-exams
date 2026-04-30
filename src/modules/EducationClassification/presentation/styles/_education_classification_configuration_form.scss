@@ -16,7 +16,7 @@
     padding: 10px;
     font-size: 16px;
     font-weight: 600;
-    border-radius: var(--radius-md);
+    border-radius: 50px;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -77,6 +77,10 @@
       display: flex;
       align-items: center;
       gap: 3px;
+      color: #24385c;
+      font-size: 20px;
+      font-weight: 600;
+      font-family: 'Medium';
 
       svg {
         width: 26px;
@@ -123,7 +127,7 @@
 
   /* ── Form Fields ────────────────────────── */
   .education-classification-form-fields {
-    padding: 20px 24px 24px;
+    padding: 0px 24px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -158,7 +162,7 @@
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--gray-700);
-    text-transform: uppercase;
+    text-transform: none;
     letter-spacing: 0.04em;
 
     svg {
@@ -175,13 +179,13 @@
     width: 100%;
     padding: 12px 16px;
     border: 1px solid var(--border-weak);
-    border-radius: var(--radius-md);
+    border-radius: 50px;
     font-size: 0.9rem;
     color: var(--gray-800);
-    background: var(--gray-50);
+    background: var(--white);
     outline: none;
     transition: all 0.25s ease;
-    font-family: var(--font-family);
+    font-family: 'Medium';
 
     &::placeholder {
       color: var(--gray-400);

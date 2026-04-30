@@ -139,7 +139,7 @@ const copyToClipboard = async (value: unknown) => {
 
             <!-- Actions column (if slot provided) -->
             <th v-if="$slots.actions" class="th-actions">
-              <slot name="actions-header">Actions</slot>
+              <!-- <slot name="actions-header">Actions</slot> -->
             </th>
           </tr>
         </thead>

@@ -275,9 +275,17 @@
     display: flex;
     gap: 6px;
     justify-content: center;
+    align-items: center;
 
     .configuration-btn {
       @include flex-row(nowrap, center, center);
+      &.tree-btn {
+        &.disabled {
+          pointer-events: none;
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
 
       border: 1px solid var(--PrimaryColor);
       color: var(--PrimaryColor);

@@ -104,5 +104,14 @@
   "Enter Your Phone Number": "Enter Your Phone Number",
   "Password": "Password",
   "Enter Your Password": "Enter Your Password",
-  "Log In": "Log In"
+  "Log In": "Log In",
+  "are_you_sure_you_want_to_remove_this_education_classification": "Are you sure you want to remove this education classification?",
+  "Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed": "Deleting this classification will remove all related data, including any configurations and tree structures. This action is irreversible and the classification must be created again if needed.",
+  "rename_title_of_education_classifications": "Rename Title Of Education Classifications",
+  "Enter_a_new_name_for_this_education_classifications_This_change_will_not_affect_its_content_or_structure": "Enter a new name for this education classifications This change will not affect its content or structure",
+  "number_of_branchs": "Number Of Branchs",
+  "name_of_branch": "Name Of Branch",
+  "subjects_name_(Singular)": "Subjects Name (Singular)",
+  "subjects_name_(Plural)": "Subjects Name (Plural)",
+  "name_of_subjects": "Name Of Subjects"
 }

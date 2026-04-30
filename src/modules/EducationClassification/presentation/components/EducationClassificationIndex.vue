@@ -1,122 +1,145 @@
 <script setup lang="ts">
-  import { onMounted, ref, computed } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
-  import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
-  import Pagination from '@/shared/HelpersComponents/Pagination.vue';
-  import { useRoute, useRouter } from 'vue-router';
-  // import { debounce } from '@/base/Presentation/Utils/debouced';
-  // import { useFormsStore } from '@/stores/formsStore';
-  import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
-  import EducationClassificationController from '../controllers/educationClassification.controller';
-  import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
-  import type EducationClassificationModel from '../../core/models/education.classification.model';
-  import DeleteEducationClassificationParams from '../../core/params/educationClassificationParams';
-  import ToggleSwitch from 'primevue/toggleswitch';
-  import ToggleStatusEducationClassificationParams from '../../core/params/toggle.educationClassification.status.params';
-  import AddIcon from '@/shared/icons/AddIcon.vue';
-  // import EducationClassificationForm from './EducationClassificationForm.vue';
-  import EducationClassificationAdd from './EducationClassificationAdd.vue';
+import { onMounted, ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
+import Pagination from '@/shared/HelpersComponents/Pagination.vue';
+import { useRoute, useRouter } from 'vue-router';
+// import { debounce } from '@/base/Presentation/Utils/debouced';
+// import { useFormsStore } from '@/stores/formsStore';
+import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
+import EducationClassificationController from '../controllers/educationClassification.controller';
+import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
+import type EducationClassificationModel from '../../core/models/education.classification.model';
+import DeleteEducationClassificationParams from '../../core/params/educationClassificationParams';
+import ToggleSwitch from 'primevue/toggleswitch';
+import ToggleStatusEducationClassificationParams from '../../core/params/toggle.educationClassification.status.params';
+import AddIcon from '@/shared/icons/AddIcon.vue';
+// import EducationClassificationForm from './EducationClassificationForm.vue';
+import EducationClassificationAdd from './EducationClassificationAdd.vue';
+import ActionsIcon from '@/shared/icons/ActionsIcon.vue';
+import DropList from '@/shared/HelpersComponents/DropList.vue';
+import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
+import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+import RenameClassificationDialog from '../../subComponent/RenameClassificationDialog.vue';
 
-  // Controller instance
-  const controller = EducationClassificationController.getInstance();
-  const { t } = useI18n();
-  const state = computed(() => controller.listState.value);
-  const router = useRouter();
-  const route = useRoute();
+// Controller instance
+const controller = EducationClassificationController.getInstance();
+const { t } = useI18n();
+const state = computed(() => controller.listState.value);
+const router = useRouter();
+const route = useRoute();
 
-  // Table headers
-  const headers = computed<TableHeader[]>(() => [
-    { key: 'title', label: t('Title'), width: '30%' },
-    { key: 'added_date', label: t('Added date'), width: '30%' },
-    { key: 'status', label: t('status'), width: '30%' },
-  ]);
+// Table headers
+const headers = computed<TableHeader[]>(() => [
+  { key: 'title', label: t('Title'), width: '30%' },
+  { key: 'added_date', label: t('Added date'), width: '30%' },
+  { key: 'status', label: t('status'), width: '30%' },
+]);
 
-  // Pagination state
-  const perPage = ref(10);
-  const word = ref('');
+// Pagination state
+const perPage = ref(10);
+const word = ref('');
 
-  const fetchEducationClassifications = async (page: number = 1, word: string = '') => {
-    await controller.fetchList(
-      new IndexEducationClassificationParams(
-        word,
-        route.query.page ? Number(route.query.page) : page,
-        perPage.value,
-      ),
-    );
-  };
+const fetchEducationClassifications = async (page: number = 1, word: string = '') => {
+  await controller.fetchList(
+    new IndexEducationClassificationParams(
+      word,
+      route.query.page ? Number(route.query.page) : page,
+      perPage.value,
+    ),
+  );
+};
 
-  // const Search = debounce(() => {
-  //   router.push({
-  //     query: {
-  //       ...route.query,
-  //       page: Number(route.query.page ?? 1),
-  //       word: word.value || undefined,
-  //     },
-  //   });
+// const Search = debounce(() => {
+//   router.push({
+//     query: {
+//       ...route.query,
+//       page: Number(route.query.page ?? 1),
+//       word: word.value || undefined,
+//     },
+//   });
 
-  // fetchEducationClassifications(1, word.value);
-  // });
+// fetchEducationClassifications(1, word.value);
+// });
 
-  const onPageChange = (page: number) => {
-    fetchEducationClassifications(page);
-    router.push({
-      query: {
-        ...route.query,
-        page: String(page),
-        word: word.value,
-      },
-    });
-  };
-
-  const onPerPageChange = (count: number) => {
-    perPage.value = count;
-    fetchEducationClassifications(1);
-  };
-
-  // Fetch emails on component mount
-  onMounted(async () => {
-    if (route.query.word) {
-      word.value = String(route.query.word);
-    }
-
-    await fetchEducationClassifications(
-      route.query.page ? Number(route.query.page) : 1,
-      word.value,
-    );
+const onPageChange = (page: number) => {
+  fetchEducationClassifications(page);
+  router.push({
+    query: {
+      ...route.query,
+      page: String(page),
+      word: word.value,
+    },
   });
+};
 
-  const deleteEducationClassification = async (id: number) => {
-    await controller.delete(
-      new DeleteEducationClassificationParams({
-        id: id,
-      }),
-    );
-    await fetchEducationClassifications();
-  };
+const onPerPageChange = (count: number) => {
+  perPage.value = count;
+  fetchEducationClassifications(1);
+};
 
-  // const FormStore = useFormsStore();
-  // const formRoute = '/countries/add';
+// Fetch emails on component mount
+onMounted(async () => {
+  if (route.query.word) {
+    word.value = String(route.query.word);
+  }
 
-  // const isDraft = computed(() => {
-  //   const data = FormStore?.formData[formRoute] ?? {};
-  //   return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
-  // });
-  const SelectedRow = ref<EducationClassificationModel[]>([]);
-  const setSelectef = (items: EducationClassificationModel[]) => {
-    SelectedRow.value = items;
-  };
+  await fetchEducationClassifications(
+    route.query.page ? Number(route.query.page) : 1,
+    word.value,
+  );
+});
 
-  // const deleteSelected = () => {
-  //   SelectedRow.value.forEach((item) => {
-  //     deleteEducationClassification(item.id!);
-  //   });
-  // };
-  const ToggleStatus = async (id: number) => {
-    await controller.toggleStatus(new ToggleStatusEducationClassificationParams({ id: id }));
-    await fetchEducationClassifications();
-  };
-  const countryCode = computed(() => (route.params?.country_code as string) || '');
+const deleteEducationClassification = async (id: number) => {
+  await controller.delete(
+    new DeleteEducationClassificationParams({
+      id: id,
+    }),
+  );
+  await fetchEducationClassifications();
+};
+
+// const FormStore = useFormsStore();
+// const formRoute = '/countries/add';
+
+// const isDraft = computed(() => {
+//   const data = FormStore?.formData[formRoute] ?? {};
+//   return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
+// });
+const SelectedRow = ref<EducationClassificationModel[]>([]);
+const setSelectef = (items: EducationClassificationModel[]) => {
+  SelectedRow.value = items;
+};
+
+// const deleteSelected = () => {
+//   SelectedRow.value.forEach((item) => {
+//     deleteEducationClassification(item.id!);
+//   });
+// };
+const ToggleStatus = async (id: number) => {
+  await controller.toggleStatus(new ToggleStatusEducationClassificationParams({ id: id }));
+  await fetchEducationClassifications();
+};
+const countryCode = computed(() => (route.params?.country_code as string) || '');
+const ShoweEditDialog = ref<boolean>(false)
+const actionList = (id: number, deleteEducationClassification: (id: number) => void) => [
+  {
+    text: t('rename'),
+    icon: EditIcon,
+    action: () => {
+      ShoweEditDialog.value = true
+    },
+
+  },
+  {
+    text: t('delete'),
+    icon: DeletIcon,
+    action: () => deleteEducationClassification(id),
+
+  },
+]
+
 </script>
 
 <template>
@@ -126,21 +149,11 @@
     </div>
 
     <!-- ═══ Table ═══ -->
-    <DataStatusBuilder
-      :controller="state"
-      :on-retry="async () => await fetchEducationClassifications()"
-    >
+    <DataStatusBuilder :controller="state" :on-retry="async () => await fetchEducationClassifications()">
       <template #success="{ data }">
         <div class="table-frame">
-          <AppTable
-            :headers="headers"
-            :items="data as EducationClassificationModel[]"
-            selectable
-            show-index
-            hoverable
-            striped
-            @selection-change="setSelectef"
-          >
+          <AppTable :headers="headers" :items="data as EducationClassificationModel[]" selectable show-index hoverable
+            striped @selection-change="setSelectef">
             <template #cell-name="{ item }">
               {{ item.title }}
             </template>
@@ -155,35 +168,25 @@
 
             <template #actions="{ item }">
               <div class="row-actions">
-                <router-link
-                  :to="`/${countryCode}/education-classifications-configuration/${item.id}`"
-                  class="configuration-btn"
-                >
+                <router-link :to="`/${countryCode}/education-classifications-configuration/${item.id}`"
+                  class="configuration-btn">
                   <AddIcon />
                   {{ $t('add_configuration') }}
                 </router-link>
-                <router-link
-                  :to="`/${countryCode}/education-classifications-tree/${item.id}`"
-                  class="configuration-btn"
-                >
+                <router-link :to="`/${countryCode}/education-classifications-tree/${item.id}`"
+                  class="configuration-btn tree-btn" :class="!item.has_configuration ? `disabled` : ``">
                   <AddIcon />
                   {{ $t('add_tree') }}
                 </router-link>
-                <router-link
-                  class="action-btn edit"
-                  :to="`/countries/edit/${item.id}`"
-                  :title="$t('Edit')"
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
+
+                <DropList :actionList="actionList(item.id, deleteEducationClassification)"
+                  :delete-dialog-title="$t('are_you_sure_you_want_to_remove_this_education_classification')"
+                  :delete-dialog-message="$t('Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed')" />
+
+                <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
+                <!-- <router-link class="action-btn edit" :to="`/countries/edit/${item.id}`" :title="$t('Edit')">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
@@ -191,46 +194,28 @@
                 <DeleteDialog @delete="deleteEducationClassification(item.id!)">
                   <template #Dialog>
                     <button class="action-btn delete" :title="$t('Delete')">
-                      <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M3 6h18" />
                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
                         <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                       </svg>
                     </button>
                   </template>
-                </DeleteDialog>
+</DeleteDialog> -->
               </div>
             </template>
           </AppTable>
         </div>
 
-        <Pagination
-          :pagination="controller.pagination.value"
-          @change-page="onPageChange"
-          @count-per-page="onPerPageChange"
-        />
+        <Pagination :pagination="controller.pagination.value" @change-page="onPageChange"
+          @count-per-page="onPerPageChange" />
       </template>
 
       <template #empty>
         <div class="empty-state">
-          <svg
-            width="56"
-            height="56"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1"
-            stroke-linecap="round"
-          >
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+            stroke-linecap="round">
             <rect x="2" y="4" width="20" height="16" rx="2" />
             <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
           </svg>

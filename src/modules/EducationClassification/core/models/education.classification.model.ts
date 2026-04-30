@@ -6,12 +6,20 @@ export default class EducationClassificationModel {
   public readonly title: string;
   public readonly created_at: string;
   public readonly status: boolean;
+  public readonly has_configuration: boolean;
 
-  constructor(data: { id: number; title: string; created_at: string; status: boolean }) {
+  constructor(data: {
+    id: number;
+    title: string;
+    created_at: string;
+    status: boolean;
+    has_configuration: boolean;
+  }) {
     this.id = data.id;
     this.title = data.title;
     this.created_at = data.created_at;
     this.status = data.status;
+    this.has_configuration = data.has_configuration;
 
     Object.freeze(this);
   }
@@ -31,6 +39,7 @@ export default class EducationClassificationModel {
       title: json.title as string,
       created_at: json.created_at as string,
       status: json.status as boolean,
+      has_configuration: json.has_configuration as boolean,
     });
   }
 
@@ -39,5 +48,6 @@ export default class EducationClassificationModel {
     title: 'Basic education',
     created_at: '2022-01-01',
     status: true,
+    has_configuration: true,
   });
 }

@@ -216,7 +216,7 @@ onMounted(async () => {
       <div class="education-classification-form-fields">
         <!-- Email Field -->
         <div class="field-group">
-          <label class="field-label" for="title"> {{ $t('number of branchs') }} </label>
+          <label class="field-label" for="title"> {{ $t('number_of_branchs') }} </label>
           <div class="input-wrap">
             <input id="title" v-model="ConfigurationnumberOfBranchs" type="number"
               :placeholder="$t('Enter number of branchs')" class="field-input" @input="updateData" />
@@ -227,7 +227,7 @@ onMounted(async () => {
         </button>
       </div>
 
-      <SingularPluralForm :number-of-branches="ConfigurationNumberOfBranchs" :label="$t('name of branch')"
+      <SingularPluralForm :number-of-branches="ConfigurationNumberOfBranchs" :label="$t('name_of_branch')"
         :initial-branches="configurationInitialBranches" @update="GetConfigurationBranchs" />
     </div>
     <div class="education-classification-form-card">
@@ -246,18 +246,19 @@ onMounted(async () => {
         <!-- Email Field -->
         <div class="field-group">
           <div class="input-wrap">
-            <MultiLangInput :field-key="`title_Singular`" :label="`subjects name (Singular)`" :languages="['en', 'ar']"
-              :model-value="subject_title_Singular" @update:model-value="subject_title_Singular = $event" />
+            <MultiLangInput :field-key="`title_Singular`" :label="$t(`subjects_name_(Singular)`)"
+              :languages="['en', 'ar']" :model-value="subject_title_Singular"
+              @update:model-value="subject_title_Singular = $event" />
           </div>
         </div>
         <div class="field-group">
           <div class="input-wrap">
-            <MultiLangInput :field-key="`title_Plural`" :label="`subjects name (Plural)`" :languages="['en', 'ar']"
+            <MultiLangInput :field-key="`title_Plural`" :label="$t(`subjects_name_(Plural)`)" :languages="['en', 'ar']"
               :model-value="subject_title_Plural" @update:model-value="subject_title_Plural = $event" />
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="title"> {{ $t('number of branchs') }} </label>
+          <label class="field-label" for="title"> {{ $t('number_of_branchs') }} </label>
           <div class="input-wrap">
             <input id="title" v-model="SubjectnumberOfBranchs" type="number"
               :placeholder="$t('Enter number of branchs')" class="field-input" @input="updateData" />
@@ -267,7 +268,7 @@ onMounted(async () => {
           {{ $t('apply') }}
         </button>
       </div>
-      <SingularPluralForm :number-of-branches="subjectNumberOfBranchs" :label="$t('name of subjects')"
+      <SingularPluralForm :number-of-branches="subjectNumberOfBranchs" :label="$t('name_of_subjects')"
         :initial-branches="subjectInitialBranches" @update="GetSubjectBranchs" />
     </div>
   </div>
