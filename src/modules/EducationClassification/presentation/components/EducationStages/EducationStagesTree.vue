@@ -81,20 +81,8 @@
     node.isLoading = false;
   }
 
-  async function selectNode(node: StageNode) {
+  function selectNode(node: StageNode) {
     selectedNode.value = node;
-    if (!node.stage.has_children) return;
-    if (node.isLoaded && node.children.length > 0) return;
-    const result = await controller.fetchList(
-      new FetchEducationStageParams({
-        classification_id: classificationId,
-        parent_id: node.stage.stage_id,
-      }),
-    );
-    node.children = (result.data ?? []).map((s: EducationStageModel) =>
-      makeNode(s, node.depth + 1),
-    );
-    node.isLoaded = true;
   }
 
   function openAddChildDialog(stageId: number, level: number) {

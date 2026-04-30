@@ -28,10 +28,8 @@
   const isOpen = ref(false);
 
   async function handleRowClick() {
-    await onSelect(props.node);
-    if (!isOpen.value) {
-      isOpen.value = true;
-    }
+    onSelect(props.node);
+    await handleToggle();
   }
 
   async function handleToggle() {
