@@ -7,7 +7,6 @@ import Pagination from '@/shared/HelpersComponents/Pagination.vue';
 import { useRoute, useRouter } from 'vue-router';
 // import { debounce } from '@/base/Presentation/Utils/debouced';
 // import { useFormsStore } from '@/stores/formsStore';
-import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
 import EducationClassificationController from '../controllers/educationClassification.controller';
 import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
 import type EducationClassificationModel from '../../core/models/education.classification.model';
@@ -17,7 +16,6 @@ import ToggleStatusEducationClassificationParams from '../../core/params/toggle.
 import AddIcon from '@/shared/icons/AddIcon.vue';
 // import EducationClassificationForm from './EducationClassificationForm.vue';
 import EducationClassificationAdd from './EducationClassificationAdd.vue';
-import ActionsIcon from '@/shared/icons/ActionsIcon.vue';
 import DropList from '@/shared/HelpersComponents/DropList.vue';
 import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
 import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
@@ -178,31 +176,10 @@ const actionList = (id: number, deleteEducationClassification: (id: number) => v
                   <AddIcon />
                   {{ $t('add_tree') }}
                 </router-link>
-
                 <DropList :actionList="actionList(item.id, deleteEducationClassification)"
                   :delete-dialog-title="$t('are_you_sure_you_want_to_remove_this_education_classification')"
                   :delete-dialog-message="$t('Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed')" />
-
                 <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
-                <!-- <router-link class="action-btn edit" :to="`/countries/edit/${item.id}`" :title="$t('Edit')">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
-                </router-link>
-                <DeleteDialog @delete="deleteEducationClassification(item.id!)">
-                  <template #Dialog>
-                    <button class="action-btn delete" :title="$t('Delete')">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                      </svg>
-                    </button>
-                  </template>
-</DeleteDialog> -->
               </div>
             </template>
           </AppTable>
