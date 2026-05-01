@@ -19,9 +19,9 @@
   }
 
   .field-label {
-    font-size: 0.8rem;
-    font-weight: 700;
     color: #5d5d5d;
+    font-size: 16px;
+    font-weight: 600;
     // text-transform: uppercase;
     letter-spacing: 0.04em;
   }
@@ -78,19 +78,19 @@
     padding: 12px 16px;
     padding-right: 50px; // Space for indicator
     border: 1px solid var(--border-weak);
-    border-radius: 50px;
+    border-radius: 28px;
     color: var(--gray-800);
     background: var(--white);
     outline: none;
     transition: all 0.25s ease;
-    font-family: 'medium';
-    font-weight: $BaseFontSemiBoldWeight;
+    font-family: 'Medium';
+    font-weight: 400;
     font-size: $SmSize;
 
     &::placeholder {
       color: var(--bread-crumb-color-span);
-      font-family: 'medium';
-      font-weight: $BaseFontSemiBoldWeight;
+      font-family: 'Medium';
+      font-weight: 500;
       font-size: $SmSize;
     }
 

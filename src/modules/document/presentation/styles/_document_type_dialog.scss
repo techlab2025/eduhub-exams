@@ -1,0 +1,107 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins/flex' as *;
+
+.p-dialog.add-document-type-dialog {
+  font-family: 'Medium';
+  background-color: white;
+  .header-container {
+    @include flex-row(nowrap, flex-start, center);
+    gap: 10px;
+    .header-text {
+      @include flex-column(nowrap, flex-start, flex-start);
+      gap: 5px;
+      h4 {
+        color: #121212;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      p {
+        color: #5d5d5d;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+  .document-type-content {
+    @include flex-column(nowrap, flex-start, flex-start);
+    width: 100%;
+    gap: 10px;
+    .document-type-row {
+      width: 100%;
+      background-color: #f5f5f5;
+      border-radius: 16px;
+      padding: 16px;
+      @include flex-row(nowrap, space-between, center);
+      .item-title,
+      .item-statics {
+        @include flex-column(nowrap, flex-start, flex-start);
+        .item-small-title {
+          color: #8a8a8a;
+          font-size: 14px;
+          font-weight: 400;
+        }
+        .item-main-title {
+          color: #121212;
+          font-size: 16px;
+          font-weight: 500;
+        }
+      }
+
+      .item-actions {
+        @include flex-row(nowrap, center, center);
+        gap: 3px;
+      }
+    }
+    .input-wrapper {
+      width: 100%;
+      @include flex-column(nowrap, flex-start, flex-start);
+      gap: 5px;
+      margin-top: 15px;
+      padding: 0 !important;
+      label {
+        color: #5d5d5d;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      input {
+        padding: 10px;
+        &::placeholder {
+          font-family: 'Medium';
+          font-weight: 500;
+          padding-inline: 10px;
+        }
+      }
+    }
+
+    .is-master {
+      width: 100%;
+      margin-top: 15px;
+      @include flex-row(nowrap, space-between, center);
+      span {
+        color: #5d5d5d;
+        font-size: 16px;
+        font-weight: 600;
+      }
+    }
+    .btns {
+      @include flex-row(nowrap, center, center);
+      width: 100%;
+      gap: 3px;
+      font-family: 'Medium';
+      button {
+        &:first-child {
+          width: 80%;
+        }
+        &:last-child {
+          width: 20%;
+        }
+      }
+    }
+  }
+  .p-toggleswitch .p-toggleswitch-handle {
+    background-color: white;
+  }
+  .p-toggleswitch-slider {
+    background: #d2d5da;
+  }
+}

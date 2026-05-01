@@ -39,7 +39,7 @@ export default class DocumentController extends BaseController<DocumentModel, Do
   async create(params: Params, options?: ApiCallOptions, formKey?: string) {
     const FormStore = useFormsStore();
 
-    const result = await super.create(params, options);
+    const result = await super.create(params, { ...options, useJson: true });
     if (result instanceof DataSuccess) {
       router.push({ name: 'Documents' });
       if (formKey) {

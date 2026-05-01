@@ -113,5 +113,7 @@
   "name_of_branch": "Name Of Branch",
   "subjects_name_(Singular)": "Subjects Name (Singular)",
   "subjects_name_(Plural)": "Subjects Name (Plural)",
-  "name_of_subjects": "Name Of Subjects"
+  "name_of_subjects": "Name Of Subjects",
+  "Document_name": "Document Name",
+  "Reference_Number": "Reference Number"
 }
