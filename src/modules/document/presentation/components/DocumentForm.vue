@@ -84,7 +84,7 @@ const updateData = () => {
 };
 
 const resetForm = () => {
-  title.value = 's'
+  title.value = ''
   description.value = {}
   selectedDocumentType.value = null
   UploadedFiles.value = [];

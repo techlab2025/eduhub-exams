@@ -15,11 +15,6 @@ import DocumentTypeDialog from '../subComponent/DocumentTypeDialog.vue';
 import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
 import IndexDelete from '@/shared/icons/DocaumentType/IndexDelete.vue';
 
-const DOCUMENT_TYPE_LABELS: Record<number, string> = {
-  1: 'Document Type 1',
-  2: 'Document Type 2',
-  3: 'Document Type 3',
-};
 
 const controller = DocumentController.getInstance();
 const state = computed(() => controller.listState.value);
@@ -27,10 +22,9 @@ const router = useRouter();
 const route = useRoute();
 
 const headers: TableHeader[] = [
-  { key: 'title', label: 'Title', width: '30%', sortable: true },
-  { key: 'documentTypeId', label: 'Document Type', width: '25%' },
-  { key: 'subjectId', label: 'Subject ID', width: '20%' },
-  { key: 'stageId', label: 'Stage ID', width: '15%' },
+  { key: 'title', label: 'Title', width: '50%', sortable: true },
+  { key: 'documentTypeId', label: 'Document Type', width: '50%' },
+
 ];
 
 const perPage = ref(10);
@@ -124,7 +118,8 @@ const deleteDialogMessage = ref('Deleting this document will remove all related 
         <div class="table-frame">
           <AppTable :headers="headers" :items="data as DocumentModel[]" selectable show-index hoverable striped>
             <template #cell-documentTypeId="{ item }">
-              {{ DOCUMENT_TYPE_LABELS[item.documentTypeId] ?? item.documentTypeId }}
+              {{ item.doecumentType.title }}
+              <!-- {{ DOCUMENT_TYPE_LABELS[item.id] ?? item.documentTypeId }} -->
             </template>
             <template #actions="{ item }">
               <div class="row-actions">
@@ -135,18 +130,7 @@ const deleteDialogMessage = ref('Deleting this document will remove all related 
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </router-link>
-                <!-- <DeleteDialog @delete="deleteDocument(item.id!)">
-                  <template #Dialog>
-                    <button class="action-btn delete" title="Delete">
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                      </svg>
-                    </button>
-                  </template>
-</DeleteDialog> -->
+
                 <DeleteDialog :title="deleteDialogTitle" :message="deleteDialogMessage"
                   @delete="deleteDocument(item.id!)" :hasbtn="true">
                   <template #btn>
