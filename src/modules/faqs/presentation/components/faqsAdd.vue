@@ -22,9 +22,11 @@
     router.push(`/${countryCode}/faqs`);
   };
 
+
   const updateData = (params: FaqsDetailsParams) => {
     formParams.value = params;
   };
+
 
 </script>
 

@@ -126,7 +126,11 @@
   }
 
   .p-toggleswitch .p-toggleswitch-handle {
+<<<<<<< HEAD
     background-color: var(--white);
+=======
+    background-color: $StandardWhite;
+>>>>>>> 2fe4e3a (fix: husky bugs)
   }
 
   .p-toggleswitch-slider {

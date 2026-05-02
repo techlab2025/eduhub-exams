@@ -36,14 +36,17 @@
     router.push(`/${countryCode.value}/faqs/${id}/edit`);
   };
 
+
   const deleteFaq = async (id: number) => {
     await controller.delete(new DeleteFaqsParams({ id }), undefined);
     await controller.fetchList();
-  };
+  }
+
 
   onMounted(async () => {
     await controller.fetchList();
   });
+
 
 </script>
 
@@ -78,7 +81,6 @@
                   stroke-width="1.5"
                   stroke-linecap="round"
                 />
-
               </svg>
             </button>
             <span class="faq-question">{{ getQuestion(faq) }}</span>
@@ -88,7 +90,6 @@
               <EditpinIcon />
             </button>
             <button type="button" class="action-btn delete-btn" @click="deleteFaq(faq.id!)">
-
               <svg
                 width="16"
                 height="16"
@@ -116,7 +117,6 @@
           </div>
         </div>
 
-
         <div v-if="expandedIndex === idx" class="faq-answer">
           <p>{{ getAnswer(faq) }}</p>
         </div>
@@ -138,6 +138,7 @@
 
 <style scoped lang="scss">
 
+
   @use '../../../../styles/variables' as *;
   @use '../../../../styles/mixins/flex' as *;
 
@@ -157,6 +158,7 @@
         @include flex-column(nowrap, flex-start, flex-start);
 
         gap: 4px;
+
 
         .faqs-title {
           color: $BgBlack;

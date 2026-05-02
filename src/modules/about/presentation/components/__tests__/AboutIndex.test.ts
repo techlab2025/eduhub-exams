@@ -1,3 +1,4 @@
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
@@ -54,4 +55,5 @@ describe('AboutIndex', () => {
     const wrapper = mount(AboutIndex, { global: globalConfig });
     expect(wrapper.find('.about-page').exists()).toBe(true);
   });
+
 });

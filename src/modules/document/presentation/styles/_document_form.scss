@@ -121,7 +121,6 @@
     &.tags-group {
       .input-wrap {
         border: 1px solid var(--gray-300);
-
         @include flex-row(nowrap, space-between, center);
 
         border-radius: 50px;
@@ -164,7 +163,9 @@
         }
 
         .second-text {
+
           color: var(--gray-300);
+
           font-size: 11px;
           font-weight: 400;
         }

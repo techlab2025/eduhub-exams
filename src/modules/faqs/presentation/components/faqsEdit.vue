@@ -39,6 +39,7 @@
     formParams.value = params;
   };
 
+
   onMounted(async () => {
     await controller.fetchList();
     const state = controller.listState.value;
@@ -48,6 +49,7 @@
     }
     isLoaded.value = true;
   });
+
 
 </script>
 

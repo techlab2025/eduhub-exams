@@ -1,3 +1,4 @@
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
@@ -56,6 +57,7 @@ describe('AboutForm', () => {
         mocks: { $t: (k: string) => k },
         stubs: { Teleport: true, Transition: true },
       },
+
     });
     expect(wrapper.exists()).toBe(true);
   });

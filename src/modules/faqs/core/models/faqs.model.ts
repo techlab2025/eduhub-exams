@@ -81,7 +81,6 @@ export default class FaqsModel {
         en: 'Yes, you can retake any test as many times as you want.',
         ar: 'نعم، يمكنك إعادة أي اختبار عدة مرات.',
       },
-
     }),
   ];
 
