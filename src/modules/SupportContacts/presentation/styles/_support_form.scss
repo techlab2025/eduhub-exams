@@ -1,0 +1,198 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins/flex' as *;
+
+.about-page {
+  @include flex-column(nowrap, flex-start, flex-start);
+  gap: 16px;
+  font-family: 'Medium';
+  min-height: 80vh;
+
+  .header-container {
+    width: 100%;
+    @include flex-row(nowrap, space-between, center);
+
+    .about-header {
+      @include flex-column(nowrap, flex-start, flex-start);
+      gap: 4px;
+
+      .title {
+        color: #111827;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .description {
+        color: #5d5d5d;
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+
+    .add-section-btn {
+      background-color: #4faf7c;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      white-space: nowrap;
+
+      &:hover {
+        background-color: #3d9a6a;
+      }
+    }
+  }
+
+  .sections-list {
+    width: 100%;
+    @include flex-column(nowrap, flex-start, flex-start);
+    gap: 16px;
+  }
+
+  .support-section-card {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px 24px;
+    @include flex-column(nowrap, flex-start, flex-start);
+    gap: 16px;
+
+    .support-section-header {
+      width: 100%;
+      @include flex-row(nowrap, space-between, center);
+
+      .support-section-label {
+        color: #111827;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .delete-section-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: #fee2e2;
+        }
+      }
+    }
+
+    .support-section-divider {
+      width: 100%;
+      border-top: 1.5px dashed #e5e7eb;
+    }
+
+    .support-field-group {
+      width: 100%;
+    }
+
+    .contact-group {
+      width: 100%;
+      @include flex-column(nowrap, flex-start, flex-start);
+      gap: 8px;
+
+      .contact-label {
+        color: #374151;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .chip-input-row {
+        width: 100%;
+        @include flex-row(nowrap, flex-start, center);
+        gap: 10px;
+        padding-bottom: 8px;
+
+        .contact-input {
+          flex: 1;
+          border: none;
+          outline: none;
+          font-size: 14px;
+          color: #374151;
+          background: transparent;
+          border: 1px solid #eceff3;
+          padding: 14px 8px;
+          border-radius: 50px;
+          width: 100%;
+
+          &::placeholder {
+            color: #9ca3af;
+          }
+        }
+
+        .sm-add-btn {
+          flex-shrink: 0;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          border: 2px solid #4faf7c;
+          color: #4faf7c;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 20px;
+          line-height: 1;
+          transition:
+            background-color 0.2s,
+            transform 0.15s;
+
+          &:hover {
+            background-color: #4faf7c;
+            color: #fff;
+            transform: scale(1.08);
+          }
+        }
+      }
+
+      .chips-row {
+        @include flex-row(nowrap, flex-start, center);
+        flex-wrap: wrap;
+        gap: 8px;
+        border: 1px solid #eceff3;
+        padding: 5px;
+        border-radius: 50px;
+        width: 100%;
+
+        .chip {
+          @include flex-row(nowrap, flex-start, center);
+          gap: 6px;
+          background-color: #4faf7c1a;
+          border-radius: 25px;
+          padding: 12px;
+          font-size: 13px;
+          color: #121212;
+          font-weight: 500;
+
+          .chip-remove {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0;
+            display: flex;
+            align-items: center;
+
+            &:hover {
+              color: #ef4444;
+            }
+          }
+        }
+      }
+    }
+  }
+}

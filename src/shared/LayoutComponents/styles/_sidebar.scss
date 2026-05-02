@@ -4,7 +4,8 @@
 
 .sidebar {
   width: 260px;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   background: $SidebarBg;
   color: $SidebarTextColor;
   // padding: 26px;
@@ -23,7 +24,6 @@
       margin-left: auto;
       margin-right: auto;
 
-      menu-item
       // margin: auto;
       .logo {
         font-size: 24px;
@@ -57,7 +57,7 @@
         margin: 0 10px;
         color: var(--sidebar-menu-text-color);
         transition: 0.2s;
-        font-size: $MdSize;
+        font-size: 15px;
         font-weight: $BaseFontSemiBoldWeight;
         font-family: 'Medium';
 

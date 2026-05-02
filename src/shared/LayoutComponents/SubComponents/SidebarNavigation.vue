@@ -73,6 +73,11 @@ const baseMenu: MenuSection[] = [
         name: 'About',
         icon: SettingIcon,
       },
+      {
+        link: '/support',
+        name: 'Support',
+        icon: SettingIcon,
+      },
     ],
   },
   {

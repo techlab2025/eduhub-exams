@@ -30,12 +30,12 @@ export default class TranslationModel {
 
   static example: TranslationModel = new TranslationModel({
     title: {
-      ar: '',
-      en: '',
+      ar: 'خدمة العملاء',
+      en: 'customer services',
     },
     description: {
-      ar: '',
-      en: '',
+      ar: 'الدعم الفني',
+      en: 'technical support',
     },
   });
 }
