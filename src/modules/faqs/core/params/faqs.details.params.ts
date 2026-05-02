@@ -19,11 +19,12 @@ export default class FaqsDetailsParams implements Params {
   }
 
   toMap(): { [p: string]: any } {
-    const map: { [key: string]: any } = {
-      answer: this.answer,
-      question: this.question,
+    return {
+      translations: {
+        question: this.question,
+        answer: this.answer,
+      },
     };
-    return map;
   }
 
   validate() {

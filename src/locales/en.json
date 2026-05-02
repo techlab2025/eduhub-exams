@@ -133,5 +133,17 @@
   "add_contact": "Add Contact",
   "save_change": "Save Change",
   "cancel": "Cancel",
-  "edit": "Edit"
+  "edit": "Edit",
+  "faqs": "FAQs",
+  "faqs_description": "Manage Frequently Asked Questions And Provide Helpful Answers To Users",
+  "add_faq": "Add FAQ",
+  "faq_details": "FAQ Details",
+  "question": "Question",
+  "answer": "Answer",
+  "enter_question": "Enter Question",
+  "enter_answer": "Enter Answer",
+  "reset": "Reset",
+  "no_faqs_yet": "No FAQs Added Yet",
+  "no_faqs_description": "Start By Adding Common Questions And Answers For Users",
+  "save": "Save"
 }

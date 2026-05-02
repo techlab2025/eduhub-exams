@@ -33,7 +33,7 @@ export default class FaqsRepository extends BaseRepository<
   }
 
   protected get mockList(): FaqsModel[] {
-    return [FaqsModel.example, FaqsModel.example];
+    return FaqsModel.examples;
   }
 
   /**
