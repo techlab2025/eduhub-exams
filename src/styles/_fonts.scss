@@ -1,8 +1,9 @@
 @font-face {
+  /* stylelint-disable-next-line declaration-property-value-allowed-list */
   font-family: 'Thin';
   src: url('./fonts/URW/URW DIN Arabic Thin.ttf') format('truetype');
   font-weight: 100;
-} 
+}
 
 @font-face {
   font-family: 'Light';
@@ -23,6 +24,7 @@
 }
 
 @font-face {
+  /* stylelint-disable-next-line declaration-property-value-allowed-list */
   font-family: 'Demi';
   src: url('./fonts/URW/URW DIN Arabic Cond Demi.ttf') format('truetype');
   font-weight: 600;

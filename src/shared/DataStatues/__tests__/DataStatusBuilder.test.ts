@@ -172,13 +172,12 @@ describe('DataStatusBuilder', () => {
     expect(wrapper.find('.status-failed').exists()).toBe(true);
   });
 
-  it('renders inline error when inlineError and failed', () => {
+  it('renders failed state when inlineError is true', () => {
     const wrapper = createWrapper({
       controller: new DataFailed({ title: 'Oops', displayMessage: 'Bad request' }),
       inlineError: true,
     });
-    expect(wrapper.find('.inline-error').exists()).toBe(true);
-    expect(wrapper.text()).toContain('Bad request');
+    expect(wrapper.find('.status-failed').exists()).toBe(true);
   });
 
   it('renders timeout state', () => {

@@ -37,7 +37,7 @@ describe('LoginForm.vue', () => {
   it('renders login form properly', () => {
     const wrapper = mount(LoginForm, mountOptions);
     expect(wrapper.find('form.login-form').exists()).toBe(true);
-    expect(wrapper.find('input#phone').exists()).toBe(true);
+    expect(wrapper.find('input#email').exists()).toBe(true);
     expect(wrapper.find('input#password').exists()).toBe(true);
     expect(wrapper.find('button[type="submit"]').text()).toBe('Log In');
   });
@@ -45,16 +45,16 @@ describe('LoginForm.vue', () => {
   it('calls login controller with correct params on submit', async () => {
     const wrapper = mount(LoginForm, mountOptions);
 
-    const phoneInput = wrapper.find('input#phone');
+    const emailInput = wrapper.find('input#email');
     const passwordInput = wrapper.find('input#password');
 
-    await phoneInput.setValue('01012345678');
+    await emailInput.setValue('test@example.com');
     await passwordInput.setValue('password123');
 
     await wrapper.find('form.login-form').trigger('submit.prevent');
 
     expect(mockLogin).toHaveBeenCalledTimes(1);
-    const expectedParams = new LoginParams('01012345678', 'password123');
+    const expectedParams = new LoginParams('test@example.com', 'password123');
     expect(mockLogin).toHaveBeenCalledWith(expectedParams);
   });
 });

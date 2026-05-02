@@ -18,6 +18,14 @@ vi.mock(
   }),
 );
 
+vi.mock('@/features/Organization/ObservationFactory/Core/params/FetchMyZonesParams', () => ({
+  default: class FetchMyZonesParams {
+    toMap() {
+      return {};
+    }
+  },
+}));
+
 describe('TabsSelection', () => {
   it('renders without errors', () => {
     const wrapper = mount(TabsSelection, {

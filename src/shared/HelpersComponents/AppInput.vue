@@ -2,7 +2,7 @@
   import { ref, watch } from 'vue';
 
   // Props
-  defineProps<{
+  const props = defineProps<{
     modelValue: { title: string; img?: string }[];
     withImage?: boolean;
   }>();
@@ -13,11 +13,11 @@
   }>();
 
   // Local copy of inputs
-  const inputs = ref([...modelValue]);
+  const inputs = ref([...props.modelValue]);
 
   // Sync when parent updates
   watch(
-    () => modelValue,
+    () => props.modelValue,
     (newVal) => {
       inputs.value = [...newVal];
     },
@@ -35,8 +35,10 @@
 </script>
 
 <template>
-  <div class="input-wrapper">
-    <label for="">Title</label>
-    <input v-model="input.title" type="text" placeholder="Enter Title" />
+  <div class="inputs-container">
+    <div v-for="(_, i) in inputs" :key="i" class="input-wrapper">
+      <label for="">Title</label>
+      <input v-model="inputs[i]!.title" type="text" placeholder="Enter Title" />
+    </div>
   </div>
 </template>

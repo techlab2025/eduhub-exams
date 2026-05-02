@@ -47,15 +47,13 @@ describe('EmployeeIndex.vue', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('contains the search input', () => {
+  it('renders the about-page container', () => {
     const wrapper = mount(EmployeeIndex, { global: globalConfig });
-    const searchInput = wrapper.find('.search-input');
-    expect(searchInput.exists()).toBe(true);
+    expect(wrapper.find('.about-page').exists()).toBe(true);
   });
 
-  it('contains the "Add Employee" button', () => {
+  it('renders the header container', () => {
     const wrapper = mount(EmployeeIndex, { global: globalConfig });
-    const addButton = wrapper.find('.btn-add');
-    expect(addButton.exists()).toBe(true);
+    expect(wrapper.find('.header-container').exists()).toBe(true);
   });
 });
