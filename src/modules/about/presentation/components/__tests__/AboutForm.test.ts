@@ -57,7 +57,6 @@ describe('AboutForm', () => {
         mocks: { $t: (k: string) => k },
         stubs: { Teleport: true, Transition: true },
       },
-
     });
     expect(wrapper.exists()).toBe(true);
   });

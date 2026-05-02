@@ -55,5 +55,4 @@ describe('AboutIndex', () => {
     const wrapper = mount(AboutIndex, { global: globalConfig });
     expect(wrapper.find('.about-page').exists()).toBe(true);
   });
-
 });

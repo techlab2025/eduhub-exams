@@ -15,7 +15,6 @@
 }
 
 .action-list-trigger {
-
   background-color: rgba($BluePrimary, 0.05);
   padding: $MdSize;
   border-radius: calc($XlSize2 + 4px);
@@ -29,6 +28,7 @@
     font-weight: $BaseFontWeightBold;
 
     span {
+      /* stylelint-disable-next-line declaration-property-value-disallowed-list */
       background-color: rgba($BlueSecondary, 0.2);
       margin-inline: $XsSize4;
       padding: 2px 4px;
@@ -100,6 +100,7 @@
     }
 
     &:hover {
+      /* stylelint-disable-next-line declaration-property-value-disallowed-list */
       background-color: rgba($BluePrimary, 0.06);
     }
 

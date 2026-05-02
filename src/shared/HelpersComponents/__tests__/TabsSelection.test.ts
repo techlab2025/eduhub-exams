@@ -26,7 +26,6 @@ vi.mock('@/features/Organization/ObservationFactory/Core/params/FetchMyZonesPara
   },
 }));
 
-
 describe('TabsSelection', () => {
   it('renders without errors', () => {
     const wrapper = mount(TabsSelection, {
