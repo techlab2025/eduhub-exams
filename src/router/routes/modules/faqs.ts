@@ -18,5 +18,6 @@ export const faqsRoutes: RouteRecordRaw[] = [
     name: 'FaqsEdit',
     component: () => import('@/views/faqs/EditFaqs.vue'),
     meta: { breadcrumb: 'Edit FAQ' },
+
   },
 ];

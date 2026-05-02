@@ -48,6 +48,7 @@
     }
     isLoaded.value = true;
   });
+
 </script>
 
 <template>

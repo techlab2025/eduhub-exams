@@ -81,10 +81,11 @@ export default class FaqsModel {
         en: 'Yes, you can retake any test as many times as you want.',
         ar: 'نعم، يمكنك إعادة أي اختبار عدة مرات.',
       },
+
     }),
   ];
 
-  static get example(): FaqsModel {
-    return FaqsModel.examples[0];
-  }
+  // static get example(): FaqsModel {
+  //   return FaqsModel.examples[0];
+  // }
 }

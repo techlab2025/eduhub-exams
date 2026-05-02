@@ -166,4 +166,20 @@
       }
     }
   }
+
+  .faq-form-divider {
+    width: 100%;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .faq-form-fields {
+    @include flex-column(nowrap, flex-start, flex-start);
+    gap: 0;
+    padding: 0 20px 20px;
+
+    .field-group {
+      width: 100%;
+      padding-top: 16px;
+    }
+  }
 </style>

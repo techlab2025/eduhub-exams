@@ -25,6 +25,7 @@
   const updateData = (params: FaqsDetailsParams) => {
     formParams.value = params;
   };
+
 </script>
 
 <template>

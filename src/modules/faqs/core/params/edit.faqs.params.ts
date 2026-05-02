@@ -15,6 +15,7 @@ export default class EditFaqsParams implements Params {
     question: Record<string, string>;
     answer: Record<string, string>;
   }) {
+
     this.id = data.id;
     this.question = data.question;
     this.answer = data.answer;
@@ -29,10 +30,12 @@ export default class EditFaqsParams implements Params {
     };
   }
 
+
   validate() {
     return EditFaqsParams.validation.validate(this);
   }
   validateOrThrow() {
     return EditFaqsParams.validation.validateOrThrow(this);
   }
+
 }

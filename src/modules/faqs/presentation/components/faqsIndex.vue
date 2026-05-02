@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
   import { onMounted, computed, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import FaqsController from '../controllers/faqs.controller';
@@ -43,6 +44,7 @@
   onMounted(async () => {
     await controller.fetchList();
   });
+
 </script>
 
 <template>
@@ -76,6 +78,7 @@
                   stroke-width="1.5"
                   stroke-linecap="round"
                 />
+
               </svg>
             </button>
             <span class="faq-question">{{ getQuestion(faq) }}</span>
@@ -85,6 +88,7 @@
               <EditpinIcon />
             </button>
             <button type="button" class="action-btn delete-btn" @click="deleteFaq(faq.id!)">
+
               <svg
                 width="16"
                 height="16"
@@ -106,10 +110,12 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 />
+
               </svg>
             </button>
           </div>
         </div>
+
 
         <div v-if="expandedIndex === idx" class="faq-answer">
           <p>{{ getAnswer(faq) }}</p>
@@ -131,6 +137,7 @@
 </template>
 
 <style scoped lang="scss">
+
   @use '../../../../styles/variables' as *;
   @use '../../../../styles/mixins/flex' as *;
 
