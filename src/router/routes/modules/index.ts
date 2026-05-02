@@ -9,6 +9,7 @@ import { stagesRoutes } from './stages';
 import { subjectsRoutes } from './subjects';
 import { unitsRoutes } from './units';
 import { educationClassificationRoutes } from './education-classification';
+import { AboutRoutes } from './about';
 
 export const dashboardRoutes: RouteRecordRaw[] = [
   ...countryRoutes,
@@ -21,4 +22,5 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...subjectsRoutes,
   ...unitsRoutes,
   ...educationClassificationRoutes,
+  ...AboutRoutes,
 ];
