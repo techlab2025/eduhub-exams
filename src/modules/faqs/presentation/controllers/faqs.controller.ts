@@ -1,22 +1,19 @@
-import BaseController from "@/base/Presentation/Controller/baseController";
-import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
-import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
-import type Params from "@/base/Core/Params/params";
-import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import router from "@/router";
-import { useFormsStore } from "@/stores/formsStore";
-import type FaqsModel from "../../core/models/faqs.model";
-import FaqsRepository from "../../data/repositories/faqs.repository";
+import BaseController from '@/base/Presentation/Controller/baseController';
+import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import type Params from '@/base/Core/Params/params';
+import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import router from '@/router';
+import { useFormsStore } from '@/stores/formsStore';
+import type FaqsModel from '../../core/models/faqs.model';
+import FaqsRepository from '../../data/repositories/faqs.repository';
 
 /**
  * Country Controller for managing countries
  *
  * This controller provides methods for CRUD operations on countries.
  */
-export default class FaqsController extends BaseController<
-  FaqsModel,
-  FaqsModel[]
-> {
+export default class FaqsController extends BaseController<FaqsModel, FaqsModel[]> {
   private static instance: FaqsController;
 
   protected get repository() {
@@ -57,7 +54,7 @@ export default class FaqsController extends BaseController<
 
     const result = await super.create(params, { ...options, useJson: true });
     if (result instanceof DataSuccess) {
-      router.push({ name: "Faqs" });
+      router.push({ name: 'Faqs' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }

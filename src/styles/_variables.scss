@@ -236,6 +236,21 @@
   --color-near-white-f0: #f0f0f0;
   --indigo-100: #e0e7ff;
   --green-100: #dcfce7;
+
+  /* ── Brand Colors ────────────────────────────────────────── */
+  --whatsapp-green: #25d366;
+  --telegram-blue: #229ed9;
+
+  /* ── Additional Semantic ───────────────────────────────────── */
+  --danger-alt: #d64545;
+  --success-alt: #22c55e;
+  --gray-soft: #fafafa;
+  --black-soft: #1a1a1a;
+  --gray-light-border: #d2d5da;
+  --blue-primary: #1d4ed8;
+  --blue-secondary: #1f41bb;
+  --danger-light-alt: #fff0f3;
+  --danger-border-light: #fecaca;
 }
 
 /* =============================================================================
@@ -318,7 +333,7 @@ html.dark {
   --chip-personal-bg: #052e16;
   --chip-personal-text: #4ade80;
   // Form Titles
-  --form-title: #24385C;
+  --form-title: #24385c;
 }
 
 /* =============================================================================
@@ -373,6 +388,17 @@ $SidebarBg: var(--sidebar-bg);
 $SidebarTextColor: var(--sidebar-text-color);
 $BorderColor: var(--border-color);
 $Gray-5: var(--Gray-5);
+$WhatsAppGreen: var(--whatsapp-green);
+$TelegramBlue: var(--telegram-blue);
+$DangerAlt: var(--danger-alt);
+$SuccessAlt: var(--success-alt);
+$GraySoft: var(--gray-soft);
+$BlackSoft: var(--black-soft);
+$GrayLightBorder: var(--gray-light-border);
+$BluePrimary: var(--blue-primary);
+$BlueSecondary: var(--blue-secondary);
+$DangerLightAlt: var(--danger-light-alt);
+$DangerBorderLight: var(--danger-border-light);
 
 /* Standard UI Colors */
 $StandardWhite: var(--standard-white);

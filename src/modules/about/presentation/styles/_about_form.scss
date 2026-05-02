@@ -12,6 +12,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+
     .col-span-2 {
       grid-column: span 2;
     }
@@ -28,23 +29,27 @@
 
     .image-input {
       .upload-area {
-        background-color: white !important;
+        background-color: $StandardWhite !important;
       }
 
       .add-imaegs-data {
         @include flex-column(nowrap, center, center);
+
         gap: 3px;
+
         .first-text {
-          color: #5d5d5d;
+          color: $Gray-5;
           font-size: 12px;
           font-weight: 600;
+
           span {
-            color: #4faf7c;
+            color: $PrimaryColor;
             padding-inline: 5px;
           }
         }
+
         .second-text {
-          color: #8a8a8a;
+          color: $bread-crumb-color-span;
           font-size: 11px;
           font-weight: 400;
         }
@@ -61,8 +66,7 @@
   .field-label {
     text-transform: uppercase;
     letter-spacing: 0.04em;
-
-    color: #5d5d5d;
+    color: $Gray-5;
     font-size: 16px;
     font-weight: 600;
   }
@@ -130,7 +134,7 @@
       gap: 8px;
       font-weight: 600;
       font-size: 15px;
-      color: #111827;
+      color: $BgBlack;
 
       svg {
         width: 18px;
@@ -147,7 +151,7 @@
       border: none;
       cursor: pointer;
       text-decoration: underline;
-      color: #ef4444;
+      color: $Red;
       font-size: 14px;
       font-weight: 500;
       padding: 0;
@@ -164,7 +168,7 @@
       grid-template-columns: 1fr 1fr 40px;
       gap: 12px;
       font-size: 16px;
-      color: #5d5d5d;
+      color: $Gray-5;
       font-weight: 600;
       padding: 0 4px;
     }
@@ -182,12 +186,12 @@
     .sm-select {
       width: 100%;
       height: 44px;
-      border: 1px solid #d1d5db;
+      border: 1px solid $Gray-200-std;
       border-radius: 50px;
       padding: 0 14px;
       font-size: 14px;
-      color: #374151;
-      background-color: #fff;
+      color: $Gray-700-std;
+      background-color: $StandardWhite;
       outline: none;
       transition:
         border-color 0.2s,
@@ -196,13 +200,13 @@
     }
 
     .sm-input::placeholder {
-      color: #9ca3af;
+      color: $Gray-400-std;
     }
 
     .sm-input:focus,
     .sm-select:focus {
-      border-color: #22c55e;
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+      border-color: $SuccessAlt;
+      box-shadow: 0 0 0 3px rgba($SuccessAlt, 0.15);
     }
 
     /* Select arrow */
@@ -234,26 +238,26 @@
     }
 
     .sm-add-btn {
-      border-color: #22c55e;
-      color: #22c55e;
+      border-color: $SuccessAlt;
+      color: $SuccessAlt;
       background: transparent;
     }
 
     .sm-add-btn:hover {
-      background-color: #22c55e;
-      color: #fff;
+      background-color: $SuccessAlt;
+      color: $StandardWhite;
       transform: scale(1.08);
     }
 
     .sm-remove-btn {
-      border-color: #ef4444;
-      color: #ef4444;
+      border-color: $Red;
+      color: $Red;
       background: transparent;
     }
 
     .sm-remove-btn:hover {
-      background-color: #ef4444;
-      color: #fff;
+      background-color: $Red;
+      color: $StandardWhite;
       transform: scale(1.08);
     }
   }

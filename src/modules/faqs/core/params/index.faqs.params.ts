@@ -1,8 +1,8 @@
-import IndexParams from "@/base/Core/Params/indexParams";
+import IndexParams from '@/base/Core/Params/indexParams';
 
-export default class IndexCountryParams extends IndexParams {
+export default class IndexFaqsParams extends IndexParams {
   constructor(
-    word: string = "",
+    word: string = '',
     pageNumber: number = 1,
     perPage: number = 10,
     withPage: number = 1,

@@ -1,5 +1,5 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export default class DeleteFaqsParams implements Params {
   public id: number;
@@ -14,6 +14,10 @@ export default class DeleteFaqsParams implements Params {
     return { id: this.id };
   }
 
-  validate() { return DeleteFaqsParams.validation.validate(this); }
-  validateOrThrow() { return DeleteFaqsParams.validation.validateOrThrow(this); }
+  validate() {
+    return DeleteFaqsParams.validation.validate(this);
+  }
+  validateOrThrow() {
+    return DeleteFaqsParams.validation.validateOrThrow(this);
+  }
 }

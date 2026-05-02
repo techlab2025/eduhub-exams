@@ -63,7 +63,7 @@
     h3 {
       font-size: 20px;
       font-weight: 600;
-      color: #24385c !important;
+      color: $PrimaryColorHover !important;
       margin: 0;
       letter-spacing: -0.02em;
     }
@@ -84,7 +84,7 @@
         height: 26px;
         padding: 0 10px;
         background: linear-gradient(135deg, var(--PrimaryColor), var(--PrimaryColor-hover));
-        color: white;
+        color: $StandardWhite;
         border-radius: var(--radius-full);
         font-size: 0.75rem;
         font-weight: 700;
@@ -100,7 +100,7 @@
     gap: 8px;
     padding: 11px 22px;
     background: linear-gradient(135deg, var(--PrimaryColor) 0%, var(--PrimaryColor-hover) 100%);
-    color: white;
+    color: $StandardWhite;
     border-radius: var(--radius-md);
     font-size: $MdSize;
     font-weight: $BaseFontSemiBoldWeight;
@@ -279,6 +279,7 @@
 
     .configuration-btn {
       @include flex-row(nowrap, center, center);
+
       &.tree-btn {
         &.disabled {
           pointer-events: none;
@@ -372,7 +373,7 @@
   }
 
   .p-toggleswitch.p-toggleswitch-checked .p-toggleswitch-handle {
-    background-color: var(--white) !important;
+    background-color: var(--StandardWhite) !important;
   }
 
   /* ── Dead code cleanup ─────────────────────────────────────── */

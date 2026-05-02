@@ -65,7 +65,7 @@
       height: 26px;
       padding: 0 10px;
       background: linear-gradient(135deg, var(--PrimaryColor), var(--PrimaryColor-hover));
-      color: white;
+      color: $StandardWhite;
       border-radius: var(--radius-full);
       font-size: 0.75rem;
       font-weight: 700;
@@ -79,7 +79,7 @@
   gap: 8px;
   padding: 16px;
   background: var(--PrimaryColor);
-  color: white;
+  color: $StandardWhite;
   border-radius: 55px;
   font-size: $MdSize;
   font-weight: $BaseFontSemiBoldWeight;
@@ -107,13 +107,13 @@
   font-weight: 700;
 
   &.admin {
-    background: var(--badge-admin-bg, #eef2ff);
-    color: var(--badge-admin-text, #4338ca);
+    background: var(--badge-admin-bg, var(--PrimaryColor-light));
+    color: var(--badge-admin-text, var(--PrimaryColor-active));
   }
 
   &.user {
-    background: var(--badge-user-bg, #f3f4f6);
-    color: var(--badge-user-text, #374151);
+    background: var(--badge-user-bg, var(--gray-100-std));
+    color: var(--badge-user-text, var(--gray-700-std));
   }
 }
 

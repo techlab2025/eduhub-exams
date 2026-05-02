@@ -1,7 +1,7 @@
 import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import SupportContactsRepository from '../../data/repositories/support.repository';
-import SupportContactsModel from '../../core/models/support.contatcts.model';
+import type SupportContactsModel from '../../core/models/support.contatcts.model';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';

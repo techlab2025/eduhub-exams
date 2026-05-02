@@ -3,16 +3,19 @@
 
 .about-page {
   @include flex-column(nowrap, flex-start, flex-start);
+
   gap: 16px;
   font-family: 'Medium';
   min-height: 80vh;
 
   .header-container {
     width: 100%;
+
     @include flex-row(nowrap, space-between, center);
 
     .about-header {
       @include flex-column(nowrap, flex-start, flex-start);
+
       gap: 4px;
 
       .title {
@@ -48,7 +51,9 @@
 
   .sections-list {
     width: 100%;
+
     @include flex-column(nowrap, flex-start, flex-start);
+
     gap: 16px;
   }
 
@@ -58,11 +63,14 @@
     border: 1px solid #e5e7eb;
     border-radius: 16px;
     padding: 20px 24px;
+
     @include flex-column(nowrap, flex-start, flex-start);
+
     gap: 16px;
 
     .support-section-header {
       width: 100%;
+
       @include flex-row(nowrap, space-between, center);
 
       .support-section-label {
@@ -99,7 +107,9 @@
 
     .contact-group {
       width: 100%;
+
       @include flex-column(nowrap, flex-start, flex-start);
+
       gap: 8px;
 
       .contact-label {
@@ -110,13 +120,14 @@
 
       .chip-input-row {
         width: 100%;
+
         @include flex-row(nowrap, flex-start, center);
+
         gap: 10px;
         padding-bottom: 8px;
 
         .contact-input {
           flex: 1;
-          border: none;
           outline: none;
           font-size: 14px;
           color: #374151;
@@ -159,6 +170,7 @@
 
       .chips-row {
         @include flex-row(nowrap, flex-start, center);
+
         flex-wrap: wrap;
         gap: 8px;
         border: 1px solid #eceff3;
@@ -168,6 +180,7 @@
 
         .chip {
           @include flex-row(nowrap, flex-start, center);
+
           gap: 6px;
           background-color: #4faf7c1a;
           border-radius: 25px;

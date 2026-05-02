@@ -31,12 +31,11 @@
   .education-classification-form-card {
     background: var(--bg-main);
     border-radius: 24px;
-    background-color: var(--Gray-5);
     overflow: hidden;
     position: relative;
     width: 100%;
     padding: 16px;
-    background-color: #fafafa;
+    background-color: $GraySoft;
 
     &::before {
       content: '';
@@ -77,7 +76,7 @@
       display: flex;
       align-items: center;
       gap: 3px;
-      color: #24385c;
+      color: $PrimaryColorHover;
       font-size: 20px;
       font-weight: 600;
       font-family: 'Medium';
@@ -127,7 +126,7 @@
 
   /* ── Form Fields ────────────────────────── */
   .education-classification-form-fields {
-    padding: 0px 24px 24px;
+    padding: 0 24px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -2,7 +2,7 @@
   import Skeleton from 'primevue/skeleton';
   // import PrimaryButton from "@/components/HelpersComponents/PrimaryButton.vue";
 
-  const props = defineProps<{
+  defineProps<{
     inputsCount: number;
   }>();
 </script>

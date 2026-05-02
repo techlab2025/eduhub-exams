@@ -3,7 +3,7 @@ import FaqsRepository from './faqs.repository';
 
 describe('FaqsRepository', () => {
   let repository: FaqsRepository;
-  let mockApiService: any;
+  let mockApiService: Record<string, unknown>;
 
   beforeEach(() => {
     repository = FaqsRepository.getInstance();
@@ -16,7 +16,8 @@ describe('FaqsRepository', () => {
       delete: vi.fn(),
     };
 
-    vi.spyOn(repository as any, 'apiService', 'get').mockReturnValue(mockApiService);
+    // @ts-expect-error - apiService is protected
+    vi.spyOn(repository, 'apiService', 'get').mockReturnValue(mockApiService);
   });
 
   afterEach(() => {

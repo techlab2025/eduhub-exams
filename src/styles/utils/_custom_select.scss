@@ -190,6 +190,7 @@
   width: fit-content !important;
   color: var(--PrimaryColor) !important;
   padding: 0 !important;
+
   &.p-placeholder {
     font-weight: 300 !important;
     font-size: 14px !important;
@@ -208,7 +209,7 @@
     width: fit-content;
     text-align: start;
     font-family: 'Medium';
-    color: #5d5d5d;
+    color: $Gray-5;
     font-size: 16px;
     font-weight: 600;
   }

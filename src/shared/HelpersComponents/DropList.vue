@@ -1,38 +1,36 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import Popover from 'primevue/popover';
-import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
-import ActionsIcon from '../icons/ActionsIcon.vue';
+  import { ref, watch } from 'vue';
+  import Popover from 'primevue/popover';
+  import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
+  import ActionsIcon from '../icons/ActionsIcon.vue';
 
-interface ActionItem {
-  text: string;
-  icon: any;
-  link?: string;
-  action?: () => void;
-}
+  interface ActionItem {
+    text: string;
+    icon: any;
+    link?: string;
+    action?: () => void;
+  }
 
-const emit = defineEmits(['delete']);
-defineOptions({ inheritAttrs: false });
+  defineEmits(['delete']);
+  defineOptions({ inheritAttrs: false });
 
-const op = ref();
-const ActionIconsToggle = ref(false);
+  const op = ref();
+  const ActionIconsToggle = ref(false);
 
-const toggle = (event: Event) => {
-  op.value.toggle(event);
-};
+  const toggle = (event: Event) => {
+    op.value.toggle(event);
+  };
 
-const { actionList = [] } = defineProps<{
-  actionList: ActionItem[];
-  showActions?: boolean;
-  deleteDialogTitle?: string;
-  deleteDialogMessage?: string;
-}>();
+  const { actionList = [] } = defineProps<{
+    actionList: ActionItem[];
+    showActions?: boolean;
+    deleteDialogTitle?: string;
+    deleteDialogMessage?: string;
+  }>();
 
-
-
-watch(ActionIconsToggle, (newVal) => {
-  ActionIconsToggle.value = newVal;
-});
+  watch(ActionIconsToggle, (newVal) => {
+    ActionIconsToggle.value = newVal;
+  });
 </script>
 
 <template>
@@ -49,14 +47,21 @@ watch(ActionIconsToggle, (newVal) => {
             <component :is="action.icon" />
           </router-link>
 
-          <button v-else-if="action.action && action.text != $t('delete')" class="flex items-center gap-sm"
-            @click="action.action">
+          <button
+            v-else-if="action.action && action.text != $t('delete')"
+            class="flex items-center gap-sm"
+            @click="action.action"
+          >
             <span>{{ action.text }}</span>
             <component :is="action.icon" />
           </button>
 
-          <DeleteDialog v-else-if="action.text == $t('delete')" :title="deleteDialogTitle"
-            :message="deleteDialogMessage" @delete="action.action" />
+          <DeleteDialog
+            v-else-if="action.text == $t('delete')"
+            :title="deleteDialogTitle"
+            :message="deleteDialogMessage"
+            @delete="action.action"
+          />
         </li>
         <slot name="custom"></slot>
       </ul>

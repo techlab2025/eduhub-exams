@@ -4,7 +4,9 @@
 
 .input-wrapper {
   @include flex-column();
+
   padding-inline-end: var(--xl-size-1);
+
   @media (max-width: 768px) {
     padding-inline-end: 0;
   }
@@ -14,12 +16,15 @@
     color: var(--gray-800);
     font-weight: $BaseFontMediumWeight;
     text-transform: capitalize;
+
     @include flex-align();
+
     gap: var(--xs-size-4);
   }
 
   .input {
     @include flex-row(nowrap, flex-start, center);
+
     gap: var(--xs-size-2);
     background-color: var(--white);
     color: var(--gray-800);
@@ -38,6 +43,7 @@
       border-color: var(--PrimaryColor);
       box-shadow: 0 0 0 3px var(--PrimaryColor-light);
       background-color: white;
+
       @include border($BaseBorderWidth, var(--PrimaryColor), solid, var(--md-size));
     }
 

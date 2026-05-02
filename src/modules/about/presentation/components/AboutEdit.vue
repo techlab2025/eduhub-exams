@@ -1,43 +1,45 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import AppButton from '@/shared/HelpersComponents/AppButton.vue';
-import IconAccept from '@/shared/icons/IconAccept.vue';
-import type EditAboutParams from '../../core/params/edit.about.params';
-import AboutController from '../controllers/about.controller';
-import ShowAboutParams from '../../core/params/show.about.params';
-import AboutForm from './AboutForm.vue';
+  import { onMounted, ref } from 'vue';
+  import { useRoute } from 'vue-router';
+  import type EditAboutParams from '../../core/params/edit.about.params';
+  import AboutController from '../controllers/about.controller';
+  import ShowAboutParams from '../../core/params/show.about.params';
+  import AboutForm from './AboutForm.vue';
 
-const controller = AboutController.getInstance();
-const route = useRoute();
-const formKey = route.fullPath;
+  const controller = AboutController.getInstance();
+  const route = useRoute();
+  const formKey = route.fullPath;
 
-const params = ref<EditAboutParams | null>(null);
+  const params = ref<EditAboutParams | null>(null);
 
-/**
- * Update employee
- */
-const saveAbout = async () => {
-  if (!params.value) {
-    console.error('No employee parameters to save');
-    return;
-  }
+  /**
+   * Update employee
+   */
+  const saveAbout = async () => {
+    if (!params.value) {
+      console.error('No employee parameters to save');
+      return;
+    }
 
-  await controller.update(params.value, undefined);
-};
+    await controller.update(params.value, undefined);
+  };
 
-const updateData = (updatedParams: EditAboutParams) => {
-  params.value = updatedParams;
-};
+  const updateData = (updatedParams: EditAboutParams) => {
+    params.value = updatedParams;
+  };
 
-onMounted(async () => {
-  await controller.fetchOne(new ShowAboutParams());
-});
+  onMounted(async () => {
+    await controller.fetchOne(new ShowAboutParams());
+  });
 </script>
 
 <template>
   <div class="employee-edit-page">
-    <AboutForm :about="controller.itemState.value.data!" :form-key="formKey" @update-data="updateData" />
+    <AboutForm
+      :about="controller.itemState.value.data!"
+      :form-key="formKey"
+      @update-data="updateData"
+    />
 
     <div class="actions">
       <!-- <AppButton title="Update Employee" size="sm" icon="right" type="submit" @click="saveAbout">
@@ -47,7 +49,6 @@ onMounted(async () => {
         </template>
 </AppButton> -->
       <button class="btn btn-primary w-full" type="submit" @click="saveAbout">Save document</button>
-
     </div>
 
     <!-- Error Display -->
@@ -58,25 +59,25 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-// .employee-edit-page {
-//   padding: 24px;
-//   max-width: 1000px;
-//   margin: 0 auto;
-// }
+  // .employee-edit-page {
+  //   padding: 24px;
+  //   max-width: 1000px;
+  //   margin: 0 auto;
+  // }
 
-.actions {
-  margin-top: 24px;
-  display: flex;
-  justify-content: flex-end;
-}
+  .actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+  }
 
-.error-toast {
-  margin-top: 20px;
-  padding: 12px 16px;
-  background-color: var(--error-light);
-  color: var(--error-dark);
-  border: 1px solid var(--error-border);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-}
+  .error-toast {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background-color: var(--error-light);
+    color: var(--error-dark);
+    border: 1px solid var(--error-border);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+  }
 </style>

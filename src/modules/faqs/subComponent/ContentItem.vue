@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{
-  item: any;
-}>();
+  defineProps<{
+    item: Record<string, unknown>;
+  }>();
 </script>
 <template>
   <div>

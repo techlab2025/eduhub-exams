@@ -2,11 +2,10 @@
   background: var(--bg-main);
   border-radius: 24px;
   padding: 16px;
-  background-color: var(--Gray-5);
   overflow: hidden;
   position: relative;
   width: 100%;
-  background-color: #fafafa;
+  background-color: $GraySoft;
   display: flex;
   flex-direction: column;
   gap: 24px;

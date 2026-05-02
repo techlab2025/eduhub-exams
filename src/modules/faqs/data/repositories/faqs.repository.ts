@@ -1,8 +1,6 @@
-import BaseRepository, {
-  type RepositoryConfig,
-} from "@/base/Domain/Repositories/baseRepository";
-import FaqsModel from "../../core/models/faqs.model";
-import FaqsApiService from "../api/faqs.api-service";
+import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+import FaqsModel from '../../core/models/faqs.model';
+import FaqsApiService from '../api/faqs.api-service';
 
 /**
  * Country Repository for API data operations
@@ -10,10 +8,7 @@ import FaqsApiService from "../api/faqs.api-service";
  * This repository handles all data access for countries,
  * including parsing API responses and error handling.
  */
-export default class FaqsRepository extends BaseRepository<
-  FaqsModel,
-  FaqsModel[]
-> {
+export default class FaqsRepository extends BaseRepository<FaqsModel, FaqsModel[]> {
   private static instance: FaqsRepository;
 
   protected get apiService() {
@@ -23,8 +18,8 @@ export default class FaqsRepository extends BaseRepository<
   protected get config(): RepositoryConfig {
     return {
       hasPagination: true,
-      dataKey: "data",
-      paginationKey: "meta",
+      dataKey: 'data',
+      paginationKey: 'meta',
     };
   }
 

@@ -7,7 +7,7 @@
   const customize = ref();
   const emit = defineEmits(['update:value', 'update:Customize']);
 
-  const props = defineProps<{
+  defineProps<{
     title: string;
     selections?: string[];
     images_selections?: string[];

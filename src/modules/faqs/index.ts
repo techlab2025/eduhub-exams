@@ -3,19 +3,19 @@
  */
 
 // Constants
-export { EmailType, getEmailTypeName } from "./core/constants/emailType.enum";
+export { EmailType, getEmailTypeName } from './core/constants/emailType.enum';
 
 // Models
-export { default as EmailModel } from "./core/models/email.model";
+export { default as EmailModel } from './core/models/email.model';
 
 // Params
-export { default as EmailParams } from "./core/params/email.params";
+export { default as EmailParams } from './core/params/email.params';
 
 // Repository
-export { default as EmailRepository } from "./data/repositories/country.repository";
+export { default as EmailRepository } from './data/repositories/country.repository';
 
 // Controller
-export { default as EmailController } from "./presentation/controllers/country.controller";
+export { default as EmailController } from './presentation/controllers/country.controller';
 
 // API Service
-export { default as EmailApiService } from "./data/api/email.api-service";
+export { default as EmailApiService } from './data/api/email.api-service';

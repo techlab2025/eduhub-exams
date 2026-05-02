@@ -1,108 +1,108 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { computed, type Component } from 'vue';
-import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
-import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
-import TechlabLogo from '@/assets/images/TechlabLogo.png';
-import EducationClassificationIcon from '@/shared/icons/SidebarIcons/EducationClassificationIcon.vue';
-const route = useRoute();
-const emit = defineEmits(['clickItem']);
-interface MenuItem {
-  link: string;
-  name: string;
-  icon?: Component;
-  badge?: string;
-  hasArrow?: boolean;
-}
-interface MenuSection {
-  group: string;
-  items: MenuItem[];
-}
+  import { useRoute } from 'vue-router';
+  import { computed, type Component } from 'vue';
+  import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
+  import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
+  import TechlabLogo from '@/assets/images/TechlabLogo.png';
+  import EducationClassificationIcon from '@/shared/icons/SidebarIcons/EducationClassificationIcon.vue';
+  const route = useRoute();
+  const emit = defineEmits(['clickItem']);
+  interface MenuItem {
+    link: string;
+    name: string;
+    icon?: Component;
+    badge?: string;
+    hasArrow?: boolean;
+  }
+  interface MenuSection {
+    group: string;
+    items: MenuItem[];
+  }
 
-const baseMenu: MenuSection[] = [
-  {
-    group: 'Overview',
-    items: [
-      {
-        link: '/education-classifications',
-        name: 'Education Classifications',
-        icon: EducationClassificationIcon,
-      },
-      {
-        link: '/employees',
-        name: 'Employees',
-        icon: SettingIcon,
-      },
-      {
-        link: '/documents',
-        name: 'Documents',
-        icon: DocumentIcon,
-      },
-      {
-        link: '/faqs',
-        name: 'Faqs',
-        icon: SettingIcon,
-      },
-      {
-        link: '/privacy',
-        name: 'Privacy',
-        icon: SettingIcon,
-      },
-      {
-        link: '/terms-conditions',
-        name: 'Terms Conditions',
-        icon: SettingIcon,
-      },
-      {
-        link: '/stages',
-        name: 'Stages',
-        icon: SettingIcon,
-      },
-      {
-        link: '/subjects',
-        name: 'Subjects',
-        icon: SettingIcon,
-      },
-      {
-        link: '/units',
-        name: 'Units',
-        icon: SettingIcon,
-      },
-      {
-        link: '/about',
-        name: 'About',
-        icon: SettingIcon,
-      },
-      {
-        link: '/support',
-        name: 'Support',
-        icon: SettingIcon,
-      },
-    ],
-  },
-  {
-    group: 'location',
-    items: [
-      {
-        link: '/countries',
-        name: 'Countries',
-        icon: SettingIcon,
-      },
-    ],
-  },
-];
+  const baseMenu: MenuSection[] = [
+    {
+      group: 'Overview',
+      items: [
+        {
+          link: '/education-classifications',
+          name: 'Education Classifications',
+          icon: EducationClassificationIcon,
+        },
+        {
+          link: '/employees',
+          name: 'Employees',
+          icon: SettingIcon,
+        },
+        {
+          link: '/documents',
+          name: 'Documents',
+          icon: DocumentIcon,
+        },
+        {
+          link: '/faqs',
+          name: 'Faqs',
+          icon: SettingIcon,
+        },
+        {
+          link: '/privacy',
+          name: 'Privacy',
+          icon: SettingIcon,
+        },
+        {
+          link: '/terms-conditions',
+          name: 'Terms Conditions',
+          icon: SettingIcon,
+        },
+        {
+          link: '/stages',
+          name: 'Stages',
+          icon: SettingIcon,
+        },
+        {
+          link: '/subjects',
+          name: 'Subjects',
+          icon: SettingIcon,
+        },
+        {
+          link: '/units',
+          name: 'Units',
+          icon: SettingIcon,
+        },
+        {
+          link: '/about',
+          name: 'About',
+          icon: SettingIcon,
+        },
+        {
+          link: '/support',
+          name: 'Support',
+          icon: SettingIcon,
+        },
+      ],
+    },
+    {
+      group: 'location',
+      items: [
+        {
+          link: '/countries',
+          name: 'Countries',
+          icon: SettingIcon,
+        },
+      ],
+    },
+  ];
 
-const countryCode = computed(() => (route.params?.country_code as string) || '');
+  const countryCode = computed(() => (route.params?.country_code as string) || '');
 
-const menu = computed<MenuSection[]>(() =>
-  baseMenu.map((group) => ({
-    ...group,
-    items: group.items.map((item) => ({
-      ...item,
-      link: countryCode.value ? `/${countryCode.value}${item.link}` : item.link,
+  const menu = computed<MenuSection[]>(() =>
+    baseMenu.map((group) => ({
+      ...group,
+      items: group.items.map((item) => ({
+        ...item,
+        link: countryCode.value ? `/${countryCode.value}${item.link}` : item.link,
+      })),
     })),
-  })),
-);
+  );
 </script>
 <template>
   <aside class="sidebar">
@@ -119,8 +119,14 @@ const menu = computed<MenuSection[]>(() =>
             {{ group.group }}
           </p>
 
-          <router-link v-for="(item, i) in group.items" :key="i" :to="item.link" class="menu-item"
-            :class="{ active: route.path === item.link }" @click="emit('clickItem')">
+          <router-link
+            v-for="(item, i) in group.items"
+            :key="i"
+            :to="item.link"
+            class="menu-item"
+            :class="{ active: route.path === item.link }"
+            @click="emit('clickItem')"
+          >
             <component :is="item.icon" class="icon" />
 
             <span class="label">{{ item.name }}</span>

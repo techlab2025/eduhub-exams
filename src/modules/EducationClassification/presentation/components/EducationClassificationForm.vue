@@ -1,77 +1,77 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-import { onBeforeRouteLeave } from 'vue-router';
-import { useFormsStore } from '@/stores/formsStore';
-import type EducationClassificationModel from '../../core/models/education.classification.model';
-import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
-import FolderCrudIcon from '@/shared/icons/FolderCrudIcon.vue';
+  import { onMounted, ref, watch } from 'vue';
+  import { onBeforeRouteLeave } from 'vue-router';
+  import { useFormsStore } from '@/stores/formsStore';
+  import type EducationClassificationModel from '../../core/models/education.classification.model';
+  import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
+  import FolderCrudIcon from '@/shared/icons/FolderCrudIcon.vue';
 
-const emit = defineEmits(['updateData', 'save-education-classification']);
+  const emit = defineEmits(['updateData', 'save-education-classification']);
 
-const { country, formKey } = defineProps<{
-  country?: EducationClassificationModel;
-  formKey?: string;
-}>();
+  const { country, formKey } = defineProps<{
+    country?: EducationClassificationModel;
+    formKey?: string;
+  }>();
 
-const FormStore = useFormsStore();
+  const FormStore = useFormsStore();
 
-onBeforeRouteLeave((to, from) => {
-  if (formKey) {
-    const savedData = FormStore.getFormData(formKey);
+  onBeforeRouteLeave((to, from) => {
+    if (formKey) {
+      const savedData = FormStore.getFormData(formKey);
 
-    if (savedData && to.path !== from.path) {
-      FormStore.showReturnWarning(formKey);
+      if (savedData && to.path !== from.path) {
+        FormStore.showReturnWarning(formKey);
+      }
     }
-  }
-});
-
-// Form state
-const title = ref<string>('');
-
-watch(
-  () => country,
-  (newCountry) => {
-    if (newCountry) {
-      title.value = newCountry.title;
-    }
-  },
-  { immediate: true },
-);
-
-// const route = useRoute();
-
-const updateData = () => {
-  if (formKey) {
-    FormStore.setFormData(formKey, {
-      title: title.value,
-    });
-  }
-
-  const params = new AddEducationClassificationParams({
-    title: title.value,
   });
 
-  emit('updateData', params);
-};
+  // Form state
+  const title = ref<string>('');
 
-const resetForm = () => {
-  title.value = '';
-};
+  watch(
+    () => country,
+    (newCountry) => {
+      if (newCountry) {
+        title.value = newCountry.title;
+      }
+    },
+    { immediate: true },
+  );
 
-onMounted(() => {
-  if (formKey) {
-    const saved = FormStore.getFormData(formKey);
+  // const route = useRoute();
 
-    if (saved) {
-      title.value = saved.title;
-      updateData();
+  const updateData = () => {
+    if (formKey) {
+      FormStore.setFormData(formKey, {
+        title: title.value,
+      });
+    }
+
+    const params = new AddEducationClassificationParams({
+      title: title.value,
+    });
+
+    emit('updateData', params);
+  };
+
+  const resetForm = () => {
+    title.value = '';
+  };
+
+  onMounted(() => {
+    if (formKey) {
+      const saved = FormStore.getFormData(formKey);
+
+      if (saved) {
+        title.value = saved.title;
+        updateData();
+      } else if (!country) {
+        resetForm();
+      }
     } else if (!country) {
       resetForm();
     }
-  } else if (!country) {
-    resetForm();
-  }
-});
+  });
 </script>
 
 <template>
@@ -92,8 +92,14 @@ onMounted(() => {
       <div class="field-group">
         <label class="field-label" for="title"> {{ $t('education classification') }} </label>
         <div class="input-wrap">
-          <input id="title" v-model="title" type="text" :placeholder="$t('Enter education type')" class="field-input"
-            @input="updateData" />
+          <input
+            id="title"
+            v-model="title"
+            type="text"
+            :placeholder="$t('Enter education type')"
+            class="field-input"
+            @input="updateData"
+          />
         </div>
       </div>
       <button class="save-btn" @click="emit('save-education-classification')">

@@ -8,7 +8,9 @@
   color: var(--gray-900) !important;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
+
   @include flex-column(nowrap, center, center);
+
   font-family: 'Medium';
   gap: 10px;
 
@@ -50,14 +52,14 @@
     align-items: center;
 
     .btn-delete-danger {
-      background-color: #d64545;
+      background-color: $DangerAlt;
       color: white;
       transition: 0.3s all linear;
 
       &:hover {
         background-color: white;
-        color: #d64545;
-        border: 1px solid #d64545;
+        color: $DangerAlt;
+        border: 1px solid $DangerAlt;
       }
     }
 

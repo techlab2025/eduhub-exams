@@ -1,98 +1,98 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import MultiLangInput from '@/shared/MultiLangInput.vue';
-import AddSupportContactsParams from '../../core/params/add.support.params';
-import ContactsParams from '../../core/params/contacts.paras';
-import TranslationParams from '@/modules/about/core/params/translation.params';
-import type SupportContactsModel from '../../core/models/support.contatcts.model';
-import DeleteIcon from '@/shared/icons/Support/DeleteIcon.vue';
+  import { ref, onMounted } from 'vue';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
+  import AddSupportContactsParams from '../../core/params/add.support.params';
+  import ContactsParams from '../../core/params/contacts.paras';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
+  import type SupportContactsModel from '../../core/models/support.contatcts.model';
+  import DeleteIcon from '@/shared/icons/Support/DeleteIcon.vue';
 
-type SectionInputs = { phone: string; whatsApp: string; email: string; telegram: string };
+  type SectionInputs = { phone: string; whatsApp: string; email: string; telegram: string };
 
-type SectionState = {
-  title: Record<string, string>;
-  phonenumbers: string[];
-  whatsAppNumebrs: string[];
-  emails: string[];
-  telegramNumbers: string[];
-  inputs: SectionInputs;
-};
+  type SectionState = {
+    title: Record<string, string>;
+    phonenumbers: string[];
+    whatsAppNumebrs: string[];
+    emails: string[];
+    telegramNumbers: string[];
+    inputs: SectionInputs;
+  };
 
-const props = defineProps<{
-  formKey?: string;
-  initialSections?: SupportContactsModel[];
-}>();
+  const props = defineProps<{
+    formKey?: string;
+    initialSections?: SupportContactsModel[];
+  }>();
 
-const emit = defineEmits<{
-  (e: 'updateData', value: AddSupportContactsParams): void;
-}>();
+  const emit = defineEmits<{
+    (e: 'updateData', value: AddSupportContactsParams): void;
+  }>();
 
-const createSection = (): SectionState => ({
-  title: {},
-  phonenumbers: [],
-  whatsAppNumebrs: [],
-  emails: [],
-  telegramNumbers: [],
-  inputs: { phone: '', whatsApp: '', email: '', telegram: '' },
-});
-
-const sections = ref<SectionState[]>([createSection()]);
-
-const emitData = () => {
-  const params = new AddSupportContactsParams({
-    contatcs: sections.value.map(
-      (s) =>
-        new ContactsParams({
-          translation: new TranslationParams({ title: s.title }),
-          phonenumbers: s.phonenumbers,
-          whatsAppNumebrs: s.whatsAppNumebrs,
-          emails: s.emails,
-          telegramNumbers: s.telegramNumbers,
-        }),
-    ),
+  const createSection = (): SectionState => ({
+    title: {},
+    phonenumbers: [],
+    whatsAppNumebrs: [],
+    emails: [],
+    telegramNumbers: [],
+    inputs: { phone: '', whatsApp: '', email: '', telegram: '' },
   });
-  emit('updateData', params);
-};
 
-const addSection = () => {
-  sections.value.push(createSection());
-  emitData();
-};
+  const sections = ref<SectionState[]>([createSection()]);
 
-const removeSection = (index: number) => {
-  if (sections.value.length === 1) return;
-  sections.value.splice(index, 1);
-  emitData();
-};
+  const emitData = () => {
+    const params = new AddSupportContactsParams({
+      contatcs: sections.value.map(
+        (s) =>
+          new ContactsParams({
+            translation: new TranslationParams({ title: s.title }),
+            phonenumbers: s.phonenumbers,
+            whatsAppNumebrs: s.whatsAppNumebrs,
+            emails: s.emails,
+            telegramNumbers: s.telegramNumbers,
+          }),
+      ),
+    });
+    emit('updateData', params);
+  };
 
-const addChip = (arr: string[], inputKey: keyof SectionInputs, section: SectionState) => {
-  const val = section.inputs[inputKey].trim();
-  if (!val) return;
-  arr.push(val);
-  section.inputs[inputKey] = '';
-  emitData();
-};
+  const addSection = () => {
+    sections.value.push(createSection());
+    emitData();
+  };
 
-const removeChip = (arr: string[], index: number) => {
-  arr.splice(index, 1);
-  emitData();
-};
+  const removeSection = (index: number) => {
+    if (sections.value.length === 1) return;
+    sections.value.splice(index, 1);
+    emitData();
+  };
 
-const sectionLabel = (index: number) => `Section ${String(index + 1).padStart(2, '0')}`;
+  const addChip = (arr: string[], inputKey: keyof SectionInputs, section: SectionState) => {
+    const val = section.inputs[inputKey].trim();
+    if (!val) return;
+    arr.push(val);
+    section.inputs[inputKey] = '';
+    emitData();
+  };
 
-onMounted(() => {
-  if (props.initialSections?.length) {
-    sections.value = props.initialSections.map((s) => ({
-      title: { ...(s.translations?.title ?? {}) },
-      phonenumbers: [...(s.phonenumbers ?? [])],
-      whatsAppNumebrs: [...(s.whatsAppNumebrs ?? [])],
-      emails: [...(s.emails ?? [])],
-      telegramNumbers: [...(s.telegramNumbers ?? [])],
-      inputs: { phone: '', whatsApp: '', email: '', telegram: '' },
-    }));
-  }
-  emitData();
-});
+  const removeChip = (arr: string[], index: number) => {
+    arr.splice(index, 1);
+    emitData();
+  };
+
+  const sectionLabel = (index: number) => `Section ${String(index + 1).padStart(2, '0')}`;
+
+  onMounted(() => {
+    if (props.initialSections?.length) {
+      sections.value = props.initialSections.map((s) => ({
+        title: { ...(s.translations?.title ?? {}) },
+        phonenumbers: [...(s.phonenumbers ?? [])],
+        whatsAppNumebrs: [...(s.whatsAppNumebrs ?? [])],
+        emails: [...(s.emails ?? [])],
+        telegramNumbers: [...(s.telegramNumbers ?? [])],
+        inputs: { phone: '', whatsApp: '', email: '', telegram: '' },
+      }));
+    }
+    emitData();
+  });
 </script>
 
 <template>
@@ -109,15 +109,35 @@ onMounted(() => {
 
     <div class="sections-list">
       <div v-for="(section, sIdx) in sections" :key="sIdx" class="support-section-card">
-
         <div class="support-section-header">
           <span class="support-section-label">{{ sectionLabel(sIdx) }}</span>
-          <button v-if="sections.length > 1" type="button" class="delete-section-btn" @click="removeSection(sIdx)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 6H5H21" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <button
+            v-if="sections.length > 1"
+            type="button"
+            class="delete-section-btn"
+            @click="removeSection(sIdx)"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 6H5H21"
+                stroke="#ef4444"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
               <path
                 d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6L18.1167 19.1343C18.0517 20.1547 17.2297 20.9434 16.207 20.9434H7.793C6.77031 20.9434 5.94828 20.1547 5.88328 19.1343L5 6H19Z"
-                stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                stroke="#ef4444"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
           </button>
         </div>
@@ -125,18 +145,37 @@ onMounted(() => {
         <div class="support-section-divider" />
 
         <div class="support-field-group">
-          <MultiLangInput :field-key="`title-${sIdx}`" :label="$t('title_of_support_contact_details')"
-            :languages="['en', 'ar']" :model-value="section.title" :type="`title`"
-            @update:model-value="section.title = $event; emitData()" />
+          <MultiLangInput
+            :field-key="`title-${sIdx}`"
+            :label="$t('title_of_support_contact_details')"
+            :languages="['en', 'ar']"
+            :model-value="section.title"
+            :type="`title`"
+            @update:model-value="
+              section.title = $event;
+              emitData();
+            "
+          />
         </div>
 
         <!-- Phone Numbers -->
         <div class="contact-group">
           <label class="contact-label">{{ $t('Phone Number') }}</label>
           <div class="chip-input-row">
-            <input v-model="section.inputs.phone" type="text" :placeholder="$t('Enter Your Phone Number')"
-              class="contact-input" @keyup.enter="addChip(section.phonenumbers, 'phone', section)" />
-            <button type="button" class="sm-add-btn" @click="addChip(section.phonenumbers, 'phone', section)">+</button>
+            <input
+              v-model="section.inputs.phone"
+              type="text"
+              :placeholder="$t('Enter Your Phone Number')"
+              class="contact-input"
+              @keyup.enter="addChip(section.phonenumbers, 'phone', section)"
+            />
+            <button
+              type="button"
+              class="sm-add-btn"
+              @click="addChip(section.phonenumbers, 'phone', section)"
+            >
+              +
+            </button>
           </div>
           <div v-if="section.phonenumbers.length" class="chips-row">
             <span v-for="(num, i) in section.phonenumbers" :key="i" class="chip">
@@ -150,10 +189,20 @@ onMounted(() => {
         <div class="contact-group">
           <label class="contact-label">{{ $t('whatsapp_number') }}</label>
           <div class="chip-input-row">
-            <input v-model="section.inputs.whatsApp" type="text" :placeholder="$t('enter_your_whatsapp_number')"
-              class="contact-input" @keyup.enter="addChip(section.whatsAppNumebrs, 'whatsApp', section)" />
-            <button type="button" class="sm-add-btn"
-              @click="addChip(section.whatsAppNumebrs, 'whatsApp', section)">+</button>
+            <input
+              v-model="section.inputs.whatsApp"
+              type="text"
+              :placeholder="$t('enter_your_whatsapp_number')"
+              class="contact-input"
+              @keyup.enter="addChip(section.whatsAppNumebrs, 'whatsApp', section)"
+            />
+            <button
+              type="button"
+              class="sm-add-btn"
+              @click="addChip(section.whatsAppNumebrs, 'whatsApp', section)"
+            >
+              +
+            </button>
           </div>
           <div v-if="section.whatsAppNumebrs.length" class="chips-row">
             <span v-for="(num, i) in section.whatsAppNumebrs" :key="i" class="chip">
@@ -167,9 +216,20 @@ onMounted(() => {
         <div class="contact-group">
           <label class="contact-label">{{ $t('email_address') }}</label>
           <div class="chip-input-row">
-            <input v-model="section.inputs.email" type="email" :placeholder="$t('enter_your_email_address')"
-              class="contact-input" @keyup.enter="addChip(section.emails, 'email', section)" />
-            <button type="button" class="sm-add-btn" @click="addChip(section.emails, 'email', section)">+</button>
+            <input
+              v-model="section.inputs.email"
+              type="email"
+              :placeholder="$t('enter_your_email_address')"
+              class="contact-input"
+              @keyup.enter="addChip(section.emails, 'email', section)"
+            />
+            <button
+              type="button"
+              class="sm-add-btn"
+              @click="addChip(section.emails, 'email', section)"
+            >
+              +
+            </button>
           </div>
           <div v-if="section.emails.length" class="chips-row">
             <span v-for="(em, i) in section.emails" :key="i" class="chip">
@@ -183,10 +243,20 @@ onMounted(() => {
         <div class="contact-group">
           <label class="contact-label">{{ $t('telegram') }}</label>
           <div class="chip-input-row">
-            <input v-model="section.inputs.telegram" type="text" :placeholder="$t('enter_your_telegram_link_or_number')"
-              class="contact-input" @keyup.enter="addChip(section.telegramNumbers, 'telegram', section)" />
-            <button type="button" class="sm-add-btn"
-              @click="addChip(section.telegramNumbers, 'telegram', section)">+</button>
+            <input
+              v-model="section.inputs.telegram"
+              type="text"
+              :placeholder="$t('enter_your_telegram_link_or_number')"
+              class="contact-input"
+              @keyup.enter="addChip(section.telegramNumbers, 'telegram', section)"
+            />
+            <button
+              type="button"
+              class="sm-add-btn"
+              @click="addChip(section.telegramNumbers, 'telegram', section)"
+            >
+              +
+            </button>
           </div>
           <div v-if="section.telegramNumbers.length" class="chips-row">
             <span v-for="(tg, i) in section.telegramNumbers" :key="i" class="chip">
@@ -195,7 +265,6 @@ onMounted(() => {
             </span>
           </div>
         </div>
-
       </div>
     </div>
   </div>
