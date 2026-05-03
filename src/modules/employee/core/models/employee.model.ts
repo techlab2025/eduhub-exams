@@ -12,6 +12,8 @@ export default class EmployeeModel {
   public readonly role_id: number;
   public readonly status: number;
   public readonly subjects: string;
+  
+  
 
   constructor(data: {
     id?: number;
