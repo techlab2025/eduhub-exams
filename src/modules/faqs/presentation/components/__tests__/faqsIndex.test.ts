@@ -49,6 +49,8 @@ describe('faqsIndex', () => {
         'router-link': true,
         EmptyFaqs: true,
         EditpinIcon: true,
+        IconAdd: true,
+        IconMins: true,
       },
       mocks: {
         $t: (msg: string) => msg,
@@ -79,7 +81,7 @@ describe('faqsIndex', () => {
     const wrapper = mount(faqsIndex, mountOptions);
     await flushPromises();
 
-    expect(wrapper.findAll('.faq-row').length).toBe(2);
+    expect(wrapper.findAll('.faq-card').length).toBe(2);
     expect(wrapper.find('.faq-question').text()).toBe('Q1');
   });
 
@@ -93,7 +95,7 @@ describe('faqsIndex', () => {
     const wrapper = mount(faqsIndex, mountOptions);
     await flushPromises();
 
-    expect(wrapper.find('.empty-state').exists()).toBe(true);
+    expect(wrapper.find('.empty-data').exists()).toBe(true);
   });
 
   it('calls controller.delete when delete button is clicked', async () => {

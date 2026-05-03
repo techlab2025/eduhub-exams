@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
+import { createI18n } from 'vue-i18n';
 import SupportForm from '../SupportForm.vue';
 
 vi.mock('vue-router', () => ({
@@ -28,11 +29,13 @@ vi.mock('@/shared/icons/Support/DeleteIcon.vue', () => ({
   default: { name: 'DeleteIcon', template: '<span class="delete-icon" />' },
 }));
 
+const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
+
 const mountForm = (props: Record<string, unknown> = {}) =>
   mount(SupportForm, {
     props,
     global: {
-      mocks: { $t: (k: string) => k },
+      plugins: [i18n],
       stubs: { Teleport: true, Transition: true },
     },
   });
