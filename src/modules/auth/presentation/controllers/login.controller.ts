@@ -65,15 +65,10 @@ export default class LoginController extends BaseController<LoginModel, never> {
     try {
       const response = await this.repository.login(params);
       this.setItemState(response);
-
       this.handleItemResponse(response, 'Logged in successfully');
       if (response.data) this.userStore.setUser(response.data);
       const countryCode = router.currentRoute.value.params.country_code as string;
       router.push(`/${countryCode}/`);
-<<<<<<< HEAD
-
-=======
->>>>>>> 67854ee (build:  perfix route country with valid code and unit test)
       return response;
     } catch (error: unknown) {
       const failed = new DataFailed<LoginModel>({ error: error as ErrorModel });
