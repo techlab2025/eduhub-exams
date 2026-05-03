@@ -48,7 +48,9 @@
         @include flex-column(nowrap, flex-start, flex-start);
 
         .item-small-title {
-          color: var(--gray-);
+
+          color: var(--gray-200);
+
           font-size: 14px;
           font-weight: 400;
         }

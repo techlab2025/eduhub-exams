@@ -1,22 +1,24 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 /**
  * Parameters for adding a new country
  */
 export default class AddTermsConditionsParams implements Params {
-  public terms_conditions: Record<string, string>;
+  public translations: TranslationParams;
+
   public static readonly validation = new ClassValidation().setRules({
-    terms_conditions: { required: true, minLength: 1 },
+    translations: { required: true, minLength: 1 },
   });
 
-  constructor(data: { terms_conditions: Record<string, string> }) {
-    this.terms_conditions = data.terms_conditions;
+  constructor(data: { translations: TranslationParams }) {
+    this.translations = data.translations;
   }
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {
-      terms_conditions: this.terms_conditions,
+      translations: this.translations,
     };
     return map;
   }

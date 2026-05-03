@@ -1,12 +1,10 @@
-import BaseController from "@/base/Presentation/Controller/baseController";
-import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
-import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
-import type Params from "@/base/Core/Params/params";
-import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import router from "@/router";
-import { useFormsStore } from "@/stores/formsStore";
-import type TermsConditionsModel from "../../core/models/terms-conditions.model";
-import TermsConditionsRepository from "../../data/repositories/terms-conditions.repository";
+import BaseController from '@/base/Presentation/Controller/baseController';
+import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
+import type TermsConditionsModel from '../../core/models/terms-conditions.model';
+import TermsConditionsRepository from '../../data/repositories/terms-conditions.repository';
+// import type { DataState } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
+// import type Params from "@/base/Core/Params/params";
+// import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
 
 /**
  * Country Controller for managing countries
@@ -50,18 +48,5 @@ export default class TermsConditionsController extends BaseController<
       TermsConditionsController.instance = new TermsConditionsController();
     }
     return TermsConditionsController.instance;
-  }
-
-  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
-    const FormStore = useFormsStore();
-
-    const result = await super.create(params, { ...options, useJson: true });
-    if (result instanceof DataSuccess) {
-      router.push({ name: "Faqs" });
-      if (formKey) {
-        FormStore.clearFormData(formKey);
-      }
-    }
-    return result;
   }
 }

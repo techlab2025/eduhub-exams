@@ -1,11 +1,13 @@
+import TranslationModel from '@/modules/about/core/models/translation.model';
+
 /**
  * Country model representing a nation's geographical and cultural data
  */
 export default class TermsConditionsModel {
-  public readonly terms_conditions: Record<string, string>;
+  public readonly translations: TranslationModel;
 
-  constructor(data: { terms_conditions: Record<string, string> }) {
-    this.terms_conditions = data.terms_conditions;
+  constructor(data: { translations: TranslationModel }) {
+    this.translations = data.translations;
 
     Object.freeze(this);
   }
@@ -17,19 +19,24 @@ export default class TermsConditionsModel {
    */
   static fromJson(json: any): TermsConditionsModel {
     if (!json) {
-      throw new Error("Cannot create FaqsModel from null or undefined");
+      throw new Error('Cannot create FaqsModel from null or undefined');
     }
 
     return new TermsConditionsModel({
-      terms_conditions: json.terms_conditions,
+      translations: TranslationModel.fromJson(json.translations),
     });
   }
 
   static example: TermsConditionsModel = new TermsConditionsModel({
-    terms_conditions: {
-      en: "lorem ipsum dolor sit amet consectetur adipiscing elit",
-      ar: "lorem ipsum dolor sit amet consectetur adipiscing elit",
-      fr: "lorem ipsum dolor sit amet consectetur adipiscing elit",
-    },
+    translations: new TranslationModel({
+      title: {
+        ar: 'terms_conditions_ar',
+        en: 'terms_conditions_en',
+      },
+      description: {
+        ar: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
+        en: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
+      },
+    }),
   });
 }

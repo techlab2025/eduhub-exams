@@ -5,6 +5,8 @@
   import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
   import TechlabLogo from '@/assets/images/TechlabLogo.png';
   import EducationClassificationIcon from '@/shared/icons/SidebarIcons/EducationClassificationIcon.vue';
+  import SidebarPrivecy from '@/shared/icons/SidebarPrivecy.vue';
+  import SidebarTerms from '@/shared/icons/SidebarTerms.vue';
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
@@ -45,13 +47,13 @@
         },
         {
           link: '/privacy',
-          name: 'Privacy',
-          icon: SettingIcon,
+          name: 'Privacy and policy',
+          icon: SidebarPrivecy,
         },
         {
           link: '/terms-conditions',
-          name: 'Terms Conditions',
-          icon: SettingIcon,
+          name: 'terms & conditions',
+          icon: SidebarTerms,
         },
         {
           link: '/stages',
