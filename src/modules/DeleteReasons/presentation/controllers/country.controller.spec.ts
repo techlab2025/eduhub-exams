@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import StageController from './stage.controller';
+import DeletedReasonsController from './deleted.reasons.controller';
 
 vi.mock('@/stores/formsStore', () => ({
   useFormsStore: () => ({ clearFormData: vi.fn() }),
@@ -10,12 +10,12 @@ vi.mock('@/router', () => ({
   push: vi.fn(),
 }));
 
-describe('StageController', () => {
-  let controller: StageController;
+describe('DeletedReasonsController', () => {
+  let controller: DeletedReasonsController;
   let mockRepository: any;
 
   beforeEach(() => {
-    controller = StageController.getInstance();
+    controller = DeletedReasonsController.getInstance();
 
     mockRepository = {
       index: vi.fn(),
@@ -33,8 +33,8 @@ describe('StageController', () => {
   });
 
   it('returns the same singleton instance', () => {
-    const a = StageController.getInstance();
-    const b = StageController.getInstance();
+    const a = DeletedReasonsController.getInstance();
+    const b = DeletedReasonsController.getInstance();
     expect(a).toBe(b);
   });
 });

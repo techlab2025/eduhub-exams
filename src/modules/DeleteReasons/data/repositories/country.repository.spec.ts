@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import StageRepository from './stage.repository';
+import DeleteReasonesRepository from './delete.reasons.repository';
 
-describe('StageRepository', () => {
-  let repository: StageRepository;
+describe('DeleteReasonesRepository', () => {
+  let repository: DeleteReasonesRepository;
   let mockApiService: any;
 
   beforeEach(() => {
-    repository = StageRepository.getInstance();
+    repository = DeleteReasonesRepository.getInstance();
 
     mockApiService = {
       index: vi.fn(),
@@ -24,8 +24,8 @@ describe('StageRepository', () => {
   });
 
   it('returns the same singleton instance', () => {
-    const a = StageRepository.getInstance();
-    const b = StageRepository.getInstance();
+    const a = DeleteReasonesRepository.getInstance();
+    const b = DeleteReasonesRepository.getInstance();
     expect(a).toBe(b);
   });
 });
