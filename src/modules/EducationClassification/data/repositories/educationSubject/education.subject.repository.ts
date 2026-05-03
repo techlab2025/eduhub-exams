@@ -20,14 +20,6 @@ export default class EducationSubjectRepository extends BaseRepository<
     };
   }
 
-  protected get mockItem(): EducationSubjectConfigurationModel {
-    return EducationSubjectConfigurationModel.example;
-  }
-
-  protected get mockList(): EducationSubjectConfigurationModel {
-    return EducationSubjectConfigurationModel.example;
-  }
-
   static getInstance(): EducationSubjectRepository {
     if (!EducationSubjectRepository.instance) {
       EducationSubjectRepository.instance = new EducationSubjectRepository();
@@ -35,11 +27,12 @@ export default class EducationSubjectRepository extends BaseRepository<
     return EducationSubjectRepository.instance;
   }
 
-  protected parseItem(data: any): EducationSubjectConfigurationModel {
-    return EducationSubjectConfigurationModel.fromJson(data);
+  protected parseItem(data: unknown): EducationSubjectConfigurationModel {
+    return EducationSubjectConfigurationModel.fromJson(data as Record<string, unknown>);
   }
 
-  protected parseList(data: any): EducationSubjectConfigurationModel {
-    return EducationSubjectConfigurationModel.fromJson(data);
+  protected parseList(data: unknown): EducationSubjectConfigurationModel {
+    const item = Array.isArray(data) ? data[data.length - 1] : data;
+    return EducationSubjectConfigurationModel.fromJson(item as Record<string, unknown>);
   }
 }
