@@ -121,6 +121,7 @@
     &.tags-group {
       .input-wrap {
         border: 1px solid var(--gray-300);
+
         @include flex-row(nowrap, space-between, center);
 
         border-radius: 50px;

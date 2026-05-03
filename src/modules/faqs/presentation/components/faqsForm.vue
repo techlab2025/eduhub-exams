@@ -103,7 +103,6 @@
   @use '../../../../styles/mixins/flex' as *;
 
   .faq-form-card {
-
     width: 100%;
     background-color: $StandardWhite;
     border: 1px solid $Gray-200-std;
@@ -169,7 +168,6 @@
   }
 
   .faq-form-divider {
-
     width: 100%;
     background-color: $StandardWhite;
     border: 1px solid $Gray-200-std;

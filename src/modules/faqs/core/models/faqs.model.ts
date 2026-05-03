@@ -84,7 +84,7 @@ export default class FaqsModel {
     }),
   ];
 
-  // static get example(): FaqsModel {
-  //   return FaqsModel.examples[0];
-  // }
+  static get example(): FaqsModel {
+    return FaqsModel.examples[0]!;
+  }
 }
