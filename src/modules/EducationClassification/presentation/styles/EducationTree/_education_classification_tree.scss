@@ -4,7 +4,7 @@
   display: flex;
   height: 80vh;
   background: $Gray-50-std;
-  font-family: 'Regular';
+  font-family: 'Medium';
   width: 100%;
 
   .left-panel {
@@ -45,8 +45,7 @@
     border: none;
     background: transparent;
     outline: none;
-    font-family: 'Medium';
-    font-weight: $BaseFontSemiBoldWeight;
+    font-weight: 400;
     font-size: $SmSize;
     color: $Gray-700-std;
     width: 100%;
@@ -170,29 +169,6 @@
     color: $Gray-400-std;
   }
 
-  /* Buttons */
-  .btn-primary {
-    background: $SuccessGreen-std;
-    color: $StandardWhite;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition:
-      background 0.2s,
-      transform 0.1s;
-  }
-
-  .btn-primary:hover {
-    background: $SuccessGreenHover-std;
-  }
-
-  .btn-primary:active {
-    transform: scale(0.98);
-  }
-
   .btn-full {
     width: 100%;
   }
@@ -215,6 +191,96 @@
 
   .btn-outlined:hover {
     background: $SuccessGreenLight-std;
+  }
+
+  /* Right Children List */
+  .right-children {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .right-child-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .child-level-label {
+    font-size: 11px;
+    font-family: 'Medium';
+    color: $Gray-400-std;
+    padding: 10px 16px 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .right-child-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: $StandardWhite;
+    border: 1px solid $Gray-200-std;
+    border-radius: 10px;
+    margin: 0 0 8px;
+    // direction: rtl;
+    transition: box-shadow 0.15s;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .child-icon {
+    flex-shrink: 0;
+  }
+
+  .child-name {
+    font-size: 14px;
+    font-family: 'Medium';
+    color: $Gray-900-std;
+    text-align: right;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: $Gray-500-std;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $Gray-100-std;
+    }
+  }
+
+  .btn-add-branch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $SuccessGreenLight-std;
+    }
   }
 }
 

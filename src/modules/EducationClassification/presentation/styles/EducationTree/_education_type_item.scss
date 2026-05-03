@@ -2,6 +2,7 @@
 
 .tree-node-wrapper {
   user-select: none;
+  font-family: 'Medium';
 
   .node-row {
     display: flex;
@@ -44,7 +45,7 @@
   .level-label {
     font-size: 10px;
     font-weight: 600;
-    color: $Gray-500-std;
+    color: var(--Gray-6);
     background: $Gray-100-std;
     border-radius: 4px;
     padding: 1px 5px;
@@ -52,7 +53,7 @@
   }
 
   .node-name {
-    font-size: 13px;
+    font-size: 16px;
     color: $Gray-900-std;
     font-weight: 500;
     flex: 1;
