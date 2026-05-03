@@ -3,13 +3,13 @@
  * Reactive singleton for managing dialogs and toasts
  */
 
-import { ref, computed, type Ref, type ComputedRef } from "vue";
+import { ref, computed, type Ref, type ComputedRef } from 'vue';
 
 //images for dialogs
-import successImage from "@/assets/images/dialogs/Success.gif";
-import errorImage from "@/assets/images/dialogs/error.png";
-import warningImage from "@/assets/images/dialogs/warning.png";
-import infoImage from "@/assets/images/dialogs/info.png";
+import successImage from '@/assets/images/dialogs/Success.gif';
+import errorImage from '@/assets/images/dialogs/error.png';
+import warningImage from '@/assets/images/dialogs/warning.png';
+import infoImage from '@/assets/images/dialogs/info.png';
 
 import {
   DialogType,
@@ -19,7 +19,7 @@ import {
   type DialogState,
   DEFAULT_DIALOG_OPTIONS,
   DEFAULT_TOAST_OPTIONS,
-} from "./dialog.types";
+} from './dialog.types';
 
 const ImgDialog = {
   success: successImage,
@@ -58,7 +58,7 @@ class DialogManager {
   public isLoading: Ref<boolean> = ref(false);
 
   /** Loading message */
-  public loadingMessage: Ref<string> = ref("");
+  public loadingMessage: Ref<string> = ref('');
 
   /** Progress value for loading */
   public loadingProgress: Ref<number> = ref(0);
@@ -128,7 +128,7 @@ class DialogManager {
   success(message: string, options?: Partial<DialogOptions>): string {
     return this.show({
       type: DialogType.SUCCESS,
-      title: "Success",
+      title: 'Success',
       image: ImgDialog.success,
       message,
       duration: 3000,
@@ -142,7 +142,7 @@ class DialogManager {
   error(message: string, options?: Partial<DialogOptions>): string {
     return this.show({
       type: DialogType.ERROR,
-      title: "Error",
+      title: 'Error',
       image: ImgDialog.error,
       message,
       duration: 5000,
@@ -156,7 +156,7 @@ class DialogManager {
   warning(message: string, options?: Partial<DialogOptions>): string {
     return this.show({
       type: DialogType.WARNING,
-      title: "Warning",
+      title: 'Warning',
       image: ImgDialog.warning,
       message,
       duration: 4000,
@@ -170,7 +170,7 @@ class DialogManager {
   info(message: string, options?: Partial<DialogOptions>): string {
     return this.show({
       type: DialogType.INFO,
-      title: "Information",
+      title: 'Information',
       image: ImgDialog.info,
       message,
       duration: 3000,
@@ -188,7 +188,7 @@ class DialogManager {
   ): string {
     return this.show({
       type: DialogType.CONFIRM,
-      title: "Confirm",
+      title: 'Confirm',
       image: ImgDialog.warning,
       message,
       duration: 0, // Don't auto-dismiss
@@ -196,14 +196,14 @@ class DialogManager {
       onConfirm,
       actions: [
         {
-          label: "Cancel",
-          type: "secondary",
+          label: 'Cancel',
+          type: 'secondary',
           onClick: () => this.closeDialog(),
           closeOnClick: true,
         },
         {
-          label: "Confirm",
-          type: "primary",
+          label: 'Confirm',
+          type: 'primary',
           onClick: async () => {
             await onConfirm();
             this.closeDialog();
@@ -253,7 +253,7 @@ class DialogManager {
   /**
    * Show loading dialog
    */
-  loading(message: string = "Loading..."): void {
+  loading(message: string = 'Loading...'): void {
     this.isLoading.value = true;
     this.loadingMessage.value = message;
     this.loadingProgress.value = 0;
@@ -274,7 +274,7 @@ class DialogManager {
    */
   hideLoading(): void {
     this.isLoading.value = false;
-    this.loadingMessage.value = "";
+    this.loadingMessage.value = '';
     this.loadingProgress.value = 0;
   }
 
@@ -314,6 +314,7 @@ class DialogManager {
     return this.toast({
       type: DialogType.SUCCESS,
       message,
+      duration: 6000,
       ...options,
     });
   }
@@ -390,7 +391,7 @@ class DialogManager {
     this.dialogQueue.value = [];
     this.toasts.value = [];
     this.isLoading.value = false;
-    this.loadingMessage.value = "";
+    this.loadingMessage.value = '';
     this.loadingProgress.value = 0;
   }
 

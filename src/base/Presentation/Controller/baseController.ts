@@ -586,6 +586,12 @@ export default abstract class BaseController<T, TList = T[]> {
     }
   }
 
+  protected showSuccessToast(message: string): void {
+    if (this.config.showSuccessDialog) {
+      dialogManager.toastSuccess(message);
+    }
+  }
+
   protected showErrorDialog(message: string): void {
     if (this.config.showErrorDialog) {
       dialogManager.error(message);
@@ -622,7 +628,8 @@ export default abstract class BaseController<T, TList = T[]> {
     if (_result.hasError) {
       this.handleErrorResponse(_result);
     } else if (_result instanceof DataSuccess && this.config.showSuccessDialog && successMessage) {
-      this.showSuccessDialog(successMessage);
+      // this.showSuccessDialog(successMessage);
+      this.showSuccessToast(successMessage);
     }
 
     // Auto-retry if applicable

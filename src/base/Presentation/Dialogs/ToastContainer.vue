@@ -180,9 +180,9 @@
     align-items: flex-start;
     gap: 0.75rem;
     min-width: 300px;
-    max-width: 400px;
+    width: 500px;
     padding: 1rem;
-    background: var(--bg-main);
+    background: #e9f9ee;
     border-radius: 12px;
     box-shadow:
       0 10px 25px -5px rgba(0 0 0 / 10%),
@@ -220,15 +220,17 @@
 
   .toast-title {
     margin: 0 0 0.25rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--gray-800);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--toast-test);
+    font-family: 'Medium';
   }
 
   .toast-message {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--gray-500);
+    color: var(--toast-test);
+    font-family: 'Medium';
     line-height: 1.4;
     word-wrap: break-word;
   }
@@ -298,7 +300,7 @@
 
   /* Type-specific borders */
   .toast-type-success {
-    border-left: 4px solid var(--success);
+    border-bottom: 4px solid var(--success);
   }
 
   .toast-type-error {
