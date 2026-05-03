@@ -80,6 +80,11 @@
           name: 'Support',
           icon: SettingIcon,
         },
+        {
+          link: '/deleted-accounts',
+          name: 'Deleted Accounts',
+          icon: SettingIcon,
+        },
       ],
     },
     {
