@@ -27,6 +27,7 @@ export default class EducationStageRepository extends BaseRepository<
   protected get mockList(): EducationStageModel[] {
     return [EducationStageModel.example];
   }
+
   static getInstance(): EducationStageRepository {
     if (!EducationStageRepository.instance) {
       EducationStageRepository.instance = new EducationStageRepository();

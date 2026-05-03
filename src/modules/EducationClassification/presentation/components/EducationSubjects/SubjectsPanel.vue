@@ -185,7 +185,30 @@
     <div class="subjects-body">
       <!-- Left: subject tree list -->
       <div class="subjects-left">
-        <div class="subject-tree-list">
+        <div v-if="rootNodes.length === 0" class="empty-state">
+          <div class="empty-illustration">
+            <svg viewBox="0 0 80 80" fill="none" width="64" height="64">
+              <rect x="10" y="30" width="60" height="40" rx="4" fill="#4caf50" />
+              <rect x="20" y="20" width="40" height="10" rx="2" fill="#4caf50" />
+              <circle cx="40" cy="15" r="8" fill="#4caf50" />
+              <path
+                d="M30 50h20M30 58h14"
+                stroke="#4caf50"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <p class="empty-title">No {{ getSubjectRootName() }}s Yet</p>
+          <p class="empty-desc">
+            Start adding {{ getSubjectRootName().toLowerCase() }}s for this stage.
+          </p>
+          <button class="btn btn-primary" @click="showAddTypeDialog = true">
+            Add {{ getSubjectRootName() }}
+          </button>
+        </div>
+
+        <div v-else class="subject-tree-list">
           <SubjectTreeNode
             v-for="node in rootNodes"
             :key="node.subject.subject_id"
@@ -219,3 +242,124 @@
     @confirm="handleAddBranch"
   />
 </template>
+
+<style scoped>
+  .subjects-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0;
+  }
+
+  .subjects-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8faff;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .subjects-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: black;
+  }
+
+  .subjects-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .subjects-left {
+    width: 100%;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 12px 0 0;
+  }
+
+  .subject-tree-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .subjects-bottom-bar {
+    padding: 10px 12px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: auto;
+  }
+
+  .level-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-radius: 4px;
+    padding: 1px 5px;
+    white-space: nowrap;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .icon-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    color: #9ca3af;
+    border-radius: 4px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .icon-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+  }
+
+  .hint-text {
+    color: #9ca3af;
+    font-size: 13px;
+    text-align: center;
+    padding: 24px 0;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .empty-illustration {
+    margin-bottom: 4px;
+  }
+
+  .empty-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+  }
+
+  .empty-desc {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+  }
+</style>

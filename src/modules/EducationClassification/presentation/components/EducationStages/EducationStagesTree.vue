@@ -204,8 +204,8 @@
         />
       </div>
 
-      <div v-if="rootNodes.length > 0">
-        <button class="btn btn-primary w-full" @click="showAddTypeDialog = true">
+      <div v-if="rootNodes.length > 0" class="bottom-bar">
+        <button class="btn btn-primary btn-full" @click="showAddTypeDialog = true">
           Add New {{ getBranchName(0) }}
         </button>
       </div>
@@ -266,53 +266,51 @@
             <div
               v-for="child in selectedNode.children"
               :key="child.stage.stage_id"
-              class="right-child-wrapper"
+              class="right-child-row"
             >
-              <span class="child-level-label">{{ getBranchName(child.depth - 1) }}</span>
-              <div class="right-child-row">
-                <svg viewBox="0 0 20 20" fill="none" width="16" height="16" class="child-icon">
-                  <rect
-                    x="4"
-                    y="3"
-                    width="12"
-                    height="14"
-                    rx="2"
-                    stroke="#4caf50"
-                    stroke-width="1.3"
-                    fill="none"
-                  />
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16" class="child-icon">
+                <rect
+                  x="4"
+                  y="3"
+                  width="12"
+                  height="14"
+                  rx="2"
+                  stroke="#4caf50"
+                  stroke-width="1.3"
+                  fill="none"
+                />
+                <path
+                  d="M7 8h6M7 11h6M7 14h4"
+                  stroke="#4caf50"
+                  stroke-width="1.1"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="child-name">{{ child.stage.stage_title }}</span>
+              <span class="level-label">{{ getBranchName(child.depth - 1) }}</span>
+              <span class="spacer" />
+              <button
+                v-if="child.depth < maxDepth"
+                class="icon-btn"
+                @click="openAddChildDialog(child.stage.stage_id, child.depth + 3)"
+              >
+                <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                  <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
                   <path
-                    d="M7 8h6M7 11h6M7 14h4"
+                    d="M10 7v6M7 10h6"
                     stroke="#4caf50"
-                    stroke-width="1.1"
+                    stroke-width="1.5"
                     stroke-linecap="round"
                   />
                 </svg>
-                <span class="child-name">{{ child.stage.stage_title }}</span>
-                <span class="spacer" />
-                <button
-                  v-if="child.depth < maxDepth"
-                  class="icon-btn"
-                  @click="openAddChildDialog(child.stage.stage_id, child.depth + 3)"
-                >
-                  <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-                    <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
-                    <path
-                      d="M10 7v6M7 10h6"
-                      stroke="#4caf50"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </button>
-                <button class="icon-btn">
-                  <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-                    <circle cx="10" cy="5" r="1.2" />
-                    <circle cx="10" cy="10" r="1.2" />
-                    <circle cx="10" cy="15" r="1.2" />
-                  </svg>
-                </button>
-              </div>
+              </button>
+              <button class="icon-btn">
+                <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                  <circle cx="10" cy="5" r="1.2" />
+                  <circle cx="10" cy="10" r="1.2" />
+                  <circle cx="10" cy="15" r="1.2" />
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -345,4 +343,80 @@
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+  .btn-add-branch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    color: #4caf50;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-add-branch:hover {
+    background: #f1f8f1;
+  }
+
+  .right-children {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .right-child-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+
+  .child-icon {
+    flex-shrink: 0;
+  }
+
+  .child-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #111827;
+    direction: rtl;
+  }
+
+  .level-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-radius: 4px;
+    padding: 1px 5px;
+    white-space: nowrap;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .icon-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    color: #9ca3af;
+    border-radius: 4px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+
+  .icon-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+  }
+</style>
