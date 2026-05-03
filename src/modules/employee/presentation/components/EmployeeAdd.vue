@@ -39,12 +39,21 @@
     <EmployeeForm :form-key="formKey" @update-data="updateData" />
 
     <div class="actions">
-      <AppButton title="Save Employee" size="sm" icon="right" type="submit" @click="saveEmployee">
+      <AppButton
+        title="Save Employee"
+        size="sm"
+        icon="right"
+        type="submit"
+        class="save-emp"
+        @click="saveEmployee"
+      >
         Save Employee
         <template #icon>
           <IconAccept />
         </template>
       </AppButton>
+      <button class="btn btn-draft">{{ $t(`Save As draft`) }}</button>
+      <button class="btn btn-cancel">{{ $t(`cancel`) }}</button>
     </div>
 
     <!-- Error Display -->
@@ -55,10 +64,38 @@
 </template>
 
 <style scoped lang="scss">
+  .btn-cancel {
+    background-color: var(--background-btn-outline-color);
+    color: var(--danger-color);
+    border: 1px solid rgba(245, 194, 192, 1);
+    border-radius: 50px;
+    width: 20%;
+
+    @media (max-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .btn-draft {
+    background-color: var(--PrimaryColor-alpha-10);
+    color: var(--PrimaryColor);
+    border: 1px solid var(--PrimaryColor-alpha-10);
+    border-radius: 50px;
+    width: 20%;
+
+    @media (max-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .save-emp {
+    width: 60%;
+  }
 
   .actions {
     margin-top: 24px;
     display: flex;
+    gap: 10px;
     justify-content: flex-end;
   }
 

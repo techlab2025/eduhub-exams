@@ -7,6 +7,7 @@
   import EducationClassificationIcon from '@/shared/icons/SidebarIcons/EducationClassificationIcon.vue';
   import SidebarPrivecy from '@/shared/icons/SidebarPrivecy.vue';
   import SidebarTerms from '@/shared/icons/SidebarTerms.vue';
+  import Sidebaremploye from '@/shared/icons/Sidebaremploye.vue';
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
@@ -33,7 +34,7 @@
         {
           link: '/employees',
           name: 'Employees',
-          icon: SettingIcon,
+          icon: Sidebaremploye,
         },
         {
           link: '/documents',

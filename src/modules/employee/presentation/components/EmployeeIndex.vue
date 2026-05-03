@@ -23,12 +23,12 @@
 
   // Table headers
   const headers: TableHeader[] = [
-    { key: 'name', label: 'Name', width: '25%', sortable: true },
+    { key: 'name', label: 'Employee name', width: '25%', sortable: true },
     { key: 'email', label: 'Email', width: '25%' },
     { key: 'phone', label: 'Phone', width: '15%' },
-    { key: 'role_id', label: 'Role', width: '10%' },
-    { key: 'employeeType', label: 'Type', width: '10%' },
-    { key: 'isSuperadmin', label: 'Superadmin', width: '10%' },
+    { key: 'subjects', label: 'Subject', width: '10%' },
+    { key: 'status', label: 'Status', width: '10%' },
+    // { key: 'isSuperadmin', label: 'Superadmin', width: '10%' },
   ];
 
   // Pagination state
@@ -134,15 +134,14 @@
           <AppTable
             :headers="headers"
             :items="data as EmployeeModel[]"
-            selectable
+            :hoverable="true"
+            :striped="true"
             show-index
-            hoverable
-            striped
           >
-            <template #cell-isSuperadmin="{ item }">
-              <span :class="['status-badge', item.isSuperadmin ? 'admin' : 'user']">
-                {{ item.isSuperadmin ? 'Yes' : 'No' }}
-              </span>
+            <template #cell-status="{ item }">
+              <p class="employee-status">
+                {{ item.status }}
+              </p>
             </template>
 
             <template #actions="{ item }">
@@ -237,3 +236,12 @@
     </DataStatusBuilder>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .employee-status {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'bold';
+    color: var(--success);
+  }
+</style>

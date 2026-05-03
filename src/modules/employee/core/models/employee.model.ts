@@ -10,7 +10,8 @@ export default class EmployeeModel {
   public readonly image: string;
   public readonly isSuperadmin: boolean;
   public readonly role_id: number;
-  public readonly employeeType: number;
+  public readonly status: number;
+  public readonly subjects: string;
 
   constructor(data: {
     id?: number;
@@ -21,7 +22,8 @@ export default class EmployeeModel {
     image: string;
     isSuperadmin: boolean;
     role_id: number;
-    employeeType: number;
+    status: number;
+    subjects: string;
   }) {
     this.id = data.id;
     this.name = data.name;
@@ -31,7 +33,8 @@ export default class EmployeeModel {
     this.image = data.image;
     this.isSuperadmin = data.isSuperadmin;
     this.role_id = data.role_id;
-    this.employeeType = data.employeeType;
+    this.status = data.status;
+    this.subjects = data.subjects;
 
     Object.freeze(this);
   }
@@ -55,7 +58,8 @@ export default class EmployeeModel {
       image: json.image || '',
       isSuperadmin: Boolean(json.isSuperadmin),
       role_id: Number(json.role_id || 0),
-      employeeType: Number(json.employeeType || 0),
+      status: Number(json.status || 0),
+      subjects: json.subjects || '',
     });
   }
 
@@ -67,6 +71,7 @@ export default class EmployeeModel {
     image: 'https://example.com/image.jpg',
     isSuperadmin: false,
     role_id: 1,
-    employeeType: 1,
+    status: 1,
+    subjects: 'Maths',
   });
 }

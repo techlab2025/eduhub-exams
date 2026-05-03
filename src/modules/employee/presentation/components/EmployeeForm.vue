@@ -5,6 +5,9 @@
   import type EmployeeModel from '../../core/models/employee.model';
   import AddEmployeeParams from '../../core/params/add.employee.params';
   import EditEmployeeParams from '../../core/params/edit.employee.params';
+  import EmployeeIcon from '@/shared/icons/EmployeeIcon.vue';
+  import HandleFilesUpload from '@/shared/FormInputs/HandleFilesUpload.vue';
+  import UplaodImageInput from '@/shared/icons/UploadImage/UplaodImageInput.vue';
 
   const emit = defineEmits(['updateData']);
 
@@ -30,6 +33,10 @@
   const isSuperadmin = ref<boolean>(false);
   const role_id = ref<number>(1);
   const employeeType = ref<number>(1);
+  const gender = ref<string>('');
+  const lastName = ref<string>('');
+  const employeeId = ref('');
+  const UploadedImage = ref<string[]>([]);
 
   watch(
     () => employee,
@@ -42,6 +49,9 @@
         isSuperadmin.value = newEmployee.isSuperadmin;
         role_id.value = newEmployee.role_id;
         employeeType.value = newEmployee.employeeType;
+        gender.value = newEmployee.gender;
+        lastName.value = newEmployee.lastName;
+        employeeId.value = newEmployee.employeeId;
         // Password is not populated for security/editing purposes
       }
     },
@@ -60,6 +70,9 @@
       isSuperadmin: isSuperadmin.value,
       role_id: role_id.value,
       employeeType: employeeType.value,
+      gender: gender.value,
+      lastName: lastName.value,
+      employeeId: employeeId.value,
     };
 
     FormStore.setFormData(formKey!, data);
@@ -85,6 +98,9 @@
     isSuperadmin.value = false;
     role_id.value = 1;
     employeeType.value = 1;
+    gender.value = '';
+    lastName.value = '';
+    employeeId.value = '';
   };
 
   onMounted(() => {
@@ -98,11 +114,30 @@
       isSuperadmin.value = saved.isSuperadmin;
       role_id.value = saved.role_id;
       employeeType.value = saved.employeeType;
+      gender.value = saved.gender;
+      lastName.value = saved.lastName;
+      employeeId.value = saved.employeeId;
       updateData();
     } else if (!employee) {
       resetForm();
     }
   });
+
+  // function handel phone and employeeId
+  const handlePhoneandEmployeeIdInput = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '');
+    value = value.slice(0, 11);
+    input.value = value;
+    phone.value = value;
+    employeeId.value = value;
+    updateData();
+  };
+  // function handel image
+  const handleImageChange = (files: []) => {
+    UploadedImage.value = files;
+    updateData();
+  };
 </script>
 
 <template>
@@ -114,24 +149,41 @@
           {{
             route.params.id
               ? 'Update the employee details below'
-              : 'Fill in the employee information'
+              : 'Fill in the required information to add a new employee'
           }}
         </p>
       </div>
       <span v-if="route.params.id" class="edit-badge">Editing</span>
     </header>
+    <div class="faq-details">
+      <p><EmployeeIcon /> {{ $t(`Basic Info`) }}</p>
+      <h6>{{ $t(`reset`) }}</h6>
+    </div>
 
-    <div class="form-divider" />
+    <!-- <div class="form-divider" /> -->
 
     <div class="form-fields">
       <div class="field-group">
-        <label class="field-label" for="name">Full Name</label>
+        <label class="field-label" for="name">{{ $t(`First Name`) }}</label>
         <div class="input-wrap">
           <input
             id="name"
             v-model="name"
             type="text"
-            placeholder="Enter full name"
+            placeholder="Enter first name"
+            class="field-input"
+            @input="updateData"
+          />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="name">{{ $t(`Last Name`) }}</label>
+        <div class="input-wrap">
+          <input
+            id="name"
+            v-model="lastName"
+            type="text"
+            placeholder="Enter last name"
             class="field-input"
             @input="updateData"
           />
@@ -139,208 +191,90 @@
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="email">Email address</label>
+        <label class="field-label" for="email">{{ $t(`Email`) }}</label>
         <div class="input-wrap">
           <input
             id="email"
             v-model="email"
             type="email"
-            placeholder="Enter email address"
+            placeholder="enter your email"
             class="field-input"
             @input="updateData"
           />
         </div>
       </div>
+      employeeType
 
+      <div class="field-group"></div>
       <div class="field-group">
-        <label class="field-label" for="phone">Phone Number</label>
+        <label class="field-label" for="employeeId">Employee ID</label>
+        <div class="input-wrap">
+          <input
+            id="employeeId"
+            v-model="employeeId"
+            type="tel"
+            placeholder="Enter Employee ID"
+            class="field-input"
+            @input="handlePhoneandEmployeeIdInput"
+          />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="phone">{{ $t(`Phone`) }}</label>
         <div class="input-wrap">
           <input
             id="phone"
             v-model="phone"
-            type="text"
+            type="tel"
             placeholder="Enter phone number"
             class="field-input"
-            @input="updateData"
+            @input="handlePhoneandEmployeeIdInput"
           />
         </div>
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="password">Password</label>
-        <div class="input-wrap">
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            placeholder="Enter password"
-            class="field-input"
-            @input="updateData"
-          />
+        <label class="field-label" for="phone">{{ $t(`Gender`) }}</label>
+        <div class="genders-inputs">
+          <div>
+            <input id="male" v-model="gender" type="radio" name="gender" value="male" />
+            <label for="male">Male</label>
+          </div>
+          <div>
+            <input id="female" v-model="gender" type="radio" name="gender" value="female" />
+            <label for="female">Female</label>
+          </div>
         </div>
       </div>
 
-      <div class="field-group">
-        <label class="field-label" for="role_id">Role ID</label>
-        <div class="input-wrap">
-          <input
-            id="role_id"
-            v-model.number="role_id"
-            type="number"
-            placeholder="Enter role ID"
-            class="field-input"
-            @input="updateData"
-          />
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label" for="employeeType">Employee Type</label>
-        <div class="input-wrap">
-          <input
-            id="employeeType"
-            v-model.number="employeeType"
-            type="number"
-            placeholder="Enter employee type"
-            class="field-input"
-            @input="updateData"
-          />
-        </div>
-      </div>
-
-      <div class="field-group checkbox-group">
+      <!-- <div class="field-group checkbox-group">
         <label class="checkbox-label">
           <input v-model="isSuperadmin" type="checkbox" @change="updateData" />
           <span>Superadmin access</span>
         </label>
-      </div>
+      </div> -->
+    </div>
+    <div class="field-group upload-image-employee">
+      <HandleFilesUpload
+        :label="`upload image`"
+        accept="image/*"
+        :multiple="true"
+        :index="1"
+        :file="UploadedImage"
+        :have-content="true"
+        :class="`image-input`"
+        @change="handleImageChange"
+      >
+        <template #content>
+          <div class="add-imaegs-data">
+            <UplaodImageInput />
+            <p class="first-text"><span>Click to upload</span>or drag and drop</p>
+            <p class="second-text">JPG, JPEG, PNG less than 1MB</p>
+          </div>
+        </template>
+      </HandleFilesUpload>
     </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-  .employee-form-card {
-    background: var(--bg-main);
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--border-strong);
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.04),
-      0 8px 32px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .form-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 20px 24px 16px;
-
-    .header-text {
-      flex: 1;
-
-      h3 {
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: var(--gray-900);
-        margin: 0;
-        letter-spacing: -0.01em;
-      }
-
-      .header-subtitle {
-        margin-top: 2px;
-        font-size: 0.8rem;
-        color: var(--gray-400);
-        margin-bottom: 0;
-      }
-    }
-
-    .edit-badge {
-      padding: 4px 12px;
-      border-radius: var(--radius-full);
-      background: linear-gradient(135deg, var(--warning-light), rgba(254, 243, 199, 0.5));
-      color: var(--warning-dark);
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-  }
-
-  .form-divider {
-    height: 1px;
-    margin: 0 24px;
-    background: linear-gradient(90deg, var(--border-weak), rgba(226, 232, 240, 0.3), transparent);
-  }
-
-  .form-fields {
-    padding: 20px 24px 24px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  .field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .checkbox-group {
-    grid-column: span 2;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .field-label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--gray-700);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .field-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid var(--border-weak);
-    border-radius: var(--radius-md);
-    font-size: 0.9rem;
-    color: var(--gray-800);
-    background: var(--gray-50);
-    outline: none;
-    transition: all 0.25s ease;
-
-    &:focus {
-      border-color: var(--PrimaryColor);
-      background: var(--bg-main);
-      box-shadow: 0 0 0 3px var(--PrimaryColor-light);
-    }
-  }
-
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--gray-700);
-
-    input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--PrimaryColor);
-    }
-  }
-
-  @media (max-width: 600px) {
-    .form-fields {
-      grid-template-columns: 1fr;
-    }
-
-    .checkbox-group {
-      grid-column: span 1;
-    }
-  }
-</style>
+<style lang="scss" scoped></style>
