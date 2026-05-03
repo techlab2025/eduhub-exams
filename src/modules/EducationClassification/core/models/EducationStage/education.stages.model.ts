@@ -22,4 +22,10 @@ export default class EducationStageModel {
       has_children: json.has_children as boolean,
     });
   }
+
+  static example: EducationStageModel = new EducationStageModel({
+    has_children: true,
+    stage_id: 10,
+    stage_title: 'stage 1',
+  });
 }
