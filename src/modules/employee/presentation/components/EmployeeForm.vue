@@ -189,8 +189,9 @@
           />
         </div>
       </div>
+     </div>
 
-      <div class="field-group">
+      <div class="field-group email-field-group">
         <label class="field-label" for="email">{{ $t(`Email`) }}</label>
         <div class="input-wrap">
           <input
@@ -203,9 +204,9 @@
           />
         </div>
       </div>
-      employeeType
 
-      <div class="field-group"></div>
+       <div class="form-fields email-field-group">
+
       <div class="field-group">
         <label class="field-label" for="employeeId">Employee ID</label>
         <div class="input-wrap">
@@ -277,4 +278,9 @@
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.email-field-group{
+  padding:0 24px 24px !important;
+}
+</style>
+ 
