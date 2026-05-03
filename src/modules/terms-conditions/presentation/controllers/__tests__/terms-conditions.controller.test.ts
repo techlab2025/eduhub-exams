@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import TermsConditionsController from './terms-conditions.controller';
+import TermsConditionsController from '../terms-conditions.controller';
 
 vi.mock('@/stores/formsStore', () => ({
   useFormsStore: () => ({ clearFormData: vi.fn() }),
