@@ -120,11 +120,7 @@
 
     &.tags-group {
       .input-wrap {
-<<<<<<< HEAD
-        border: 1px solid var(--gray-300);
-=======
         border: 1px solid var(--gray-soft);
->>>>>>> fetch/privecy
 
         @include flex-row(nowrap, space-between, center);
 
@@ -168,7 +164,6 @@
         }
 
         .second-text {
-
           color: var(--gray-300);
 
           font-size: 11px;
