@@ -1,6 +1,6 @@
 import BaseApiService from '@/base/Data/ApiService/baseApiService';
 import type { ApiEndpoints } from '@/base/Data/ApiService/baseApiService';
-import { SupportContactsEndpoints } from './SUPPORT.api.endpoints';
+import { SupportContactsEndpoints } from './support.api.endpoints';
 
 export default class SupportContactsApiService extends BaseApiService {
   private static instance: SupportContactsApiService;
