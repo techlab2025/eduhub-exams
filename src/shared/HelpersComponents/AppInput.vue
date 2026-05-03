@@ -1,11 +1,8 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue';
-  import UploadAppend from '@/shared/icons/UploadAppend.vue';
-  import IconAdd from '@/shared/icons/IconAdd.vue';
-  import IconMinus from '@/shared/icons/IconMinus.vue';
 
   // Props
-  const { modelValue, withImage = false } = defineProps<{
+  const props = defineProps<{
     modelValue: { title: string; img?: string }[];
     withImage?: boolean;
   }>();
@@ -16,11 +13,11 @@
   }>();
 
   // Local copy of inputs
-  const inputs = ref([...modelValue]);
+  const inputs = ref([...props.modelValue]);
 
   // Sync when parent updates
   watch(
-    () => modelValue,
+    () => props.modelValue,
     (newVal) => {
       inputs.value = [...newVal];
     },
@@ -35,34 +32,13 @@
     },
     { deep: true },
   );
-
-  // Add new input
-  const addInput = () => {
-    inputs.value.push({ title: '', img: '' });
-  };
-
-  // Remove input by index
-  const removeInput = (index: number) => {
-    inputs.value.splice(index, 1);
-  };
-
-  // Handle file change
-  const onFileChange = (event: Event, index: number) => {
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        inputs.value[index].img = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 </script>
 
 <template>
-  <div class="input-wrapper">
-    <label for="">Title</label>
-    <input v-model="input.title" type="text" placeholder="Enter Title" />
+  <div class="inputs-container">
+    <div v-for="(_, i) in inputs" :key="i" class="input-wrapper">
+      <label for="">Title</label>
+      <input v-model="inputs[i]!.title" type="text" placeholder="Enter Title" />
+    </div>
   </div>
 </template>

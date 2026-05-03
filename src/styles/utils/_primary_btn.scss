@@ -1,4 +1,4 @@
-@use "../variables" as *;
+@use '../variables' as *;
 
 .btn-primary {
   background-color: var(--PrimaryColor);
@@ -7,6 +7,8 @@
   font-family: var(--font-family);
   font-size: var(--xs-size);
   font-weight: $BaseFontSemiBoldWeight;
+  border-radius: 50px;
+  padding-block: 14px;
 
   &:hover {
     background-color: var(--BgWhite);
@@ -14,8 +16,8 @@
     box-shadow: var(--shadow);
   }
 
-  &:active {
-    background-color: var(--PrimaryColor-dark);
-    color: var(--BgWhite);
-  }
+  // &:active {
+  //   background-color: var(--PrimaryColor-dark);
+  //   color: var(--BgWhite);
+  // }
 }

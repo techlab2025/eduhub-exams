@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import FaqsForm from "@/modules/faqs/presentation/components/faqsForm.vue";
+  import FaqsIndex from '@/modules/faqs/presentation/components/faqsIndex.vue';
 </script>
 
 <template>
-  <FaqsForm />
+  <FaqsIndex />
 </template>

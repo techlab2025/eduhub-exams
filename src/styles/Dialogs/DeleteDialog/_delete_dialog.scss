@@ -1,4 +1,5 @@
 @use '../../variables' as *;
+@use '../../mixins/flex' as *;
 
 .delete-dialog {
   padding: 3rem;
@@ -8,6 +9,11 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
 
+  @include flex-column(nowrap, center, center);
+
+  font-family: 'Medium';
+  gap: 10px;
+
   img {
     width: 350px;
     margin-left: auto;
@@ -16,16 +22,16 @@
   }
 
   .dialog-title {
-    font-family: 'Bold', sans-serif;
+    font-family: 'Bold';
     font-size: 1.5rem;
     color: var(--gray-900);
   }
 
   p {
-    font-family: 'Regular', sans-serif;
-    font-size: 1rem;
+    font-family: 'Medium';
     color: var(--gray-500);
     margin-bottom: var(--space-sm);
+    max-width: 100%;
   }
 
   .btn-third {
@@ -43,9 +49,25 @@
     gap: 1rem;
     width: 100%;
     margin-top: 1.2rem;
+    align-items: center;
+
+    .btn-delete-danger {
+      background-color: $DangerAlt;
+      color: white;
+      transition: 0.3s all linear;
+
+      &:hover {
+        background-color: white;
+        color: $DangerAlt;
+        border: 1px solid $DangerAlt;
+      }
+    }
 
     button {
       width: 50%;
+      border-radius: 50px;
+      padding: 16px;
+      font-family: 'Medium';
     }
   }
 }

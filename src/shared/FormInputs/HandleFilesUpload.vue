@@ -18,13 +18,39 @@
     className?: string;
     multiple?: boolean;
     index?: number;
-    file?: string | string[]; // ✅ url or imported asset
-    base64File?: string | string[]; // ✅ base64 string
+    haveContent?: boolean;
+    file?: string | string[];
+    base64File?: string | string[];
   }
 
   const props = withDefaults(defineProps<Props>(), {
     label: 'Upload Files',
-    accept: '*',
+    accept: [
+      // Images
+      'image/*',
+      // Documents
+      '.pdf',
+      '.doc',
+      '.docx',
+      '.xls',
+      '.xlsx',
+      '.ppt',
+      '.pptx',
+      '.txt',
+      '.csv',
+      '.rtf',
+      // Archives
+      '.zip',
+      '.rar',
+      '.7z',
+      '.tar',
+      '.gz',
+      // Code / misc
+      '.json',
+      '.xml',
+      '.yaml',
+      '.yml',
+    ].join(','),
     maxFiles: Infinity,
     multiple: false,
   });
@@ -35,25 +61,76 @@
 
   const files = ref<UploadedFile[]>([]);
 
-  // ✅ Preload if file or base64File prop is passed
+  // ─── MIME type map for preloaded files (by extension) ──────────────────────
+  const EXT_MIME_MAP: Record<string, string> = {
+    // Images
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    gif: 'image/gif',
+    webp: 'image/webp',
+    svg: 'image/svg+xml',
+    // Documents
+    pdf: 'application/pdf',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ppt: 'application/vnd.ms-powerpoint',
+    pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    txt: 'text/plain',
+    csv: 'text/csv',
+    rtf: 'application/rtf',
+    // Archives
+    zip: 'application/zip',
+    rar: 'application/vnd.rar',
+    '7z': 'application/x-7z-compressed',
+    tar: 'application/x-tar',
+    gz: 'application/gzip',
+    // Code / misc
+    json: 'application/json',
+    xml: 'application/xml',
+    yaml: 'text/yaml',
+    yml: 'text/yaml',
+  };
+
+  // ─── Icon map: extension → emoji/label for non-image previews ─────────────
+  const EXT_ICON_MAP: Record<string, string> = {
+    pdf: '📄',
+    doc: '📝',
+    docx: '📝',
+    xls: '📊',
+    xlsx: '📊',
+    ppt: '📑',
+    pptx: '📑',
+    zip: '🗜️',
+    rar: '🗜️',
+    '7z': '🗜️',
+    tar: '🗜️',
+    gz: '🗜️',
+    txt: '📃',
+    csv: '📃',
+    rtf: '📃',
+    json: '{ }',
+    xml: '</>',
+    yaml: '⚙️',
+    yml: '⚙️',
+  };
+
   onMounted(() => {
     if (!props.file && !props.base64File) return;
 
     const fileList = Array.isArray(props.file) ? props.file : props.file ? [props.file] : [];
-
     const base64List = Array.isArray(props.base64File)
       ? props.base64File
       : props.base64File
         ? [props.base64File]
         : [];
 
-    const imageExts = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'];
-
     files.value = fileList.map((url, i) => {
       const name = url.split('/').pop() ?? 'file';
       const ext = name.split('.').pop()?.toLowerCase() ?? '';
-
-      const type = imageExts.includes(ext) ? `image/${ext}` : 'application/octet-stream';
+      const type = EXT_MIME_MAP[ext] ?? 'application/octet-stream';
 
       return {
         id: crypto.randomUUID(),
@@ -83,23 +160,39 @@
     const remaining = props.maxFiles - files.value.length;
     const incoming = Array.from(input.files).slice(0, remaining);
 
-    const newFiles: UploadedFile[] = [];
-    for (const file of incoming) {
-      const base64 = await fileToBase64(file);
-      newFiles.push({
-        id: crypto.randomUUID(),
-        name: file.name,
-        type: file.type,
-        size: formatFileSize(file.size),
-        url: URL.createObjectURL(file),
-        base64,
-        file,
-      });
-    }
+    const newFiles: UploadedFile[] = await Promise.all(
+      incoming.map(async (file) => {
+        const base64 = await fileToBase64(file);
+        return {
+          id: crypto.randomUUID(),
+          name: file.name,
+          type: file.type || resolveMime(file.name), // fallback for OS edge cases
+          size: formatFileSize(file.size),
+          url: URL.createObjectURL(file),
+          base64,
+          file,
+        };
+      }),
+    );
 
     files.value = [...files.value, ...newFiles];
     emit('change', files.value);
     input.value = '';
+  };
+
+  // ─── Helpers ──────────────────────────────────────────────────────────────
+
+  const resolveMime = (name: string): string => {
+    const ext = name.split('.').pop()?.toLowerCase() ?? '';
+    return EXT_MIME_MAP[ext] ?? 'application/octet-stream';
+  };
+
+  const isImage = (file: UploadedFile): boolean => file.type.startsWith('image/');
+
+  /** Returns an emoji icon or the uppercased extension label */
+  const getFileIcon = (file: UploadedFile): string => {
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    return EXT_ICON_MAP[ext] ?? (ext.toUpperCase() || 'FILE');
   };
 
   const downloadFile = (file: UploadedFile) => {
@@ -122,11 +215,6 @@
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const getFileExt = (name: string): string => name.split('.').pop()?.toUpperCase() ?? 'FILE';
-
-  const isImage = (file: UploadedFile) =>
-    file.type.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(file.name);
-
   const inputId = `file-upload-${props.index ?? crypto.randomUUID()}`;
 </script>
 
@@ -134,7 +222,11 @@
   <div class="file-upload-wrapper">
     <label class="upload-label">{{ label }}</label>
 
-    <label :for="inputId" :class="[className ?? 'upload-area', { disabled: isMaxReached }]">
+    <label
+      v-if="!haveContent"
+      :for="inputId"
+      :class="[className ?? 'upload-area', { disabled: isMaxReached }]"
+    >
       <span class="upload-icon">↑</span>
       <span class="upload-text">
         {{ isMaxReached ? `Max ${maxFiles} files reached` : 'Click to upload' }}
@@ -149,33 +241,50 @@
         @change="handleFileUpload"
       />
     </label>
+    <label v-else :for="inputId" :class="[className ?? 'upload-area', { disabled: isMaxReached }]">
+      <slot name="content"></slot>
+      <input
+        :id="inputId"
+        type="file"
+        :accept="accept"
+        :disabled="isMaxReached"
+        :multiple="multiple"
+        hidden
+        @change="handleFileUpload"
+      />
+    </label>
 
     <div v-if="files.length" class="preview-grid">
       <div
-        v-for="file in files"
-        :key="file.id"
+        v-for="fileItem in files"
+        :key="fileItem.id"
         class="preview-item"
         title="Click to download"
-        @click="downloadFile(file)"
+        @click="downloadFile(fileItem)"
       >
-        <template v-if="isImage(file)">
-          <img :src="file.url" :alt="file.name" class="preview-thumb" />
+        <template v-if="isImage(fileItem)">
+          <img :src="fileItem.url" :alt="fileItem.name" class="preview-thumb" />
         </template>
 
         <template v-else>
           <div class="preview-icon">
-            {{ getFileExt(file.name) }}
+            {{ getFileIcon(fileItem) }}
           </div>
         </template>
 
         <div class="preview-overlay">
-          <span class="preview-filename">{{ file.name }}</span>
-          <span class="preview-size">{{ file.size }}</span>
+          <span class="preview-filename">{{ fileItem.name }}</span>
+          <span class="preview-size">{{ fileItem.size }}</span>
         </div>
 
         <div class="download-badge">↓</div>
 
-        <button type="button" class="remove-btn" title="Remove" @click.stop="removeFile(file.id)">
+        <button
+          type="button"
+          class="remove-btn"
+          title="Remove"
+          @click.stop="removeFile(fileItem.id)"
+        >
           ✕
         </button>
       </div>
@@ -191,9 +300,9 @@
   }
 
   .upload-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--gray-700);
+    color: var(--gray-5);
+    font-size: 16px;
+    font-weight: 600;
   }
 
   .upload-area {
@@ -282,7 +391,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+    background: linear-gradient(transparent, var(--black-alpha-60));
     padding: 20px 6px 5px;
     display: flex;
     flex-direction: column;

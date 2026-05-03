@@ -7,6 +7,7 @@
     languages?: string[];
     label?: string;
     placeholder?: string;
+    type: 'title' | 'description';
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -14,6 +15,7 @@
     languages: () => ['en', 'ar'],
     label: '',
     placeholder: '',
+    type: 'title',
   });
 
   const emit = defineEmits<{
@@ -78,7 +80,18 @@
     </div>
 
     <div class="input-wrap">
+      <textarea
+        v-if="type == 'description'"
+        v-model="currentValue"
+        type="text"
+        :placeholder="
+          placeholder || `Enter ${label.toLowerCase()} in ${activeLang?.toUpperCase()}...`
+        "
+        class="field-input"
+        :dir="activeLang === 'ar' ? 'rtl' : 'ltr'"
+      ></textarea>
       <input
+        v-else
         v-model="currentValue"
         type="text"
         :placeholder="

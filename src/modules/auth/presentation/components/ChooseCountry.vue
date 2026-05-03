@@ -6,7 +6,7 @@
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import IndexCountryParams from '@/modules/country/core/params/index.country.params';
   import { useRoute, useRouter } from 'vue-router';
-  import { debounce } from '@/base/Presentation/Utils/debouced';
+  // import { debounce } from '@/base/Presentation/Utils/debouced';
   // import { debounce } from '@/base/Presentation/Utils/debouced';
 
   const controller = CountryController.getInstance();
@@ -19,7 +19,7 @@
   const router = useRouter();
 
   const selectCountry = (country: CountryModel) => {
-    console.log(country.id, 'Country');
+    // console.log(country.id, 'Country');
     selectedCountryId.value = country.id;
     selectedCountryCode.value = country.code;
   };
@@ -33,17 +33,17 @@
       ),
     );
   };
-  const Search = debounce(() => {
-    router.push({
-      query: {
-        ...route.query,
-        page: Number(route.query.page ?? 1),
-        word: word.value || undefined,
-      },
-    });
+  // const Search = debounce(() => {
+  //   router.push({
+  //     query: {
+  //       ...route.query,
+  //       page: Number(route.query.page ?? 1),
+  //       word: word.value || undefined,
+  //     },
+  //   });
 
-    fetchCountries(1, word.value);
-  });
+  //   fetchCountries(1, word.value);
+  // });
 
   // const isDraft = computed(() => {
   //   const data = FormStore?.formData[formRoute] ?? {};
@@ -61,8 +61,6 @@
 
   const continueToLogin = () => {
     if (!selectedCountryId.value) return;
-
-    console.log(selectedCountryCode.value, 'selectedCountryCode');
     router.push({
       name: 'Login',
       params: {
@@ -80,7 +78,7 @@
         {{ $t('Choose your country to access localized content and settings') }}
       </p>
     </div>
-    <div class="search-field">
+    <!-- <div class="search-field">
       <span class="search-icon">
         <svg
           width="18"
@@ -102,7 +100,7 @@
         type="text"
         @input="Search"
       />
-    </div>
+    </div> -->
     <DataStatusBuilder :controller="state" :on-retry="async () => await fetchCountries()">
       <template #success="{ data }">
         <div class="country-grid">

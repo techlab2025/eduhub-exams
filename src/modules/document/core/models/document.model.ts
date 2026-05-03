@@ -1,55 +1,81 @@
+import type TitleInterface from '@/base/Data/Models/titleInterface';
+import DocumentTranslationParams from '../params/translation.params';
+
 export default class DocumentModel {
   public readonly id?: number;
-  public readonly title: string;
-  public readonly subjectId: number;
-  public readonly stageId: number;
-  public readonly unitIds: number[];
-  public readonly documentTypeId: number;
-  public readonly isAllUnits: boolean;
+  public readonly dovumentName: string;
+  public readonly RefNumber: string;
+  public readonly doecumentType: TitleInterface<number>;
+  public readonly Subjtecs: TitleInterface<number>[];
+  public readonly tranaslations: DocumentTranslationParams;
+  public readonly tags: string[];
+  public readonly images: string[];
+  public readonly files: string[];
 
   constructor(data: {
     id?: number;
-    title: string;
-    subjectId: number;
-    stageId: number;
-    unitIds: number[];
-    documentTypeId: number;
-    isAllUnits: boolean;
+    dovumentName: string;
+    RefNumber: string;
+    doecumentType: TitleInterface<number>;
+    Subjtecs: TitleInterface<number>[];
+    tranaslations: DocumentTranslationParams;
+    tags: string[];
+    images: string[];
+    files: string[];
   }) {
     this.id = data.id;
-    this.title = data.title;
-    this.subjectId = data.subjectId;
-    this.stageId = data.stageId;
-    this.unitIds = data.unitIds;
-    this.documentTypeId = data.documentTypeId;
-    this.isAllUnits = data.isAllUnits;
+    this.dovumentName = data.dovumentName;
+    this.RefNumber = data.RefNumber;
+    this.doecumentType = data.doecumentType;
+    this.Subjtecs = data.Subjtecs;
+    this.tranaslations = data.tranaslations;
+    this.tags = data.tags;
+    this.images = data.images;
+    this.files = data.files;
 
     Object.freeze(this);
   }
 
   static fromJson(json: any): DocumentModel {
     if (!json) {
-      throw new Error("Cannot create DocumentModel from null or undefined");
+      throw new Error('Cannot create DocumentModel from null or undefined');
     }
 
     return new DocumentModel({
       id: json.id,
-      title: json.title,
-      subjectId: json.subject_id,
-      stageId: json.stage_id,
-      unitIds: json.unit_ids ?? [],
-      documentTypeId: json.document_type_id,
-      isAllUnits: json.isAllUnits ?? false,
+      dovumentName: json.title,
+      RefNumber: json.ref_number,
+      doecumentType: json.document_type,
+      Subjtecs: json.subjtecs ?? [],
+      tranaslations: json.tranaslations,
+      tags: json.tags,
+      images: json.images,
+      files: json.files,
     });
   }
 
   static example: DocumentModel = new DocumentModel({
-    id: 1,
-    title: "Sample Document",
-    subjectId: 1,
-    stageId: 1,
-    unitIds: [1, 2],
-    documentTypeId: 1,
-    isAllUnits: false,
+    id: 10,
+    dovumentName: 'title',
+    RefNumber: '10',
+    doecumentType: {
+      id: 1,
+      title: 'title',
+    },
+    Subjtecs: [
+      {
+        id: 1,
+        title: 'aa',
+      },
+    ],
+    tranaslations: new DocumentTranslationParams({
+      description: {
+        ar: '',
+        en: '',
+      },
+    }),
+    tags: ['tag1', 'tage2'],
+    images: [],
+    files: [],
   });
 }

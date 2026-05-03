@@ -40,6 +40,7 @@ export default class EducationClassificationRepository extends BaseRepository<
         title: 'Secondary education',
         id: 2,
         status: false,
+        has_configuration: false,
       },
     ];
   }

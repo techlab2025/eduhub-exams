@@ -26,7 +26,7 @@
 @use 'utils/permission';
 @use 'utils/crop';
 @use 'utils/search_input';
-
+@use 'Droplist/lists';
 /* ── Layout ────────────────────────────────────────────────────── */
 @use '../shared/LayoutComponents/styles/layout_imports';
 
@@ -44,6 +44,9 @@
 @use '../modules/employee/presentation/styles/employee_imports';
 @use '../modules/EducationClassification/presentation/styles/education_classification_imports';
 @use '../shared/FeatureHeader/styles/_feature_header';
+@use '../modules/document/presentation/styles/document_imports';
+@use '../modules/about/presentation/styles/about_imports';
+@use '../modules/SupportContacts/presentation/styles/support_imports';
 
 /* ── Pages ─────────────────────────────────────────────────────── */
 @use '../modules/auth/presentation/styles/login';

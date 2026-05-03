@@ -1,6 +1,6 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
-import type FaqsDetailsParams from "./faqs.details.params";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type FaqsDetailsParams from './faqs.details.params';
 
 /**
  * Parameters for adding a new country

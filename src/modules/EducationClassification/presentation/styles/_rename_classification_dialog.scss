@@ -1,0 +1,63 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins/flex' as *;
+
+.p-dialog.rename-dialog {
+  background-color: $StandardWhite;
+
+  .dialog-header {
+    .header-container {
+      @include flex-row(nowrap, flex-start, center);
+
+      gap: 1rem;
+
+      .header-text-content {
+        @include flex-column(nowrap, flex-start, flex-start);
+
+        .header-title {
+          color: $StandardBlack;
+          font-weight: 600;
+          font-size: 20px;
+          font-family: 'Bold';
+        }
+
+        .header-message {
+          color: $Gray-5;
+          font-weight: 500;
+          font-size: 16px;
+          font-family: 'Medium';
+        }
+      }
+    }
+  }
+
+  .content {
+    @include flex-column(nowrap, flex-start, flex-start);
+
+    width: 100%;
+    gap: 10px;
+
+    .input-wrap {
+      width: 100%;
+      border-radius: 50px;
+    }
+
+    .btns {
+      @include flex-row(nowrap, flex-start, flex-start);
+
+      width: 100%;
+      gap: 5px;
+
+      button {
+        font-family: 'Medium';
+
+        &:first-child {
+          width: 70%;
+        }
+
+        &:last-child {
+          width: 30%;
+        }
+      }
+    }
+  }
+}

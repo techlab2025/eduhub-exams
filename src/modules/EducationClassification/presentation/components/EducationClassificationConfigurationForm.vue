@@ -216,7 +216,7 @@
       <div class="education-classification-form-fields">
         <!-- Email Field -->
         <div class="field-group">
-          <label class="field-label" for="title"> {{ $t('number of branchs') }} </label>
+          <label class="field-label" for="title"> {{ $t('number_of_branchs') }} </label>
           <div class="input-wrap">
             <input
               id="title"
@@ -235,7 +235,7 @@
 
       <SingularPluralForm
         :number-of-branches="ConfigurationNumberOfBranchs"
-        :label="$t('name of branch')"
+        :label="$t('name_of_branch')"
         :initial-branches="configurationInitialBranches"
         @update="GetConfigurationBranchs"
       />
@@ -258,7 +258,7 @@
           <div class="input-wrap">
             <MultiLangInput
               :field-key="`title_Singular`"
-              :label="`subjects name (Singular)`"
+              :label="$t(`subjects_name_(Singular)`)"
               :languages="['en', 'ar']"
               :model-value="subject_title_Singular"
               @update:model-value="subject_title_Singular = $event"
@@ -269,7 +269,7 @@
           <div class="input-wrap">
             <MultiLangInput
               :field-key="`title_Plural`"
-              :label="`subjects name (Plural)`"
+              :label="$t(`subjects_name_(Plural)`)"
               :languages="['en', 'ar']"
               :model-value="subject_title_Plural"
               @update:model-value="subject_title_Plural = $event"
@@ -277,7 +277,7 @@
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="title"> {{ $t('number of branchs') }} </label>
+          <label class="field-label" for="title"> {{ $t('number_of_branchs') }} </label>
           <div class="input-wrap">
             <input
               id="title"
@@ -295,7 +295,7 @@
       </div>
       <SingularPluralForm
         :number-of-branches="subjectNumberOfBranchs"
-        :label="$t('name of subjects')"
+        :label="$t('name_of_subjects')"
         :initial-branches="subjectInitialBranches"
         @update="GetSubjectBranchs"
       />

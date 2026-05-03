@@ -22,7 +22,7 @@
   import { computed, type PropType } from 'vue';
 
   // Import state components
-  import DataFailedState from './DataFailed.vue';
+  // import DataFailedState from './DataFailed.vue';
   import TimeoutState from './TimeoutState.vue';
   import NoNetworkState from './NoNetworkState.vue';
   import ProgressState from './ProgressState.vue';
@@ -144,13 +144,13 @@
   });
 
   // Get error message
-  const errorMessage = computed(() => {
-    const state = currentState.value;
-    if (state.error) {
-      return state.error.displayMessage || state.error.title;
-    }
-    return 'An error occurred';
-  });
+  // const errorMessage = computed(() => {
+  //   const state = currentState.value;
+  //   if (state.error) {
+  //     return state.error.displayMessage || state.error.title;
+  //   }
+  //   return 'An error occurred';
+  // });
 </script>
 
 <template>
@@ -247,14 +247,14 @@
     <!-- Failed State -->
     <div v-else-if="isFailed" class="status-failed">
       <slot name="failed" :error="currentState.error" :retry="handleRetry" :state="currentState">
-        <div v-if="inlineError" class="inline-error">
+        <!-- <div v-if="inlineError" class="inline-error">
           <span class="error-icon">⚠️</span>
           <span class="error-text">{{ errorMessage }}</span>
           <button v-if="retryFn || $attrs.onRetry" class="inline-retry" @click="handleRetry">
             Retry
           </button>
         </div>
-        <DataFailedState v-else />
+        <DataFailedState v-else /> -->
       </slot>
     </div>
 

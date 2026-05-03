@@ -4,7 +4,6 @@ import LoginForm from '../LoginForm.vue';
 import LoginController from '../../controllers/login.controller';
 import LoginParams from '../../../core/params/login.params';
 
-// Mock the controller
 vi.mock('../../controllers/login.controller', () => {
   return {
     default: {
@@ -13,12 +12,15 @@ vi.mock('../../controllers/login.controller', () => {
   };
 });
 
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({ locale: { value: 'en' } }),
+}));
+
 describe('LoginForm.vue', () => {
   let mockLogin: any;
 
   beforeEach(() => {
     mockLogin = vi.fn();
-    // Setup mock instance
     (LoginController.getInstance as any).mockReturnValue({
       login: mockLogin,
     });
@@ -27,7 +29,7 @@ describe('LoginForm.vue', () => {
   const mountOptions = {
     global: {
       mocks: {
-        $t: (msg: string) => msg, // mock vue-i18n
+        $t: (msg: string) => msg,
       },
     },
   };
@@ -37,7 +39,7 @@ describe('LoginForm.vue', () => {
     expect(wrapper.find('form.login-form').exists()).toBe(true);
     expect(wrapper.find('input#email').exists()).toBe(true);
     expect(wrapper.find('input#password').exists()).toBe(true);
-    expect(wrapper.find('button[type="submit"]').text()).toBe('login');
+    expect(wrapper.find('button[type="submit"]').text()).toBe('Log In');
   });
 
   it('calls login controller with correct params on submit', async () => {

@@ -3,183 +3,119 @@
 @use '../../../../styles/variables' as *;
 
 .login {
-  @include grid(2, 1fr, 10px);
-
   width: 100%;
   min-height: 100vh;
-  background-color: white;
-  padding: 20px;
+  padding: 32px 20px;
 
-  @media screen and (max-width: 1179px) {
-    @include flex(column-reverse, wrap, center, center);
+  @include flex(column, nowrap, center, center);
 
-    gap: var(--md-size);
-    padding: var(--md-size);
+  gap: 28px;
+
+  @media screen and (max-width: 600px) {
+    padding: 24px 16px;
+    gap: 20px;
   }
 
-  .card {
-    background: linear-gradient(180deg, #0b1a2b, #081220);
-    border-radius: 40px;
-    clip-path: polygon(0% 0%, 100% 0%, 92% 100%, 0% 100%);
-    position: relative;
-    overflow: hidden;
-  }
+  /* ── Top Logo ─────────────────────────────────────────── */
+  .login-header {
+    @include flex(row, nowrap, center, center);
 
-  .login-logo {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: var(--white);
-  }
-
-  .login-logo {
-    @include flex(row, wrap, center, center);
-
-    width: 100%;
-    height: 100%;
-    color: white;
-    background-color: var(--gray-900); // your navy color
-    border-radius: 40px; // top-left · top-right · bottom-left · bottom-right=0
-    position: relative;
-
-    @media (max-width: 1180px) {
-      display: none;
-    }
-
-    .logo {
-      width: 60%;
-      height: 50%;
-      transition: all 0.5s ease-in-out;
-
-      @media (max-width: 1400px) {
-        width: 40%;
-        height: 30%;
-      }
+    .logo-img {
+      height: 36px;
+      object-fit: contain;
     }
   }
 
+  /* ── Form Card ─────────────────────────────────────────── */
   .login-form {
-    @include flex(column, wrap, center, center);
+    @include flex(column, nowrap, space-between, center);
 
-    width: 100%;
-    padding: var(--md-size);
+    position: relative;
+    width: 713px;
+    max-width: 100%;
+    padding: 80px;
     background-color: var(--BgWhite);
-    border-radius: var(--radius-xl) 0 0 var(--radius-xl);
-    box-shadow: var(--shadow-xl);
-
-    @media screen and (max-width: 1179px) {
-      @include flex(column, wrap, center, center);
-
-      gap: var(--md-size);
-      border-radius: var(--radius-sm);
-      width: 70%;
-    }
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    gap: 28px;
+    height: 557px;
 
     @media screen and (max-width: 600px) {
       width: 100%;
+      padding: 28px 20px 24px;
+    }
+
+    /* ── Language Switcher ─────────────────────────────────── */
+    .lang-switcher {
+      position: absolute;
+      top: 14px;
+      right: 14px;
     }
 
     /* ── Title ─────────────────────────────────────────── */
     .title {
-      @include flex(column, wrap, center, center);
-
-      gap: 5rem;
-
-      @media screen and (max-width: 1179px) {
-        gap: 2rem;
-      }
-
-      .logo {
-        @include flex(row, wrap, center, center);
-
-        gap: var(--xs-size-3);
-
-        h2 {
-          font-size: var(--xl-size-1);
-          font-family: 'Bold', sans-serif;
-          color: var(--gray-900);
-        }
-      }
-
-      .text {
-        @include flex(column, wrap, center, center);
-
-        width: 100%;
-        text-align: center;
-
-        p {
-          font-family: 'Bold', sans-serif;
-          font-size: var(--xl-size-base);
-          color: var(--gray-900);
-        }
-
-        span {
-          font-family: 'Regular', sans-serif;
-          font-size: var(--md-size-base);
-          color: var(--gray-400);
-        }
-      }
-    }
-
-    .tabs {
-      @include flex(row, wrap, center, center);
+      @include flex(column, nowrap, center, center);
 
       width: 100%;
-      gap: 1rem;
-      margin-block: 2rem;
+      gap: 8px;
+      text-align: center;
+      margin-top: 8px;
 
-      .tab {
-        padding: 0.5rem 1rem;
-        background-color: var(--PrimaryColor-light);
-        border-bottom: 2px solid var(--PrimaryColor);
-        cursor: pointer;
-        transition: var(--transition);
-        width: fit-content;
-        font-family: 'Regular', sans-serif;
-        font-size: 1rem;
-        color: var(--gray-700);
-        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      h2 {
+        color: $StandardBlack;
+        font-size: 40px;
+        font-weight: 700;
+        font-family: 'Bold';
+      }
 
-        &.active {
-          background-color: var(--PrimaryColor);
-          color: var(--BgWhite);
-          font-family: 'Bold', sans-serif;
-          box-shadow: var(--shadow);
-        }
-
-        &:hover:not(.active) {
-          background-color: var(--gray-100);
-        }
+      p {
+        font-family: 'Medium';
+        color: $Gray-5;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.5;
+        padding-top: 10px;
       }
     }
 
+    /* ── Inputs ─────────────────────────────────────────── */
     .inputs {
-      @include flex(column, wrap, center, center);
+      @include flex(column, nowrap, flex-start, flex-start);
 
       width: 100%;
-      gap: var(--md-size);
-      margin-block: var(--xl-size-1);
+      gap: 18px;
 
       .input-wrapper {
         position: relative;
         width: 100%;
 
+        @include flex(column, nowrap, flex-start, flex-start);
+
+        gap: 6px;
+        padding: 0 !important;
+
+        label {
+          font-family: 'Medium';
+          color: $StandardBlack;
+          font-size: 14px;
+          font-weight: 600;
+        }
+
         input {
           width: 100%;
-          padding: 1rem 1rem 1rem 1.5rem;
+          padding: 0.75rem 3rem 0.75rem 1rem;
           border: 1px solid var(--gray-200);
-          border-radius: var(--radius-md);
+          border-radius: 50px;
           transition: var(--transition-fast);
           color: var(--Black) !important;
-          background-color: var(--BgWhite) !important;
+          background: $StandardWhite !important;
+          box-shadow: 0 0 0 1000px $StandardWhite inset !important;
+          -webkit-text-fill-color: $StandardBlack !important;
 
           &:focus {
             outline: none;
             border-color: var(--PrimaryColor);
             box-shadow: 0 0 0 3px var(--PrimaryColor-light);
-            background-color: var(--BgWhite);
           }
 
           &::placeholder {
@@ -189,20 +125,12 @@
           }
         }
 
-        .icon {
-          position: absolute;
-          left: 1.15rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--gray-400);
-        }
-
         .icon-eye {
           position: absolute;
-          top: 1rem;
-          right: 2.5rem;
-          height: 25px;
-          width: 25px;
+          bottom: 0.75rem;
+          right: 1rem;
+          height: 20px;
+          width: 20px;
           cursor: pointer;
           color: var(--gray-400);
           transition: var(--transition-fast);
@@ -220,3 +148,10 @@
     }
   }
 }
+
+// input:-webkit-autofill,
+// input:-webkit-autofill:hover,
+// input:-webkit-autofill:focus {
+//   background-color: white !important;
+//   // transition: background-color 5000s ease-in-out 0s;
+// }

@@ -145,7 +145,7 @@
 
             <!-- Actions column (if slot provided) -->
             <th v-if="$slots.actions" class="th-actions">
-              <slot name="actions-header">Actions</slot>
+              <!-- <slot name="actions-header">Actions</slot> -->
             </th>
           </tr>
         </thead>
@@ -287,13 +287,13 @@
         //   var(--gray-50) 0%,
         //   var(--gray-100) 100%
         // );
-        background: var(--gray-100);
+        background: var(--color-light-gray);
         padding: 24px;
         text-align: left;
         color: var(--table-header-color);
         font-weight: 600;
-        font-size: 12px;
-        font-family: 'Medium';
+        font-size: 14px;
+        font-family: 'Bold';
         text-transform: uppercase;
         letter-spacing: 0.08em;
         border-bottom: 2px solid var(--border-weak);

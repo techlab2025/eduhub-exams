@@ -68,6 +68,16 @@
           name: 'Units',
           icon: SettingIcon,
         },
+        {
+          link: '/about',
+          name: 'About',
+          icon: SettingIcon,
+        },
+        {
+          link: '/support',
+          name: 'Support',
+          icon: SettingIcon,
+        },
       ],
     },
     {

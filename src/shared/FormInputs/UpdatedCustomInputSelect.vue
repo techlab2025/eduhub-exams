@@ -225,7 +225,7 @@
   .input-select {
     width: 100%;
     background-color: transparent;
-    border-radius: 10px;
+    border-radius: 50px;
 
     &:focus {
       border: 1px solid #d9dbe9 !important;

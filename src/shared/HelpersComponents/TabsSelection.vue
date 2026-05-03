@@ -22,7 +22,7 @@
 
   const FetchMyZones = async () => {
     const fetchMyZonesParams = new FetchMyZonesParams(props.ProjectId);
-    const response = await fetchMyZonesController.FetchMyZones(fetchMyZonesParams, router);
+    await fetchMyZonesController.FetchMyZones(fetchMyZonesParams, router);
   };
   onMounted(() => {
     FetchMyZones();

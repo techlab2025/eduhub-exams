@@ -1,4 +1,4 @@
-@use "../variables" as *;
+@use '../variables' as *;
 
 .btn-secondary {
   background-color: transparent;
@@ -7,6 +7,7 @@
   font-weight: $BaseFontSemiBoldWeight;
   font-size: var(--xs-size);
   font-family: var(--font-family);
+  border-radius: 50px;
 
   &:hover {
     background-color: var(--PrimaryColor);

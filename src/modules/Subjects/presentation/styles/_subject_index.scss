@@ -89,7 +89,7 @@
       height: 26px;
       padding: 0 10px;
       background: linear-gradient(135deg, var(--PrimaryColor), var(--PrimaryColor-hover));
-      color: white;
+      color: $StandardWhite;
       border-radius: var(--radius-full);
       font-size: 0.75rem;
       font-weight: 700;
@@ -180,15 +180,21 @@
 
   &[data-type='1'],
   &[data-type='work'] {
-    background: var(--chip-work-bg, linear-gradient(135deg, #eef2ff, #e0e7ff));
-    color: var(--chip-work-text, #4338ca);
+    background: var(
+      --chip-work-bg,
+      linear-gradient(135deg, var(--PrimaryColor-light), var(--indigo-100))
+    );
+    color: var(--chip-work-text, var(--PrimaryColor-active));
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   &[data-type='2'],
   &[data-type='personal'] {
-    background: var(--chip-personal-bg, linear-gradient(135deg, #f0fdf4, #dcfce7));
-    color: var(--chip-personal-text, #16a34a);
+    background: var(
+      --chip-personal-bg,
+      linear-gradient(135deg, var(--success-light), var(--green-100))
+    );
+    color: var(--chip-personal-text, var(--success));
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 

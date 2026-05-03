@@ -26,7 +26,7 @@
     @include flex-row(nowrap, flex-start, center);
 
     gap: var(--xs-size-2);
-    background-color: var(--BgWhite);
+    background-color: var(--white);
     color: var(--gray-800);
     font-size: var(--sm-size);
     font-weight: $BaseFontSemiBoldWeight;
@@ -42,6 +42,7 @@
       outline: none;
       border-color: var(--PrimaryColor);
       box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+      background-color: white;
 
       @include border($BaseBorderWidth, var(--PrimaryColor), solid, var(--md-size));
     }

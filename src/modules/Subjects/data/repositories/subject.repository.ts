@@ -1,10 +1,7 @@
-import BaseRepository, {
-  type RepositoryConfig,
-} from "@/base/Domain/Repositories/baseRepository";
-import TitleInterface from "@/base/Data/Models/titleInterface";
-import SubjectModel from "../../core/models/subject.model";
-import SubjectApiService from "../api/subject.api-service";
-import StageModel from "@/modules/Stages/core/models/stage.model";
+import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+import TitleInterface from '@/base/Data/Models/titleInterface';
+import SubjectModel from '../../core/models/subject.model';
+import SubjectApiService from '../api/subject.api-service';
 
 /**
  * Country Repository for API data operations
@@ -12,10 +9,7 @@ import StageModel from "@/modules/Stages/core/models/stage.model";
  * This repository handles all data access for countries,
  * including parsing API responses and error handling.
  */
-export default class SubjectRepository extends BaseRepository<
-  SubjectModel,
-  SubjectModel[]
-> {
+export default class SubjectRepository extends BaseRepository<SubjectModel, SubjectModel[]> {
   private static instance: SubjectRepository;
 
   protected get apiService() {
@@ -25,8 +19,8 @@ export default class SubjectRepository extends BaseRepository<
   protected get config(): RepositoryConfig {
     return {
       hasPagination: true,
-      dataKey: "data",
-      paginationKey: "meta",
+      dataKey: 'data',
+      paginationKey: 'meta',
     };
   }
 
@@ -39,20 +33,20 @@ export default class SubjectRepository extends BaseRepository<
       SubjectModel.example,
       {
         ...SubjectModel.example,
-        title: "الفيزياء",
+        title: 'الفيزياء',
         id: 2,
         Stage: new TitleInterface({
           id: 2,
-          title: "المرحلة الإعدادية",
+          title: 'المرحلة الإعدادية',
         }),
       },
       {
         ...SubjectModel.example,
-        title: "الكيمياء",
+        title: 'الكيمياء',
         id: 3,
         Stage: new TitleInterface({
           id: 3,
-          title: "المرحلة الابتدائية",
+          title: 'المرحلة الابتدائية',
         }),
       },
     ];

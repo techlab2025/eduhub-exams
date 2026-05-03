@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import Skeleton from 'primevue/skeleton';
 
-  const props = defineProps<{
+  defineProps<{
     rows: number;
     cols: number;
   }>();

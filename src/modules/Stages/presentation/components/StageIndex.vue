@@ -10,7 +10,7 @@
   import IndexStageParams from '../../core/params/index.stage.params';
   import StageController from '../controllers/stage.controller';
   import DeleteStageParams from '../../core/params/delete.stage.params';
-  import type StageModel from '../../core/models/stage.model';
+  import type StageModel from '../../core/models/stage.model'; // eslint-disable-line @typescript-eslint/no-unused-vars
   import { EducationType } from '../../core/constants/educationtype.enum';
 
   // Controller instance

@@ -1,20 +1,17 @@
 <script setup lang="ts">
-  import { ref, defineProps, watch, computed } from 'vue';
+  import { ref, watch } from 'vue';
   import Popover from 'primevue/popover';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import ActionsIcon from '../icons/ActionsIcon.vue';
-  import PermissionHandler from '@/base/Presentation/Utils/permission_handler';
-  import type { PermissionsEnum } from '@/features/users/Admin/Core/Enum/permission_enum';
 
   interface ActionItem {
     text: string;
     icon: any;
     link?: string;
     action?: () => void;
-    permission?: PermissionsEnum[];
   }
 
-  const emit = defineEmits(['delete']);
+  defineEmits(['delete']);
   defineOptions({ inheritAttrs: false });
 
   const op = ref();
@@ -24,19 +21,12 @@
     op.value.toggle(event);
   };
 
-  const { actionList = [], showActions = true } = defineProps<{
+  const { actionList = [] } = defineProps<{
     actionList: ActionItem[];
     showActions?: boolean;
+    deleteDialogTitle?: string;
+    deleteDialogMessage?: string;
   }>();
-
-  // ✅ Filter actions by permission
-  const permittedActions = computed(() =>
-    showActions
-      ? actionList.filter((a) =>
-          a.permission ? PermissionHandler.Instance.handle(a.permission) : true,
-        )
-      : [],
-  );
 
   watch(ActionIconsToggle, (newVal) => {
     ActionIconsToggle.value = newVal;
@@ -51,10 +41,10 @@
   <Popover ref="op">
     <div class="list-body">
       <ul class="border-none">
-        <li v-for="action in permittedActions" :key="action.text" class="list-item cursor-pointer">
+        <li v-for="action in actionList" :key="action.text" class="list-item cursor-pointer">
           <router-link v-if="action.link" :to="action.link" class="flex items-center gap-[5px]">
-            <component :is="action.icon" />
             <span>{{ action.text }}</span>
+            <component :is="action.icon" />
           </router-link>
 
           <button
@@ -62,11 +52,16 @@
             class="flex items-center gap-sm"
             @click="action.action"
           >
-            <component :is="action.icon" />
             <span>{{ action.text }}</span>
+            <component :is="action.icon" />
           </button>
 
-          <DeleteDialog v-else-if="action.text == $t('delete')" @delete="action.action" />
+          <DeleteDialog
+            v-else-if="action.text == $t('delete')"
+            :title="deleteDialogTitle"
+            :message="deleteDialogMessage"
+            @delete="action.action"
+          />
         </li>
         <slot name="custom"></slot>
       </ul>

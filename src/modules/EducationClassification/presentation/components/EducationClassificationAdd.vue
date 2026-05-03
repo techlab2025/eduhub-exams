@@ -45,7 +45,7 @@
 
 <style scoped>
   :deep(.input-file) {
-    border: 1px solid #d9dbe9 !important;
+    border: 1px solid var(--gray-200-std) !important;
     padding: 11px;
     border-radius: 20px !important;
     cursor: pointer;
@@ -65,7 +65,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--gray-300);
     border-radius: 4px;
     margin-bottom: 10px;
   }
@@ -104,7 +104,7 @@
   button {
     padding: 8px 16px;
     background-color: var(--PrimaryColor);
-    color: white;
+    color: var(--StandardWhite);
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -120,7 +120,7 @@
     padding: 10px;
     background-color: var(--danger-light);
     color: var(--danger-dark);
-    border: 1px solid #f5c6cb;
+    border: 1px solid var(--danger-border);
     border-radius: 4px;
   } */
 </style>

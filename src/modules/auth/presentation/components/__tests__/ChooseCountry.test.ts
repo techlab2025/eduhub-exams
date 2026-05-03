@@ -77,21 +77,9 @@ describe('ChooseCountry.vue', () => {
     expect(mockFetchList).toHaveBeenCalledWith(new IndexCountryParams('', 1, 10));
   });
 
-  it('updates search word and calls fetchCountries', async () => {
+  it('shows the auth layout section', () => {
     const wrapper = mount(ChooseCountry, mountOptions);
-
-    const searchInput = wrapper.find('.search-input');
-    await searchInput.setValue('Egypt');
-
-    // Our mock debounce directly calls the function
-    expect(mockPush).toHaveBeenCalledWith({
-      query: {
-        page: 1,
-        word: 'Egypt',
-      },
-    });
-    // the fetch list is called again inside Search
-    expect(mockFetchList).toHaveBeenCalledTimes(2);
+    expect(wrapper.find('section.auth-layout').exists()).toBe(true);
   });
 
   it('navigates to login on continue button click', async () => {

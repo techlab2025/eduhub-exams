@@ -1,6 +1,6 @@
-import BaseApiService from "@/base/Data/ApiService/baseApiService";
-import type { ApiEndpoints } from "@/base/Data/ApiService/baseApiService";
-import { FaqsEndpoints } from "./faqs.api.endpoints";
+import BaseApiService from '@/base/Data/ApiService/baseApiService';
+import type { ApiEndpoints } from '@/base/Data/ApiService/baseApiService';
+import { FaqsEndpoints } from './faqs.api.endpoints';
 
 export default class FaqsApiService extends BaseApiService {
   private static instance: FaqsApiService;
