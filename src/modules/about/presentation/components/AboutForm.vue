@@ -18,7 +18,7 @@
   const emit = defineEmits(['updateData']);
 
   const { about } = defineProps<{
-    about: AboutModel;
+    about?: AboutModel;
     formKey?: string;
   }>();
 
@@ -39,7 +39,7 @@
         description.value = newAbout.translations.description || {};
         title.value = newAbout.translations.title || {};
         image.value = newAbout.images;
-        socialMediaList.value = newAbout.socailMedia;
+        socialMediaList.value = newAbout.socialMedia;
 
         // Populate social media if provided by the model
         if (newAbout.socialMedia?.length) {
@@ -87,7 +87,7 @@
         title: title.value,
         description: description.value,
       }),
-      images: image.value,
+      images: image.value!,
       socialMedia: socialMedia,
     };
 
@@ -111,7 +111,7 @@
   // ─── File Handler ─────────────────────────────────────────────────────────────
 
   const handleImageChange = (file: Array<{ base64: string }>) => {
-    image.value = file?.[0].base64;
+    image.value = file?.[0]!.base64;
     updateData();
   };
 </script>
