@@ -140,8 +140,6 @@
             <template #cell-notes="{ item }">
               {{ item.notes }}
             </template>
-
-            <template #actions="{ item }"> </template>
           </AppTable>
         </div>
 
@@ -168,7 +166,7 @@
           </svg>
           <h3>No emails yet</h3>
           <p>Add the first employee email to get started</p>
-          <router-link :to="formRoute" class="btn-add empty-cta">
+          <!-- <router-link :to="formRoute" class="btn-add empty-cta">
             <svg
               width="18"
               height="18"
@@ -181,7 +179,7 @@
               <path d="M12 5v14M5 12h14" />
             </svg>
             <span>Add Email</span>
-          </router-link>
+          </router-link> -->
         </div>
       </template>
     </DataStatusBuilder>

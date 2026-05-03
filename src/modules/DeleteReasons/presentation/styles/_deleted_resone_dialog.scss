@@ -62,10 +62,13 @@
 
       .item-actions {
         @include flex-row(nowrap, center, center);
+
         gap: 3px;
+
         svg {
           width: 25px;
           height: 25px;
+
           &:last-child {
             margin-top: 6px;
           }

@@ -13,23 +13,29 @@
 
   .header-container {
     width: 100%;
+
     @include flex-row(nowrap, space-between, center);
+
     .header-container-text {
       @include flex-column(nowrap, flex-start, flex-start);
+
       gap: 2px;
       margin-block: 12px;
+
       h5 {
         font-size: 24px;
         font-weight: 700;
         color: var(--gray-900-std);
       }
+
       p {
-        color: 16px;
+        font-size: 16px;
         font-weight: 500;
         color: var(--color-dark-gray);
       }
     }
   }
+
   .gap-10 {
     gap: 10px;
   }
