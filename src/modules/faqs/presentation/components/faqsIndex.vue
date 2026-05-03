@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
   import { onMounted, computed, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import FaqsController from '../controllers/faqs.controller';
@@ -7,6 +6,8 @@
   import EditpinIcon from '@/shared/icons/EditpinIcon.vue';
   import DeleteFaqsParams from '../../core/params/delete.faqs.params';
   import type FaqsModel from '../../core/models/faqs.model';
+  import IconAdd from '@/shared/icons/IconAdd.vue';
+  import IconMins from '@/shared/icons/IconMins.vue';
 
   const controller = FaqsController.getInstance();
   const route = useRoute();
@@ -36,55 +37,44 @@
     router.push(`/${countryCode.value}/faqs/${id}/edit`);
   };
 
-
   const deleteFaq = async (id: number) => {
     await controller.delete(new DeleteFaqsParams({ id }), undefined);
     await controller.fetchList();
-  }
-
+  };
 
   onMounted(async () => {
     await controller.fetchList();
   });
-
-
 </script>
 
 <template>
   <div class="faqs-page">
-    <div class="faqs-header">
-      <div class="faqs-header-text">
-        <h2 class="faqs-title">{{ $t('faqs') }}</h2>
-        <p class="faqs-description">{{ $t('faqs_description') }}</p>
+    <!-- ── Page Header ──────────────────────────────────────────────────── -->
+    <div class="header-container">
+      <div class="about-header">
+        <h2 class="title">{{ $t('faqs') }}</h2>
+        <p class="description">{{ $t('faqs_description') }}</p>
       </div>
-      <router-link v-if="hasData" :to="`/${countryCode}/faqs/add`" class="btn-add-faq">
-        + {{ $t('add_faq') }}
-      </router-link>
+      <div class="header-actions">
+        <router-link v-if="hasData" :to="`/${countryCode}/faqs/add`" class="btn-filled-green">
+          + {{ $t('add_faq') }}
+        </router-link>
+      </div>
     </div>
 
-    <div v-if="hasData" class="faqs-list">
-      <div v-for="(faq, idx) in faqs" :key="faq.id ?? idx" class="faq-row">
+    <!-- ── FAQ List ────────────────────────────────────────────────────── -->
+    <div v-if="hasData" class="sections-list">
+      <div v-for="(faq, idx) in faqs" :key="faq.id ?? idx" class="faq-card">
+        <!-- Question row -->
         <div class="faq-row-header" @click="toggleExpand(idx)">
           <div class="faq-row-left">
-            <button type="button" class="expand-btn" :class="{ expanded: expandedIndex === idx }">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="12" cy="12" r="10" stroke="var(--PrimaryColor)" stroke-width="1.5" />
-                <path
-                  d="M12 8V16M8 12H16"
-                  stroke="var(--PrimaryColor)"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
+            <button type="button" class="expand-btn" :aria-expanded="expandedIndex === idx">
+              <IconAdd v-if="expandedIndex !== idx" />
+              <IconMins v-else />
             </button>
             <span class="faq-question">{{ getQuestion(faq) }}</span>
           </div>
+
           <div class="faq-row-actions" @click.stop>
             <button type="button" class="action-btn edit-btn" @click="editFaq(faq.id!)">
               <EditpinIcon />
@@ -111,226 +101,30 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 />
-
               </svg>
             </button>
           </div>
         </div>
 
-        <div v-if="expandedIndex === idx" class="faq-answer">
-          <p>{{ getAnswer(faq) }}</p>
-        </div>
-
-        <div class="faq-row-divider" />
+        <!-- Answer panel -->
+        <transition name="faq-answer">
+          <div v-if="expandedIndex === idx" class="faq-answer">
+            <p>{{ getAnswer(faq) }}</p>
+          </div>
+        </transition>
       </div>
     </div>
 
-    <div v-else class="empty-state">
+    <!-- ── Empty State ─────────────────────────────────────────────────── -->
+    <div v-else class="empty-data">
       <EmptyFaqs />
-      <h3>{{ $t('no_faqs_yet') }}</h3>
+      <h5>{{ $t('no_faqs_yet') }}</h5>
       <p>{{ $t('no_faqs_description') }}</p>
-      <router-link :to="`/${countryCode}/faqs/add`" class="btn-add-faq empty-cta">
+      <router-link :to="`/${countryCode}/faqs/add`" class="btn-filled-green">
         {{ $t('add_faq') }}
       </router-link>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
-
-
-  @use '../../../../styles/variables' as *;
-  @use '../../../../styles/mixins/flex' as *;
-
-  .faqs-page {
-    @include flex-column(nowrap, flex-start, flex-start);
-
-    gap: 20px;
-    font-family: 'Medium';
-    min-height: 80vh;
-
-    .faqs-header {
-      width: 100%;
-
-      @include flex-row(nowrap, space-between, center);
-
-      .faqs-header-text {
-        @include flex-column(nowrap, flex-start, flex-start);
-
-        gap: 4px;
-
-
-        .faqs-title {
-          color: $BgBlack;
-          font-size: 24px;
-          font-weight: 700;
-          margin: 0;
-        }
-
-        .faqs-description {
-          color: $Gray-5;
-          font-size: 16px;
-          font-weight: 500;
-          margin: 0;
-        }
-      }
-    }
-
-    .btn-add-faq {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 22px;
-      background-color: $PrimaryColor;
-      color: $StandardWhite;
-      border: none;
-      border-radius: 50px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background-color 0.2s;
-      white-space: nowrap;
-
-      &:hover {
-        background-color: $PrimaryColorHover;
-      }
-
-      &.empty-cta {
-        margin-top: 8px;
-      }
-    }
-
-    .faqs-list {
-      width: 100%;
-      background-color: $StandardWhite;
-      border: 1px solid $Gray-200-std;
-      border-radius: 16px;
-      overflow: hidden;
-
-      .faq-row {
-        .faq-row-header {
-          @include flex-row(nowrap, space-between, center);
-
-          padding: 16px 20px;
-          cursor: pointer;
-          transition: background-color 0.15s;
-
-          &:hover {
-            background-color: $GraySoft;
-          }
-
-          .faq-row-left {
-            @include flex-row(nowrap, flex-start, center);
-
-            gap: 12px;
-            flex: 1;
-            min-width: 0;
-
-            .expand-btn {
-              background: none;
-              border: none;
-              cursor: pointer;
-              padding: 0;
-              display: flex;
-              align-items: center;
-              flex-shrink: 0;
-              transition: transform 0.2s;
-
-              &.expanded {
-                transform: rotate(45deg);
-              }
-            }
-
-            .faq-question {
-              color: $BgBlack;
-              font-size: 15px;
-              font-weight: 600;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            }
-          }
-
-          .faq-row-actions {
-            @include flex-row(nowrap, flex-end, center);
-
-            gap: 8px;
-            flex-shrink: 0;
-            margin-left: 16px;
-
-            .action-btn {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 32px;
-              height: 32px;
-              border: 1px solid $Gray-200-std;
-              border-radius: 8px;
-              background: $StandardWhite;
-              cursor: pointer;
-              color: $Gray-400-std;
-              transition: all 0.2s;
-
-              &.edit-btn:hover {
-                border-color: $PrimaryColor;
-                color: $PrimaryColor;
-                // background-color: $PrimaryColorLight;
-              }
-
-              &.delete-btn:hover {
-                border-color: $Red;
-                color: $Red;
-                background-color: $BgRed;
-              }
-            }
-          }
-        }
-
-        .faq-answer {
-          padding: 0 20px 16px 52px;
-
-          p {
-            color: $Gray-5;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.6;
-            margin: 0;
-          }
-        }
-
-        .faq-row-divider {
-          border-top: 1px solid $Gray-100-std;
-          margin: 0 20px;
-        }
-
-        &:last-child .faq-row-divider {
-          display: none;
-        }
-      }
-    }
-
-    .empty-state {
-      @include flex-column(nowrap, center, center);
-
-      width: 100%;
-      flex: 1;
-      padding: 60px 20px;
-      text-align: center;
-
-      h3 {
-        color: $BgBlack;
-        font-size: 20px;
-        font-weight: 700;
-        margin: 16px 0 8px;
-      }
-
-      p {
-        color: $Gray-5;
-        font-size: 15px;
-        font-weight: 500;
-        margin: 0 0 16px;
-      }
-    }
-  }
-</style>
+<style scoped lang="scss"></style>

@@ -12,18 +12,18 @@ export default class AboutModel {
   public readonly id?: number;
   public readonly translations: TranslationModel;
   public readonly images: string;
-  public readonly socailMedia: SocialModel[];
+  public readonly socialMedia: SocialModel[];
 
   constructor(data: {
     id?: number;
     translations: TranslationModel;
     images: string;
-    socailMedia: SocialModel[];
+    socialMedia: SocialModel[];
   }) {
     this.id = data.id;
     this.translations = data.translations;
     this.images = data.images;
-    this.socailMedia = data.socailMedia;
+    this.socialMedia = data.socialMedia;
 
     Object.freeze(this);
   }
@@ -42,7 +42,7 @@ export default class AboutModel {
       id: json.id,
       translations: json.translations,
       images: json.images,
-      socailMedia: json.socail_media.map((el: any) => el.socailMedia.fromJson(el)),
+      socialMedia: json.social_media.map((el: any) => el.socailMedia.fromJson(el)),
     });
   }
 
@@ -59,7 +59,7 @@ export default class AboutModel {
       },
     }),
     images: Image,
-    socailMedia: [
+    socialMedia: [
       new SocialModel({
         link: 'socail/insta',
         icon: instagram,
