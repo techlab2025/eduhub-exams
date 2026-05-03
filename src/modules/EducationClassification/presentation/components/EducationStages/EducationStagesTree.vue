@@ -204,8 +204,8 @@
         />
       </div>
 
-      <div v-if="rootNodes.length > 0" class="bottom-bar">
-        <button class="btn btn-primary btn-full" @click="showAddTypeDialog = true">
+      <div v-if="rootNodes.length > 0">
+        <button class="btn btn-primary w-full" @click="showAddTypeDialog = true">
           Add New {{ getBranchName(0) }}
         </button>
       </div>
