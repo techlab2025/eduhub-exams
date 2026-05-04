@@ -144,7 +144,7 @@
               <div class="row-actions">
                 <router-link
                   class="action-btn edit"
-                  :to="`/documents/edit/${item.id}`"
+                  :to="`/${route.params.country_code}/documents/edit/${item.id}`"
                   title="Edit"
                 >
                   <svg

@@ -176,7 +176,7 @@
               <div class="row-actions">
                 <router-link
                   class="action-btn edit"
-                  :to="`/countries/edit/${item.id}`"
+                  :to="`/${route.params.country_code}/countries/edit/${item.id}`"
                   :title="$t('Edit')"
                 >
                   <svg

@@ -349,7 +349,7 @@
     align-items: center;
     gap: 6px;
     background: white;
-    color: #4caf50;
+    color: var(--success-green-std);
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
@@ -358,7 +358,7 @@
   }
 
   .btn-add-branch:hover {
-    background: #f1f8f1;
+    background: var(--light-green-bg);
   }
 
   .right-children {
@@ -372,7 +372,7 @@
     align-items: center;
     gap: 8px;
     background: white;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--gray-200-std);
     border-radius: 8px;
     padding: 10px 14px;
   }
@@ -384,15 +384,15 @@
   .child-name {
     font-size: 13px;
     font-weight: 500;
-    color: #111827;
+    color: var(--gray-900-std);
     direction: rtl;
   }
 
   .level-label {
     font-size: 10px;
     font-weight: 600;
-    color: #6b7280;
-    background: #f3f4f6;
+    color: var(--gray-500-std);
+    background: var(--gray-100-std);
     border-radius: 4px;
     padding: 1px 5px;
     white-space: nowrap;
@@ -409,14 +409,14 @@
     padding: 3px;
     display: flex;
     align-items: center;
-    color: #9ca3af;
+    color: var(--gray-400-std);
     border-radius: 4px;
     transition: background 0.15s;
     flex-shrink: 0;
   }
 
   .icon-btn:hover {
-    background: #e5e7eb;
-    color: #374151;
+    background: var(--gray-200-std);
+    color: var(--gray-700-std);
   }
 </style>
