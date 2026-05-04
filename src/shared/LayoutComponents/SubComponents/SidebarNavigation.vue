@@ -28,7 +28,7 @@
       items: [
         {
           link: '/education-classifications',
-          name: 'Education Classifications',
+          name: 'Education configuration',
           icon: EducationClassificationIcon,
         },
         {

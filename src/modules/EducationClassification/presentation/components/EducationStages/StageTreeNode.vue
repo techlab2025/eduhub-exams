@@ -2,6 +2,14 @@
   import { ref, inject, watch, computed } from 'vue';
   import type { Ref, ComputedRef } from 'vue';
   import type EducationStageModel from '@/modules/EducationClassification/core/models/EducationStage/education.stages.model';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
+  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+  import { useI18n } from 'vue-i18n';
+  import { item } from '@primeuix/themes/aura/breadcrumb';
+  import RenameClassificationDialog from '@/modules/EducationClassification/subComponent/RenameClassificationDialog.vue';
+
+  import ToggleSwitch from 'primevue/toggleswitch';
 
   export interface StageNode {
     stage: EducationStageModel;
@@ -92,6 +100,31 @@
   function isArabic(text: string) {
     return /[؀-ۿ]/.test(text);
   }
+  const ShoweEditDialog = ref(false);
+  const { t } = useI18n();
+  // const toggleStatus = inject('toggleStatus') as (id: number) => void;
+
+  const actionList = (id: number, deleteEducationClassification: (id: number) => void) => [
+    {
+      text: t('rename'),
+      icon: EditIcon,
+      action: () => {
+        ShoweEditDialog.value = true;
+      },
+    },
+    {
+      text: t('delete'),
+      icon: DeletIcon,
+      action: () => deleteEducationClassification(id),
+    },
+    {
+      text: t('unactive'),
+      icon: ToggleSwitch,
+      action: () => {
+        toggleStatus(id);
+      },
+    },
+  ];
 </script>
 
 <template>
@@ -157,7 +190,7 @@
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
       </svg>
 
-      <span v-if="node.depth > 0" class="level-label">Branch {{ node.depth }}</span>
+      <span v-if="node.depth > 0" class="level-label">{{ $t('branch') }} {{ node.depth }}</span>
 
       <span class="node-name" :class="{ 'rtl-text': isArabic(node.stage.stage_title) }">
         {{ node.stage.stage_title }}
@@ -173,11 +206,21 @@
       </button>
 
       <button class="icon-btn" @click.stop>
-        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+        <!-- <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
           <circle cx="10" cy="5" r="1.2" />
           <circle cx="10" cy="10" r="1.2" />
           <circle cx="10" cy="15" r="1.2" />
-        </svg>
+        </svg> -->
+        <DropList
+          :action-list="actionList(item.id, deleteEducationClassification)"
+          :delete-dialog-title="$t('are_you_sure_you_want_to_remove_this_education_classification')"
+          :delete-dialog-message="
+            $t(
+              'Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed',
+            )
+          "
+        />
+        <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
       </button>
     </div>
 

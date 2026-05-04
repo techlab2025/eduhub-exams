@@ -1,170 +1,143 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mount, flushPromises } from '@vue/test-utils';
-import EducationStagesTree from '../EducationStagesTree.vue';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { mount } from '@vue/test-utils';
+import StageTreeNode from '../StageTreeNode.vue';
 import EducationStageModel from '@/modules/EducationClassification/core/models/EducationStage/education.stages.model';
-
-vi.mock('vue-router', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('vue-router')>();
-  return {
-    ...actual,
-    useRoute: () => ({ params: { id: '1' } }),
-  };
-});
+import { computed } from 'vue';
 
 vi.mock('vue-i18n', () => ({
-  useI18n: () => ({ locale: { value: 'en' } }),
-}));
-
-const mockStageController = {
-  fetchList: vi.fn(),
-  create: vi.fn(),
-};
-
-const mockConfigController = {
-  fetchList: vi.fn(),
-};
-
-vi.mock(
-  '@/modules/EducationClassification/presentation/controllers/EducationStages/education.stages.controller',
-  () => ({ default: { getInstance: () => mockStageController } }),
-);
-
-vi.mock(
-  '@/modules/EducationClassification/presentation/controllers/educationConfiguration/education.configuration.controller',
-  () => ({ default: { getInstance: () => mockConfigController } }),
-);
-
-vi.mock('../StageTreeNode.vue', () => ({
-  default: {
-    name: 'StageTreeNode',
-    template: '<div class="stage-tree-node"></div>',
-    props: ['node', 'selectedStageId'],
-  },
-}));
-
-vi.mock(
-  '@/modules/EducationClassification/subComponent/EducationTree/AddEducationTypeDialog.vue',
-  () => ({
-    default: {
-      name: 'AddEducationTypeDialog',
-      template: '<div class="add-type-dialog"></div>',
-    },
+  useI18n: () => ({
+    t: (key: string) => key,
   }),
-);
+}));
 
-vi.mock('@/modules/EducationClassification/subComponent/EducationTree/AddBranchDialog.vue', () => ({
+// Mock components used in StageTreeNode
+vi.mock('@/shared/HelpersComponents/DropList.vue', () => ({
   default: {
-    name: 'AddBranchDialog',
-    template: '<div class="add-branch-dialog"></div>',
+    name: 'DropList',
+    template: '<div class="drop-list-stub"></div>',
+    props: ['actionList', 'deleteDialogTitle', 'deleteDialogMessage'],
   },
 }));
 
-vi.mock('../EducationSubjects/SubjectsPanel.vue', () => ({
+vi.mock('@/modules/EducationClassification/subComponent/RenameClassificationDialog.vue', () => ({
   default: {
-    name: 'SubjectsPanel',
-    template: '<div class="subjects-panel-stub"></div>',
-    props: ['stageId', 'stageName'],
+    name: 'RenameClassificationDialog',
+    template: '<div class="rename-dialog-stub"></div>',
+    props: ['visable'],
   },
 }));
 
-const emptyConfigResult = new DataSuccess({ data: null });
-const emptyStageResult = new DataSuccess<EducationStageModel[]>({ data: [] });
+const mockNode = {
+  stage: EducationStageModel.example,
+  children: [],
+  isLoaded: false,
+  isLoading: false,
+  depth: 0,
+};
 
-describe('EducationStagesTree', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockConfigController.fetchList.mockResolvedValue(emptyConfigResult);
-    mockStageController.fetchList.mockResolvedValue(emptyStageResult);
-    mockStageController.create.mockResolvedValue(
-      new DataSuccess({ data: EducationStageModel.example }),
-    );
-  });
+describe('StageTreeNode', () => {
+  const onExpand = vi.fn();
+  const onSelect = vi.fn();
+  const onAddChild = vi.fn();
+  const maxDepth = computed(() => 3);
 
-  const mountComponent = () =>
-    mount(EducationStagesTree, {
-      global: { stubs: { 'router-link': true } },
+  const mountComponent = (props = {}) =>
+    mount(StageTreeNode, {
+      props: {
+        node: mockNode,
+        selectedStageId: null,
+        ...props,
+      },
+      global: {
+        provide: {
+          stageOnExpand: onExpand,
+          stageOnSelect: onSelect,
+          stageOnAddChild: onAddChild,
+          maxDepth: maxDepth,
+        },
+        stubs: {
+          DropList: true,
+          RenameClassificationDialog: true,
+          StageTreeNode: true, // Stub recursive call to avoid deep rendering in simple tests
+        },
+        config: {
+          globalProperties: {
+            $t: (key: string) => key,
+          },
+        },
+      },
     });
 
-  it('renders the two-panel tree layout', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    onExpand.mockResolvedValue(undefined);
+    onSelect.mockResolvedValue(undefined);
+  });
+
+  it('renders the stage title', () => {
     const wrapper = mountComponent();
-    expect(wrapper.find('.education-tree').exists()).toBe(true);
-    expect(wrapper.find('.left-panel').exists()).toBe(true);
-    expect(wrapper.find('.right-panel').exists()).toBe(true);
+    expect(wrapper.find('.node-name').text()).toBe(mockNode.stage.stage_title);
   });
 
-  it('shows empty state when no root nodes are loaded', async () => {
+  it('calls onSelect and handleToggle when row is clicked', async () => {
     const wrapper = mountComponent();
-    await flushPromises();
-    expect(wrapper.find('.empty-state').exists()).toBe(true);
-    expect(wrapper.find('.empty-title').text()).toBe('No Education Tree Yet');
+    await wrapper.find('.node-row').trigger('click');
+    expect(onSelect).toHaveBeenCalledWith(mockNode);
+    expect(onExpand).toHaveBeenCalledWith(mockNode);
   });
 
-  it('calls fetchList on mounted', async () => {
-    mountComponent();
-    await flushPromises();
-    expect(mockStageController.fetchList).toHaveBeenCalled();
-  });
-
-  it('calls configController.fetchList on mounted', async () => {
-    mountComponent();
-    await flushPromises();
-    expect(mockConfigController.fetchList).toHaveBeenCalled();
-  });
-
-  it('opens AddEducationTypeDialog when Add button in empty state is clicked', async () => {
+  it('toggles expansion state when toggle button is clicked', async () => {
     const wrapper = mountComponent();
-    await flushPromises();
-    await wrapper.find('.btn-primary').trigger('click');
-    expect(wrapper.find('.add-type-dialog').exists()).toBe(true);
+    const toggleBtn = wrapper.find('.toggle-btn');
+    await toggleBtn.trigger('click');
+    expect(onExpand).toHaveBeenCalledWith(mockNode);
+
+    // After clicking, isOpen should be true. The SVG should have rotate(0deg)
+    const svg = toggleBtn.find('svg');
+    expect(svg.attributes('style')).toContain('rotate(0deg)');
   });
 
-  it('renders StageTreeNode items when stages are returned', async () => {
-    mockStageController.fetchList.mockResolvedValue(
-      new DataSuccess({ data: [EducationStageModel.example] }),
-    );
+  it('calls onAddChild with correct arguments when add button is clicked', async () => {
     const wrapper = mountComponent();
-    await flushPromises();
-    expect(wrapper.find('.stage-tree-node').exists()).toBe(true);
-    expect(wrapper.find('.empty-state').exists()).toBe(false);
+    const addBtn = wrapper.find('button.icon-btn[title="Add child"]');
+    await addBtn.trigger('click');
+    expect(onAddChild).toHaveBeenCalledWith(mockNode.stage.stage_id, mockNode.depth + 2);
   });
 
-  it('shows right-placeholder when no node is selected', async () => {
-    mockStageController.fetchList.mockResolvedValue(
-      new DataSuccess({ data: [EducationStageModel.example] }),
-    );
-    const wrapper = mountComponent();
-    await flushPromises();
-    expect(wrapper.find('.right-placeholder').exists()).toBe(true);
+  it('hides add child button when max depth is reached', () => {
+    const deepNode = {
+      ...mockNode,
+      depth: 2, // node.depth + 1 = 3, which is maxDepth
+    };
+    const wrapper = mountComponent({ node: deepNode });
+    expect(wrapper.find('button[title="Add child"]').exists()).toBe(false);
   });
 
-  it('shows Add New button in toolbar when tree has nodes', async () => {
-    mockStageController.fetchList.mockResolvedValue(
-      new DataSuccess({ data: [EducationStageModel.example] }),
-    );
-    const wrapper = mountComponent();
-    await flushPromises();
-    expect(wrapper.find('.btn.btn-primary').exists()).toBe(true);
+  it('highlights the node when it is selected', () => {
+    const wrapper = mountComponent({ selectedStageId: mockNode.stage.stage_id });
+    expect(wrapper.find('.node-row').classes()).toContain('is-selected');
   });
 
-  it('opens AddEducationTypeDialog from the tree toolbar Add button', async () => {
-    mockStageController.fetchList.mockResolvedValue(
-      new DataSuccess({ data: [EducationStageModel.example] }),
-    );
-    const wrapper = mountComponent();
-    await flushPromises();
-    await wrapper.find('.btn.btn-primary').trigger('click');
-    expect(wrapper.find('.add-type-dialog').exists()).toBe(true);
+  it('identifies Arabic text for RTL styling', () => {
+    const arabicNode = {
+      ...mockNode,
+      stage: new EducationStageModel({
+        stage_id: 2,
+        stage_title: 'مرحلة اختبار',
+        has_children: false,
+      }),
+    };
+    const wrapper = mountComponent({ node: arabicNode });
+    expect(wrapper.find('.node-name').classes()).toContain('rtl-text');
   });
 
-  it('closes AddEducationTypeDialog on update:visible false emit', async () => {
-    const wrapper = mountComponent();
-    await flushPromises();
-    await wrapper.find('.btn-primary').trigger('click');
-    expect(wrapper.find('.add-type-dialog').exists()).toBe(true);
-
-    const dialog = wrapper.getComponent({ name: 'AddEducationTypeDialog' });
-    await dialog.vm.$emit('update:visible', false);
-    expect(wrapper.find('.add-type-dialog').exists()).toBe(false);
+  it('renders a different icon for leaf nodes at max depth', () => {
+    const leafNodeAtMax = {
+      ...mockNode,
+      depth: 2,
+    };
+    const wrapper = mountComponent({ node: leafNodeAtMax });
+    // Check for the rect element which is in the leaf icon
+    expect(wrapper.find('rect').exists()).toBe(true);
   });
 });

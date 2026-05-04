@@ -30,7 +30,7 @@
 
   // Table headers
   const headers = computed<TableHeader[]>(() => [
-    { key: 'title', label: t('Title'), width: '30%' },
+    { key: 'title', label: t('education type'), width: '30%' },
     { key: 'added_date', label: t('Added date'), width: '30%' },
     { key: 'status', label: t('status'), width: '30%' },
   ]);

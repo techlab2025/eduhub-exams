@@ -53,9 +53,10 @@
   }
 
   .node-name {
-    font-size: 16px;
-    color: $Gray-900-std;
-    font-weight: 500;
+    color: var(--table-data-color);
+    font-weight: $BaseFontSemiBoldWeight;
+    font-family: 'medium';
+    font-size: $MdSize;
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;

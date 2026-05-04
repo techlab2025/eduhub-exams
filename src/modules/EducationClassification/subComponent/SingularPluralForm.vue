@@ -86,39 +86,3 @@
     </button>
   </div>
 </template>
-
-<style scoped>
-  .save-btn {
-    width: 100%;
-  }
-
-  .branches {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-  }
-
-  .branch-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .lang-switch {
-    font-size: 12px;
-    color: gray;
-  }
-
-  input {
-    padding: 10px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-  }
-</style>

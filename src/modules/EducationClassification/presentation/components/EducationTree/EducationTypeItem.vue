@@ -70,7 +70,7 @@
       <NodeIcon :level="node.level" :max-levels="maxLevels" />
 
       <!-- Level Label -->
-      <span v-if="node.level > 0" class="level-label">Branch {{ node.level }}</span>
+      <span v-if="node.level > 0" class="level-label">{{ $t('Branch') }} {{ node.level }}</span>
 
       <!-- Node Name (RTL for Arabic) -->
       <span class="node-name" :class="{ 'rtl-text': isArabic(node.name) }">{{ node.name }}</span>

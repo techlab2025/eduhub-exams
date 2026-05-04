@@ -207,7 +207,7 @@
         <div class="header-text">
           <FolderCrudIcon />
           <h3>
-            {{ $t(' configuration Basic education') }}
+            {{ $t('configuration Basic education') }}
           </h3>
         </div>
       </header>

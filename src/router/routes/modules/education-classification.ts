@@ -7,7 +7,7 @@ export const educationClassificationRoutes: RouteRecordRaw[] = [
     name: 'EducationClassifications',
     component: () => import('@/views/EducationClassification/IndexEducationClassification.vue'),
     meta: {
-      breadcrumb: 'Education Classifications',
+      breadcrumb: 'Education tree configuration',
       icon: CountryIcon,
     },
   },
