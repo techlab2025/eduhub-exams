@@ -15,7 +15,7 @@
 }
 
 .action-list-trigger {
-  background-color: rgba($BluePrimary, 0.05);
+  background-color: var(--blue-primary-alpha-50);
   padding: $MdSize;
   border-radius: calc($XlSize2 + 4px);
   width: 250px;
@@ -28,8 +28,7 @@
     font-weight: $BaseFontWeightBold;
 
     span {
-      /* stylelint-disable-next-line declaration-property-value-disallowed-list */
-      background-color: rgba($BlueSecondary, 0.2);
+      background-color: var(--blue-primary-alpha-20);
       margin-inline: $XsSize4;
       padding: 2px 4px;
       border-radius: 4px;
