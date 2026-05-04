@@ -1,4 +1,4 @@
-import TitleInterface from '@/base/Data/Models/titleInterface';
+import type TitleInterface from '@/base/Data/Models/titleInterface';
 
 /**
  * Country model representing a nation's geographical and cultural data

@@ -14,11 +14,18 @@
   import DocumentTypeDialog from '../subComponent/DocumentTypeDialog.vue';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import IndexDelete from '@/shared/icons/DocaumentType/IndexDelete.vue';
+  import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
+  import DatePicker from 'primevue/datepicker';
+  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import IndexDocumentTypeParams from '../../core/params/documntType/index.document.type.params';
+  import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
+  import type TitleInterface from '@/base/Data/Models/titleInterface';
 
   const controller = DocumentController.getInstance();
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
+  const date = ref();
 
   const headers: TableHeader[] = [
     { key: 'title', label: 'Title', width: '50%', sortable: true },
@@ -28,12 +35,21 @@
   const perPage = ref(10);
   const word = ref('');
 
-  const fetchDocuments = async (page: number = 1, searchWord: string = '') => {
+  const fetchDocuments = async (
+    page: number = 1,
+    searchWord: string = '',
+    date?: string,
+    documentTypeId?: number,
+  ) => {
+    // console.log(`vvvvvvvvvvvvvvvvv`, date, documentTypeId);
     await controller.fetchList(
       new IndexDocumentParams(
         searchWord,
         route.query.page ? Number(route.query.page) : page,
         perPage.value,
+        1,
+        date ? date : undefined,
+        documentTypeId ? documentTypeId : undefined,
       ),
     );
   };
@@ -84,6 +100,22 @@
   const deleteDialogMessage = ref(
     'Deleting this document will remove all related data. This action is irreversible, and the document must be created again if needed.',
   );
+  const indexDocumentTypeParams = new IndexDocumentTypeParams();
+  const documentTypeController = DocumentTypeController.getInstance();
+  const selectedDocumentType = ref<TitleInterface<number>>();
+  const updateData = (data: TitleInterface<number>) => {
+    selectedDocumentType.value = data;
+  };
+  const FilterDialogShow = ref<boolean>(false);
+  const ApplayFilter = () => {
+    if (date.value || selectedDocumentType.value?.id) {
+      fetchDocuments(1, word.value, date.value, selectedDocumentType.value?.id);
+    }
+    FilterDialogShow.value = false;
+  };
+  const CloseFiletrDialog = () => {
+    FilterDialogShow.value = false;
+  };
 </script>
 
 <template>
@@ -117,10 +149,45 @@
         </div>
       </div>
       <div class="btns">
+        <FilterDialog v-model="FilterDialogShow">
+          <template #content>
+            <div class="date-remove">
+              <h6>date of remove</h6>
+              <DatePicker v-model="date" class="date-model" placeholder="Date Remove" />
+            </div>
+            <div class="date-remove">
+              <UpdatedCustomInputSelect
+                id="documentType"
+                :label="`document type`"
+                :params="indexDocumentTypeParams"
+                :controller="documentTypeController"
+                :model-value="selectedDocumentType"
+                placeholder="Document Type"
+                @update:model-value="updateData"
+              />
+            </div>
+            <div class="date-remove">
+              <UpdatedCustomInputSelect
+                id="documentType"
+                :label="`added by`"
+                :params="indexDocumentTypeParams"
+                :controller="documentTypeController"
+                :model-value="selectedDocumentType"
+                placeholder="Student Name"
+                @update:model-value="updateData"
+              />
+            </div>
+            <div class="filter-action">
+              <button class="btn btn-cancel" @click="CloseFiletrDialog">Reset</button>
+              <button class="btn btn-primary" @click="ApplayFilter">apply</button>
+            </div>
+          </template>
+        </FilterDialog>
         <router-link :to="formRoute" class="btn btn-secondary">
           <IndexAddIcon />
           <span>{{ isDraft ? $t('add_document') : $t('continue_adding') }}</span>
         </router-link>
+
         <DocumentTypeDialog />
       </div>
     </div>
@@ -219,3 +286,37 @@
     </DataStatusBuilder>
   </div>
 </template>
+
+<style scoped lang="scss">
+  :deep(.p-datepicker) {
+    width: 100%;
+  }
+
+  :deep(.p-inputtext) {
+    width: 100%;
+    background-color: white;
+    border: 1px solid rgba(230, 230, 230, 1);
+    border-radius: 20px;
+    color: black !important;
+  }
+
+  .date-remove {
+    border-bottom: 2px dashed rgba(230, 230, 230, 1);
+    padding-bottom: 1rem;
+    margin: 1rem 0;
+
+    h6 {
+      color: rgba(75, 75, 75, 1);
+      font-family: medium;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    :deep(.input-label) {
+      label {
+        color: black !important;
+      }
+    }
+  }
+</style>

@@ -4,7 +4,10 @@ import type DocumentModel from '../../core/models/document.model';
 import DocumentRepository from '../../data/repositories/document.repository';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import {
+  type DataState,
+  DataSuccess,
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 
@@ -59,6 +62,10 @@ export default class DocumentController extends BaseController<DocumentModel, Do
         FormStore.clearFormData(formKey);
       }
     }
+    return result;
+  }
+  async fetchList(params: Params, options?: ApiCallOptions): Promise<DataState<DocumentModel[]>> {
+    const result = await super.fetchList(params, { ...options, useJson: true });
     return result;
   }
 }

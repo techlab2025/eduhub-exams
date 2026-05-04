@@ -141,15 +141,19 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Fetch list of items with optional pagination.
    */
-  async index(params?: Params, options?: ApiCallOptions): Promise<DataState<TList>> {
+  async index(
+    params?: Params,
+    options?: ApiCallOptions,
+    isAutoRetry?: boolean,
+  ): Promise<DataState<TList>> {
     if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess<TList>({ data: this.mockList });
     }
 
-    const retryFn = () => this.index(params, options);
+    const retryFn = () => this.index(params, options, isAutoRetry);
 
     try {
-      const httpResponse = await this.apiService.index(params, options);
+      const httpResponse = await this.apiService.index(params, options, isAutoRetry);
       return this.processListResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);

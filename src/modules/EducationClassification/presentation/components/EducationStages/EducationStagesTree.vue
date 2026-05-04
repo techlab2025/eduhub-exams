@@ -349,7 +349,7 @@
     align-items: center;
     gap: 6px;
     background: white;
-    color: #4caf50;
+    color: var(--primary-green);
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
@@ -372,7 +372,7 @@
     align-items: center;
     gap: 8px;
     background: white;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--gray-200-std);
     border-radius: 8px;
     padding: 10px 14px;
   }
@@ -384,15 +384,15 @@
   .child-name {
     font-size: 13px;
     font-weight: 500;
-    color: #111827;
+    color: var(--title-card-color);
     direction: rtl;
   }
 
   .level-label {
     font-size: 10px;
     font-weight: 600;
-    color: #6b7280;
-    background: #f3f4f6;
+    color: var(--gray-400);
+    background: var(--background-color-soft-light);
     border-radius: 4px;
     padding: 1px 5px;
     white-space: nowrap;

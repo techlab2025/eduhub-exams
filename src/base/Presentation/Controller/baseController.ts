@@ -229,7 +229,11 @@ export default abstract class BaseController<T, TList = T[]> {
     }
 
     try {
-      const result = await this.repository.index(params, this.mergeOptions(options));
+      const result = await this.repository.index(
+        params,
+        this.mergeOptions(options),
+        this.config.autoRetry,
+      );
       this.setListState(result);
       this.handleListResponse(result);
       return result;

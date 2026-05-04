@@ -60,7 +60,8 @@
 
 /* ── Intro Pages ───────────────────────────────────────────────── */
 @use 'GlobalStyles/import';
-
+// helpers components styles
+@use '../shared/HelpersComponents/FilterDialog/styles/filter_dialog';
 /* =============================================================================
    GLOBAL OVERRIDES & BASE STYLES
    ============================================================================= */

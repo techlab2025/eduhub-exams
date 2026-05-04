@@ -8,6 +8,7 @@
   import EmployeeIcon from '@/shared/icons/EmployeeIcon.vue';
   import HandleFilesUpload from '@/shared/FormInputs/HandleFilesUpload.vue';
   import UplaodImageInput from '@/shared/icons/UploadImage/UplaodImageInput.vue';
+  import InputSwitch from 'primevue/inputswitch';
 
   const emit = defineEmits(['updateData']);
 
@@ -138,20 +139,32 @@
     UploadedImage.value = files;
     updateData();
   };
+  const checked = ref(false);
 </script>
 
 <template>
   <div class="employee-form-card">
     <header class="form-header">
-      <div class="header-text">
-        <h3>{{ route.params.id ? 'Edit Employee' : 'Add New Employee' }}</h3>
-        <p class="header-subtitle">
-          {{
-            route.params.id
-              ? 'Update the employee details below'
-              : 'Fill in the required information to add a new employee'
-          }}
-        </p>
+      <div class="title-status">
+        <div class="header-text">
+          <h3>{{ route.params.id ? 'Edit Employee' : 'Add New Employee' }}</h3>
+          <p class="header-subtitle">
+            {{
+              route.params.id
+                ? 'Update the employee details below'
+                : 'Fill in the required information to add a new employee'
+            }}
+          </p>
+        </div>
+        <div class="employee-status">
+          <div class="title">
+            <h6>Employee Status</h6>
+            <p>Active</p>
+          </div>
+          <div class="switch">
+            <InputSwitch v-model="checked" />
+          </div>
+        </div>
       </div>
       <span v-if="route.params.id" class="edit-badge">Editing</span>
     </header>
@@ -189,24 +202,23 @@
           />
         </div>
       </div>
-     </div>
+    </div>
 
-      <div class="field-group email-field-group">
-        <label class="field-label" for="email">{{ $t(`Email`) }}</label>
-        <div class="input-wrap">
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            placeholder="enter your email"
-            class="field-input"
-            @input="updateData"
-          />
-        </div>
+    <div class="field-group email-field-group">
+      <label class="field-label" for="email">{{ $t(`Email`) }}</label>
+      <div class="input-wrap">
+        <input
+          id="email"
+          v-model="email"
+          type="email"
+          placeholder="enter your email"
+          class="field-input"
+          @input="updateData"
+        />
       </div>
+    </div>
 
-       <div class="form-fields email-field-group">
-
+    <div class="form-fields email-field-group">
       <div class="field-group">
         <label class="field-label" for="employeeId">Employee ID</label>
         <div class="input-wrap">
@@ -279,8 +291,41 @@
 </template>
 
 <style lang="scss" scoped>
-.email-field-group{
-  padding:0 24px 24px !important;
-}
+  .email-field-group {
+    padding: 0 24px 24px !important;
+  }
+
+  input[type='radio'] {
+    accent-color: var(--primary-green) !important;
+  }
+
+  .title-status {
+    width: 100%;
+    display: flex;
+
+    .employee-status {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background-color: var(--background-color-soft-light);
+      padding: 16px;
+      border-radius: 24px;
+
+      .title {
+        h6 {
+          color: var(--title-color);
+          font-size: 14px;
+          font-weight: 600;
+          font-family: 'Medium';
+        }
+
+        p {
+          color: var(--primary-green);
+          font-size: 14px;
+          font-weight: 600;
+          font-family: 'Medium';
+        }
+      }
+    }
+  }
 </style>
- 
