@@ -150,5 +150,6 @@
   "invalid_phone_number_format": "Please enter a valid phone number (e.g. +20 123 456 7890).",
   "invalid_whatsapp_number_format": "Please enter a valid WhatsApp number (e.g. +20 123 456 7890).",
   "invalid_telegram_format": "Please enter a valid Telegram number or link (e.g. +20 123 456 7890 or https://t.me/username).",
-  "invalid_email_address_format": "Please enter a valid email address (e.g. name@example.com)."
+  "invalid_email_address_format": "Please enter a valid email address (e.g. name@example.com).",
+  "export": "export"
 }

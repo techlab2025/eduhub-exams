@@ -9,6 +9,8 @@
   import HandleFilesUpload from '@/shared/FormInputs/HandleFilesUpload.vue';
   import UplaodImageInput from '@/shared/icons/UploadImage/UplaodImageInput.vue';
   import InputSwitch from 'primevue/inputswitch';
+  import RadioButton from 'primevue/radiobutton';
+  import { GenderENum } from '../../core/constant/gender.enum';
 
   const emit = defineEmits(['updateData']);
 
@@ -34,7 +36,7 @@
   const isSuperadmin = ref<boolean>(false);
   const role_id = ref<number>(1);
   const employeeType = ref<number>(1);
-  const gender = ref<string>('');
+  const gender = ref<GenderENum>();
   const lastName = ref<string>('');
   const employeeId = ref('');
   const UploadedImage = ref<string[]>([]);
@@ -43,15 +45,14 @@
     () => employee,
     (newEmployee) => {
       if (newEmployee) {
-        name.value = newEmployee.name;
+        name.value = newEmployee.firstname;
         email.value = newEmployee.email;
         phone.value = newEmployee.phone;
         image.value = newEmployee.image;
         isSuperadmin.value = newEmployee.isSuperadmin;
-        role_id.value = newEmployee.role_id;
-        employeeType.value = newEmployee.employeeType;
+        employeeType.value = newEmployee.status;
         gender.value = newEmployee.gender;
-        lastName.value = newEmployee.lastName;
+        lastName.value = newEmployee.lastname;
         employeeId.value = newEmployee.employeeId;
         // Password is not populated for security/editing purposes
       }
@@ -63,7 +64,7 @@
 
   const updateData = () => {
     const data = {
-      name: name.value,
+      firstname: name.value,
       email: email.value,
       phone: phone.value,
       password: password.value,
@@ -72,8 +73,8 @@
       role_id: role_id.value,
       employeeType: employeeType.value,
       gender: gender.value,
-      lastName: lastName.value,
-      employeeId: employeeId.value,
+      lastname: lastName.value,
+      EmployeeId: employeeId.value,
     };
 
     FormStore.setFormData(formKey!, data);
@@ -99,7 +100,7 @@
     isSuperadmin.value = false;
     role_id.value = 1;
     employeeType.value = 1;
-    gender.value = '';
+    gender.value = 1;
     lastName.value = '';
     employeeId.value = '';
   };
@@ -143,9 +144,9 @@
 </script>
 
 <template>
-  <div class="employee-form-card">
+  <div class="employee-details-form-card">
     <header class="form-header">
-      <div class="title-status">
+      <div class="form-title">
         <div class="header-text">
           <h3>{{ route.params.id ? 'Edit Employee' : 'Add New Employee' }}</h3>
           <p class="header-subtitle">
@@ -159,7 +160,7 @@
         <div class="employee-status">
           <div class="title">
             <h6>Employee Status</h6>
-            <p>Active</p>
+            <p :class="checked ? `` : `warn`">{{ checked ? $t('active') : $t('disactive') }}</p>
           </div>
           <div class="switch">
             <InputSwitch v-model="checked" />
@@ -168,12 +169,11 @@
       </div>
       <span v-if="route.params.id" class="edit-badge">Editing</span>
     </header>
-    <div class="faq-details">
-      <p><EmployeeIcon /> {{ $t(`Basic Info`) }}</p>
-      <h6>{{ $t(`reset`) }}</h6>
-    </div>
 
-    <!-- <div class="form-divider" /> -->
+    <div class="employee-details-form">
+      <p><EmployeeIcon /> {{ $t(`Basic Info`) }}</p>
+      <h6 @click="resetForm">{{ $t(`reset`) }}</h6>
+    </div>
 
     <div class="form-fields">
       <div class="field-group">
@@ -202,23 +202,19 @@
           />
         </div>
       </div>
-    </div>
-
-    <div class="field-group email-field-group">
-      <label class="field-label" for="email">{{ $t(`Email`) }}</label>
-      <div class="input-wrap">
-        <input
-          id="email"
-          v-model="email"
-          type="email"
-          placeholder="enter your email"
-          class="field-input"
-          @input="updateData"
-        />
+      <div class="field-group col-span-2">
+        <label class="field-label" for="email">{{ $t(`Email`) }}</label>
+        <div class="input-wrap">
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            placeholder="enter your email"
+            class="field-input"
+            @input="updateData"
+          />
+        </div>
       </div>
-    </div>
-
-    <div class="form-fields email-field-group">
       <div class="field-group">
         <label class="field-label" for="employeeId">Employee ID</label>
         <div class="input-wrap">
@@ -245,87 +241,46 @@
           />
         </div>
       </div>
-
       <div class="field-group">
         <label class="field-label" for="phone">{{ $t(`Gender`) }}</label>
-        <div class="genders-inputs">
-          <div>
-            <input id="male" v-model="gender" type="radio" name="gender" value="male" />
-            <label for="male">Male</label>
+
+        <div class="gender-group">
+          <div class="input-field">
+            <RadioButton v-model="gender" input-id="male" name="gender" :value="GenderENum.male" />
+            <label for="male">{{ $t('male') }}</label>
           </div>
-          <div>
-            <input id="female" v-model="gender" type="radio" name="gender" value="female" />
-            <label for="female">Female</label>
+
+          <div class="input-field">
+            <RadioButton
+              v-model="gender"
+              input-id="female"
+              name="gender"
+              :value="GenderENum.female"
+            />
+            <label for="female">{{ $t('female') }}</label>
           </div>
         </div>
       </div>
-
-      <!-- <div class="field-group checkbox-group">
-        <label class="checkbox-label">
-          <input v-model="isSuperadmin" type="checkbox" @change="updateData" />
-          <span>Superadmin access</span>
-        </label>
-      </div> -->
-    </div>
-    <div class="field-group upload-image-employee">
-      <HandleFilesUpload
-        :label="`upload image`"
-        accept="image/*"
-        :multiple="true"
-        :index="1"
-        :file="UploadedImage"
-        :have-content="true"
-        :class="`image-input`"
-        @change="handleImageChange"
-      >
-        <template #content>
-          <div class="add-imaegs-data">
-            <UplaodImageInput />
-            <p class="first-text"><span>Click to upload</span>or drag and drop</p>
-            <p class="second-text">JPG, JPEG, PNG less than 1MB</p>
-          </div>
-        </template>
-      </HandleFilesUpload>
+      <div class="field-group col-span-2">
+        <HandleFilesUpload
+          :label="`upload image`"
+          accept="image/*"
+          :multiple="true"
+          :index="1"
+          :file="UploadedImage"
+          :have-content="true"
+          :class="`image-input`"
+          @change="handleImageChange"
+        >
+          <template #content>
+            <div class="add-imaegs-data">
+              <UplaodImageInput />
+              <p class="first-text"><span>Click to upload</span>or drag and drop</p>
+              <p class="second-text">JPG, JPEG, PNG less than 1MB</p>
+            </div>
+          </template>
+        </HandleFilesUpload>
+      </div>
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-  .email-field-group {
-    padding: 0 24px 24px !important;
-  }
-
-  input[type='radio'] {
-    accent-color: var(--primary-green) !important;
-  }
-
-  .title-status {
-    width: 100%;
-    display: flex;
-
-    .employee-status {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background-color: var(--background-color-soft-light);
-      padding: 16px;
-      border-radius: 24px;
-
-      .title {
-        h6 {
-          color: var(--title-color);
-          font-size: 14px;
-          font-weight: 600;
-          font-family: 'Medium';
-        }
-
-        p {
-          color: var(--primary-green);
-          font-size: 14px;
-          font-weight: 600;
-          font-family: 'Medium';
-        }
-      }
-    }
-  }
-</style>

@@ -1,42 +1,48 @@
+import { GenderENum } from '../constant/gender.enum';
+
 /**
  * Employee model representing an employee entity
  */
 export default class EmployeeModel {
   public readonly id?: number;
-  public readonly name: string;
+  public readonly firstname: string;
+  public readonly lastname: string;
   public readonly email: string;
   public readonly phone: string;
   public readonly password?: string;
   public readonly image: string;
   public readonly isSuperadmin: boolean;
-  public readonly role_id: number;
+  public readonly employeeId: string;
   public readonly status: number;
   public readonly subjects: string;
-  
-  
+  public readonly gender: GenderENum;
 
   constructor(data: {
     id?: number;
-    name: string;
+    firstname: string;
+    lastname: string;
     email: string;
     phone: string;
     password?: string;
     image: string;
     isSuperadmin: boolean;
-    role_id: number;
+    employeeId: string;
     status: number;
     subjects: string;
+    gender: GenderENum;
   }) {
     this.id = data.id;
-    this.name = data.name;
+    this.firstname = data.firstname;
+    this.lastname = data.lastname;
     this.email = data.email;
     this.phone = data.phone;
     this.password = data.password;
     this.image = data.image;
     this.isSuperadmin = data.isSuperadmin;
-    this.role_id = data.role_id;
+    this.employeeId = data.employeeId;
     this.status = data.status;
     this.subjects = data.subjects;
+    this.gender = data.gender;
 
     Object.freeze(this);
   }
@@ -53,27 +59,31 @@ export default class EmployeeModel {
 
     return new EmployeeModel({
       id: json.id || json.employee_id,
-      name: json.name || '',
+      lastname: json.last_name || '',
+      firstname: json.first_name || '',
       email: json.email || '',
       phone: json.phone || '',
       password: json.password,
       image: json.image || '',
       isSuperadmin: Boolean(json.isSuperadmin),
-      role_id: Number(json.role_id || 0),
+      employeeId: json.employee_id || '',
       status: Number(json.status || 0),
       subjects: json.subjects || '',
+      gender: json.gender,
     });
   }
 
   static example: EmployeeModel = new EmployeeModel({
     id: 1,
-    name: 'John Doe',
+    firstname: 'John ',
+    lastname: 'Doe',
     email: 'john@example.com',
     phone: '123456789',
-    image: 'https://example.com/image.jpg',
+    image: 'https://cyber.comolho.com/static/img/avatar.png',
     isSuperadmin: false,
-    role_id: 1,
-    status: 1,
+    employeeId: 'EMP-545',
+    status: 2,
     subjects: 'Maths',
+    gender: GenderENum.male,
   });
 }
