@@ -33,10 +33,12 @@
   }
 
   async function handleToggle() {
-    if (!isOpen.value && !props.node.isLoaded && props.node.subject.has_children) {
+    if (!props.node.isLoaded) {
       await onExpand(props.node);
     }
-    isOpen.value = !isOpen.value;
+    if (props.node.children.length > 0) {
+      isOpen.value = !isOpen.value;
+    }
   }
 
   function handleAddChild() {
@@ -57,7 +59,7 @@
       @click="handleRowClick"
     >
       <button
-        v-if="node.subject.has_children || node.children.length > 0"
+        v-if="!node.isLoaded || node.children.length > 0"
         class="toggle-btn"
         @click.stop="handleToggle"
       >
