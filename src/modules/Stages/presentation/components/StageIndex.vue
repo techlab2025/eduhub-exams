@@ -179,7 +179,11 @@
             </template>
             <template #actions="{ item }">
               <div class="row-actions">
-                <router-link class="action-btn edit" :to="`/stages/edit/${item.id}`" title="Edit">
+                <router-link
+                  class="action-btn edit"
+                  :to="`/${route.params.country_code}/stages/edit/${item.id}`"
+                  title="Edit"
+                >
                   <svg
                     width="15"
                     height="15"

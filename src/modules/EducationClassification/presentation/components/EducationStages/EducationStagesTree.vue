@@ -344,79 +344,83 @@
 </template>
 
 <style scoped>
-  .btn-add-branch {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: white;
-    color: var(--primary-green);
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
+    .btn-add-branch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+  <<<<<<< HEAD
+      color: var(--primary-green);
+  =======
+      color: var(--success-green-std);
+  >>>>>>> review
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
 
-  .btn-add-branch:hover {
-    background: #f1f8f1;
-  }
+    .btn-add-branch:hover {
+      background: var(--light-green-bg);
+    }
 
-  .right-children {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+    .right-children {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-  .right-child-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: white;
-    border: 1px solid var(--gray-200-std);
-    border-radius: 8px;
-    padding: 10px 14px;
-  }
+    .right-child-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid var(--gray-200-std);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
 
-  .child-icon {
-    flex-shrink: 0;
-  }
+    .child-icon {
+      flex-shrink: 0;
+    }
 
-  .child-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--title-card-color);
-    direction: rtl;
-  }
+    .child-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-900-std);
+      direction: rtl;
+    }
 
-  .level-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--gray-400);
-    background: var(--background-color-soft-light);
-    border-radius: 4px;
-    padding: 1px 5px;
-    white-space: nowrap;
-  }
+    .level-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gray-500-std);
+      background: var(--gray-100-std);
+      border-radius: 4px;
+      padding: 1px 5px;
+      white-space: nowrap;
+    }
 
-  .spacer {
-    flex: 1;
-  }
+    .spacer {
+      flex: 1;
+    }
 
-  .icon-btn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    padding: 3px;
-    display: flex;
-    align-items: center;
-    color: #9ca3af;
-    border-radius: 4px;
-    transition: background 0.15s;
-    flex-shrink: 0;
-  }
+    .icon-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      color: var(--gray-400-std);
+      border-radius: 4px;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
 
-  .icon-btn:hover {
-    background: #e5e7eb;
-    color: #374151;
-  }
+    .icon-btn:hover {
+      background: var(--gray-200-std);
+      color: var(--gray-700-std);
+    }
 </style>

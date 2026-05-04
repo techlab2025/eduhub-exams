@@ -173,7 +173,11 @@
 
             <template #actions="{ item }">
               <div class="row-actions">
-                <router-link class="action-btn edit" :to="`/units/edit/${item.id}`" title="Edit">
+                <router-link
+                  class="action-btn edit"
+                  :to="`/${route.params.country_code}/units/edit/${item.id}`"
+                  title="Edit"
+                >
                   <svg
                     width="15"
                     height="15"
