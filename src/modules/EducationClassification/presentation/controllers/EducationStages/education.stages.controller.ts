@@ -37,6 +37,6 @@ export default class EducationStageController extends BaseController<
   }
 
   async create(params: Params, options?: ApiCallOptions) {
-    return super.create(params, options);
+    return super.create(params, { ...options, useJson: true });
   }
 }

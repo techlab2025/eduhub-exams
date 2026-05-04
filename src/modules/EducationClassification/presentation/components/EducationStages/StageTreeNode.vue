@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { ref, inject, computed } from 'vue';
-  import type { ComputedRef } from 'vue';
+  import { ref, inject, watch, computed } from 'vue';
+  import type { Ref, ComputedRef } from 'vue';
   import type EducationStageModel from '@/modules/EducationClassification/core/models/EducationStage/education.stages.model';
 
   export interface StageNode {
@@ -16,31 +16,77 @@
     selectedStageId: number | null;
   }>();
 
-  const onExpand = inject<(node: StageNode) => Promise<void>>('stageOnExpand')!;
-  const onSelect = inject<(node: StageNode) => Promise<void>>('stageOnSelect')!;
-  const onAddChild = inject<(stageId: number, level: number) => void>('stageOnAddChild')!;
+  const emit = defineEmits<{
+    (e: 'fetch-children', parentId: number, callback: (children: StageNode[]) => void): void;
+    (e: 'add-child', stageId: number, level: number): void;
+    (e: 'select', node: StageNode): void;
+  }>();
+
   const maxDepth = inject<ComputedRef<number>>(
     'maxDepth',
     computed(() => Infinity),
   );
+  const refreshParentId = inject<Ref<number | null>>('refreshParentId', ref(null));
 
   const canAddChild = computed(() => props.node.depth + 1 < maxDepth.value);
   const isOpen = ref(false);
+  const isLoading = ref(false);
+  const hasFetched = ref(false);
+  const children = ref<StageNode[]>([]);
+
+  watch(refreshParentId, async (id) => {
+    if (id !== props.node.stage.stage_id) return;
+    isLoading.value = true;
+    await new Promise<void>((resolve) => {
+      emit('fetch-children', props.node.stage.stage_id, (fetched) => {
+        children.value = fetched;
+        hasFetched.value = true;
+        isLoading.value = false;
+        resolve();
+      });
+    });
+    isOpen.value = true;
+  });
 
   async function handleRowClick() {
-    onSelect(props.node);
+    emit('select', props.node);
     await handleToggle();
   }
 
   async function handleToggle() {
-    if (!isOpen.value && !props.node.isLoaded && props.node.stage.has_children) {
-      await onExpand(props.node);
+    if (hasFetched.value && children.value.length === 0) return;
+
+    if (!hasFetched.value) {
+      isLoading.value = true;
+      await new Promise<void>((resolve) => {
+        emit('fetch-children', props.node.stage.stage_id, (fetched) => {
+          children.value = fetched;
+          hasFetched.value = true;
+          isLoading.value = false;
+          resolve();
+        });
+      });
     }
-    isOpen.value = !isOpen.value;
+
+    if (children.value.length > 0) {
+      isOpen.value = !isOpen.value;
+    }
   }
 
   function handleAddChild() {
-    onAddChild(props.node.stage.stage_id, props.node.depth + 2);
+    emit('add-child', props.node.stage.stage_id, props.node.depth + 2);
+  }
+
+  function onChildFetch(parentId: number, callback: (children: StageNode[]) => void) {
+    emit('fetch-children', parentId, callback);
+  }
+
+  function onChildAdd(stageId: number, level: number) {
+    emit('add-child', stageId, level);
+  }
+
+  function onChildSelect(node: StageNode) {
+    emit('select', node);
   }
 
   function isArabic(text: string) {
@@ -57,7 +103,7 @@
       @click="handleRowClick"
     >
       <button
-        v-if="node.stage.has_children || node.children.length > 0"
+        v-if="!hasFetched || children.length > 0"
         class="toggle-btn"
         @click.stop="handleToggle"
       >
@@ -136,12 +182,15 @@
     </div>
 
     <transition name="slide-down">
-      <div v-if="isOpen && node.children.length > 0" class="children-wrapper">
+      <div v-if="isOpen && children.length > 0" class="children-wrapper">
         <StageTreeNode
-          v-for="child in node.children"
+          v-for="child in children"
           :key="child.stage.stage_id"
           :node="child"
           :selected-stage-id="selectedStageId"
+          @fetch-children="onChildFetch"
+          @add-child="onChildAdd"
+          @select="onChildSelect"
         />
       </div>
     </transition>

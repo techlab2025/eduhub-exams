@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, provide, onMounted, computed } from 'vue';
+  import { ref, provide, onMounted, computed, nextTick } from 'vue';
   import { useRoute } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import StageTreeNode from './StageTreeNode.vue';
@@ -29,6 +29,7 @@
   const branchDialogParentId = ref<number | undefined>(undefined);
   const branchDialogName = ref('');
   const educationConfig = ref<EducationConfigurationModel | null>(null);
+  const refreshParentId = ref<number | null>(null);
 
   const maxDepth = computed(() => educationConfig.value?.numberOfBranches ?? Infinity);
 
@@ -65,21 +66,24 @@
     }
   }
 
-  async function expandNode(node: StageNode) {
-    if (node.isLoading) return;
-    node.isLoading = true;
+  async function fetchChildren(parentId: number, callback: (children: StageNode[]) => void) {
+    const parentNode = findNode(rootNodes.value, parentId);
     const params = new FetchEducationStageParams({
       classification_id: classificationId,
-      parent_id: node.stage.stage_id,
+      parent_id: parentId,
     });
     const result = await controller.fetchList(params);
-    if (result instanceof DataSuccess) {
-      node.children = (result.data ?? []).map((s: EducationStageModel) =>
-        makeNode(s, node.depth + 1),
-      );
-      node.isLoaded = true;
+    const children =
+      result instanceof DataSuccess
+        ? (result.data ?? []).map((s: EducationStageModel) =>
+            makeNode(s, (parentNode?.depth ?? 0) + 1),
+          )
+        : [];
+    if (parentNode) {
+      parentNode.children = children;
+      parentNode.isLoaded = true;
     }
-    node.isLoading = false;
+    callback(children);
   }
 
   function selectNode(node: StageNode) {
@@ -119,17 +123,13 @@
     });
     await controller.create(params);
     showAddBranchDialog.value = false;
-    const parentNode = findNode(rootNodes.value, branchId);
-    if (parentNode) {
-      parentNode.isLoaded = false;
-      await expandNode(parentNode);
-    }
+    refreshParentId.value = branchId;
+    await nextTick();
+    refreshParentId.value = null;
   }
 
-  provide('stageOnExpand', expandNode);
-  provide('stageOnSelect', selectNode);
-  provide('stageOnAddChild', openAddChildDialog);
   provide('maxDepth', maxDepth);
+  provide('refreshParentId', refreshParentId);
   onMounted(async () => {
     const configResult = await configController.fetchList();
     MaxNumberOfBranches.value = configResult.data?.numberOfBranches;
@@ -201,6 +201,9 @@
           :key="node.stage.stage_id"
           :node="node"
           :selected-stage-id="selectedNode?.stage.stage_id ?? null"
+          @fetch-children="fetchChildren"
+          @add-child="openAddChildDialog"
+          @select="selectNode"
         />
       </div>
 
@@ -344,83 +347,79 @@
 </template>
 
 <style scoped>
-    .btn-add-branch {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: white;
-  <<<<<<< HEAD
-      color: var(--primary-green);
-  =======
-      color: var(--success-green-std);
-  >>>>>>> review
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
+  .btn-add-branch {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    color: var(--success-green-std);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
 
-    .btn-add-branch:hover {
-      background: var(--light-green-bg);
-    }
+  .btn-add-branch:hover {
+    background: var(--light-green-bg);
+  }
 
-    .right-children {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+  .right-children {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
 
-    .right-child-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: white;
-      border: 1px solid var(--gray-200-std);
-      border-radius: 8px;
-      padding: 10px 14px;
-    }
+  .right-child-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--gray-200-std);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
 
-    .child-icon {
-      flex-shrink: 0;
-    }
+  .child-icon {
+    flex-shrink: 0;
+  }
 
-    .child-name {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--gray-900-std);
-      direction: rtl;
-    }
+  .child-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-900-std);
+    direction: rtl;
+  }
 
-    .level-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--gray-500-std);
-      background: var(--gray-100-std);
-      border-radius: 4px;
-      padding: 1px 5px;
-      white-space: nowrap;
-    }
+  .level-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gray-500-std);
+    background: var(--gray-100-std);
+    border-radius: 4px;
+    padding: 1px 5px;
+    white-space: nowrap;
+  }
 
-    .spacer {
-      flex: 1;
-    }
+  .spacer {
+    flex: 1;
+  }
 
-    .icon-btn {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      padding: 3px;
-      display: flex;
-      align-items: center;
-      color: var(--gray-400-std);
-      border-radius: 4px;
-      transition: background 0.15s;
-      flex-shrink: 0;
-    }
+  .icon-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    color: var(--gray-400-std);
+    border-radius: 4px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
 
-    .icon-btn:hover {
-      background: var(--gray-200-std);
-      color: var(--gray-700-std);
-    }
+  .icon-btn:hover {
+    background: var(--gray-200-std);
+    color: var(--gray-700-std);
+  }
 </style>
