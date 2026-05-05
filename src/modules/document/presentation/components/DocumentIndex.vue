@@ -122,6 +122,7 @@
   <div class="document-page">
     <h4 class="document-index-title">Documents</h4>
     <p class="document-index-dexription">Manage and organize all uploaded documents in one place</p>
+    <div class="badge">{{ $t('All Documents') }}</div>
     <div class="index-header">
       <div class="toolbar">
         <div class="search-field">
@@ -287,36 +288,3 @@
   </div>
 </template>
 
-<style scoped lang="scss">
-  :deep(.p-datepicker) {
-    width: 100%;
-  }
-
-  :deep(.p-inputtext) {
-    width: 100%;
-    background-color: white;
-    border: 1px solid rgba(230, 230, 230, 1);
-    border-radius: 20px;
-    color: black !important;
-  }
-
-  .date-remove {
-    border-bottom: 2px dashed rgba(230, 230, 230, 1);
-    padding-bottom: 1rem;
-    margin: 1rem 0;
-
-    h6 {
-      color: rgba(75, 75, 75, 1);
-      font-family: medium;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    :deep(.input-label) {
-      label {
-        color: black !important;
-      }
-    }
-  }
-</style>
