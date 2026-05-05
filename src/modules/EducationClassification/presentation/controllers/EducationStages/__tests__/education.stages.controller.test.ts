@@ -41,7 +41,7 @@ describe('EducationStageController', () => {
 
     const result = await controller.create(params);
 
-    expect(mockSuperCreate).toHaveBeenCalledWith(params, undefined);
+    expect(mockSuperCreate).toHaveBeenCalledWith(params, { useJson: true });
     expect(result).toEqual({ isSuccess: true });
   });
 });
