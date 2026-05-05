@@ -130,7 +130,7 @@
         <h2 class="title">{{ $t('support_contacts') }}</h2>
         <p class="description">{{ $t('support_contacts_description') }}</p>
       </div>
-      <button class="btn btn-primary" type="button" @click="addSection">
+      <button class="btn btn-primary add-section-btn" type="button" @click="addSection">
         + {{ $t('add_new_support_section') }}
       </button>
     </div>

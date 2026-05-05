@@ -17,32 +17,37 @@ export default class EmployeeModel {
   public readonly subjects: string;
   public readonly gender: GenderENum;
 
+  get name(): string {
+    return `${this.firstname.trim()} ${this.lastname.trim()}`.trim();
+  }
+
   constructor(data: {
     id?: number;
-    firstname: string;
-    lastname: string;
+    name?: string;
+    firstname?: string;
+    lastname?: string;
     email: string;
     phone: string;
     password?: string;
     image: string;
     isSuperadmin: boolean;
-    employeeId: string;
+    employeeId?: string;
     status: number;
     subjects: string;
-    gender: GenderENum;
+    gender?: GenderENum;
   }) {
     this.id = data.id;
-    this.firstname = data.firstname;
-    this.lastname = data.lastname;
+    this.firstname = data.firstname || data.name?.split(' ')[0] || '';
+    this.lastname = data.lastname || data.name?.split(' ').slice(1).join(' ') || '';
     this.email = data.email;
     this.phone = data.phone;
     this.password = data.password;
     this.image = data.image;
     this.isSuperadmin = data.isSuperadmin;
-    this.employeeId = data.employeeId;
+    this.employeeId = data.employeeId || '';
     this.status = data.status;
     this.subjects = data.subjects;
-    this.gender = data.gender;
+    this.gender = data.gender as GenderENum;
 
     Object.freeze(this);
   }
@@ -59,8 +64,8 @@ export default class EmployeeModel {
 
     return new EmployeeModel({
       id: json.id || json.employee_id,
-      lastname: json.last_name || '',
-      firstname: json.first_name || '',
+      firstname: json.first_name || json.name?.split(' ')[0] || '',
+      lastname: json.last_name || json.name?.split(' ').slice(1).join(' ') || '',
       email: json.email || '',
       phone: json.phone || '',
       password: json.password,

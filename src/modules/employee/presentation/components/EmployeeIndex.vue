@@ -152,7 +152,7 @@
           <ExportExcelIcon />
           <span>{{ $t('export') }}</span>
         </button>
-        <router-link :to="formRoute" class="btn btn-primary">
+        <router-link :to="formRoute" class="btn btn-primary btn-add">
           <IndexPluseIcon />
           <span>{{ isDraft ? 'Add Employee' : 'Continue Adding' }}</span>
         </router-link>

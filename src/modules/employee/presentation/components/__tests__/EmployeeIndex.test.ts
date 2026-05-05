@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
+import { createI18n } from 'vue-i18n';
 import EmployeeIndex from '../EmployeeIndex.vue';
+
+const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 
 // Mock dependencies
 vi.mock('vue-router', () => ({
@@ -23,7 +26,7 @@ vi.mock('vue-router', () => ({
 }));
 
 const globalConfig = {
-  plugins: [createPinia()],
+  plugins: [createPinia(), i18n],
   stubs: {
     'router-link': true,
     DataStatusBuilder: true,

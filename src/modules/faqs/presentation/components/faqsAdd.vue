@@ -37,7 +37,7 @@
     <FaqsForm @update-data="updateData" />
 
     <div class="form-actions">
-      <button class="btn btn-primary" type="button" @click="save">{{ $t('save') }}</button>
+      <button class="btn btn-primary btn-save" type="button" @click="save">{{ $t('save') }}</button>
       <button class="btn btn-cancel" type="button" @click="cancel">{{ $t('cancel') }}</button>
     </div>
 

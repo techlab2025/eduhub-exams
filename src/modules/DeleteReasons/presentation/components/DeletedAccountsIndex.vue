@@ -94,7 +94,7 @@
   <div class="deleted-accounts-page">
     <div class="header-container">
       <div class="header-container-text">
-        <h5>{{ $t('students_left_the_app') }}</h5>
+        <h5>{{ $t('Students Left the App') }}</h5>
         <p>{{ $t('These students have removed the app, so they are no longer listed here') }}</p>
       </div>
       <DeletedReasonesDialog />
