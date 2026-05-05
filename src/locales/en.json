@@ -202,11 +202,17 @@
   "confirm_the_name_of_the_new_subject": "Confirm The Name Of The New Subject",
   "subject_name": "Subject Name",
   "enter_subject_name": "Enter Subject Name",
-  "Empty Data": "Empty Data",
-  "No Education Tree Yett": " You Haven't Added Any Education Trees Yet. Start Now To Organize Your Learning Structure And Content.",
   "Add New": "Add New",
-  "No branches yet. Click  Add Branch to get started.": "No branches yet. Click  Add Branch to get started.",
+  "No branches yet. Click Add Branch to get started.": "No branches yet. Click Add Branch to get started.",
   "Select a stage from the tree to view details": "Select a stage from the tree to view details",
-  "pricing": "pricing",
-  "skills": "skills"
+  "subject pricing": "Subject Pricing",
+  "Manage how each subject is priced within your system.": "Manage how each subject is priced within your system.",
+  "duration (month only)": "Duration (Month Only)",
+  "pricing": "Pricing",
+  "skills": "Skills",
+  "Define and manage skills within the system.": "Define and manage skills within the system.",
+  "Subject Name": "Subject Name",
+  "Subject Type": "Subject Type",
+  "percentage (%)": "Percentage (%)",
+  "enter percentage like 20% ": "Enter percentage like 20% "
 }

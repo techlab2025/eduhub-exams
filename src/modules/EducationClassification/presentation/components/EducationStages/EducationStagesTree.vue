@@ -234,9 +234,13 @@
             <path d="M30 50h20M30 58h14" stroke="#4caf50" stroke-width="2" stroke-linecap="round" />
           </svg>
         </div>
-        <p class="empty-title">{{ $t('Empty Data') }}</p>
+        <p class="empty-title">{{ $t('No Education Tree Yet') }}</p>
         <p class="empty-desc">
-          {{ $t('No Education Tree Yett') }}
+          {{
+            $t(
+              "You Haven't Added Any Education Trees Yet. Start Now To Organize Your Learning Structure And Content",
+            )
+          }}
         </p>
         <button class="btn-primary" @click="showAddTypeDialog = true">
           {{ $t('Add Education Type') }}
