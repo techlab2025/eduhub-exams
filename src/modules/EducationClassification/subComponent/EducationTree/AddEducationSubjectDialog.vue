@@ -49,18 +49,18 @@
         <NewBranchIcon />
       </div>
       <div>
-        <h3 class="dialog-title">Add a new branch2</h3>
-        <p class="dialog-subtitle">Confirm the name of the new branch</p>
+        <h3 class="dialog-title">{{ $t('add_a_new_subject') }}</h3>
+        <p class="dialog-subtitle">{{ $t('confirm_the_name_of_the_new_subject') }}</p>
       </div>
     </template>
 
-    <label class="field-label" for="edu-type-input">branch name</label>
+    <label class="field-label" for="edu-type-input">{{ $t('subject_name') }}</label>
     <input
       id="edu-type-input"
       ref="inputRef"
       v-model="inputValue"
       type="text"
-      placeholder="Enter Education Type"
+      :placeholder="$t('enter_subject_name')"
       class="field-input"
       @keydown.enter="handleConfirm"
       @keydown.esc="dialogVisible = false"
@@ -68,9 +68,9 @@
 
     <div class="dialog-footer">
       <button class="btn btn-primary" :disabled="!inputValue.trim()" @click="handleConfirm">
-        Add
+        {{ $t('add') }}
       </button>
-      <button class="btn btn-secondary" @click="dialogVisible = false">Cancel</button>
+      <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>
     </div>
   </Dialog>
 </template>

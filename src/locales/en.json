@@ -184,5 +184,14 @@
   "branch_name": "Branch Name",
   "add": "Add",
   "unactive": "Unactive",
-  "active": "Active"
+  "active": "Active",
+  "add_education_type": "Add Education Type",
+  "enter_the_name_of_the_education_type_you_want_to_add": "Enter The Name Of The Education Type You Want To Add",
+  "education_type": "Education Type",
+  "enter_education_type": "Enter Education Type",
+  "enter_branch_name": "Enter Branch Name",
+  "add_a_new_subject": "Add A New Subject",
+  "confirm_the_name_of_the_new_subject": "Confirm The Name Of The New Subject",
+  "subject_name": "Subject Name",
+  "enter_subject_name": "Enter Subject Name"
 }

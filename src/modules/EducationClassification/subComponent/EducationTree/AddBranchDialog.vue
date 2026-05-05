@@ -69,7 +69,7 @@
       ref="inputRef"
       v-model="inputValue"
       type="text"
-      :placeholder="`Enter Branch Name`"
+      :placeholder="$t('enter_branch_name')"
       class="field-input"
       @keydown.enter="handleConfirm"
       @keydown.esc="dialogVisible = false"

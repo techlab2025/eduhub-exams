@@ -49,18 +49,18 @@
         <EducationTypeIcon />
       </div>
       <div>
-        <h3 class="dialog-title">Add Education Type</h3>
-        <p class="dialog-subtitle">Enter The Name Of The Education Type You Want To Add</p>
+        <h3 class="dialog-title">{{ $t('add_education_type') }}</h3>
+        <p class="dialog-subtitle">{{ $t('enter_the_name_of_the_education_type_you_want_to_add') }}</p>
       </div>
     </template>
 
-    <label class="field-label" for="edu-type-input">Education Type</label>
+    <label class="field-label" for="edu-type-input">{{ $t('education_type') }}</label>
     <input
       id="edu-type-input"
       ref="inputRef"
       v-model="inputValue"
       type="text"
-      placeholder="Enter Education Type"
+      :placeholder="$t('enter_education_type')"
       class="field-input"
       @keydown.enter="handleConfirm"
       @keydown.esc="dialogVisible = false"
@@ -68,9 +68,9 @@
 
     <div class="dialog-footer">
       <button class="btn btn-primary" :disabled="!inputValue.trim()" @click="handleConfirm">
-        Add
+        {{ $t('add') }}
       </button>
-      <button class="btn btn-secondary" @click="dialogVisible = false">Cancel</button>
+      <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>
     </div>
   </Dialog>
 </template>

@@ -52,5 +52,20 @@
   "invalid_phone_number_format": "يرجى إدخال رقم هاتف صحيح (مثال: +20 123 456 7890).",
   "invalid_whatsapp_number_format": "يرجى إدخال رقم واتساب صحيح (مثال: +20 123 456 7890).",
   "invalid_telegram_format": "يرجى إدخال رقم أو رابط تيليغرام صحيح (مثال: +20 123 456 7890 أو https://t.me/username).",
-  "invalid_email_address_format": "يرجى إدخال بريد إلكتروني صحيح (مثال: name@example.com)."
+  "invalid_email_address_format": "يرجى إدخال بريد إلكتروني صحيح (مثال: name@example.com).",
+  "add_a_new_branch": "إضافة فرع جديد",
+  "enter_your_preferred_branch_name_within_the_tree": "أدخل اسم الفرع المفضل داخل الشجرة",
+  "branch_name": "اسم الفرع",
+  "add": "إضافة",
+  "unactive": "غير نشط",
+  "active": "نشط",
+  "add_education_type": "إضافة نوع تعليم",
+  "enter_the_name_of_the_education_type_you_want_to_add": "أدخل اسم نوع التعليم الذي تريد إضافته",
+  "education_type": "نوع التعليم",
+  "enter_education_type": "أدخل نوع التعليم",
+  "enter_branch_name": "أدخل اسم الفرع",
+  "add_a_new_subject": "إضافة مادة جديدة",
+  "confirm_the_name_of_the_new_subject": "تأكيد اسم المادة الجديدة",
+  "subject_name": "اسم المادة",
+  "enter_subject_name": "أدخل اسم المادة"
 }

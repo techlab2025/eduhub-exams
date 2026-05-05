@@ -11,6 +11,9 @@ describe('AddEducationTypeDialog', () => {
     const wrapper = mount(AddEducationTypeDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template:
@@ -21,13 +24,16 @@ describe('AddEducationTypeDialog', () => {
       },
     });
     expect(wrapper.find('.dialog-stub').exists()).toBe(true);
-    expect(wrapper.text()).toContain('Add Education Type');
+    expect(wrapper.text()).toContain('add_education_type');
   });
 
   it('emits update:visible false when Cancel button is clicked', async () => {
     const wrapper = mount(AddEducationTypeDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template: '<div v-if="visible"><slot /></div>',
@@ -47,6 +53,9 @@ describe('AddEducationTypeDialog', () => {
     const wrapper = mount(AddEducationTypeDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template: '<div v-if="visible"><slot /></div>',
@@ -69,6 +78,9 @@ describe('AddEducationTypeDialog', () => {
     const wrapper = mount(AddEducationTypeDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template: '<div v-if="visible"><slot /></div>',
