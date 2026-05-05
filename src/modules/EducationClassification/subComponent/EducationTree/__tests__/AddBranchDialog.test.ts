@@ -13,6 +13,9 @@ describe('AddBranchDialog', () => {
     const wrapper = mount(AddBranchDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template:
@@ -23,13 +26,16 @@ describe('AddBranchDialog', () => {
       },
     });
     expect(wrapper.find('.dialog-stub').exists()).toBe(true);
-    expect(wrapper.text()).toContain('Add A New Branch');
+    expect(wrapper.text()).toContain('add_a_new_branch');
   });
 
   it('emits update:visible false when Cancel button is clicked', async () => {
     const wrapper = mount(AddBranchDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template: '<div v-if="visible"><slot /></div>',
@@ -49,6 +55,9 @@ describe('AddBranchDialog', () => {
     const wrapper = mount(AddBranchDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template: '<div v-if="visible"><slot /></div>',
@@ -75,6 +84,9 @@ describe('AddBranchDialog', () => {
     const wrapper = mount(AddBranchDialog, {
       props: defaultProps,
       global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
         stubs: {
           Dialog: {
             template: '<div v-if="visible"><slot /></div>',

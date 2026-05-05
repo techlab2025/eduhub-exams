@@ -22,29 +22,34 @@ describe('EducationTypeItem', () => {
     maxLevels: 3,
   };
 
-  it('renders node name', () => {
-    const wrapper = mount(EducationTypeItem, {
-      props: defaultProps,
+  const mountComponent = (options = {}) =>
+    mount(EducationTypeItem, {
+      ...options,
       global: {
         stubs: {
           NodeIcon: true,
           EducationTypeItem: true,
         },
+        config: {
+          globalProperties: {
+            $t: (key: string) => key,
+          },
+        },
+        ...options.global,
       },
+    });
+
+  it('renders node name', () => {
+    const wrapper = mountComponent({
+      props: defaultProps,
     });
 
     expect(wrapper.text()).toContain('University');
   });
 
   it('toggles children visibility when toggle button is clicked', async () => {
-    const wrapper = mount(EducationTypeItem, {
+    const wrapper = mountComponent({
       props: defaultProps,
-      global: {
-        stubs: {
-          NodeIcon: true,
-          EducationTypeItem: true,
-        },
-      },
     });
 
     const toggleBtn = wrapper.find('.toggle-btn');
@@ -58,14 +63,8 @@ describe('EducationTypeItem', () => {
   });
 
   it('emits select when node row is clicked', async () => {
-    const wrapper = mount(EducationTypeItem, {
+    const wrapper = mountComponent({
       props: defaultProps,
-      global: {
-        stubs: {
-          NodeIcon: true,
-          EducationTypeItem: true,
-        },
-      },
     });
 
     await wrapper.find('.node-row').trigger('click');
@@ -74,14 +73,8 @@ describe('EducationTypeItem', () => {
   });
 
   it('emits add-branch when add button is clicked', async () => {
-    const wrapper = mount(EducationTypeItem, {
+    const wrapper = mountComponent({
       props: defaultProps,
-      global: {
-        stubs: {
-          NodeIcon: true,
-          EducationTypeItem: true,
-        },
-      },
     });
 
     const addBtn = wrapper.find('.icon-btn[title="Add child"]');
@@ -99,16 +92,10 @@ describe('EducationTypeItem', () => {
       children: [],
     };
 
-    const wrapper = mount(EducationTypeItem, {
+    const wrapper = mountComponent({
       props: {
         node: deepNode,
         maxLevels: 3,
-      },
-      global: {
-        stubs: {
-          NodeIcon: true,
-          EducationTypeItem: true,
-        },
       },
     });
 

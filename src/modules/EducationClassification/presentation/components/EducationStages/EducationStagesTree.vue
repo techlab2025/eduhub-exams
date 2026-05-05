@@ -14,6 +14,7 @@
   import type EducationStageModel from '@/modules/EducationClassification/core/models/EducationStage/education.stages.model';
   import type EducationConfigurationModel from '@/modules/EducationClassification/core/models/EducationConfiguration/education.configuration.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import DialogIconFillter from '@/shared/icons/DialogIconFillter.vue';
 
   const route = useRoute();
   const { locale } = useI18n();
@@ -164,15 +165,8 @@
           />
         </div>
         <button class="filter-btn">
-          <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-            <path
-              d="M3 5h14M6 10h8M9 15h2"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-          </svg>
-          Filter
+          <DialogIconFillter />
+          {{ $t('Filter') }}
         </button>
       </div>
 
@@ -352,7 +346,8 @@
     align-items: center;
     gap: 6px;
     background: white;
-    color: var(--primary-green);
+    /* color: var(--primary-green); */
+    color: var(--success-green-std);
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
@@ -376,7 +371,8 @@
     gap: 8px;
     background: white;
     border: 1px solid var(--gray-200-std);
-    border-radius: 8px;
+    /* border-radius: 8px; */
+    border-radius: 14px;
     padding: 10px 14px;
   }
 

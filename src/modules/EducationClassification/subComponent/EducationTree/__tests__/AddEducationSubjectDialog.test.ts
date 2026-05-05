@@ -22,7 +22,12 @@ describe('AddEducationSubjectDialog', () => {
   it('renders when visible is true', () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStubWithHeader } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStubWithHeader },
+      },
     });
     expect(wrapper.find('.dialog-stub').exists()).toBe(true);
   });
@@ -30,7 +35,12 @@ describe('AddEducationSubjectDialog', () => {
   it('does not render when visible is false', () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: { visible: false },
-      global: { stubs: { Dialog: dialogStubWithHeader } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStubWithHeader },
+      },
     });
     expect(wrapper.find('.dialog-stub').exists()).toBe(false);
   });
@@ -38,7 +48,12 @@ describe('AddEducationSubjectDialog', () => {
   it('has a disabled Add button when input is empty', () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     const addBtn = wrapper.find('button.btn-primary');
     expect((addBtn.element as HTMLButtonElement).disabled).toBe(true);
@@ -47,7 +62,12 @@ describe('AddEducationSubjectDialog', () => {
   it('keeps Add button disabled when input is only whitespace', async () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     await wrapper.find('input').setValue('   ');
     expect((wrapper.find('button.btn-primary').element as HTMLButtonElement).disabled).toBe(true);
@@ -56,7 +76,12 @@ describe('AddEducationSubjectDialog', () => {
   it('enables Add button when input has text', async () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     await wrapper.find('input').setValue('Mathematics');
     expect((wrapper.find('button.btn-primary').element as HTMLButtonElement).disabled).toBe(false);
@@ -65,7 +90,12 @@ describe('AddEducationSubjectDialog', () => {
   it('emits confirm with trimmed name when Add is clicked', async () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     await wrapper.find('input').setValue('  Science  ');
     await wrapper.find('button.btn-primary').trigger('click');
@@ -77,7 +107,12 @@ describe('AddEducationSubjectDialog', () => {
   it('clears the input after a successful confirm', async () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     await wrapper.find('input').setValue('Art');
     await wrapper.find('button.btn-primary').trigger('click');
@@ -88,7 +123,12 @@ describe('AddEducationSubjectDialog', () => {
   it('emits update:visible false when Cancel is clicked', async () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     await wrapper.find('button.btn-secondary').trigger('click');
 
@@ -99,7 +139,12 @@ describe('AddEducationSubjectDialog', () => {
   it('emits update:visible false on Escape key press', async () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     await wrapper.find('input').trigger('keydown.esc');
 
@@ -110,7 +155,12 @@ describe('AddEducationSubjectDialog', () => {
   it('triggers confirm on Enter key press when input has text', async () => {
     const wrapper = mount(AddEducationSubjectDialog, {
       props: defaultProps,
-      global: { stubs: { Dialog: dialogStub } },
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: { Dialog: dialogStub },
+      },
     });
     await wrapper.find('input').setValue('History');
     await wrapper.find('input').trigger('keydown.enter');

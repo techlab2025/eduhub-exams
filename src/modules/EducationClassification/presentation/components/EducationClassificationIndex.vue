@@ -30,7 +30,7 @@
 
   // Table headers
   const headers = computed<TableHeader[]>(() => [
-    { key: 'title', label: t('Title'), width: '30%' },
+    { key: 'title', label: t('education type'), width: '30%' },
     { key: 'added_date', label: t('Added date'), width: '30%' },
     { key: 'status', label: t('status'), width: '30%' },
   ]);
@@ -203,6 +203,15 @@
               </div>
             </template>
           </AppTable>
+        </div>
+
+        <div v-if="SelectedRow.length > 0" class="items-deleted">
+          <div class="num-type">
+            <h6>{{ SelectedRow.length }} education type</h6>
+          </div>
+          <div class="num-deleted">
+            <h6>delete {{ SelectedRow.length }} item</h6>
+          </div>
         </div>
 
         <Pagination

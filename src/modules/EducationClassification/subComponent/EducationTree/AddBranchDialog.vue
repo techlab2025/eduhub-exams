@@ -58,18 +58,18 @@
         <NewBranchIcon />
       </div>
       <div class="dialog-header-text">
-        <h3 class="dialog-title">Add A New Branch</h3>
-        <p class="dialog-subtitle">Enter Your Preferred Branch Name Within The Tree</p>
+        <h3 class="dialog-title">{{ $t('add_a_new_branch') }}</h3>
+        <p class="dialog-subtitle">{{ $t('enter_your_preferred_branch_name_within_the_tree') }}</p>
       </div>
     </template>
 
-    <label class="field-label" :for="`branch-input-${level}`">Branch Name</label>
+    <label class="field-label" :for="`branch-input-${level}`">{{ $t('branch_name') }}</label>
     <input
       :id="`branch-input-${level}`"
       ref="inputRef"
       v-model="inputValue"
       type="text"
-      :placeholder="`Enter Branch Name`"
+      :placeholder="$t('enter_branch_name')"
       class="field-input"
       @keydown.enter="handleConfirm"
       @keydown.esc="dialogVisible = false"
@@ -77,9 +77,21 @@
 
     <div class="dialog-footer">
       <button class="btn btn-primary" :disabled="!inputValue.trim()" @click="handleConfirm">
-        Add
+        {{ $t('add') }}
       </button>
-      <button class="btn btn-secondary" @click="dialogVisible = false">Cancel</button>
+      <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>
     </div>
   </Dialog>
 </template>
+
+<style scoped>
+  .field-input {
+    background-color: var(--bg-main);
+    border-radius: 30px;
+    margin-bottom: 1rem;
+
+    ::placeholder {
+      color: var(--bread-crumb-color-span);
+    }
+  }
+</style>

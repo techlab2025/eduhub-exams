@@ -76,9 +76,9 @@
       display: flex;
       align-items: center;
       gap: 3px;
-      color: $PrimaryColorHover;
+      color: var(--title-color);
       font-size: 20px;
-      font-weight: 600;
+      font-weight: $BaseFontSemiBoldWeight;
       font-family: 'Medium';
 
       svg {
@@ -87,9 +87,10 @@
       }
 
       h3 {
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: var(--gray-900);
+        color: var(--title-color);
+        font-size: $XlSize;
+        font-weight: $BaseFontSemiBoldWeight;
+        font-family: 'Medium';
         margin: 0;
         letter-spacing: -0.01em;
         padding-top: 6px;
@@ -129,9 +130,10 @@
     padding: 0 24px 24px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: end;
     width: 100%;
     gap: 20px;
+    border-bottom: 1px dashed var(--sidebar-group-text-color);
 
     @media (max-width: 1000px) {
       flex-direction: column;
@@ -158,9 +160,10 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--gray-700);
+    font-size: $SmSize;
+    font-weight: $BaseFontSemiBoldWeight;
+    font-family: 'medium';
+    color: var(--title-header-color);
     text-transform: none;
     letter-spacing: 0.04em;
 

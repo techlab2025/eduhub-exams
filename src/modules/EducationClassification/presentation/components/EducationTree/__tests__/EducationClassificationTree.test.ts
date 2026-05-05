@@ -65,6 +65,9 @@ describe('EducationClassificationTree', () => {
           'router-link': true,
           'router-view': true,
         },
+        mocks: {
+          $t: (key: string) => key,
+        },
       },
     });
 

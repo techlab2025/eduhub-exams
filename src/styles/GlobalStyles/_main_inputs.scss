@@ -19,11 +19,11 @@
   }
 
   .field-label {
-    font-family: 'bold';
-    color: $Gray-5;
-    font-size: 16px;
-    font-weight: 600;
-    // text-transform: uppercase;
+    font-family: 'Medium';
+    text-transform: uppercase;
+    color: var(--gray-5);
+    font-size: $SmSize;
+    font-weight: $BaseFontSemiBoldWeight;
     letter-spacing: 0.04em;
   }
 

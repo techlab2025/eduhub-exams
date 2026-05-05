@@ -123,7 +123,7 @@
               stroke-linecap="round"
             />
           </svg>
-          Filter
+          {{ $t('Filter') }}
         </button>
       </div>
 
@@ -137,12 +137,17 @@
             <path d="M30 50h20M30 58h14" stroke="#4caf50" stroke-width="2" stroke-linecap="round" />
           </svg>
         </div>
-        <p class="empty-title">No Education Tree Yet</p>
+        <p class="empty-title">{{ $t('No Education Tree Yet') }}</p>
         <p class="empty-desc">
-          You Haven't Added Any Education Trees Yet. Start Now To Organize Your Learning Structure
-          And Content.
+          {{
+            $t(
+              "You Haven't Added Any Education Trees Yet. Start Now To Organize Your Learning Structure And Content",
+            )
+          }}
         </p>
-        <button class="btn-primary" @click="openAddTypeDialog">Add Education Type</button>
+        <button class="btn-primary" @click="openAddTypeDialog">
+          {{ $t('Add Education Type') }}
+        </button>
       </div>
 
       <!-- Tree List -->
@@ -161,7 +166,9 @@
 
       <!-- Bottom Add Button -->
       <div v-if="educationTypes.length > 0" class="bottom-bar">
-        <button class="btn btn-primary" @click="openAddTypeDialog">Add New Education Type</button>
+        <button class="btn btn-primary" @click="openAddTypeDialog">
+          {{ $t('Add New Education Type') }}
+        </button>
       </div>
     </div>
 
@@ -208,17 +215,19 @@
           </svg>
           <p class="right-leaf-title">{{ selectedType.name }}</p>
           <p class="hint-text">
-            This is a final-level branch. The edit interface will be available here soon.
+            {{
+              $t('This is a final-level branch. The edit interface will be available here soon.')
+            }}
           </p>
         </div>
 
         <!-- Non-leaf node with no children yet -->
         <div v-else-if="selectedType.children.length === 0" class="right-empty">
-          <p class="hint-text">No branches yet. Click "+ Add Branch" to get started.</p>
+          <p class="hint-text">{{ $t('No branches yet. Click "+ Add Branch" to get started.') }}</p>
         </div>
       </template>
       <div v-else class="right-placeholder">
-        <p>Select a branch from the tree to view details</p>
+        <p>{{ $t('Select a branch from the tree to view details') }}</p>
       </div>
     </div>
 

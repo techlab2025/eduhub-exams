@@ -83,7 +83,12 @@ describe('EducationStagesTree', () => {
 
   const mountComponent = () =>
     mount(EducationStagesTree, {
-      global: { stubs: { 'router-link': true } },
+      global: {
+        stubs: { 'router-link': true },
+        mocks: {
+          $t: (key: string) => key,
+        },
+      },
     });
 
   it('renders the two-panel tree layout', () => {

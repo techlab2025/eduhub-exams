@@ -207,7 +207,7 @@
         <div class="header-text">
           <FolderCrudIcon />
           <h3>
-            {{ $t(' configuration Basic education') }}
+            {{ $t('configuration Basic education') }}
           </h3>
         </div>
       </header>
@@ -277,13 +277,13 @@
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="title"> {{ $t('number_of_branchs') }} </label>
+          <label class="field-label" for="title"> {{ $t('num_of_levels') }} </label>
           <div class="input-wrap">
             <input
               id="title"
               v-model="SubjectnumberOfBranchs"
               type="number"
-              :placeholder="$t('Enter number of branchs')"
+              :placeholder="$t('num_of_levels')"
               class="field-input"
               @input="updateData"
             />

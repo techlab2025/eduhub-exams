@@ -10,21 +10,27 @@
 
       gap: 1rem;
 
+      .icon-dialog {
+        width: 70px;
+        height: 40px;
+      }
+
       .header-text-content {
         @include flex-column(nowrap, flex-start, flex-start);
 
         .header-title {
           color: $StandardBlack;
-          font-weight: 600;
-          font-size: 20px;
-          font-family: 'Bold';
+          font-weight: $BaseFontSemiBoldWeight;
+          font-size: $XlSize;
+          font-family: 'medium';
         }
 
         .header-message {
-          color: $Gray-5;
-          font-weight: 500;
-          font-size: 16px;
+          font-weight: $BaseFontMediumWeight;
+          font-size: $MdSize;
+          color: var(--title-header-color);
           font-family: 'Medium';
+          margin-top: $XsSize2;
         }
       }
     }
@@ -39,6 +45,13 @@
     .input-wrap {
       width: 100%;
       border-radius: 50px;
+      margin-bottom: $XlSize3;
+
+      .field-input {
+        background-color: var(--standard-white);
+        border: 1px solid var(--input-border-color);
+        border-radius: $XlSize3;
+      }
     }
 
     .btns {

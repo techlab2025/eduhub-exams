@@ -114,9 +114,10 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--gray-700);
+    font-size: $XsSize;
+    font-weight: $BaseFontSemiBoldWeight;
+    font-family: 'medium';
+    color: var(--title-header-color);
     text-transform: uppercase;
     letter-spacing: 0.04em;
 
@@ -133,7 +134,7 @@
   .field-input {
     width: 100%;
     padding: 10px 16px;
-    border: 1px solid var(--border-weak);
+    border: 1px solid var(--input-border-color);
     border-radius: 50px;
     font-size: 0.9rem;
     color: var(--gray-800);
@@ -143,7 +144,8 @@
     font-family: var(--font-family);
 
     &::placeholder {
-      color: var(--gray-400);
+      color: var(--bread-crumb-color-span);
+      font-family: 'medium';
     }
 
     &:focus {
@@ -231,13 +233,14 @@
     justify-content: center;
     color: var(--white);
     padding: 10px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: $MdSize;
     border-radius: 50px;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 20%;
     margin-top: 25px;
+    font-weight: $BaseFontSemiBoldWeight;
+    font-family: 'medium';
   }
 }

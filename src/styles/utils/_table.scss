@@ -267,4 +267,11 @@
       text-align: center;
     }
   }
+/* ---- Checkbox ---- */
+.app-table input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--table-checkbox-color, #6366f1);
+}
 }
