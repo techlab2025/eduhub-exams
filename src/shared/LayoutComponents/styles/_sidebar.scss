@@ -105,18 +105,24 @@
         }
       }
     }
+
     .auth-container {
       margin-top: auto;
+
       @include flex-row(nowrap, space-between, center);
+
       background-color: $SidebarAuthbg;
       padding: $XsSize2 $XsSize;
       border-radius: 0 0 $XsSize3 $XsSize3;
 
       .auth-data {
         @include flex-row(nowrap, flex-start, center);
+
         gap: $XsSize5;
+
         .user-data {
           @include flex-column(nowrap, flex-start, flex-start);
+
           .name {
             text-transform: capitalize;
             color: $White;
@@ -124,6 +130,7 @@
             font-weight: $BaseFontWeightBold;
           }
         }
+
         img {
           width: 40px;
           height: 40px;

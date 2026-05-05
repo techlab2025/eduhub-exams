@@ -15,6 +15,18 @@
   import type EducationConfigurationModel from '@/modules/EducationClassification/core/models/EducationConfiguration/education.configuration.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import DialogIconFillter from '@/shared/icons/DialogIconFillter.vue';
+  import RenameClassificationDialog from '@/modules/EducationClassification/subComponent/RenameClassificationDialog.vue';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
+  import { ToggleSwitch } from 'primevue';
+  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+  import PriceDialog from '@/shared/icons/priceDialog.vue';
+  import SkillsDilaog from '@/shared/icons/SkillsDilaog.vue';
+  import Dialog from 'primevue/dialog';
+  import PriceIconDialog from '@/shared/icons/priceIconDialog.vue';
+  import InputNumber from 'primevue/inputnumber';
+  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import Skillsicon from '@/shared/icons/Skillsicon.vue';
 
   const route = useRoute();
   const { locale } = useI18n();
@@ -141,6 +153,48 @@
       fetchRoot();
     }
   });
+
+  const ShoweEditDialog = ref(false);
+  const showPricingDialog = ref(false);
+  const showSkillsDialog = ref(false);
+  const { t } = useI18n();
+  const actionList = (id: number, deleteFn: (id: number) => void) => [
+    {
+      text: t('rename'),
+      icon: EditIcon,
+      action: () => {
+        ShoweEditDialog.value = true;
+      },
+    },
+    {
+      text: t('delete'),
+      icon: DeletIcon,
+      action: () => deleteFn(id),
+    },
+    {
+      text: t('pricing'),
+      icon: PriceDialog,
+      action: () => {
+        showPricingDialog.value = true;
+      },
+    },
+    {
+      text: t('skills'),
+      icon: SkillsDilaog,
+      action: () => {
+        showSkillsDialog.value = true;
+      },
+    },
+    {
+      text: t('unactive'),
+      icon: ToggleSwitch,
+      action: () => {
+        toggleStatus(id);
+      },
+    },
+  ];
+  const duration = ref(0);
+  const pricing = ref(0);
 </script>
 
 <template>
@@ -180,12 +234,17 @@
             <path d="M30 50h20M30 58h14" stroke="#4caf50" stroke-width="2" stroke-linecap="round" />
           </svg>
         </div>
-        <p class="empty-title">No Education Tree Yet</p>
+        <p class="empty-title">{{ $t('No Education Tree Yet') }}</p>
         <p class="empty-desc">
-          You Haven't Added Any Education Trees Yet. Start Now To Organize Your Learning Structure
-          And Content.
+          {{
+            $t(
+              "You Haven't Added Any Education Trees Yet. Start Now To Organize Your Learning Structure And Content",
+            )
+          }}
         </p>
-        <button class="btn-primary" @click="showAddTypeDialog = true">Add Education Type</button>
+        <button class="btn-primary" @click="showAddTypeDialog = true">
+          {{ $t('Add Education Type') }}
+        </button>
       </div>
 
       <!-- Tree List -->
@@ -203,7 +262,7 @@
 
       <div v-if="rootNodes.length > 0">
         <button class="btn btn-primary w-full" @click="showAddTypeDialog = true">
-          Add New {{ getBranchName(0) }}
+          {{ $t('Add New') }} {{ getBranchName(0) }}
         </button>
       </div>
     </div>
@@ -301,28 +360,129 @@
                   />
                 </svg>
               </button>
-              <button class="icon-btn">
+              <!-- <button class="icon-btn">
                 <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
                   <circle cx="10" cy="5" r="1.2" />
                   <circle cx="10" cy="10" r="1.2" />
                   <circle cx="10" cy="15" r="1.2" />
                 </svg>
+              </button> -->
+              <button class="icon-btn" @click.stop>
+                <DropList
+                  :action-list="actionList(child.stage.stage_id, handleDelete)"
+                  :delete-dialog-title="
+                    $t('are_you_sure_you_want_to_remove_this_education_classification')
+                  "
+                  :delete-dialog-message="
+                    $t(
+                      'Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed',
+                    )
+                  "
+                />
+                <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
               </button>
             </div>
           </div>
 
           <div v-else class="right-empty">
-            <p class="hint-text">No branches yet. Click "+ Add Branch" to get started.</p>
+            <p class="hint-text">{{ $t('No branches yet. Click Add Branch to get started.') }}</p>
           </div>
         </template>
       </template>
 
       <div v-else class="right-placeholder">
-        <p>Select a stage from the tree to view details</p>
+        <p>{{ $t('Select a stage from the tree to view details') }}</p>
       </div>
     </div>
   </div>
-
+  <!-- pricing dialog -->
+  <Dialog
+    v-model:visible="showPricingDialog"
+    modal
+    :pt="{
+      root: 'dialog-pricing',
+      header: 'dialog-header',
+      content: 'dialog-body',
+    }"
+  >
+    <template #header>
+      <div class="dialog-header">
+        <div class="icon">
+          <PriceIconDialog />
+        </div>
+        <div class="contant">
+          <h6>{{ $t('subject pricing') }}</h6>
+          <p>{{ $t('Manage how each subject is priced within your system.') }}</p>
+        </div>
+      </div>
+    </template>
+    <div class="inputs-pricing">
+      <div class="input-group">
+        <label for="duration">{{ $t('duration (month only)') }}</label>
+        <InputNumber v-model="duration" input-id="duration" fluid />
+      </div>
+      <div class="input-group">
+        <label for="price">{{ $t('pricing') }}</label>
+        <InputNumber v-model="pricing" input-id="price" fluid />
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-primary" @click="showPricingDialog">{{ $t('add') }}</button>
+      <button class="btn btn-secondary" @click="showPricingDialog = false">
+        {{ $t('cancel') }}
+      </button>
+    </div>
+  </Dialog>
+  <!-- skillls dialog -->
+  <Dialog
+    v-model:visible="showSkillsDialog"
+    modal
+    :pt="{
+      root: 'dialog-pricing',
+      header: 'dialog-header',
+      content: 'dialog-body',
+    }"
+  >
+    <template #header>
+      <div class="dialog-header">
+        <div class="icon">
+          <Skillsicon />
+        </div>
+        <div class="contant">
+          <h6>{{ $t('skills') }}</h6>
+          <p>{{ $t('Define and manage skills within the system.') }}</p>
+        </div>
+      </div>
+    </template>
+    <div class="inputs-pricing">
+      <div class="input-group">
+        <UpdatedCustomInputSelect
+          id="doc-subject"
+          :label="`Subject Name`"
+          :params="indexDocumentTypeParams"
+          :controller="documentTypeController"
+          :model-value="selectedDocumentType"
+          placeholder="Subject Type"
+          @update:model-value="updateData"
+        />
+      </div>
+      <div class="input-group">
+        <label for="price">{{ $t('percentage (%)') }}</label>
+        <InputNumber
+          v-model="skillPercentage"
+          input-id="skillPercentage"
+          :placeholder="`${t('enter percentage like 20% ')}....`"
+          fluid
+        />
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-primary" @click="showSkillsDialog">{{ $t('add') }}</button>
+      <button class="btn btn-secondary" @click="showSkillsDialog = false">
+        {{ $t('cancel') }}
+      </button>
+    </div>
+  </Dialog>
   <AddEducationTypeDialog
     v-if="showAddTypeDialog"
     v-model:visible="showAddTypeDialog"
@@ -340,82 +500,4 @@
   />
 </template>
 
-<style scoped>
-  .btn-add-branch {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: white;
-    /* color: var(--primary-green); */
-    color: var(--success-green-std);
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .btn-add-branch:hover {
-    background: var(--light-green-bg);
-  }
-
-  .right-children {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .right-child-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: white;
-    border: 1px solid var(--gray-200-std);
-    /* border-radius: 8px; */
-    border-radius: 14px;
-    padding: 10px 14px;
-  }
-
-  .child-icon {
-    flex-shrink: 0;
-  }
-
-  .child-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--gray-900-std);
-    direction: rtl;
-  }
-
-  .level-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--gray-500-std);
-    background: var(--gray-100-std);
-    border-radius: 4px;
-    padding: 1px 5px;
-    white-space: nowrap;
-  }
-
-  .spacer {
-    flex: 1;
-  }
-
-  .icon-btn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    padding: 3px;
-    display: flex;
-    align-items: center;
-    color: var(--gray-400-std);
-    border-radius: 4px;
-    transition: background 0.15s;
-    flex-shrink: 0;
-  }
-
-  .icon-btn:hover {
-    background: var(--gray-200-std);
-    color: var(--gray-700-std);
-  }
-</style>
+<style scoped lang="scss"></style>

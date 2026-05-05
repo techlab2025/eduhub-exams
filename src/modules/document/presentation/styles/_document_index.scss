@@ -8,6 +8,10 @@
   font-family: 'Medium';
 
   .index-header {
+    @include flex-row(nowrap, space-between, center);
+
+    width: 100%;
+
     .btns {
       @include flex-row(nowrap, stretch, center);
 
