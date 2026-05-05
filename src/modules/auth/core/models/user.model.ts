@@ -17,6 +17,7 @@ export default class UserModel {
   public readonly updatedAt?: string;
   public readonly apiToken?: string;
   public readonly refreshToken?: string;
+  public readonly image?: string;
 
   constructor(data: {
     id?: number;
@@ -28,6 +29,7 @@ export default class UserModel {
     updatedAt?: string;
     apiToken?: string;
     refreshToken?: string;
+    image?: string;
   }) {
     this.id = data.id;
     this.email = data.email;
@@ -38,6 +40,7 @@ export default class UserModel {
     this.updatedAt = data.updatedAt;
     this.apiToken = data.apiToken;
     this.refreshToken = data.refreshToken;
+    this.image = data.image;
   }
 
   /**
@@ -61,6 +64,7 @@ export default class UserModel {
       updatedAt: json.updated_at,
       apiToken: json.api_token,
       refreshToken: json.refresh_token,
+      image: json.image,
     });
   }
 
@@ -79,6 +83,7 @@ export default class UserModel {
       updated_at: this.updatedAt,
       api_token: this.apiToken,
       refresh_token: this.refreshToken,
+      image: this.image,
     };
   }
 
@@ -92,6 +97,7 @@ export default class UserModel {
       apiToken:
         'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZmFrZS1kZXYuZWR1aHViLmFwcy9hcGkvYXV0aGVudGljYXRlIiwiaWF0IjoxNzUxMzM5MTYyLCJleHAiOjE3NTE0MjU1NjIsIm5iZiI6MTc1MTMzOTE2MiwianRpIjoiWkM1RmNTS1BWMVpuWUtQZSIsInN1YiI6IjMiLCJwcnYiOiIyM2JlNWM4ZmQ5MjI5NTY2MzA4NmY5NWE1Y2Y2Yjg0OTI3ZGU2ZDMwIiwidHlwZSI6M30.g2Yj4pWlD67e6JmY7l6fQ2k6n8y6JmY7l6fQ2k6n8y6',
       refreshToken: '',
+      image: 'https://cyber.comolho.com/static/img/avatar.png',
     });
   }
 
