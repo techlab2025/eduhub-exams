@@ -9,10 +9,12 @@
   import IndexDeleteAccountsParams from '../../core/params/index.delete.accounts.params';
   import type DeleteAccountsModel from '../../core/models/delete.accountes.model';
   import DeletedReasonesDialog from '../subComponent/DeletedReasonesDialog.vue';
+  import EmptyDeletedAccounts from '../../../../assets/images/EmptyDeletedAccounts.gif';
+  import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
+  import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
 
   // Controller instance
   const controller = DletedAccountsController.getInstance();
-
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
@@ -79,33 +81,30 @@
   const setSelectef = (items: DeleteAccountsModel[]) => {
     SelectedRow.value = items;
   };
+  const FilterDialogShow = ref<boolean>(false);
+  const ApplayFilter = () => {
+    FilterDialogShow.value = false;
+  };
+  const CloseFiletrDialog = () => {
+    FilterDialogShow.value = false;
+  };
 </script>
 
 <template>
   <div class="deleted-accounts-page">
     <div class="header-container">
       <div class="header-container-text">
-        <h5>Students Left the App</h5>
-        <p>These students have removed the app, so they are no longer listed here</p>
+        <h5>{{ $t('Students Left the App') }}</h5>
+        <p>{{ $t('These students have removed the app, so they are no longer listed here') }}</p>
       </div>
       <DeletedReasonesDialog />
     </div>
+    <div class="badge">{{ $t('Student Removal History') }}</div>
     <div class="index-header">
       <div class="toolbar">
         <div class="search-field">
           <span class="search-icon">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
+            <IndexSearchIcon />
           </span>
           <input
             v-model="word"
@@ -116,10 +115,17 @@
           />
         </div>
       </div>
+      <FilterDialog v-model="FilterDialogShow">
+        <template #content>
+          <div class="filter-action">
+            <button class="btn btn-cancel" @click="CloseFiletrDialog">Reset</button>
+            <button class="btn btn-primary" @click="ApplayFilter">apply</button>
+          </div>
+        </template>
+      </FilterDialog>
     </div>
 
-    <!-- ═══ Table ═══ -->
-    <DataStatusBuilder :controller="state" :on-retry="async () => await fetchStages()">
+    <DataStatusBuilder :controller="state">
       <template #success="{ data }">
         <div class="table-frame">
           <AppTable
@@ -149,37 +155,18 @@
           @count-per-page="onPerPageChange"
         />
       </template>
-
       <template #empty>
         <div class="empty-state">
-          <svg
-            width="56"
-            height="56"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1"
-            stroke-linecap="round"
-          >
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-          </svg>
-          <h3>No emails yet</h3>
-          <p>Add the first employee email to get started</p>
-          <!-- <router-link :to="formRoute" class="btn-add empty-cta">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            <span>Add Email</span>
-          </router-link> -->
+          <img :src="EmptyDeletedAccounts" alt="empty-data" width="230" height="210" />
+          <h3>{{ $t('no_delete_added') }}</h3>
+          <p>{{ $t('your_delete_list_is_empty') }}</p>
+        </div>
+      </template>
+      <template #failed>
+        <div class="empty-state">
+          <img :src="EmptyDeletedAccounts" alt="empty-data" width="230" height="210" />
+          <h3>{{ $t('no_delete_added') }}</h3>
+          <p>{{ $t('your_delete_list_is_empty') }}</p>
         </div>
       </template>
     </DataStatusBuilder>

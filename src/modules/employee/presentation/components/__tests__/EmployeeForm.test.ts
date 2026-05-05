@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
+import { createI18n } from 'vue-i18n';
 import EmployeeForm from '../EmployeeForm.vue';
+
+const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
@@ -54,6 +57,7 @@ describe('EmployeeForm', () => {
   it('renders without crashing', () => {
     const wrapper = mount(EmployeeForm, {
       global: {
+        plugins: [i18n],
         stubs: {
           Teleport: true,
           Transition: true,
@@ -65,6 +69,8 @@ describe('EmployeeForm', () => {
           Column: true,
           Button: true,
           InputText: true,
+          InputSwitch: true,
+          RadioButton: true,
           Dialog: true,
           Toast: true,
           Select: true,
@@ -76,6 +82,8 @@ describe('EmployeeForm', () => {
           AccordionTab: true,
           Tree: true,
           Breadcrumb: true,
+          HandleFilesUpload: true,
+          UplaodImageInput: true,
         },
         mocks: {
           $t: (msg: string) => msg,

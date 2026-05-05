@@ -16,47 +16,47 @@
     .about-header {
       @include flex-column(nowrap, flex-start, flex-start);
 
-      gap: 5px;
+      gap: $XsSize4;
 
       .title {
         color: $BgBlack;
-        font-size: 24px;
-        font-weight: 700;
+        font-size: $XlSize2;
+        font-weight: $BaseFontWeightBold;
       }
 
       .description {
-        color: $Gray-5;
-        font-size: 18px;
-        font-weight: 500;
+        color: $InputLabelText;
+        font-size: $MdSize2;
+        font-weight: $BaseFontMediumWeight;
       }
     }
   }
 
   .about-content {
-    background-color: var(--color-light-gray);
-    padding: 24px;
-    border-radius: 24px;
+    background-color: $ColorLightGray;
+    padding: $XlSize2;
+    border-radius: $XlSize2;
     width: 100%;
 
     @include flex-column(nowrap, flex-start, flex-start);
 
-    gap: 10px;
+    gap: $XsSize3;
 
     .text-content {
       @include flex-column(nowrap, flex-start, flex-start);
 
-      gap: 3px;
+      gap: $XsSize5;
 
       h5 {
         color: $StandardBlack;
-        font-size: 18px;
-        font-weight: 700;
+        font-size: $MdSize2;
+        font-weight: $BaseFontWeightBold;
       }
 
       p {
-        color: $Gray-5;
-        font-size: 16px;
-        font-weight: 500;
+        color: $InputLabelText;
+        font-size: $MdSize;
+        font-weight: $BaseFontMediumWeight;
       }
     }
 
@@ -75,25 +75,25 @@
     .social-content {
       @include flex-column(nowrap, flex-start, flex-start);
 
-      gap: 10px;
-      margin-top: 20px;
+      gap: $XsSize3;
+      margin-top: $XlSize;
 
       .socail-header {
         @include flex-row(nowrap, flex-start, flex-start);
 
-        gap: 5px;
+        gap: $XsSize4;
 
         h5 {
-          color: $Gray-6;
-          font-size: 20px;
-          font-weight: 600;
+          color: $InputLabelText;
+          font-size: $SmSize;
+          font-weight: $BaseFontSemiBoldWeight;
         }
       }
 
       .social-icons {
         @include flex-row(nowrap, flex-start, flex-start);
 
-        gap: 12px;
+        gap: $XsSize;
       }
     }
   }
@@ -105,18 +105,18 @@
     align-self: center;
     margin-top: auto;
     margin-bottom: auto;
-    gap: 12px;
+    gap: $XsSize;
 
     h5 {
       color: $BlackSoft;
-      font-size: 24px;
-      font-weight: 600;
+      font-size: $XlSize2;
+      font-weight: $BaseFontSemiBoldWeight;
     }
 
     p {
       color: $Gray-6;
-      font-size: 18px;
-      font-weight: 500;
+      font-size: $MdSize2;
+      font-weight: $BaseFontMediumWeight;
     }
   }
 }

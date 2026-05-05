@@ -118,6 +118,12 @@
 
 <template>
   <div class="about-form-card">
+    <div class="about-header">
+      <h2 class="title">{{ $t('about us') }}</h2>
+      <p class="description">
+        {{ $t('Manage and review platform information visible to students') }}
+      </p>
+    </div>
     <div class="form-fields">
       <!-- Title -->
       <div class="field-group col-span-2">
@@ -167,7 +173,6 @@
 
       <!-- ── Social Media Links ─────────────────────────────────────────── -->
       <div class="field-group col-span-2 social-media-section">
-        <!-- Section Header -->
         <div class="social-media-header">
           <div class="social-media-title">
             <span class="globe-icon">

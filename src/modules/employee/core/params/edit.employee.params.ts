@@ -6,59 +6,63 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
  */
 export default class EditEmployeeParams implements Params {
   public id: number;
-  public name: string;
+  public firstname: string;
+  public lastname: string;
   public email: string;
   public phone: string;
   public password?: string;
   public image: string;
   public isSuperadmin: boolean;
-  public role_id: number;
+  public EmployeeId: string;
   public employeeType: number;
 
   public static readonly validation = new ClassValidation().setRules({
     id: { required: true },
     name: { required: true, minLength: 2, maxLength: 100 },
-    email: { required: true, email: true },
+    email: { required: true },
     phone: { required: true },
     password: { required: false },
     image: { required: false },
     isSuperadmin: { required: true },
-    role_id: { required: true },
+    EmployeeId: { required: true },
     employeeType: { required: true },
   });
 
   constructor(data: {
     id: number;
-    name: string;
+    firstname: string;
+    lastname: string;
     email: string;
     phone: string;
     password?: string;
     image: string;
     isSuperadmin: boolean;
-    role_id: number;
+    EmployeeId: string;
     employeeType: number;
   }) {
     this.id = data.id;
-    this.name = data.name;
+    this.firstname = data.firstname;
+    this.lastname = data.lastname;
     this.email = data.email;
     this.phone = data.phone;
     this.password = data.password;
     this.image = data.image;
     this.isSuperadmin = data.isSuperadmin;
-    this.role_id = data.role_id;
+    this.EmployeeId = data.EmployeeId;
     this.employeeType = data.employeeType;
   }
 
   toMap(): { [p: string]: any } {
     return {
       employee_id: this.id,
-      name: this.name,
+      first_name: this.firstname,
+      last_name: this.lastname,
       email: this.email,
       phone: this.phone,
       password: this.password,
       image: this.image,
       isSuperadmin: this.isSuperadmin,
-      role_id: this.role_id,
+      employee_ref: this.EmployeeId,
       employeeType: this.employeeType,
     };
   }

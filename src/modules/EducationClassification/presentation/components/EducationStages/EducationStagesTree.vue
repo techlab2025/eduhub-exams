@@ -352,7 +352,7 @@
     align-items: center;
     gap: 6px;
     background: white;
-    color: var(--success-green-std);
+    color: var(--primary-green);
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;

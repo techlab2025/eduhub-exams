@@ -3,6 +3,7 @@
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import FaqsDetailsParams from '../../core/params/faqs.details.params';
   import type FaqsModel from '../../core/models/faqs.model';
+  import FaqDetailsIcon from '@/shared/icons/faqs/FaqDetailsIcon.vue';
 
   const props = defineProps<{
     faq?: FaqsModel;
@@ -42,27 +43,11 @@
   <div class="faq-form-card">
     <div class="faq-form-header">
       <div class="form-header-left">
-        <span class="form-icon">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="12" cy="12" r="10" fill="var(--PrimaryColor)" />
-            <path
-              d="M12 7C10.34 7 9 8.34 9 10H11C11 9.45 11.45 9 12 9C12.55 9 13 9.45 13 10C13 12 10 11.75 10 14H12C12 12.75 15 12.5 15 10C15 8.34 13.66 7 12 7ZM11 15V17H13V15H11Z"
-              fill="var(--StandardWhite)"
-            />
-          </svg>
-        </span>
+        <FaqDetailsIcon />
         <span class="form-title">{{ $t('faq_details') }}</span>
       </div>
       <button type="button" class="reset-btn" @click="reset">{{ $t('reset') }}</button>
     </div>
-
-    <div class="faq-form-divider" />
 
     <div class="faq-form-fields">
       <div class="field-group">
@@ -70,7 +55,6 @@
           field-key="question"
           :label="$t('question')"
           :languages="['en', 'ar']"
-          :model-value="question"
           :type="`title`"
           :placeholder="$t('enter_question')"
           @update:model-value="

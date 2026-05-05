@@ -4,7 +4,7 @@
 .about-page {
   @include flex-column(nowrap, flex-start, flex-start);
 
-  gap: 20px;
+  gap: $XlSize;
   font-family: 'Medium';
   min-height: 80vh;
 

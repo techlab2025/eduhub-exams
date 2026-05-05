@@ -11,6 +11,14 @@
   import type EmployeeModel from '../../core/models/employee.model';
   import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
   import { useFormsStore } from '@/stores/formsStore';
+  import IndexPluseIcon from '@/shared/icons/IndexPluseIcon.vue';
+  import * as XLSX from 'xlsx';
+  import { saveAs } from 'file-saver';
+  import ExportExcelIcon from '@/shared/icons/ExportExcelIcon.vue';
+  import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
+  import { EmployeeStatusEnm } from '../../core/constant/employee.status.enum';
+  import { useI18n } from 'vue-i18n';
+  import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
 
   // Controller instance
   const controller = EmployeeController.getInstance();
@@ -23,12 +31,10 @@
 
   // Table headers
   const headers: TableHeader[] = [
-    { key: 'name', label: 'Employee name', width: '25%', sortable: true },
-    { key: 'email', label: 'Email', width: '25%' },
+    { key: 'firstname', label: 'Employee name', width: '30%', sortable: true },
+    { key: 'email', label: 'Email', width: '30%' },
     { key: 'phone', label: 'Phone', width: '15%' },
-    { key: 'subjects', label: 'Subject', width: '10%' },
-    { key: 'status', label: 'Status', width: '10%' },
-    // { key: 'isSuperadmin', label: 'Superadmin', width: '10%' },
+    { key: 'status', label: 'Status', width: '15%' },
   ];
 
   // Pagination state
@@ -82,50 +88,83 @@
     const data = FormStore?.formData[formRoute.value] ?? {};
     return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
   });
+
+  const exportExcel = () => {
+    if (!state.value.data || state.value.data.length === 0) {
+      alert('No data available to export');
+      return;
+    }
+    const worksheetData = state.value.data.map((item: Record<string, unknown>) => {
+      const it = item as any;
+      return {
+        name: it.name || 'N/A',
+        email: it.email || null,
+        phone: it.phone || null,
+        password: '',
+      };
+    });
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Invoices');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, 'Employees.xlsx');
+  };
+
+  const { t } = useI18n();
+  const GetEmployeeStatus = (status: number) => {
+    switch (Number(status)) {
+      case EmployeeStatusEnm.active:
+        return t('active');
+        break;
+      case EmployeeStatusEnm.disavtive:
+        return t('inactive');
+        break;
+    }
+  };
+
+  const FilterDialogShow = ref<boolean>(false);
+  const ApplayFilter = () => {
+    FilterDialogShow.value = false;
+  };
+  const CloseFiletrDialog = () => {
+    FilterDialogShow.value = false;
+  };
 </script>
 
 <template>
   <div class="employee-page">
     <div class="index-header">
-      <div class="toolbar">
-        <div class="search-field">
-          <span class="search-icon">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-          </span>
-          <input
-            v-model="word"
-            placeholder="Search by employee name or email…"
-            class="search-input"
-            type="text"
-            @input="Search"
-          />
-        </div>
+      <div class="search-field">
+        <span class="search-icon">
+          <IndexSearchIcon />
+        </span>
+        <input
+          v-model="word"
+          placeholder="Search by employee name or email…"
+          class="search-input"
+          type="text"
+          @input="Search"
+        />
       </div>
-      <router-link :to="formRoute" class="btn-add">
-        <span>{{ isDraft ? 'Add Employee' : 'Continue Adding' }}</span>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-        >
-          <path d="M12 5v14M5 12h14" />
-        </svg>
-      </router-link>
+      <div class="btns-container">
+        <button class="btn btn-secondary" @click="exportExcel">
+          <ExportExcelIcon />
+          <span>{{ $t('export') }}</span>
+        </button>
+        <router-link :to="formRoute" class="btn btn-primary btn-add">
+          <IndexPluseIcon />
+          <span>{{ isDraft ? 'Add Employee' : 'Continue Adding' }}</span>
+        </router-link>
+        <FilterDialog v-model="FilterDialogShow">
+          <template #content>
+            <div class="filter-action">
+              <button class="btn btn-cancel" @click="CloseFiletrDialog">Reset</button>
+              <button class="btn btn-primary" @click="ApplayFilter">apply</button>
+            </div>
+          </template>
+        </FilterDialog>
+      </div>
     </div>
 
     <DataStatusBuilder :controller="state" :on-retry="async () => await fetchEmployees()">
@@ -139,9 +178,18 @@
             show-index
           >
             <template #cell-status="{ item }">
-              <p class="employee-status">
-                {{ item.status }}
+              <p
+                class="employee-status"
+                :class="item.status == EmployeeStatusEnm.disavtive ? `dis-active` : ``"
+              >
+                {{ GetEmployeeStatus(item.status) }}
               </p>
+            </template>
+            <template #cell-firstname="{ item }">
+              <div class="employee-name">
+                <img :src="item.image" alt="image" />
+                <span>{{ item.firstname }}</span>
+              </div>
             </template>
 
             <template #actions="{ item }">
@@ -217,7 +265,7 @@
           </svg>
           <h3>No employees found</h3>
           <p>Start by adding a new employee to your organization</p>
-          <router-link :to="formRoute" class="btn-add empty-cta">
+          <router-link :to="formRoute" class="btn btn-primary empty-cta">
             <svg
               width="18"
               height="18"
@@ -236,12 +284,3 @@
     </DataStatusBuilder>
   </div>
 </template>
-
-<style scoped lang="scss">
-  .employee-status {
-    font-size: 14px;
-    font-weight: 700;
-    font-family: 'bold';
-    color: var(--success);
-  }
-</style>

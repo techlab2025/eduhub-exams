@@ -6,9 +6,9 @@
 
   .filter-document {
     .filter-title {
-      font-size: 20px;
-      font-weight: $BaseFontSemiBoldWeight;
-      font-family: 'medium';
+      font-size: 18px;
+      font-weight: 400;
+      font-family: 'Medium';
       color: var(--Title-input-Color);
     }
   }
@@ -17,6 +17,7 @@
 .fillter-button {
   border: 1px solid var(--input-border-color);
   border-radius: 30px;
+  font-family: 'Medium';
 }
 
 .filter-action {

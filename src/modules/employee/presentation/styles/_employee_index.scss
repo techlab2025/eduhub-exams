@@ -1,175 +1,82 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins/flex' as *;
 
-/* =============================================================================
-   EMPLOYEE INDEX PAGE
-   ============================================================================= */
-
 .employee-page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+  @include flex-column(nowrap, flex-start, flex-start);
 
-.index-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
+  gap: $XlSize2;
 
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-weak);
-  position: relative;
+  .index-header {
+    width: 100%;
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 80px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--PrimaryColor), transparent);
-    border-radius: var(--radius-full);
-  }
-}
+    @include flex-row(nowrap, space-between, center);
 
-.header-text {
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--gray-900);
-    margin: 0;
-    letter-spacing: -0.02em;
-  }
+    gap: $MdSize;
 
-  .subtitle {
-    margin-top: 2px;
-    font-size: 0.875rem;
-    color: var(--gray-400);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    .search-input {
+      &::placeholder {
+        font-family: 'Medium';
+      }
+    }
 
-    .count-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 26px;
-      height: 26px;
-      padding: 0 10px;
-      background: linear-gradient(135deg, var(--PrimaryColor), var(--PrimaryColor-hover));
-      color: $StandardWhite;
-      border-radius: var(--radius-full);
-      font-size: 0.75rem;
-      font-weight: 700;
+    .btns-container {
+      @include flex-row(nowrap, flex-start, center);
+
+      gap: $XsSize4;
     }
   }
-}
 
-.btn-add {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px;
-  background: var(--PrimaryColor);
-  color: $StandardWhite;
-  border-radius: 55px;
-  font-size: $MdSize;
-  font-weight: $BaseFontSemiBoldWeight;
-  font-family: 'Medium';
-  text-decoration: none;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-  transition: all 0.3s ease;
+  .employee-status {
+    font-size: $SmSize;
+    font-weight: $BaseFontWeightBold;
+    font-family: 'Bold';
+    color: var(--success);
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
-  }
-}
-
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.status-badge {
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 700;
-
-  &.admin {
-    background: var(--badge-admin-bg, var(--PrimaryColor-light));
-    color: var(--badge-admin-text, var(--PrimaryColor-active));
+    &.dis-active {
+      color: $InActiveColor;
+    }
   }
 
-  &.user {
-    background: var(--badge-user-bg, var(--gray-100-std));
-    color: var(--badge-user-text, var(--gray-700-std));
-  }
-}
+  .employee-name {
+    @include flex-row(nowrap, flex-start, center);
 
-.row-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
+    gap: $MdSize;
 
-.action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-weak);
-  background: var(--bg-main);
-  color: var(--gray-500);
-  transition: all 0.2s ease;
-
-  &:hover {
-    transform: translateY(-1px);
+    img {
+      width: 30px;
+      height: 30px;
+    }
   }
 
-  &.edit:hover {
-    border-color: var(--PrimaryColor);
-    color: var(--PrimaryColor);
+  .row-actions {
+    @include flex-row(nowrap, center, center);
+
+    gap: $XsSize3;
   }
 
-  &.delete:hover {
-    border-color: var(--Red);
-    color: var(--Red);
-  }
-}
+  .action-btn {
+    @include flex-row(nowrap, center, center);
 
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
+    width: calc($XlSize3 + 2px);
+    height: calc($XlSize3 + 2px);
+    border-radius: $XsSize2;
+    border: 1px solid $WeakBorder;
+    background: var(--white);
+    color: $TextGray3;
+    transition: all 0.2s ease;
 
-  svg {
-    color: var(--gray-300);
-    margin-bottom: 16px;
-  }
+    &:hover {
+      transform: translateY(-1px);
+    }
 
-  h3 {
-    margin: 0 0 8px;
-    color: var(--gray-800);
-  }
+    &.edit:hover {
+      border-color: var(--PrimaryColor);
+      color: var(--PrimaryColor);
+    }
 
-  p {
-    color: var(--gray-400);
-    margin-bottom: 24px;
+    &.delete:hover {
+      border-color: var(--Red);
+      color: var(--Red);
+    }
   }
 }

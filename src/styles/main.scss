@@ -8,7 +8,6 @@
 @use 'fonts' as *;
 
 /* ── Utilities ─────────────────────────────────────────────────── */
-@use 'utils/fonts';
 @use 'utils/hidden';
 @use 'utils/heplers_spaces';
 @use 'utils/container';
@@ -27,6 +26,10 @@
 @use 'utils/crop';
 @use 'utils/search_input';
 @use 'Droplist/lists';
+@use 'utils/table';
+@use 'utils/btn_cancel';
+@use 'utils/reset_btn';
+
 /* ── Layout ────────────────────────────────────────────────────── */
 @use '../shared/LayoutComponents/styles/layout_imports';
 
