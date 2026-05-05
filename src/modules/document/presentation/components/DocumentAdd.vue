@@ -33,7 +33,7 @@
       </template>
 </AppButton> -->
     <button class="btn btn-primary w-full" type="submit" @click="saveDocument">
-      Save document
+      {{ $t('save_document') }}
     </button>
 
     <div v-if="controller.errorMessage.value" class="error">

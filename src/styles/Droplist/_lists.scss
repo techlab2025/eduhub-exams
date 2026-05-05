@@ -107,9 +107,9 @@
     }
 
     button {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      @include flex-row(nowrap, space-around, center);
+
+      gap: $XsSize2;
       width: 100%;
       padding: $XsSize2 $XsSize;
     }
