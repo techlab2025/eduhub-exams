@@ -28,8 +28,10 @@
   --background-color-soft-light: rgba(250, 250, 250, 1);
   --primary-green: rgba(79, 175, 124, 1);
   --light-green-bg: #f1f8f1;
+  --btn-red: rgba(214, 69, 69, 1);
   --SecondaryColor: #f8fafc;
   --SecondaryColor-hover: #f1f5f9;
+  --background-tree-subject: rgba(245, 245, 245, 1);
   --success: #16a34a;
   --success-light: #f0fdf4;
   --success-dark: #166534;
@@ -2331,9 +2333,10 @@ html[dir='rtl'] .input-search .icon-remove {
 .list-body {
   background-color: var(--standard-white);
   font-family: 'Medium';
-  border-radius: var(--radius-sm);
   color: var(--standard-black);
-  border: none;
+  border: 1px solid var(--standard-white);
+  border-radius: 5px;
+  box-shadow: var(--shadow-md);
 }
 .list-body .p-popover {
   border: none;
@@ -4273,6 +4276,35 @@ body::-webkit-scrollbar-thumb:hover {
 .education-calssification-page .gap-10 {
   gap: 10px;
 }
+.education-calssification-page .items-deleted {
+  padding: var(--xl-size-base) var(--md-size);
+  border-radius: var(--xl-size-2);
+  border: 1px solid var(--input-border-color);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--xl-size-3);
+}
+.education-calssification-page .items-deleted .num-type h6 {
+  font-size: var(--sm-size);
+  font-weight: 700;
+  font-family: 'bold';
+  color: var(--table-header-color);
+}
+.education-calssification-page .items-deleted .num-deleted {
+  background-color: var(--btn-red);
+  color: var(--bg-main);
+  padding: var(--xs-size-3) var(--md-size);
+  border-radius: var(--xl-size-base);
+  cursor: pointer;
+}
+.education-calssification-page .items-deleted .num-deleted h6 {
+  font-size: var(--sm-size);
+  font-weight: 600;
+  font-family: 'medium';
+}
 .education-calssification-page .page-header {
   display: flex;
   align-items: center;
@@ -4717,6 +4749,7 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .education-classification-form-card .field-input::placeholder {
   color: var(--bread-crumb-color-span);
+  font-family: 'medium';
 }
 .education-classification-form-card .field-input:focus {
   border-color: var(--PrimaryColor);
@@ -4788,14 +4821,15 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   color: var(--white);
   padding: 10px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--md-size);
   border-radius: 50px;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   width: 20%;
   margin-top: 25px;
+  font-weight: 600;
+  font-family: 'medium';
 }
 .education-tree {
   display: flex;
@@ -4825,7 +4859,6 @@ body::-webkit-scrollbar-thumb:hover {
   align-items: center;
   gap: 6px;
   background: var(--color-light-gray);
-  border-radius: 8px;
   padding: 7px 10px;
   border-radius: 20px;
   border: 1px solid var(--input-border-color);
@@ -4857,9 +4890,10 @@ body::-webkit-scrollbar-thumb:hover {
   gap: 5px;
   padding: 7px 12px;
   background: var(--standard-white);
+  font-weight: 600;
   font-family: 'Medium';
   font-size: var(--sm-size);
-  color: var(--gray-700-std);
+  color: var(--gray-950);
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s;
@@ -5085,14 +5119,18 @@ body::-webkit-scrollbar-thumb:hover {
 .tree-node-wrapper .level-label {
   font-size: 10px;
   font-weight: 600;
-  color: var(--Gray-6);
-  background: var(--gray-100-std);
+  color: var(--table-header-color) !important;
+  background: var(--background-tree-subject) !important;
   border-radius: 4px;
   padding: 1px 5px;
   white-space: nowrap;
+  font-family: 'Medium';
+  font-weight: 600;
+  font-size: var(--xs-size) !important;
+  padding: var(--xs-size-4) var(--xs-size) !important;
 }
 .tree-node-wrapper .node-name {
-  color: var(--table-data-color);
+  color: var(--table-data-color) !important;
   font-weight: 600;
   font-family: 'medium';
   font-size: var(--md-size);
@@ -5694,6 +5732,10 @@ body::-webkit-scrollbar-thumb:hover {
   align-items: center;
   gap: 1rem;
 }
+.p-dialog.rename-dialog .dialog-header .header-container .icon-dialog {
+  width: 70px;
+  height: 40px;
+}
 .p-dialog.rename-dialog .dialog-header .header-container .header-text-content {
   display: flex;
   flex-direction: column;
@@ -5704,14 +5746,16 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.rename-dialog .dialog-header .header-container .header-text-content .header-title {
   color: var(--standard-black);
   font-weight: 600;
-  font-size: 20px;
-  font-family: 'Bold';
+  font-size: var(--xl-size-base);
+  font-family: 'medium';
 }
 .p-dialog.rename-dialog .dialog-header .header-container .header-text-content .header-message {
   color: var(--Gray-5);
   font-weight: 500;
-  font-size: 16px;
+  font-size: var(--md-size);
+  color: var(--title-header-color);
   font-family: 'Medium';
+  margin-top: var(--xs-size-2);
 }
 .p-dialog.rename-dialog .content {
   display: flex;
@@ -5725,6 +5769,12 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.rename-dialog .content .input-wrap {
   width: 100%;
   border-radius: 50px;
+  margin-bottom: var(--xl-size-2);
+}
+.p-dialog.rename-dialog .content .input-wrap .field-input {
+  background-color: var(--standard-white);
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--xl-size-2);
 }
 .p-dialog.rename-dialog .content .btns {
   display: flex;

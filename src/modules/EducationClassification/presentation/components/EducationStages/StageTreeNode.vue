@@ -123,7 +123,7 @@
       action: () => deleteFn(id),
     },
     {
-      text: t('unactive'),
+      text: t(props.node.stage.status === 1 ? 'active' : 'unactive'),
       icon: ToggleSwitch,
       action: () => {
         toggleStatus(id);
@@ -223,7 +223,6 @@
         <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
       </button>
     </div>
-
     <transition name="slide-down">
       <div v-if="isOpen && children.length > 0" class="children-wrapper">
         <StageTreeNode
@@ -244,6 +243,10 @@
   .tree-node-wrapper {
     display: flex;
     flex-direction: column;
+  }
+
+  .p-toggleswitch-slider {
+    background-color: red !important;
   }
 
   .node-row {

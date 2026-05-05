@@ -39,7 +39,7 @@
   >
     <template #header>
       <div class="header-container">
-        <RenameIcon />
+        <RenameIcon class="icon-dialog" />
         <div class="header-text-content">
           <h4 class="header-title">{{ $t('rename_title_of_education_classifications') }}</h4>
           <p class="header-message">

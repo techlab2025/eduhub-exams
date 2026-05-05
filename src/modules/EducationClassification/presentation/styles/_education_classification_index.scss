@@ -15,6 +15,39 @@
     gap: 10px;
   }
 
+  .items-deleted {
+    padding: $XlSize $MdSize;
+    border-radius: $XlSize3;
+    border: 1px solid var(--input-border-color);
+
+    @include flex(row, nowrap, space-between, center);
+
+    margin-top: $XlSize4;
+
+    .num-type {
+      h6 {
+        font-size: $SmSize;
+        font-weight: $BaseFontWeightBold;
+        font-family: 'bold';
+        color: var(--table-header-color);
+      }
+    }
+
+    .num-deleted {
+      background-color: var(--btn-red);
+      color: var(--bg-main);
+      padding: $XsSize3 $MdSize;
+      border-radius: $XlSize;
+      cursor: pointer;
+
+      h6 {
+        font-size: $SmSize;
+        font-weight: $BaseFontSemiBoldWeight;
+        font-family: 'medium';
+      }
+    }
+  }
+
   /* ── Page Header ───────────────────────────────────────────── */
   .page-header {
     display: flex;

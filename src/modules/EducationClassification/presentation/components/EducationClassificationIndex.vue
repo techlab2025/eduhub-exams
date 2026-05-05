@@ -205,6 +205,15 @@
           </AppTable>
         </div>
 
+        <div v-if="SelectedRow.length > 0" class="items-deleted">
+          <div class="num-type">
+            <h6>{{ SelectedRow.length }} education type</h6>
+          </div>
+          <div class="num-deleted">
+            <h6>delete {{ SelectedRow.length }} item</h6>
+          </div>
+        </div>
+
         <Pagination
           :pagination="controller.pagination.value"
           @change-page="onPageChange"

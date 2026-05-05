@@ -43,17 +43,18 @@
   }
 
   .level-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--Gray-6);
-    background: $Gray-100-std;
+    color: var(--table-header-color) !important;
+    background: var(--background-tree-subject) !important;
     border-radius: 4px;
-    padding: 1px 5px;
     white-space: nowrap;
+    font-family: 'Medium';
+    font-weight: $BaseFontSemiBoldWeight;
+    font-size: $XsSize !important;
+    padding: $XsSize4 $XsSize !important;
   }
 
   .node-name {
-    color: var(--table-data-color);
+    color: var(--table-data-color) !important;
     font-weight: $BaseFontSemiBoldWeight;
     font-family: 'medium';
     font-size: $MdSize;

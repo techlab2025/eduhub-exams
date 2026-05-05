@@ -55,9 +55,12 @@
   background-color: $StandardWhite;
   font-family: 'Medium';
   /* padding: var(--space-sm) var(--space-md); */
-  border-radius: var(--radius-sm);
+  // border-radius: var(--radius-sm);
   color: $StandardBlack;
-  border: none;
+  // border: none;
+  border: 1px solid $StandardWhite;
+  border-radius: 5px;
+  box-shadow: $Shadow2;
 
   .p-popover {
     border: none;

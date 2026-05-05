@@ -65,9 +65,10 @@
     gap: 5px;
     padding: 7px 12px;
     background: $StandardWhite;
+    font-weight: $BaseFontSemiBoldWeight;
     font-family: 'Medium';
     font-size: $SmSize;
-    color: $Gray-700-std;
+    color: var(--gray-950);
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.15s;

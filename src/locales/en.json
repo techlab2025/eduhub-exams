@@ -176,5 +176,13 @@
   "This is a final-level branch. The edit interface will be available here soon.": "This is a final-level branch. The edit interface will be available here soon.",
   "No branches yet. Click \"+ Add Branch\" to get started.": "No branches yet. Click \"+ Add Branch\" to get started.",
   "Select a branch from the tree to view details": "Select a branch from the tree to view details",
-  "Branch": "Branch"
+  "Branch": "Branch",
+  "num of levels": "Number Of Levels",
+  "num_of_levels": "Number Of Levels",
+  "add_a_new_branch": "Add A New Branch",
+  "enter_your_preferred_branch_name_within_the_tree": "Enter Your Preferred Branch Name Within The Tree",
+  "branch_name": "Branch Name",
+  "add": "Add",
+  "unactive": "Unactive",
+  "active": "Active"
 }
