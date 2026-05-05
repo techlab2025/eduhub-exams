@@ -8,6 +8,11 @@
   import SidebarPrivecy from '@/shared/icons/SidebarPrivecy.vue';
   import SidebarTerms from '@/shared/icons/SidebarTerms.vue';
   import Sidebaremploye from '@/shared/icons/Sidebaremploye.vue';
+  import SupportIcon from '@/shared/icons/SidebarIcons/SupportIcon.vue';
+  import AboutIcon from '@/shared/icons/SidebarIcons/AboutIcon.vue';
+  import FaqsIcon from '@/shared/icons/SidebarIcons/FaqsIcon.vue';
+  import { useUserStore } from '@/stores/user';
+  import AuthArrowIcon from '@/shared/icons/SidebarIcons/AuthArrowIcon.vue';
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
@@ -41,10 +46,51 @@
           name: 'Documents',
           icon: DocumentIcon,
         },
+
+        // {
+        //   link: '/stages',
+        //   name: 'Stages',
+        //   icon: SettingIcon,
+        // },
+        // {
+        //   link: '/subjects',
+        //   name: 'Subjects',
+        //   icon: SettingIcon,
+        // },
+        // {
+        //   link: '/units',
+        //   name: 'Units',
+        //   icon: SettingIcon,
+        // },
+      ],
+    },
+    {
+      group: 'location',
+      items: [
+        {
+          link: '/countries',
+          name: 'Countries',
+          icon: SettingIcon,
+        },
+      ],
+    },
+    {
+      group: 'statics',
+      items: [
+        {
+          link: '/about',
+          name: 'About',
+          icon: AboutIcon,
+        },
+        {
+          link: '/support',
+          name: 'Support',
+          icon: SupportIcon,
+        },
         {
           link: '/faqs',
           name: 'Faqs',
-          icon: SettingIcon,
+          icon: FaqsIcon,
         },
         {
           link: '/privacy',
@@ -57,44 +103,9 @@
           icon: SidebarTerms,
         },
         {
-          link: '/stages',
-          name: 'Stages',
-          icon: SettingIcon,
-        },
-        {
-          link: '/subjects',
-          name: 'Subjects',
-          icon: SettingIcon,
-        },
-        {
-          link: '/units',
-          name: 'Units',
-          icon: SettingIcon,
-        },
-        {
-          link: '/about',
-          name: 'About',
-          icon: SettingIcon,
-        },
-        {
-          link: '/support',
-          name: 'Support',
-          icon: SettingIcon,
-        },
-        {
           link: '/deleted-accounts',
-          name: 'Deleted Accounts',
-          icon: SettingIcon,
-        },
-      ],
-    },
-    {
-      group: 'location',
-      items: [
-        {
-          link: '/countries',
-          name: 'Countries',
-          icon: SettingIcon,
+          name: 'add logout reasons',
+          icon: SidebarTerms,
         },
       ],
     },
@@ -111,6 +122,8 @@
       })),
     })),
   );
+
+  const { user } = useUserStore();
 </script>
 <template>
   <aside class="sidebar">
@@ -147,8 +160,20 @@
           </router-link>
         </div>
       </div>
+
+      <div class="auth-container">
+        <div class="auth-data">
+          <img
+            :src="user?.image || `https://cyber.comolho.com/static/img/avatar.png`"
+            alt="image"
+          />
+          <div class="user-data">
+            <span class="name">{{ user?.name }}</span>
+            <span class="status">Admin</span>
+          </div>
+        </div>
+        <auth-arrow-icon />
+      </div>
     </div>
   </aside>
 </template>
-
-<style scoped lang="scss"></style>
