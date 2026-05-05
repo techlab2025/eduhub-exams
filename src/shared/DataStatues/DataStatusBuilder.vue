@@ -213,7 +213,7 @@
     <!-- No Network State -->
     <div v-else-if="isNoNetwork" class="status-no-network">
       <slot name="no-network" :retry="handleRetry" :state="currentState">
-        <NoNetworkState :retry-fn="retryFn" @retry="handleRetry" />
+        <!-- <NoNetworkState :retry-fn="retryFn" @retry="handleRetry" /> -->
       </slot>
     </div>
 

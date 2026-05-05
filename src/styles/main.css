@@ -37,9 +37,11 @@
   --background-color-soft-light: rgba(250, 250, 250, 1);
   --primary-green: rgba(79, 175, 124, 1);
   --light-green-bg: #f1f8f1;
+  --btn-red: rgba(214, 69, 69, 1);
   /* ── Secondary ─────────────────────────────────────────────── */
   --SecondaryColor: #f8fafc;
   --SecondaryColor-hover: #f1f5f9;
+  --background-tree-subject: rgba(245, 245, 245, 1);
   /* ── Semantic ──────────────────────────────────────────────── */
   --success: #16a34a;
   --success-light: #f0fdf4;
@@ -2671,9 +2673,10 @@ html[dir=rtl] .input-search .icon-remove {
   background-color: var(--standard-white);
   font-family: "Medium";
   /* padding: var(--space-sm) var(--space-md); */
-  border-radius: var(--radius-sm);
   color: var(--standard-black);
-  border: none;
+  border: 1px solid var(--standard-white);
+  border-radius: 5px;
+  box-shadow: var(--shadow-md);
 }
 .list-body .p-popover {
   border: none;
@@ -2944,6 +2947,15 @@ html[dir=rtl] .input-search .icon-remove {
   white-space: nowrap;
   text-align: center;
 }
+.app-table-wrapper {
+  /* ---- Checkbox ---- */
+}
+.app-table-wrapper .app-table input[type=checkbox] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--table-checkbox-color, #6366f1);
+}
 
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub
@@ -3000,9 +3012,11 @@ html[dir=rtl] .input-search .icon-remove {
   --background-color-soft-light: rgba(250, 250, 250, 1);
   --primary-green: rgba(79, 175, 124, 1);
   --light-green-bg: #f1f8f1;
+  --btn-red: rgba(214, 69, 69, 1);
   /* ── Secondary ─────────────────────────────────────────────── */
   --SecondaryColor: #f8fafc;
   --SecondaryColor-hover: #f1f5f9;
+  --background-tree-subject: rgba(245, 245, 245, 1);
   /* ── Semantic ──────────────────────────────────────────────── */
   --success: #16a34a;
   --success-light: #f0fdf4;
@@ -5351,6 +5365,35 @@ body::-webkit-scrollbar-thumb:hover {
 .education-calssification-page .gap-10 {
   gap: 10px;
 }
+.education-calssification-page .items-deleted {
+  padding: var(--xl-size-base) var(--md-size);
+  border-radius: var(--xl-size-2);
+  border: 1px solid var(--input-border-color);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--xl-size-3);
+}
+.education-calssification-page .items-deleted .num-type h6 {
+  font-size: var(--sm-size);
+  font-weight: 700;
+  font-family: "bold";
+  color: var(--table-header-color);
+}
+.education-calssification-page .items-deleted .num-deleted {
+  background-color: var(--btn-red);
+  color: var(--bg-main);
+  padding: var(--xs-size-3) var(--md-size);
+  border-radius: var(--xl-size-base);
+  cursor: pointer;
+}
+.education-calssification-page .items-deleted .num-deleted h6 {
+  font-size: var(--sm-size);
+  font-weight: 600;
+  font-family: "medium";
+}
 .education-calssification-page {
   /* ── Page Header ───────────────────────────────────────────── */
 }
@@ -5793,9 +5836,10 @@ body::-webkit-scrollbar-thumb:hover {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--gray-700);
+  font-size: var(--xs-size);
+  font-weight: 600;
+  font-family: "medium";
+  color: var(--title-header-color);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -5809,7 +5853,7 @@ body::-webkit-scrollbar-thumb:hover {
 .education-classification-form-card .field-input {
   width: 100%;
   padding: 10px 16px;
-  border: 1px solid var(--border-weak);
+  border: 1px solid var(--input-border-color);
   border-radius: 50px;
   font-size: 0.9rem;
   color: var(--gray-800);
@@ -5819,10 +5863,12 @@ body::-webkit-scrollbar-thumb:hover {
   font-family: var(--font-family);
 }
 .education-classification-form-card .field-input::-moz-placeholder {
-  color: var(--gray-400);
+  color: var(--bread-crumb-color-span);
+  font-family: "medium";
 }
 .education-classification-form-card .field-input::placeholder {
-  color: var(--gray-400);
+  color: var(--bread-crumb-color-span);
+  font-family: "medium";
 }
 .education-classification-form-card .field-input:focus {
   border-color: var(--PrimaryColor);
@@ -5898,14 +5944,15 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   color: var(--white);
   padding: 10px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--md-size);
   border-radius: 50px;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   width: 20%;
   margin-top: 25px;
+  font-weight: 600;
+  font-family: "medium";
 }
 
 /* =============================================================================
@@ -5940,8 +5987,9 @@ body::-webkit-scrollbar-thumb:hover {
   align-items: center;
   gap: 6px;
   background: var(--color-light-gray);
-  border-radius: 8px;
   padding: 7px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--input-border-color);
 }
 .education-tree .search-icon {
   color: var(--gray-400-std);
@@ -5959,24 +6007,32 @@ body::-webkit-scrollbar-thumb:hover {
   width: 100%;
 }
 .education-tree .search-input::-moz-placeholder {
-  color: var(--color-border-light);
+  color: var(--search-input-color);
+  font-family: "Medium";
+  font-size: var(--sm-size);
+  font-weight: 500;
 }
 .education-tree .search-input::placeholder {
-  color: var(--color-border-light);
+  color: var(--search-input-color);
+  font-family: "Medium";
+  font-size: var(--sm-size);
+  font-weight: 500;
 }
 .education-tree .filter-btn {
   display: flex;
   align-items: center;
   gap: 5px;
   padding: 7px 12px;
-  border: 1px solid var(--gray-200-std);
-  border-radius: 8px;
   background: var(--standard-white);
-  font-size: 12px;
-  color: var(--gray-700-std);
+  font-weight: 600;
+  font-family: "Medium";
+  font-size: var(--sm-size);
+  color: var(--gray-950);
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.15s;
+  border-radius: 20px;
+  border: 1px solid var(--input-border-color);
 }
 .education-tree .filter-btn:hover {
   background: var(--gray-50-std);
@@ -6041,7 +6097,7 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: space-between;
   background: var(--standard-white);
   border: 1px solid var(--gray-200-std);
-  border-radius: 10px;
+  border-radius: var(--xl-size-3);
   padding: 12px 16px;
   margin-bottom: 12px;
 }
@@ -6049,9 +6105,10 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  color: var(--table-data-color);
   font-weight: 600;
-  color: var(--gray-900-std);
+  font-family: "medium";
+  font-size: var(--md-size);
   direction: rtl;
 }
 .education-tree .right-empty {
@@ -6119,7 +6176,7 @@ body::-webkit-scrollbar-thumb:hover {
   padding: 10px 16px;
   background: var(--standard-white);
   border: 1px solid var(--gray-200-std);
-  border-radius: 10px;
+  border-radius: var(--sm-size);
   margin: 0 0 8px;
   transition: box-shadow 0.15s;
 }
@@ -6130,9 +6187,10 @@ body::-webkit-scrollbar-thumb:hover {
   flex-shrink: 0;
 }
 .education-tree .child-name {
-  font-size: 14px;
-  font-family: "Medium";
-  color: var(--gray-900-std);
+  color: var(--table-data-color) !important;
+  font-weight: 600 !important;
+  font-family: "medium" !important;
+  font-size: var(--sm-size) !important;
   text-align: right;
 }
 .education-tree .spacer {
@@ -6216,18 +6274,20 @@ body::-webkit-scrollbar-thumb:hover {
   flex-shrink: 0;
 }
 .tree-node-wrapper .level-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--Gray-6);
-  background: var(--gray-100-std);
+  color: var(--table-header-color) !important;
+  background: var(--background-tree-subject) !important;
   border-radius: 4px;
-  padding: 1px 5px;
   white-space: nowrap;
+  font-family: "Medium";
+  font-weight: 600;
+  font-size: var(--xs-size) !important;
+  padding: var(--xs-size-4) var(--xs-size) !important;
 }
 .tree-node-wrapper .node-name {
-  font-size: 16px;
-  color: var(--gray-900-std);
-  font-weight: 500;
+  color: var(--table-data-color) !important;
+  font-weight: 600;
+  font-family: "medium";
+  font-size: var(--md-size);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -6660,7 +6720,7 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   gap: 3px;
-  color: var(--PrimaryColor-hover);
+  color: var(--title-color);
   font-size: 20px;
   font-weight: 600;
   font-family: "Medium";
@@ -6670,9 +6730,10 @@ body::-webkit-scrollbar-thumb:hover {
   height: 26px;
 }
 .education-classification-configuration-form-container .form-header .header-text h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--gray-900);
+  color: var(--title-color);
+  font-size: var(--xl-size-base);
+  font-weight: 600;
+  font-family: "Medium";
   margin: 0;
   letter-spacing: -0.01em;
   padding-top: 6px;
@@ -6710,9 +6771,10 @@ body::-webkit-scrollbar-thumb:hover {
   padding: 0 24px 24px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
   width: 100%;
   gap: 20px;
+  border-bottom: 1px dashed var(--sidebar-group-text-color);
 }
 @media (max-width: 1000px) {
   .education-classification-configuration-form-container .education-classification-form-fields {
@@ -6738,9 +6800,10 @@ body::-webkit-scrollbar-thumb:hover {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--gray-700);
+  font-size: var(--sm-size);
+  font-weight: 600;
+  font-family: "medium";
+  color: var(--title-header-color);
   text-transform: none;
   letter-spacing: 0.04em;
 }
@@ -6853,6 +6916,10 @@ body::-webkit-scrollbar-thumb:hover {
   align-items: center;
   gap: 1rem;
 }
+.p-dialog.rename-dialog .dialog-header .header-container .icon-dialog {
+  width: 70px;
+  height: 40px;
+}
 .p-dialog.rename-dialog .dialog-header .header-container .header-text-content {
   display: flex;
   flex-direction: column;
@@ -6863,14 +6930,15 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.rename-dialog .dialog-header .header-container .header-text-content .header-title {
   color: var(--standard-black);
   font-weight: 600;
-  font-size: 20px;
-  font-family: "Bold";
+  font-size: var(--xl-size-base);
+  font-family: "medium";
 }
 .p-dialog.rename-dialog .dialog-header .header-container .header-text-content .header-message {
-  color: var(--Gray-5);
   font-weight: 500;
-  font-size: 16px;
+  font-size: var(--md-size);
+  color: var(--title-header-color);
   font-family: "Medium";
+  margin-top: var(--xs-size-2);
 }
 .p-dialog.rename-dialog .content {
   display: flex;
@@ -6884,6 +6952,12 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.rename-dialog .content .input-wrap {
   width: 100%;
   border-radius: 50px;
+  margin-bottom: var(--xl-size-2);
+}
+.p-dialog.rename-dialog .content .input-wrap .field-input {
+  background-color: var(--standard-white);
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--xl-size-2);
 }
 .p-dialog.rename-dialog .content .btns {
   display: flex;
@@ -7021,6 +7095,44 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 12px;
   color: var(--gray-500-std);
   margin: 0;
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.branches {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+.branches .save-btn {
+  width: 100%;
+}
+.branches .branch-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 1000px) {
+  .branches .branch-row {
+    grid-template-columns: 1fr;
+  }
+}
+.branches .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.branches .lang-switch {
+  font-size: 12px;
+  color: gray;
+}
+.branches input {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
 }
 
 /* =============================================================================
@@ -9706,9 +9818,10 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: var(--sm-size);
 }
 .multi-lang-input .field-label {
-  font-family: "bold";
-  color: var(--Gray-5);
-  font-size: 16px;
+  font-family: "Medium";
+  text-transform: uppercase;
+  color: var(--gray-5);
+  font-size: var(--sm-size);
   font-weight: 600;
   letter-spacing: 0.04em;
 }

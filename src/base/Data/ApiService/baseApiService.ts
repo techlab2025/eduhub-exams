@@ -194,10 +194,15 @@ export default abstract class BaseApiService extends ServicesInterface {
    * Fetch single item (POST request with Params in body).
    * The ID should be included in the Params.
    */
-  async show(params?: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+  async show(
+    params?: Params,
+    options?: ApiCallOptions,
+    isAutoRetry?: boolean,
+  ): Promise<ApiResponse> {
     const url = this.resolveEndpoint(this.endpoints.show);
     const mergedOptions = this.mergeOptions({
       ...options,
+      enableRetry: isAutoRetry,
       usePost: options?.usePost ?? true,
     });
 

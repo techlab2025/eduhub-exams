@@ -163,15 +163,15 @@ export default abstract class BaseRepository<T, TList = T[]> {
   /**
    * Fetch single item by ID.
    */
-  async show(params?: Params, options?: ApiCallOptions): Promise<DataState<T>> {
+  async show(params?: Params, options?: ApiCallOptions , isAutoRetry?: boolean): Promise<DataState<T>> {
     if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess<T>({ data: this.mockItem });
     }
 
-    const retryFn = () => this.show(params, options);
+    const retryFn = () => this.show(params, options , isAutoRetry);
 
     try {
-      const httpResponse = await this.apiService.show(params, options);
+      const httpResponse = await this.apiService.show(params, options ,isAutoRetry);
       return this.processItemResponse(httpResponse, retryFn);
     } catch (error) {
       return this.handleError(error, retryFn);

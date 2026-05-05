@@ -309,7 +309,7 @@ export default abstract class BaseController<T, TList = T[]> {
     }
 
     try {
-      const result = await this.repository.show(params, this.mergeOptions(options));
+      const result = await this.repository.show(params, this.mergeOptions(options),this.config.autoRetry);
       this.setItemState(result);
       this.handleItemResponse(result);
       return result;

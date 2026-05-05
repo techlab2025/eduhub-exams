@@ -119,9 +119,9 @@
     <button
       :class="['btn btn-primary', { disabled: !selectedCountryId }]"
       type="button"
-      :disabled="!selectedCountryId"
       @click="continueToLogin"
-    >
+      >
+      <!-- :disabled="!selectedCountryId" -->
       {{ $t('continue_to_login') }}
     </button>
   </section>

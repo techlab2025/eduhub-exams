@@ -29,7 +29,7 @@ export default class CountryController extends BaseController<CountryModel, Coun
       showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
-      autoRetry: true,
+      autoRetry: false,
       maxAutoRetries: 1,
     };
   }

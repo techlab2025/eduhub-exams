@@ -44,7 +44,7 @@
             v-model="email"
             class="input"
             :placeholder="$t('Enter Your Mail')"
-            type="email"
+            type="text"
           />
         </div>
         <div class="input-wrapper">

@@ -22,7 +22,7 @@ class HeaderHandler {
     const countryStore = this.countryStore;
 
     const token: string | undefined =
-      userStore?.user?.apiToken || '$2y$12$w/mwklNIYDADIa7V/2qzhOeKMyQyYPsJji9f5ATBps/CJEXzkypT2';
+      userStore?.user?.apiToken || '2|PJY6NgVJbSrrLEJzLXpD7KQ38QLHh2fnn8H4RDKw1e510578';
     if (userStore?.user !== null) {
       if (isAuth) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -36,14 +36,15 @@ class HeaderHandler {
       headers['Accept-Language'] = savedLocale;
     }
 
-    const countryCode = countryStore?.getCountryCode();
-    if (countryCode) {
-      headers['X-Country-Code'] = countryCode;
-    }
+    // const countryCode = countryStore?.getCountryCode();
+    // if (countryCode) {
+    //   headers['X-Country-Code'] = countryCode;
+    // }
 
     headers['Content-Type'] = 'application/json';
     headers['Accept'] = 'application/json';
     headers['Authorization'] = 'Bearer ' + token;
+    headers['x-country'] = 'sa';
     return headers;
   }
 }
