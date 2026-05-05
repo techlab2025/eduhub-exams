@@ -82,15 +82,26 @@ describe('StageTreeNode', () => {
   it('calls onSelect and handleToggle when row is clicked', async () => {
     const wrapper = mountComponent();
     await wrapper.find('.node-row').trigger('click');
-    expect(onSelect).toHaveBeenCalledWith(mockNode);
-    expect(onExpand).toHaveBeenCalledWith(mockNode);
+    expect(wrapper.emitted('select')).toBeTruthy();
+    expect(wrapper.emitted('select')![0]).toEqual([mockNode]);
+    expect(wrapper.emitted('fetch-children')).toBeTruthy();
   });
 
   it('toggles expansion state when toggle button is clicked', async () => {
     const wrapper = mountComponent();
     const toggleBtn = wrapper.find('.toggle-btn');
+
+    // Trigger click
     await toggleBtn.trigger('click');
-    expect(onExpand).toHaveBeenCalledWith(mockNode);
+
+    // Get the callback from the emitted event and call it
+    const fetchEvent = wrapper.emitted('fetch-children')![0];
+    const callback = fetchEvent[1] as (children: any[]) => void;
+    callback([{ ...mockNode, stage: { ...mockNode.stage, stage_id: 999 } }]);
+
+    // Wait for the async handleToggle to continue
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await wrapper.vm.$nextTick();
 
     // After clicking, isOpen should be true. The SVG should have rotate(0deg)
     const svg = toggleBtn.find('svg');
@@ -101,7 +112,8 @@ describe('StageTreeNode', () => {
     const wrapper = mountComponent();
     const addBtn = wrapper.find('button.icon-btn[title="Add child"]');
     await addBtn.trigger('click');
-    expect(onAddChild).toHaveBeenCalledWith(mockNode.stage.stage_id, mockNode.depth + 2);
+    expect(wrapper.emitted('add-child')).toBeTruthy();
+    expect(wrapper.emitted('add-child')![0]).toEqual([mockNode.stage.stage_id, mockNode.depth + 2]);
   });
 
   it('hides add child button when max depth is reached', () => {
