@@ -20,6 +20,7 @@
   import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
   import RenameClassificationDialog from '../../subComponent/RenameClassificationDialog.vue';
+import deleteEducationClassificationParams from '../../core/params/delete.educationClassification.params';
 
   // Controller instance
   const controller = EducationClassificationController.getInstance();
@@ -91,30 +92,20 @@
 
   const deleteEducationClassification = async (id: number) => {
     await controller.delete(
-      new DeleteEducationClassificationParams({
+      new deleteEducationClassificationParams({
         id: id,
       }),
     );
     await fetchEducationClassifications();
   };
 
-  // const FormStore = useFormsStore();
-  // const formRoute = '/countries/add';
 
-  // const isDraft = computed(() => {
-  //   const data = FormStore?.formData[formRoute] ?? {};
-  //   return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
-  // });
   const SelectedRow = ref<EducationClassificationModel[]>([]);
   const setSelectef = (items: EducationClassificationModel[]) => {
     SelectedRow.value = items;
   };
 
-  // const deleteSelected = () => {
-  //   SelectedRow.value.forEach((item) => {
-  //     deleteEducationClassification(item.id!);
-  //   });
-  // };
+
   const ToggleStatus = async (id: number) => {
     await controller.toggleStatus(new ToggleStatusEducationClassificationParams({ id: id }));
     await fetchEducationClassifications();
@@ -135,6 +126,7 @@
       action: () => deleteEducationClassification(id),
     },
   ];
+
 </script>
 
 <template>
@@ -159,7 +151,7 @@
             striped
             @selection-change="setSelectef"
           >
-            <template #cell-name="{ item }">
+            <template #cell-title="{ item }">
               {{ item.title }}
             </template>
 
@@ -199,7 +191,7 @@
                     )
                   "
                 />
-                <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
+                <RenameClassificationDialog  v-model:visable="ShoweEditDialog" :itemId="item.id"/>
               </div>
             </template>
           </AppTable>

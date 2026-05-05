@@ -2,10 +2,16 @@
   import { computed, ref } from 'vue';
   import Dialog from 'primevue/dialog';
   import RenameIcon from '@/shared/icons/RenameIcon.vue';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
+  import EducationClassificationController from '../presentation/controllers/educationClassification.controller';
+  import EditEducationClassificationParams from '../core/params/edit.educationClassification.params';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
 
   const props = defineProps<{
     visable: boolean;
+    itemId: number;
   }>();
+  const controller = EducationClassificationController.getInstance();
 
   const emit = defineEmits(['update:visable']);
 
@@ -14,15 +20,23 @@
     set: (val) => emit('update:visable', val),
   });
 
-  const title = ref<string>('');
+  const title = ref<Record<string, string>>({});
 
   const CloseDialog = () => {
     visible.value = false;
   };
 
-  const EditData = () => {
-    // save logic here
+  const EditData = async () => {
     visible.value = false;
+
+    await controller.update(
+      new EditEducationClassificationParams({
+        id: Number(props.itemId),
+        translations: new TranslationParams({
+          title: title.value,
+        }),
+      }),
+    );
   };
 </script>
 
@@ -54,12 +68,20 @@
     </template>
     <div class="content">
       <div class="input-wrap">
-        <input
+        <!-- <input
           id="title"
           v-model="title"
           type="text"
           :placeholder="$t('Enter education type')"
           class="field-input"
+        /> -->
+        <MultiLangInput
+          :field-key="`title`"
+          :label="$t(`education classification`)"
+          :languages="['en', 'ar']"
+          :model-value="title"
+          :type="`title`"
+          @update:model-value="title = $event"
         />
       </div>
       <div class="btns">

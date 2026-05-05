@@ -1,8 +1,8 @@
 import { BaseEndpoints } from '@/base/Data/Endpoints/BaseEndpoints';
 
 export class EducationConfigurationEndpoints extends BaseEndpoints {
-  protected readonly prefix = 'organization/';
+  protected readonly prefix = 'dashboard/';
 
-  readonly store = this.url('store_education_configuration');
-  readonly index = this.url('index_education_configuration');
+  readonly store = this.url('store_education_classification_configuration');
+  readonly index = this.url('fetch_education_classification_configuration');
 }

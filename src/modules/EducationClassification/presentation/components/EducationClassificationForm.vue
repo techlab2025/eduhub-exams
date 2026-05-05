@@ -5,6 +5,8 @@
   import type EducationClassificationModel from '../../core/models/education.classification.model';
   import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
   import FolderCrudIcon from '@/shared/icons/FolderCrudIcon.vue';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
 
   const emit = defineEmits(['updateData', 'save-education-classification']);
 
@@ -26,7 +28,7 @@
   });
 
   // Form state
-  const title = ref<string>('');
+  const title = ref<Record<string, string>>({});
 
   watch(
     () => country,
@@ -47,31 +49,39 @@
       });
     }
 
+    console.log(title.value, 'title');
     const params = new AddEducationClassificationParams({
-      title: title.value,
+      translation: new TranslationParams({
+        title: title.value,
+      }),
     });
 
     emit('updateData', params);
   };
 
   const resetForm = () => {
-    title.value = '';
+    title.value = {};
   };
 
   onMounted(() => {
-    if (formKey) {
-      const saved = FormStore.getFormData(formKey);
+    // if (formKey) {
+    //   const saved = FormStore.getFormData(formKey);
 
-      if (saved) {
-        title.value = saved.title;
-        updateData();
-      } else if (!country) {
-        resetForm();
-      }
-    } else if (!country) {
-      resetForm();
-    }
+    //   if (saved) {
+    //     title.value = saved.title;
+    //     updateData();
+    //   } else if (!country) {
+    //     resetForm();
+    //   }
+    // } else if (!country) {
+    //   resetForm();
+    // }
   });
+
+  const getTitle = (data: any) => {
+    title.value = data;
+    updateData();
+  };
 </script>
 
 <template>
@@ -89,7 +99,7 @@
     <!-- ── Fields ────────────────────────────────────────── -->
     <div class="education-classification-form-fields">
       <!-- Email Field -->
-      <div class="field-group">
+      <!-- <div class="field-group">
         <label class="field-label" for="title"> {{ $t('education classification') }} </label>
         <div class="input-wrap">
           <input
@@ -101,6 +111,16 @@
             @input="updateData"
           />
         </div>
+      </div> -->
+      <div class="field-group">
+        <MultiLangInput
+          :field-key="`title`"
+          :label="$t(`education classification`)"
+          :languages="['en', 'ar']"
+          :model-value="title"
+          :type="`title`"
+          @update:model-value="getTitle"
+        />
       </div>
       <button class="save-btn" @click="emit('save-education-classification')">
         {{ $t('Save') }}

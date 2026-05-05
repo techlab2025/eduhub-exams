@@ -1,27 +1,28 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 /**
  * Parameters for updating an existing education classification
  */
 export default class EditEducationClassificationParams implements Params {
   public id: number;
-  public title: string;
+  public translations: TranslationParams;
 
   public static readonly validation = new ClassValidation().setRules({
     id: { required: true },
-    title: { required: true, minLength: 2, maxLength: 100 },
+    translations: { required: true },
   });
 
-  constructor(id: number, title: string) {
-    this.id = id;
-    this.title = title;
+  constructor(data: { id: number; translations: TranslationParams }) {
+    this.id = data.id;
+    this.translations = data.translations;
   }
 
   toMap(): { [p: string]: any } {
     return {
-      id: this.id,
-      title: this.title,
+      education_classification_id: this.id,
+      translations: this.translations.toMap(),
     };
   }
 

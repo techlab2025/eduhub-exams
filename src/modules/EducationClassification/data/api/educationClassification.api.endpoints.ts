@@ -1,9 +1,9 @@
 import { BaseEndpoints } from '@/base/Data/Endpoints/BaseEndpoints';
 
 export class EducationClassificationEndpoints extends BaseEndpoints {
-  protected readonly prefix = 'organization/';
+  protected readonly prefix = 'dashboard/';
 
-  readonly index = this.url('fetch_education_classifications');
+  readonly index = this.url('fetch_education_classification');
   readonly show = this.url('show_education_classification');
   readonly store = this.url('store_education_classification');
   readonly update = this.url('update_education_classification');

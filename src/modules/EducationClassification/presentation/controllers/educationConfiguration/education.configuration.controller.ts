@@ -2,7 +2,7 @@ import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import EducationConfigurationRepository from '@/modules/EducationClassification/data/repositories/educationConfiguration/education.configuration.repository';
@@ -27,7 +27,7 @@ export default class EducationConfigurationController extends BaseController<
       showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
-      autoRetry: true,
+      autoRetry: false,
       maxAutoRetries: 1,
     };
   }
@@ -57,6 +57,14 @@ export default class EducationConfigurationController extends BaseController<
         FormStore.clearFormData(formKey);
       }
     }
+    return result;
+  }
+  async fetchList(
+    params?: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<EducationConfigurationModel>> {
+    const result = super.fetchList(params, options);
+    console.log((await result).data, 'result');
     return result;
   }
 }

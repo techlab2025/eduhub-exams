@@ -14,6 +14,7 @@
    * Save (create or update) email
    */
   const saveEducationClassification = async () => {
+    console.log(params.value, 'params');
     try {
       if (!params.value) {
         console.error('No email parameters to save');
@@ -23,6 +24,7 @@
       const paramsToSave = params.value;
 
       await controller.create(paramsToSave, undefined, formKey);
+      await controller.fetchList();
     } catch (error) {
       console.error('Error saving email:', error);
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { onMounted, ref, watch } from 'vue';
-  import { onBeforeRouteLeave } from 'vue-router';
+  import { onBeforeRouteLeave, useRoute } from 'vue-router';
   import { useFormsStore } from '@/stores/formsStore';
   import type EducationClassificationModel from '../../core/models/education.classification.model';
   import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
@@ -16,6 +16,7 @@
   import EducationConfigurationModel from '../../core/models/EducationConfiguration/education.configuration.model';
   import EducationSubjectConfigurationModel from '../../core/models/EducationConfiguration/education.subject.configuration.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import IndexEducationConfigurationParams from '../../core/params/EducationConfiguration/index.educationConfiguration.params co';
 
   const emit = defineEmits([
     'updateData',
@@ -178,10 +179,15 @@
 
   const controller = EducationConfigurationController.getInstance();
   const subjectController = EducationSubjectController.getInstance();
-
+  const route = useRoute();
   onMounted(async () => {
     const [configResult, subjectResult] = await Promise.all([
-      controller.fetchList(),
+      // { education_classification_id: route.params.id }
+      controller.fetchList(
+        new IndexEducationConfigurationParams({
+          educationClassificatioId: Number(route.params.id),
+        }),
+      ),
       subjectController.fetchList(),
     ]);
 

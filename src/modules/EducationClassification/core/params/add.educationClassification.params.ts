@@ -1,23 +1,24 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 /**
  * Parameters for adding a new country
  */
 export default class AddEducationClassificationParams implements Params {
-  public title: string;
+  public translation: TranslationParams;
 
   public static readonly validation = new ClassValidation().setRules({
-    title: { required: true, minLength: 2, maxLength: 100 },
+    // translation: { required: true },
   });
 
-  constructor(data: { title: string }) {
-    this.title = data.title;
+  constructor(data: { translation: TranslationParams }) {
+    this.translation = data.translation;
   }
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {
-      title: this.title,
+      translations: this.translation.toMap(),
     };
     return map;
   }

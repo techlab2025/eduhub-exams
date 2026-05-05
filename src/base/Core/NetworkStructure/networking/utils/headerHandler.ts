@@ -22,7 +22,8 @@ class HeaderHandler {
     const countryStore = this.countryStore;
 
     const token: string | undefined =
-      userStore?.user?.apiToken || '2|PJY6NgVJbSrrLEJzLXpD7KQ38QLHh2fnn8H4RDKw1e510578';
+      // userStore?.user?.apiToken ||
+      '4|wGVp48gP0i6CEUe2jFpiisFwEzKdI1ZpKRqQ5soq6d416862';
     if (userStore?.user !== null) {
       if (isAuth) {
         headers['Authorization'] = 'Bearer ' + token;

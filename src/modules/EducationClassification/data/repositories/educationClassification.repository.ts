@@ -57,6 +57,7 @@ export default class EducationClassificationRepository extends BaseRepository<
   }
 
   protected parseItem(data: unknown): EducationClassificationModel {
+    console.log(data);
     return EducationClassificationModel.fromJson(data as Record<string, unknown>);
   }
 

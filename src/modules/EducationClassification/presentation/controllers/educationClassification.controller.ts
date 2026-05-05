@@ -32,7 +32,7 @@ export default class EducationClassificationController extends BaseController<
       showLoadingDialog: true,
       showSuccessDialog: true,
       showErrorDialog: true,
-      autoRetry: true,
+      autoRetry: false,
       maxAutoRetries: 1,
     };
   }
@@ -55,7 +55,8 @@ export default class EducationClassificationController extends BaseController<
   async create(params: Params, options?: ApiCallOptions, formKey?: string) {
     const FormStore = useFormsStore();
 
-    const result = await super.create(params, options);
+    const result = await super.create(params, { ...options, useJson: true });
+    await super.fetchList();
     if (result instanceof DataSuccess) {
       router.push({ name: 'EducationClassifications' });
       if (formKey) {
@@ -69,6 +70,8 @@ export default class EducationClassificationController extends BaseController<
     const FormStore = useFormsStore();
 
     const result = await super.update(params, options);
+    await super.fetchList();
+
     if (result instanceof DataSuccess) {
       router.push({ name: 'EducationClassifications' });
       if (formKey) {
