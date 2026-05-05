@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SidebarNavigation from '../SidebarNavigation.vue';
+import { createPinia, setActivePinia } from 'pinia';
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
@@ -15,8 +16,11 @@ vi.mock('@/assets/images/TechlabLogo.png', () => ({
 }));
 
 describe('SidebarNavigation.vue', () => {
+  const pinia = createPinia();
+  setActivePinia(pinia);
   const mountOptions = {
     global: {
+      plugins: [pinia],
       stubs: {
         'router-link': {
           template: '<a><slot /></a>',

@@ -20,11 +20,27 @@ vi.mock(
 
 vi.mock('@/features/Organization/ObservationFactory/Core/params/FetchMyZonesParams', () => ({
   default: class FetchMyZonesParams {
+    constructor(public ProjectId: number) {}
     toMap() {
       return {};
     }
   },
 }));
+
+// Stub globals since they are not imported in the component
+vi.stubGlobal('FetchMyZonesController', {
+  getInstance: () => ({
+    state: { value: { data: [] } },
+    FetchMyZones: vi.fn().mockResolvedValue({}),
+  }),
+});
+
+vi.stubGlobal(
+  'FetchMyZonesParams',
+  class FetchMyZonesParams {
+    constructor(public ProjectId: number) {}
+  },
+);
 
 describe('TabsSelection', () => {
   it('renders without errors', () => {
