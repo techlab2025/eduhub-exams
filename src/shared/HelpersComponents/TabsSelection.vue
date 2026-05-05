@@ -3,8 +3,8 @@
   import yelloecircle from '@/assets/images/yelloecircle.png';
   import { onMounted, ref } from 'vue';
   import { watch } from 'vue';
-  import FetchMyZonesController from '@/features/Organization/ObservationFactory/Presentation/controllers/FetchMyZonesController';
-  import FetchMyZonesParams from '@/features/Organization/ObservationFactory/Core/params/FetchMyZonesParams';
+  // import FetchMyZonesController from '@/features/Organization/ObservationFactory/Presentation/controllers/FetchMyZonesController';
+  // import FetchMyZonesParams from '@/features/Organization/ObservationFactory/Core/params/FetchMyZonesParams';
   import { useRouter } from 'vue-router';
 
   const emit = defineEmits(['update:data']);
