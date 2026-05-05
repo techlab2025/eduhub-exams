@@ -18,6 +18,7 @@
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   import { EmployeeStatusEnm } from '../../core/constant/employee.status.enum';
   import { useI18n } from 'vue-i18n';
+  import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
 
   // Controller instance
   const controller = EmployeeController.getInstance();
@@ -121,6 +122,14 @@
         break;
     }
   };
+
+  const FilterDialogShow = ref<boolean>(false);
+  const ApplayFilter = () => {
+    FilterDialogShow.value = false;
+  };
+  const CloseFiletrDialog = () => {
+    FilterDialogShow.value = false;
+  };
 </script>
 
 <template>
@@ -147,6 +156,14 @@
           <IndexPluseIcon />
           <span>{{ isDraft ? 'Add Employee' : 'Continue Adding' }}</span>
         </router-link>
+        <FilterDialog v-model="FilterDialogShow">
+          <template #content>
+            <div class="filter-action">
+              <button class="btn btn-cancel" @click="CloseFiletrDialog">Reset</button>
+              <button class="btn btn-primary" @click="ApplayFilter">apply</button>
+            </div>
+          </template>
+        </FilterDialog>
       </div>
     </div>
 

@@ -124,7 +124,7 @@
   --placeholder-text: #7a7a7a;
   --gray-text-blue: #4b5563;
   --baseInputPadding: 12px;
-
+  --gray-text: #8a8a8a;
   /* ── Typography ────────────────────────────────────────────── */
   --font-family: 'Medium', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
@@ -264,6 +264,7 @@
   --danger-light-alt: #fff0f3;
   --danger-border-light: #fecaca;
   --in-active-color: #d99100;
+  --badge-bg: #4faf7c0f;
 }
 
 /* =============================================================================
@@ -445,6 +446,8 @@ $InputBorder: var(--input-border-color);
 $BackgroundColorSoftLight: var(--background-color-soft-light);
 $TitleColor: var(--title-color);
 $SecondText: var(--second-text);
+$SoftBlack: var(--black-soft);
+$BadgeBg: var(--badge-bg);
 
 /* Sizes */
 $XsSize5: var(--xs-size-5); //4px

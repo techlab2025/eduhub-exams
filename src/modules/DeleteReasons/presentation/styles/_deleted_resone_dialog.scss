@@ -8,23 +8,23 @@
   .header-container {
     @include flex-row(nowrap, flex-start, center);
 
-    gap: 10px;
+    gap: $XsSize3;
 
     .header-text {
       @include flex-column(nowrap, flex-start, flex-start);
 
-      gap: 5px;
+      gap: $XsSize5;
 
       h4 {
         color: $StandardBlack;
-        font-size: 20px;
-        font-weight: 600;
+        font-size: $XlSize;
+        font-weight: $BaseFontSemiBoldWeight;
       }
 
       p {
-        color: var(--gray-text);
-        font-size: 16px;
-        font-weight: 500;
+        color: $GrayTextQuestion;
+        font-size: $MdSize;
+        font-weight: $BaseFontMediumWeight;
       }
     }
   }
@@ -33,13 +33,13 @@
     @include flex-column(nowrap, flex-start, flex-start);
 
     width: 100%;
-    gap: 10px;
+    gap: $XsSize3;
 
     .document-type-row {
       width: 100%;
       background-color: $ColorLightGray;
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: $MdSize;
+      padding: $MdSize;
 
       @include flex-row(nowrap, space-between, center);
 
@@ -48,29 +48,29 @@
         @include flex-column(nowrap, flex-start, flex-start);
 
         .item-small-title {
-          color: var(--gray-text);
-          font-size: 14px;
-          font-weight: 400;
+          color: $GrayTextQuestion !important;
+          font-size: $SmSize;
+          font-weight: $BaseFontWeight;
         }
 
         .item-main-title {
           color: $StandardBlack;
-          font-size: 16px;
-          font-weight: 500;
+          font-size: $MdSize;
+          font-weight: $BaseFontMediumWeight;
         }
       }
 
       .item-actions {
         @include flex-row(nowrap, center, center);
 
-        gap: 3px;
+        gap: $XsSize5;
 
         svg {
-          width: 25px;
-          height: 25px;
+          width: $XlSize2;
+          height: $XlSize2;
 
           &:last-child {
-            margin-top: 6px;
+            margin-top: $XsSize4;
           }
         }
       }
@@ -81,16 +81,15 @@
 
       @include flex-column(nowrap, flex-start, flex-start);
 
-      gap: 5px;
-      margin-top: 15px;
+      gap: $XsSize4;
+      margin-top: calc($SmSize + 1px);
       padding: 0 !important;
 
       label {
-        color: var(--gray-500);
+        color: $TextGray3;
         font-size: 16px;
         font-weight: 600;
         text-transform: capitalize !important;
-        font-family: 'Medium';
       }
 
       input {

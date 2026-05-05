@@ -151,5 +151,12 @@
   "invalid_whatsapp_number_format": "Please enter a valid WhatsApp number (e.g. +20 123 456 7890).",
   "invalid_telegram_format": "Please enter a valid Telegram number or link (e.g. +20 123 456 7890 or https://t.me/username).",
   "invalid_email_address_format": "Please enter a valid email address (e.g. name@example.com).",
-  "export": "export"
+  "export": "export",
+  "no_delete_added": "No delete added",
+  "your_delete_list_is_empty": "Your Delete List is Empty",
+  "These students have removed the app, so they are no longer listed here": "These students have removed the app, so they are no longer listed here",
+  "students_left_the_app": "students left the App",
+  "Student Removal History": "Student Removal History",
+  "about us": "about us",
+  "Manage and review platform information visible to students": "Manage and review platform information visible to students"
 }

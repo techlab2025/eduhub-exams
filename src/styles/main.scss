@@ -27,6 +27,9 @@
 @use 'utils/search_input';
 @use 'Droplist/lists';
 @use 'utils/table';
+@use 'utils/btn_cancel';
+@use 'utils/reset_btn';
+
 /* ── Layout ────────────────────────────────────────────────────── */
 @use '../shared/LayoutComponents/styles/layout_imports';
 
