@@ -140,6 +140,7 @@
       :style="{ paddingLeft: `${node.depth * 16 + 14}px` }"
       @click="handleRowClick"
     >
+
       <button
         v-if="!hasFetched || children.length > 0"
         class="toggle-btn"

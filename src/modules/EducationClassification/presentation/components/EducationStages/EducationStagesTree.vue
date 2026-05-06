@@ -27,6 +27,8 @@
   import InputNumber from 'primevue/inputnumber';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
   import Skillsicon from '@/shared/icons/Skillsicon.vue';
+  import IndexEducationConfigurationParams from '@/modules/EducationClassification/core/params/EducationConfiguration/index.educationConfiguration.params co';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
 
   const route = useRoute();
   const { locale } = useI18n();
@@ -44,18 +46,14 @@
   const educationConfig = ref<EducationConfigurationModel | null>(null);
   const refreshParentId = ref<number | null>(null);
 
-  const maxDepth = computed(() => educationConfig.value?.numberOfBranches ?? Infinity);
+  const maxDepth = computed(() => educationConfig.value?.numberOfBranches);
 
   function getBranchName(parentDepth: number): string {
     const branches = educationConfig.value?.branches ?? [];
     const branch = branches.find((b) => b.levelNumber === parentDepth + 1);
     if (!branch) return `Branch ${parentDepth + 1}`;
     const lang = locale.value === 'ar' ? 'ar' : 'en';
-    return (
-      branch.translation.SingularTitle[lang] ??
-      branch.translation.SingularTitle['en'] ??
-      `Branch ${parentDepth + 1}`
-    );
+    return branch.singularTitle[lang] ?? branch.singularTitle['en'] ?? `Branch ${parentDepth + 1}`;
   }
 
   function makeNode(stage: EducationStageModel, depth: number): StageNode {
@@ -110,9 +108,9 @@
     showAddBranchDialog.value = true;
   }
 
-  async function handleAddType(name: string) {
+  async function handleAddType(name: Record<string, string>) {
     const params = new AddEducationStageParams({
-      title: name,
+      translations: new TranslationParams({ title: name }),
       classification_id: classificationId,
     });
     await controller.create(params);
@@ -124,13 +122,14 @@
     name,
     branchId,
   }: {
-    name: string;
+    name: Record<string, string>;
     level: number;
     branchId?: number;
   }) {
+    console.log(branchId, 'branchId');
     if (!branchId) return;
     const params = new AddEducationStageParams({
-      title: name,
+      translations: new TranslationParams({ title: name }),
       classification_id: classificationId,
       parent_id: branchId,
     });
@@ -144,8 +143,13 @@
   provide('maxDepth', maxDepth);
   provide('refreshParentId', refreshParentId);
   onMounted(async () => {
-    const configResult = await configController.fetchList();
-    MaxNumberOfBranches.value = configResult.data?.numberOfBranches;
+    const configResult = await configController.fetchList(
+      new FetchEducationStageParams({
+        classification_id: Number(route.params.id),
+      }),
+    );
+    console.log(configResult.data, 'configResult.data');
+    MaxNumberOfBranches.value = configResult.data?.[0]?.numberOfBranches;
     if (configResult instanceof DataSuccess && configResult.data) {
       educationConfig.value = configResult.data;
     }
@@ -242,7 +246,7 @@
             )
           }}
         </p>
-        <button class="btn-primary" @click="showAddTypeDialog = true">
+        <button class="btn btn-primary" @click="showAddTypeDialog = true">
           {{ $t('Add Education Type') }}
         </button>
       </div>

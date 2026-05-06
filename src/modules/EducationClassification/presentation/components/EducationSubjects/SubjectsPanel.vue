@@ -38,20 +38,14 @@
     const branch = branches.find((b) => b.levelNumber === depth + 1);
     if (!branch) return `Level ${depth + 1}`;
     const lang = locale.value === 'ar' ? 'ar' : 'en';
-    return (
-      branch.translation.SingularTitle[lang] ??
-      branch.translation.SingularTitle['en'] ??
-      `Level ${depth + 1}`
-    );
+    return branch.singularTitle[lang] ?? branch.singularTitle['en'] ?? `Level ${depth + 1}`;
   }
 
   function getSubjectRootName(): string {
     const lang = locale.value === 'ar' ? 'ar' : 'en';
     const config = subjectConfig.value;
     if (!config) return 'Subject';
-    return (
-      config.translation.SingularTitle[lang] ?? config.translation.SingularTitle['en'] ?? 'Subject'
-    );
+    return config.SingluarTitle[lang] ?? config.SingluarTitle['en'] ?? 'Subject';
   }
 
   function makeNode(subject: EducationSubjectModel, depth: number): SubjectNode {

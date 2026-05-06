@@ -24,8 +24,8 @@ export default class EducationStageModel {
     }
 
     return new EducationStageModel({
-      stage_id: json.stage_id as number,
-      stage_title: json.stage_title as string,
+      stage_id: json.id as number,
+      stage_title: json.title as string,
       has_children: json.has_children as boolean,
       status: json.status as number,
     });
