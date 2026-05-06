@@ -10,7 +10,7 @@
   import EducationClassificationController from '../controllers/educationClassification.controller';
   import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
   import type EducationClassificationModel from '../../core/models/education.classification.model';
-  import DeleteEducationClassificationParams from '../../core/params/educationClassificationParams';
+  // import DeleteEducationClassificationParams from '../../core/params/educationClassificationParams';
   import ToggleSwitch from 'primevue/toggleswitch';
   import ToggleStatusEducationClassificationParams from '../../core/params/toggle.educationClassification.status.params';
   import AddIcon from '@/shared/icons/AddIcon.vue';
@@ -20,7 +20,7 @@
   import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
   import RenameClassificationDialog from '../../subComponent/RenameClassificationDialog.vue';
-import deleteEducationClassificationParams from '../../core/params/delete.educationClassification.params';
+  import deleteEducationClassificationParams from '../../core/params/delete.educationClassification.params';
 
   // Controller instance
   const controller = EducationClassificationController.getInstance();
@@ -99,12 +99,10 @@ import deleteEducationClassificationParams from '../../core/params/delete.educat
     await fetchEducationClassifications();
   };
 
-
   const SelectedRow = ref<EducationClassificationModel[]>([]);
   const setSelectef = (items: EducationClassificationModel[]) => {
     SelectedRow.value = items;
   };
-
 
   const ToggleStatus = async (id: number) => {
     await controller.toggleStatus(new ToggleStatusEducationClassificationParams({ id: id }));
@@ -126,7 +124,6 @@ import deleteEducationClassificationParams from '../../core/params/delete.educat
       action: () => deleteEducationClassification(id),
     },
   ];
-
 </script>
 
 <template>
@@ -191,7 +188,7 @@ import deleteEducationClassificationParams from '../../core/params/delete.educat
                     )
                   "
                 />
-                <RenameClassificationDialog  v-model:visable="ShoweEditDialog" :itemId="item.id"/>
+                <RenameClassificationDialog v-model:visable="ShoweEditDialog" :item-id="item.id" />
               </div>
             </template>
           </AppTable>

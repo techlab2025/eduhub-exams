@@ -13,7 +13,8 @@
   import FaqsIcon from '@/shared/icons/SidebarIcons/FaqsIcon.vue';
   import { useUserStore } from '@/stores/user';
   import AuthArrowIcon from '@/shared/icons/SidebarIcons/AuthArrowIcon.vue';
-import IconLogout from '@/shared/icons/IconLogout.vue';
+  import IconLogout from '@/shared/icons/IconLogout.vue';
+
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
@@ -29,7 +30,7 @@ import IconLogout from '@/shared/icons/IconLogout.vue';
   }
 
   const baseMenu: MenuSection[] = [
-    { 
+    {
       group: 'Overview',
       items: [
         {
@@ -126,7 +127,7 @@ import IconLogout from '@/shared/icons/IconLogout.vue';
 
   const { user } = useUserStore();
   //logout
-    const userStore = useUserStore();
+  const userStore = useUserStore();
   const router = useRouter();
   const logout = () => {
     userStore.logout();
@@ -188,17 +189,29 @@ import IconLogout from '@/shared/icons/IconLogout.vue';
         </div>
         <auth-arrow-icon />
       </div>
-       <div class="user cursor-pointer dropdown-trigger" >
-          <!-- <IconArrowDownNav class="drop-icon" /> -->
-          <div v-if="isDropMenuOpen" class="dropdown-menu">
-            <ul>
-              <li @click="logout">
-                <icon-logout />
-                <span> {{ $t('logout') }} </span>
-              </li>
-            </ul>
+      <transition name="mega-menu">
+        <div v-if="isDropMenuOpen" class="mega-menu">
+          <div class="mega-header">
+            <img
+              :src="user?.image || `https://cyber.comolho.com/static/img/avatar.png`"
+              alt="image"
+            />
+            <div>
+              <p class="name">{{ user?.name }}</p>
+              <span class="role">Admin</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="mega-actions">
+            <button class="logout-btn" @click="logout">
+              <icon-logout />
+              <span>{{ $t('logout') }}</span>
+            </button>
           </div>
         </div>
+      </transition>
     </div>
   </aside>
 </template>
