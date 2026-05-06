@@ -187,7 +187,10 @@
             </template>
             <template #cell-firstname="{ item }">
               <div class="employee-name">
-                <img :src="item.image" alt="image" />
+                <img
+                  :src="item.image || `https://cyber.comolho.com/static/img/avatar.png`"
+                  alt="image"
+                />
                 <span>{{ item.firstname }}</span>
               </div>
             </template>
