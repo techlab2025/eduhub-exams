@@ -74,6 +74,7 @@
       lastname: lastName.value,
       phone: phone.value,
       employeeStatus: checked.value ? EmployeeStatusEnm.active : EmployeeStatusEnm.disavtive,
+      password:password.value
     };
 
     FormStore.setFormData(formKey!, data);
@@ -189,7 +190,21 @@
           />
         </div>
       </div>
-      <div class="field-group col-span-2">
+      <div class="field-group">
+        <label class="field-label" for="password">{{ $t(`password`) }}</label>
+        <div class="input-wrap">
+          <input
+            id="password"
+            v-model="password"
+            type="text"
+            placeholder="Enter Password"
+            class="field-input"
+            @input="updateData"
+          />
+        </div>
+      </div>
+
+      <div class="field-group col-span-1">
         <label class="field-label" for="email">{{ $t(`Email`) }}</label>
         <div class="input-wrap">
           <input
@@ -228,6 +243,7 @@
           />
         </div>
       </div>
+
       <div class="field-group">
         <label class="field-label" for="phone">{{ $t(`Gender`) }}</label>
 
@@ -248,6 +264,7 @@
           </div>
         </div>
       </div>
+
       <div class="field-group col-span-2">
         <HandleFilesUpload
           :label="`upload image`"

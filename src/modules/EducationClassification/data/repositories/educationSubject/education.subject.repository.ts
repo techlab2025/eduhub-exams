@@ -28,6 +28,7 @@ export default class EducationSubjectRepository extends BaseRepository<
   }
 
   protected parseItem(data: unknown): EducationSubjectConfigurationModel {
+
     return EducationSubjectConfigurationModel.fromJson(data as Record<string, unknown>);
   }
 

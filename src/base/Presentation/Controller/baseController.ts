@@ -53,7 +53,7 @@ const DEFAULT_CONFIG: ControllerConfig = {
   showSuccessDialog: false,
   showSuccessTosat: false,
   showErrorDialog: false,
-  showErrorTosat:false,
+  showErrorTosat: false,
   autoRetry: false,
   maxAutoRetries: 2,
 };
@@ -244,11 +244,13 @@ export default abstract class BaseController<T, TList = T[]> {
       );
       this.setListState(result);
       this.handleListResponse(result);
+
       return result;
     } catch (error: any) {
       const failed = new DataFailed<TList>({ error });
       this.setListState(failed);
       this.handleErrorResponse(failed);
+
       return failed;
     } finally {
       this.hideLoadingDialog();
@@ -632,24 +634,27 @@ export default abstract class BaseController<T, TList = T[]> {
    */
   protected handleListResponse(_result: DataState<TList>, successMessage?: string): void {
     const Message = successMessage || 'Data Fetched Succssesfuly';
+
+    
+
     if (_result.hasError) {
       this.handleErrorResponse(_result);
+    } 
+    else if (
+      _result instanceof DataSuccess &&
+      this.config.showSuccessDialog &&
+      !this.config.showSuccessTosat &&
+      Message
+    ) {
+      this.showSuccessDialog(Message);
+    } else if (
+      _result instanceof DataSuccess &&
+      !this.config.showSuccessDialog &&
+      this.config.showSuccessTosat &&
+      Message
+    ) {
+      this.showSuccessToast(Message);
     }
-    //  else if (
-    //   _result instanceof DataSuccess &&
-    //   this.config.showSuccessDialog &&
-    //   !this.config.showSuccessTosat &&
-    //   Message
-    // ) {
-    //   this.showSuccessDialog(Message);
-    // } else if (
-    //   _result instanceof DataSuccess &&
-    //   !this.config.showSuccessDialog &&
-    //   this.config.showSuccessTosat &&
-    //   Message
-    // ) {
-    //   this.showSuccessToast(Message);
-    // }
 
     // Auto-retry if applicable
     if (this.shouldAutoRetry(_result)) {

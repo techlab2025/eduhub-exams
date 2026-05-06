@@ -40,6 +40,6 @@ export default class EducationConfigurationRepository extends BaseRepository<
   }
 
   protected parseList(data: any): EducationConfigurationModel {
-    return EducationConfigurationModel.fromJson(data);
+    return data.map((el) => EducationConfigurationModel.fromJson(el));
   }
 }
