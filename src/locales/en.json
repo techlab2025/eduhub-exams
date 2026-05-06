@@ -232,5 +232,18 @@
   "is_master": "Is Master Type?",
   "doc_type": "Doc Type",
   "enter_document_type_name": "Enter Document Type Name",
-  "enter_document_type_name_placeholder": "Enter document type (e.g. Books, Notes, Worksheets)"
+  "enter_document_type_name_placeholder": "Enter document type (e.g. Books, Notes, Worksheets)",
+  "Select Document Category": "Select Document Category",
+  "Upload your document and fill in its details": "Upload your document and fill in its details",
+  "enter_document_name": "Enter Document Name",
+  "enter_refrence_number": "Enter Refrence Number",
+  "tag": "tag",
+  "add tag": "Add tag",
+  "Click to upload": "Click to upload",
+  "or drag and drop": "or drag and drop",
+  "JPG, JPEG, PNG less than 1MB": "JPG, JPEG, PNG less than 1MB",
+  "Description": "Description",
+  "upload image": "Upload Images",
+  "PDF, DOCX,ZIP less than 1MB": "PDF, DOCX,ZIP less than 1MB",
+  "the Main Document": "the Main Document"
 }
