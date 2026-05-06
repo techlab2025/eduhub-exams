@@ -31,11 +31,16 @@
     }
   });
 
+  const isInputEmpty = computed(() => {
+    return (
+      !inputValue.value || Object.values(inputValue.value).every((val) => !val || val.trim() === '')
+    );
+  });
+
   function handleConfirm() {
-    const name = inputValue.value;
-    if (!name) return;
+    if (isInputEmpty.value) return;
     emit('confirm', {
-      name: name,
+      name: inputValue.value,
       level: props.level,
       branchId: props.branchId,
     });
@@ -77,6 +82,7 @@
     /> -->
 
     <MultiLangInput
+      ref="inputRef"
       :field-key="`title`"
       :label="$t(`title`)"
       :languages="['en', 'ar']"
@@ -85,11 +91,10 @@
       @update:model-value="inputValue = $event"
       @keydown.enter="handleConfirm"
       @keydown.esc="dialogVisible = false"
-      ref="inputRef"
     />
 
     <div class="dialog-footer">
-      <button class="btn btn-primary" :disabled="!inputValue" @click="handleConfirm">
+      <button class="btn btn-primary" :disabled="isInputEmpty" @click="handleConfirm">
         {{ $t('add') }}
       </button>
       <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>

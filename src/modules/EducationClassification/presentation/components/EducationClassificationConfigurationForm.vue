@@ -176,7 +176,7 @@
     console.log(data, 'data');
     SubjectnumberOfBranchs.value = data.numberOfBranches;
     subjectNumberOfBranchs.value = data.numberOfBranches;
-    subject_title_Singular.value = data.SingluarTitle;
+    subject_title_Singular.value = data.SingularTitle;
     subject_title_Plural.value = data.pluralTitle;
     subjectInitialBranches.value = data.branches.map((branch) => ({
       singular: { ...branch.singularTitle },
@@ -202,12 +202,16 @@
       ),
     ]);
 
-    if (configResult instanceof DataSuccess) {
-      fillConfigurationForm(configResult.data?.[0]);
+    if (configResult instanceof DataSuccess && configResult.data?.[0]) {
+      fillConfigurationForm(configResult.data[0]);
+    } else {
+      fillConfigurationForm(EducationConfigurationModel.example);
     }
 
-    if (subjectResult instanceof DataSuccess) {
-      fillSubjectForm(subjectResult.data?.[0]);
+    if (subjectResult instanceof DataSuccess && subjectResult.data?.[0]) {
+      fillSubjectForm(subjectResult.data[0]);
+    } else {
+      fillSubjectForm(EducationSubjectConfigurationModel.example);
     }
   });
 </script>
@@ -312,7 +316,7 @@
       </div>
 
       <SingularPluralForm
-        :numberOfBranches="subjectNumberOfBranchs"
+        :number-of-branches="subjectNumberOfBranchs"
         :label="$t('name_of_subjects')"
         :initial-branches="subjectInitialBranches"
         @update="GetSubjectBranchs"

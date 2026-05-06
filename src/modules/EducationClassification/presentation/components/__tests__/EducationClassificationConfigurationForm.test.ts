@@ -74,9 +74,11 @@ describe('EducationClassificationConfigurationForm', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    mockConfigFetchList.mockResolvedValue(new DataSuccess(EducationConfigurationModel.example));
+    mockConfigFetchList.mockResolvedValue(
+      new DataSuccess({ data: [EducationConfigurationModel.example] }),
+    );
     mockSubjectFetchList.mockResolvedValue(
-      new DataSuccess(EducationSubjectConfigurationModel.example),
+      new DataSuccess({ data: [EducationSubjectConfigurationModel.example] }),
     );
   });
 

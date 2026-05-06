@@ -11,40 +11,48 @@ export default class EducationSubjectConfigurationModel {
     educationClassificatioId: number;
     numberOfBranches: number;
     pluralTitle: Record<string, string>;
-    SingluarTitle: Record<string, string>;
+    SingularTitle: Record<string, string>;
     branches: ConfigurationBranchesModel[];
   }) {
     this.educationClassificatioId = data.educationClassificatioId;
     this.numberOfBranches = data.numberOfBranches;
     this.pluralTitle = data.pluralTitle;
-    this.SingluarTitle = data.SingluarTitle;
+    this.SingularTitle = data.SingularTitle;
     this.branches = data.branches;
 
     Object.freeze(this);
   }
 
-  static fromJson(json: any): EducationSubjectConfigurationModel {
+  static fromJson(json: Record<string, unknown>): EducationSubjectConfigurationModel {
     if (!json) {
       throw new Error('Cannot create EducationSubjectConfigurationModel from null or undefined');
     }
 
     const singularTitle: Record<string, string> = {};
+    if (json.translation?.SingularTitle) {
+      Object.assign(singularTitle, json.translation.SingularTitle);
+    }
     (json.singular_title ?? []).forEach((item: { locale: string; singular_title: string }) => {
       singularTitle[item.locale] = item.singular_title;
     });
 
     const pluralTitle: Record<string, string> = {};
+    if (json.translation?.PluralTitle) {
+      Object.assign(pluralTitle, json.translation.PluralTitle);
+    }
     (json.plural_title ?? []).forEach((item: { locale: string; plural_title: string }) => {
       pluralTitle[item.locale] = item.plural_title;
     });
 
     return new EducationSubjectConfigurationModel({
       pluralTitle,
-      SingluarTitle: singularTitle,
-      educationClassificatioId: json.education_classification,
-      numberOfBranches: json.number_of_branches,
+      SingularTitle: singularTitle,
+      educationClassificatioId: json.education_classification ?? json.education_classification_id,
+      numberOfBranches: json.number_of_branches ?? json.numberOfBranches,
       branches:
-        json.branches?.map((branch: any) => ConfigurationBranchesModel.fromJson(branch)) || [],
+        (json.branches as Record<string, unknown>[])?.map((branch: Record<string, unknown>) =>
+          ConfigurationBranchesModel.fromJson(branch),
+        ) || [],
     });
   }
 
@@ -52,7 +60,7 @@ export default class EducationSubjectConfigurationModel {
     educationClassificatioId: 1,
     numberOfBranches: 2,
     pluralTitle: { en: 'title 1 ', ar: 'title 1 ' },
-    SingluarTitle: { en: 'title 1 ', ar: 'title 1 ' },
-    branches: [ConfigurationBranchesModel.example],
+    SingularTitle: { en: 'title 1 ', ar: 'title 1 ' },
+    branches: [ConfigurationBranchesModel.example, ConfigurationBranchesModel.example],
   });
 }

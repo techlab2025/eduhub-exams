@@ -25,27 +25,42 @@ export default class ConfigurationBranchesModel {
     this.singularTitle = data.singularTitle;
   }
 
-  static fromJson(json: any): ConfigurationBranchesModel {
+  static fromJson(json: Record<string, unknown>): ConfigurationBranchesModel {
     if (!json) {
       throw new Error('Cannot create EducationConfigurationModel from null or undefined');
     }
 
-    const parseLocaleArray = (data: any, valueKey: string): Record<string, string> => {
+    const parseLocaleArray = (data: unknown, valueKey: string): Record<string, string> => {
       if (!data) return {};
       if (Array.isArray(data)) {
-        return data.reduce((acc: Record<string, string>, item: any) => {
-          if (item.locale) acc[item.locale] = item[valueKey] ?? '';
-          return acc;
-        }, {});
+        return (data as Record<string, unknown>[]).reduce(
+          (acc: Record<string, string>, item: Record<string, unknown>) => {
+            if (item.locale) acc[item.locale as string] = (item[valueKey] as string) ?? '';
+            return acc;
+          },
+          {},
+        );
       }
       return data;
     };
 
     return new ConfigurationBranchesModel({
       id: json.id,
-      levelNumber: json.level_number,
-      singularTitle: parseLocaleArray(json.singular_title, 'singular_title'),
-      pluralTitle: parseLocaleArray(json.plural_title, 'plural_title'),
+      levelNumber: json.level_number || json.levelNumber,
+      singularTitle: parseLocaleArray(
+        json.singular_title ??
+          json.translation?.SingularTitle ??
+          json.translations?.SingularTitle ??
+          json.translations,
+        'singular_title',
+      ),
+      pluralTitle: parseLocaleArray(
+        json.plural_title ??
+          json.translation?.PluralTitle ??
+          json.translations?.PluralTitle ??
+          json.translations,
+        'plural_title',
+      ),
     });
   }
 

@@ -10,7 +10,7 @@ import { env } from '@/base/Core/Config';
 
 describe('EducationSubjectRepository', () => {
   let repository: EducationSubjectRepository;
-  let mockApiService: any;
+  let mockApiService: Record<string, unknown>;
 
   beforeEach(() => {
     repository = EducationSubjectRepository.getInstance();
@@ -23,7 +23,9 @@ describe('EducationSubjectRepository', () => {
       delete: vi.fn(),
     };
 
-    vi.spyOn(repository as any, 'apiService', 'get').mockReturnValue(mockApiService);
+    vi.spyOn(repository as unknown as { apiService: unknown }, 'apiService', 'get').mockReturnValue(
+      mockApiService,
+    );
     env.override({ useStaticData: false });
   });
 
@@ -72,10 +74,11 @@ describe('EducationSubjectRepository', () => {
 
       expect(result).toBeInstanceOf(DataSuccess);
       if (result instanceof DataSuccess) {
-        expect(result.data).toBeInstanceOf(EducationSubjectConfigurationModel);
-        expect(result.data.educationClassificatioId).toBe(2);
-        expect(result.data.numberOfBranches).toBe(2);
-        expect(result.data.translation.SingularTitle.en).toBe('Subject');
+        expect(result.data).toBeInstanceOf(Array);
+        expect(result.data?.[0]).toBeInstanceOf(EducationSubjectConfigurationModel);
+        expect(result.data?.[0].educationClassificatioId).toBe(2);
+        expect(result.data?.[0].numberOfBranches).toBe(2);
+        expect(result.data?.[0].SingularTitle.en).toBe('Subject');
       }
     });
 
@@ -124,9 +127,11 @@ describe('EducationSubjectRepository', () => {
       const params = {
         toMap: () => ({}),
         validate: () => ({ isValid: true, errors: [] }),
-        validateOrThrow: () => {},
+        validateOrThrow: () => {
+          // No-op for testing
+        },
       };
-      const result = await repository.create(params as any);
+      const result = await repository.create(params as unknown as any);
 
       expect(result).toBeInstanceOf(DataSuccess);
       if (result instanceof DataSuccess) {

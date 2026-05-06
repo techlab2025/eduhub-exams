@@ -10,7 +10,7 @@ import { env } from '@/base/Core/Config';
 
 describe('EducationConfigurationRepository', () => {
   let repository: EducationConfigurationRepository;
-  let mockApiService: any;
+  let mockApiService: Record<string, unknown>;
 
   beforeEach(() => {
     repository = EducationConfigurationRepository.getInstance();
@@ -23,7 +23,9 @@ describe('EducationConfigurationRepository', () => {
       delete: vi.fn(),
     };
 
-    vi.spyOn(repository as any, 'apiService', 'get').mockReturnValue(mockApiService);
+    vi.spyOn(repository as unknown as { apiService: unknown }, 'apiService', 'get').mockReturnValue(
+      mockApiService,
+    );
     env.override({ useStaticData: false });
   });
 
@@ -68,9 +70,10 @@ describe('EducationConfigurationRepository', () => {
 
       expect(result).toBeInstanceOf(DataSuccess);
       if (result instanceof DataSuccess) {
-        expect(result.data).toBeInstanceOf(EducationConfigurationModel);
-        expect(result.data.educationClassificatioId).toBe(1);
-        expect(result.data.numberOfBranches).toBe(2);
+        expect(result.data).toBeInstanceOf(Array);
+        expect(result.data?.[0]).toBeInstanceOf(EducationConfigurationModel);
+        expect(result.data?.[0].educationClassificatioId).toBe(1);
+        expect(result.data?.[0].numberOfBranches).toBe(2);
       }
     });
 
@@ -118,9 +121,11 @@ describe('EducationConfigurationRepository', () => {
       const params = {
         toMap: () => ({ education_classification_id: 1, number_of_branches: 1, branches: [] }),
         validate: () => ({ isValid: true, errors: [] }),
-        validateOrThrow: () => {},
+        validateOrThrow: () => {
+          // No-op for testing
+        },
       };
-      const result = await repository.create(params as any);
+      const result = await repository.create(params as unknown as any);
 
       expect(result).toBeInstanceOf(DataSuccess);
       if (result instanceof DataSuccess) {

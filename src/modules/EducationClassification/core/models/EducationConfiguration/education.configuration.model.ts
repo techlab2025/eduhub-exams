@@ -18,15 +18,18 @@ export default class EducationConfigurationModel {
     Object.freeze(this);
   }
 
-  static fromJson(json: any): EducationConfigurationModel {
+  static fromJson(json: Record<string, unknown>): EducationConfigurationModel {
     if (!json) {
       throw new Error('Cannot create EducationConfigurationModel from null or undefined');
     }
 
     return new EducationConfigurationModel({
-      educationClassificatioId: json.education_classification,
-      numberOfBranches: json.number_of_branches,
-      branches: json.branches?.map((branch: any) => ConfigurationBranchesModel.fromJson(branch)) || [],
+      educationClassificatioId: json.education_classification ?? json.education_classification_id,
+      numberOfBranches: json.number_of_branches ?? json.numberOfBranches,
+      branches:
+        (json.branches as unknown[])?.map((branch: any) =>
+          ConfigurationBranchesModel.fromJson(branch as Record<string, any>),
+        ) || [],
     });
   }
 

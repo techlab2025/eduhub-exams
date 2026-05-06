@@ -71,7 +71,7 @@ describe('AddEducationTypeDialog', () => {
 
     expect(wrapper.emitted('confirm')).toBeTruthy();
     const emitted = wrapper.emitted('confirm');
-    expect(emitted?.[0]?.[0]).toBe('University');
+    expect(emitted?.[0]?.[0]).toEqual({ en: 'University' });
   });
 
   it('disables Add button when input is empty', async () => {
