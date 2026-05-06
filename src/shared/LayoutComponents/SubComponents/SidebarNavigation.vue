@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { useRoute } from 'vue-router';
-  import { computed, type Component } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import { computed, ref, type Component } from 'vue';
   import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
   import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
   import TechlabLogo from '@/assets/images/TechlabLogo.png';
@@ -13,6 +13,7 @@
   import FaqsIcon from '@/shared/icons/SidebarIcons/FaqsIcon.vue';
   import { useUserStore } from '@/stores/user';
   import AuthArrowIcon from '@/shared/icons/SidebarIcons/AuthArrowIcon.vue';
+import IconLogout from '@/shared/icons/IconLogout.vue';
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
@@ -28,7 +29,7 @@
   }
 
   const baseMenu: MenuSection[] = [
-    {
+    { 
       group: 'Overview',
       items: [
         {
@@ -124,6 +125,19 @@
   );
 
   const { user } = useUserStore();
+  //logout
+    const userStore = useUserStore();
+  const router = useRouter();
+  const logout = () => {
+    userStore.logout();
+    router.push('/login');
+  };
+
+  const isDropMenuOpen = ref(false);
+
+  const toggleDropMenu = () => {
+    isDropMenuOpen.value = !isDropMenuOpen.value;
+  };
 </script>
 <template>
   <aside class="sidebar">
@@ -161,7 +175,7 @@
         </div>
       </div>
 
-      <div class="auth-container">
+      <div class="auth-container" @click="toggleDropMenu">
         <div class="auth-data">
           <img
             :src="user?.image || `https://cyber.comolho.com/static/img/avatar.png`"
@@ -174,6 +188,17 @@
         </div>
         <auth-arrow-icon />
       </div>
+       <div class="user cursor-pointer dropdown-trigger" >
+          <!-- <IconArrowDownNav class="drop-icon" /> -->
+          <div v-if="isDropMenuOpen" class="dropdown-menu">
+            <ul>
+              <li @click="logout">
+                <icon-logout />
+                <span> {{ $t('logout') }} </span>
+              </li>
+            </ul>
+          </div>
+        </div>
     </div>
   </aside>
 </template>

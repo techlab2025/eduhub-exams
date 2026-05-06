@@ -108,7 +108,7 @@
 
     .auth-container {
       margin-top: auto;
-
+      cursor: pointer;
       @include flex-row(nowrap, space-between, center);
 
       background-color: $SidebarAuthbg;
@@ -138,5 +138,40 @@
         }
       }
     }
+       .dropdown-menu {
+        position: absolute;
+        left: 136px;
+        bottom: 90px;
+        background-color: var(--BgWhite);
+        // border-radius: var(--radius-md);
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        min-width: 150px;
+
+        li {
+          cursor: pointer;
+          padding: var(--sm-size);
+          border-radius: var(--radius-xs);
+          display: flex;
+          align-items: center;
+          gap: $XsSize4;
+          color: var(--gray-600);
+          transition: var(--transition-fast);
+
+          &:not(:last-child) {
+            border-bottom: 1px solid var(--gray-100);
+          }
+
+          &:hover {
+            background-color: var(--gray-50);
+
+            svg path {
+              fill: var(--btn-red);
+            }
+          }
+        }
+      }
   }
 }

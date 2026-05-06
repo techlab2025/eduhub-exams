@@ -74,6 +74,9 @@
   </header>
 </template>
 
+<style scoped lang="scss">
+
+</style>
 <!-- <style scoped>
 .logo-img {
   background-color: red;
