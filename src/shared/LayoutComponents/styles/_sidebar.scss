@@ -13,6 +13,8 @@
   border-radius: 12px;
 
   .sidebar-wrapper {
+    position: relative;
+
     @include flex-column(nowrap, flex-start, stretch);
 
     height: 100%;
@@ -109,6 +111,7 @@
     .auth-container {
       margin-top: auto;
       cursor: pointer;
+
       @include flex-row(nowrap, space-between, center);
 
       background-color: $SidebarAuthbg;
@@ -138,34 +141,71 @@
         }
       }
     }
-       .dropdown-menu {
-        position: absolute;
-        left: 136px;
-        bottom: 90px;
-        background-color: var(--BgWhite);
-        // border-radius: var(--radius-md);
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
-        box-shadow: var(--shadow-lg);
-        z-index: 1000;
-        min-width: 150px;
 
-        li {
-          cursor: pointer;
-          padding: var(--sm-size);
-          border-radius: var(--radius-xs);
+    .mega-menu {
+      position: absolute;
+      // left: 300px;
+      // bottom: 90px;
+      left: 25px;
+      bottom: 75px;
+      width: 220px;
+      background: var(--BgWhite);
+      border-radius: 16px;
+      box-shadow:
+        rgba(136, 165, 191, 0.48) 6px 2px 16px 0,
+        rgba(255, 255, 255, 0.8) -6px -2px 16px 0;
+      padding: 12px;
+      z-index: 1000;
+      /* Header */
+      .mega-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+        }
+
+        .name {
+          font-weight: $BaseFontWeightBold;
+          font-family: 'Medium';
+          font-size: $MdSize;
+          color: var(--title-card-color);
+        }
+
+        .role {
+          font-weight: $BaseFontSemiBoldWeight;
+          font-family: 'Medium';
+          font-size: $XsSize;
+          color: var(--title-color);
+        }
+      }
+      /* Divider */
+      .divider {
+        height: 1px;
+        background: var(--gray-100);
+        margin: 10px 0;
+      }
+      /* Actions */
+      .mega-actions {
+        .logout-btn {
+          width: 100%;
           display: flex;
           align-items: center;
-          gap: $XsSize4;
+          gap: 8px;
+          padding: 8px;
+          border-radius: 10px;
+          background: transparent;
+          border: none;
+          cursor: pointer;
           color: var(--gray-600);
-          transition: var(--transition-fast);
-
-          &:not(:last-child) {
-            border-bottom: 1px solid var(--gray-100);
-          }
+          transition: 0.3s;
 
           &:hover {
-            background-color: var(--gray-50);
+            background: #fff1f1;
+            color: var(--btn-red);
 
             svg path {
               fill: var(--btn-red);
@@ -173,5 +213,30 @@
           }
         }
       }
+    }
+
+    .mega-menu-enter-active,
+    .mega-menu-leave-active {
+      transition: all 0.25s ease;
+    }
+
+    .mega-menu-enter-from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+
+    .mega-menu-enter-to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .mega-menu-leave-from {
+      opacity: 1;
+    }
+
+    .mega-menu-leave-to {
+      opacity: 0;
+      transform: translateY(10px);
+    }
   }
 }
