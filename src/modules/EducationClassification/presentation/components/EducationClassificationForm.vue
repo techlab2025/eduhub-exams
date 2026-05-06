@@ -59,6 +59,8 @@
     });
 
     emit('updateData', params);
+
+    // console.log("aa")
   };
 
   // const resetForm = () => {
