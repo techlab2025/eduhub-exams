@@ -8,10 +8,7 @@ import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/da
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 
-export default class EmployeeController extends BaseController<
-  EmployeeModel,
-  EmployeeModel[]
-> {
+export default class EmployeeController extends BaseController<EmployeeModel, EmployeeModel[]> {
   private static instance: EmployeeController;
 
   protected get repository() {
@@ -42,9 +39,9 @@ export default class EmployeeController extends BaseController<
   async create(params: Params, options?: ApiCallOptions, formKey?: string) {
     const FormStore = useFormsStore();
 
-    const result = await super.create(params, options);
+    const result = await super.create(params, { ...options, useJson: true });
     if (result instanceof DataSuccess) {
-      router.push({ name: "Employees" });
+      router.push({ name: 'Employees' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
@@ -57,7 +54,7 @@ export default class EmployeeController extends BaseController<
 
     const result = await super.update(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: "Employees" });
+      router.push({ name: 'Employees' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }

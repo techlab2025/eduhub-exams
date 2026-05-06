@@ -16,7 +16,7 @@ export const useFormsStore = defineStore(
       //     isAllDataEmpty.value = false;
       //   }
       // });
-      isAllDataEmpty.value = arr.some((el: any) => el.length > 0);
+      isAllDataEmpty.value = arr.some((el: any) => el?.length > 0);
       if (isAllDataEmpty.value) {
         clearFormData(key);
       }

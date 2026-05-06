@@ -11,6 +11,7 @@
   import InputSwitch from 'primevue/inputswitch';
   import RadioButton from 'primevue/radiobutton';
   import { GenderENum } from '../../core/constant/gender.enum';
+  import { EmployeeStatusEnm } from '../../core/constant/employee.status.enum';
 
   const emit = defineEmits(['updateData']);
 
@@ -40,6 +41,7 @@
   const lastName = ref<string>('');
   const employeeId = ref('');
   const UploadedImage = ref<string[]>([]);
+  const checked = ref(false); //employee status
 
   watch(
     () => employee,
@@ -64,17 +66,14 @@
 
   const updateData = () => {
     const data = {
-      firstname: name.value,
       email: email.value,
-      phone: phone.value,
-      password: password.value,
-      image: image.value,
-      isSuperadmin: isSuperadmin.value,
-      role_id: role_id.value,
-      employeeType: employeeType.value,
-      gender: gender.value,
+      EmployeeRef: employeeId.value,
+      firstname: name.value,
+      gender: gender.value == 1 ? GenderENum.male : GenderENum.female,
+      image: String(UploadedImage.value),
       lastname: lastName.value,
-      EmployeeId: employeeId.value,
+      phone: phone.value,
+      employeeStatus: checked.value ? EmployeeStatusEnm.active : EmployeeStatusEnm.disavtive,
     };
 
     FormStore.setFormData(formKey!, data);
@@ -125,22 +124,10 @@
     }
   });
 
-  // function handel phone and employeeId
-  const handlePhoneandEmployeeIdInput = (e: Event) => {
-    const input = e.target as HTMLInputElement;
-    let value = input.value.replace(/\D/g, '');
-    value = value.slice(0, 11);
-    input.value = value;
-    phone.value = value;
-    employeeId.value = value;
+  const handleImageChange = (file: any) => {
+    UploadedImage.value = file[0]?.base64;
     updateData();
   };
-  // function handel image
-  const handleImageChange = (files: []) => {
-    UploadedImage.value = files;
-    updateData();
-  };
-  const checked = ref(false);
 </script>
 
 <template>
@@ -163,7 +150,7 @@
             <p :class="checked ? `` : `warn`">{{ checked ? $t('active') : $t('disactive') }}</p>
           </div>
           <div class="switch">
-            <InputSwitch v-model="checked" />
+            <InputSwitch v-model="checked" @change="updateData" />
           </div>
         </div>
       </div>
@@ -216,7 +203,7 @@
         </div>
       </div>
       <div class="field-group">
-        <label class="field-label" for="employeeId">Employee ID</label>
+        <label class="field-label" for="employeeId">{{ $t('employee_id') }}</label>
         <div class="input-wrap">
           <input
             id="employeeId"
@@ -224,7 +211,7 @@
             type="tel"
             placeholder="Enter Employee ID"
             class="field-input"
-            @input="handlePhoneandEmployeeIdInput"
+            @input="updateData"
           />
         </div>
       </div>
@@ -237,7 +224,7 @@
             type="tel"
             placeholder="Enter phone number"
             class="field-input"
-            @input="handlePhoneandEmployeeIdInput"
+            @input="updateData"
           />
         </div>
       </div>
@@ -265,7 +252,7 @@
         <HandleFilesUpload
           :label="`upload image`"
           accept="image/*"
-          :multiple="true"
+          :multiple="false"
           :index="1"
           :file="UploadedImage"
           :have-content="true"

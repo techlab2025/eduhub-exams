@@ -1,5 +1,7 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type { GenderENum } from '../constant/gender.enum';
+import type { EmployeeStatusEnm } from '../constant/employee.status.enum';
 
 /**
  * Parameters for adding a new employee
@@ -9,21 +11,18 @@ export default class AddEmployeeParams implements Params {
   public lastname: string;
   public email: string;
   public phone: string;
-  public password: string;
   public image: string;
-  public isSuperadmin: boolean;
-  public EmployeeId: string;
-  public employeeType: number;
+  public EmployeeRef: string;
+  public gender: GenderENum;
+  public employeeStatus: EmployeeStatusEnm;
 
   public static readonly validation = new ClassValidation().setRules({
-    firstname: { required: true, minLength: 2, maxLength: 100 },
+    firstname: { required: true },
     email: { required: true },
     phone: { required: true },
-    password: { required: true, minLength: 6 },
     image: { required: false },
-    isSuperadmin: { required: true },
-    EmployeeId: { required: true },
-    employeeType: { required: true },
+    EmployeeRef: { required: true },
+    gender: { required: true },
   });
 
   constructor(data: {
@@ -31,34 +30,31 @@ export default class AddEmployeeParams implements Params {
     lastname: string;
     email: string;
     phone: string;
-    password: string;
     image: string;
-    isSuperadmin: boolean;
-    EmployeeId: string;
-    employeeType: number;
+    EmployeeRef: string;
+    gender: GenderENum;
+    employeeStatus: EmployeeStatusEnm;
   }) {
     this.firstname = data.firstname;
     this.lastname = data.lastname;
     this.email = data.email;
     this.phone = data.phone;
-    this.password = data.password;
     this.image = data.image;
-    this.isSuperadmin = data.isSuperadmin;
-    this.EmployeeId = data.EmployeeId;
-    this.employeeType = data.employeeType;
+    this.EmployeeRef = data.EmployeeRef;
+    this.gender = data.gender;
+    this.employeeStatus = data.employeeStatus;
   }
 
   toMap(): { [p: string]: any } {
     return {
-      first_name: this.firstname,
+      name: this.firstname,
       last_name: this.lastname,
       email: this.email,
       phone: this.phone,
-      password: this.password,
       image: this.image,
-      isSuperadmin: this.isSuperadmin,
-      employee_id: this.EmployeeId,
-      employeeType: this.employeeType,
+      employee_ref: this.EmployeeRef,
+      gender: this.gender,
+      status: this.employeeStatus,
     };
   }
 

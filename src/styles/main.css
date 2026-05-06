@@ -445,28 +445,23 @@ ul {
   /* stylelint-disable-next-line declaration-property-value-allowed-list */
   font-family: "Thin";
   src: url("./fonts/URW/URW DIN Arabic Thin.ttf") format("truetype");
-  font-weight: 100;
 }
 @font-face {
   font-family: "Light";
   src: url("./fonts/URW/URW DIN Arabic Light.ttf") format("truetype");
-  font-weight: 300;
 }
 @font-face {
   font-family: "Medium";
   src: url("./fonts/URW/URW DIN Arabic Medium.ttf") format("truetype");
-  font-weight: 500;
 }
 @font-face {
   font-family: "Bold";
   src: url("./fonts/URW/URW DIN Arabic Bold.ttf") format("truetype");
-  font-weight: 700;
 }
 @font-face {
   /* stylelint-disable-next-line declaration-property-value-allowed-list */
   font-family: "Demi";
   src: url("./fonts/URW/URW DIN Arabic Cond Demi.ttf") format("truetype");
-  font-weight: 600;
 }
 /* ── Utilities ─────────────────────────────────────────────────── */
 .hidden {
@@ -2713,8 +2708,11 @@ html[dir=rtl] .input-search .icon-remove {
 }
 .list-body .list-item button {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
   align-items: center;
-  gap: 8px;
+  gap: var(--xs-size-2);
   width: 100%;
   padding: var(--xs-size-2) var(--xs-size);
 }
@@ -7135,6 +7133,233 @@ body::-webkit-scrollbar-thumb:hover {
   border: 1px solid #ddd;
 }
 
+.tree-node-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.tree-node-wrapper .p-toggleswitch-slider {
+  background-color: red !important;
+}
+.tree-node-wrapper .node-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 8px;
+  margin-bottom: 2px;
+}
+.tree-node-wrapper .node-row:hover {
+  background-color: var(--gray-50-std);
+}
+.tree-node-wrapper .node-row.is-selected {
+  background-color: var(--light-green-bg);
+}
+.tree-node-wrapper .toggle-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 4px;
+}
+.tree-node-wrapper .toggle-spacer {
+  width: 22px;
+  height: 22px;
+}
+.tree-node-wrapper .node-icon {
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.tree-node-wrapper .level-label {
+  font-size: 10px;
+  color: var(--gray-500-std);
+  background: var(--gray-100-std);
+  padding: 1px 4px;
+  border-radius: 4px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+.tree-node-wrapper .node-name {
+  font-size: 14px;
+  color: var(--gray-800-std);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tree-node-wrapper .rtl-text {
+  direction: rtl;
+}
+.tree-node-wrapper .spacer {
+  flex-grow: 1;
+}
+.tree-node-wrapper .icon-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400-std);
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  margin-left: 4px;
+}
+.tree-node-wrapper .icon-btn:hover {
+  background-color: var(--gray-100-std);
+  color: var(--success-green-std);
+}
+.tree-node-wrapper .children-wrapper {
+  overflow: hidden;
+}
+.tree-node-wrapper .slide-down-enter-active,
+.tree-node-wrapper .slide-down-leave-active {
+  transition: all 0.3s ease;
+  max-height: 500px;
+}
+.tree-node-wrapper .slide-down-enter-from,
+.tree-node-wrapper .slide-down-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.education-tree .btn-add-branch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  /* color: var(--primary-green); */
+  color: var(--success-green-std);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.education-tree .btn-add-branch:hover {
+  background: var(--light-green-bg);
+}
+.education-tree .right-children {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.education-tree .right-child-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid var(--gray-200-std);
+  /* border-radius: 8px; */
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+.education-tree .child-icon {
+  flex-shrink: 0;
+}
+.education-tree .child-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-900-std);
+  direction: rtl;
+}
+.education-tree .level-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gray-500-std);
+  background: var(--gray-100-std);
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+.education-tree .spacer {
+  flex: 1;
+}
+.education-tree .icon-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  color: var(--gray-400-std);
+  border-radius: 4px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.education-tree .icon-btn:hover {
+  background: var(--gray-200-std);
+  color: var(--gray-700-std);
+}
+
+.p-dialog.dialog-pricing {
+  background: var(--standard-white) !important;
+  color: black;
+}
+
+.dialog-pricing .dialog-header {
+  display: flex;
+  align-items: start;
+  gap: 40px;
+}
+.dialog-pricing .dialog-header .contant h6 {
+  font-size: var(--md-size);
+  font-weight: 600;
+  font-family: "bold";
+  color: var(--table-header-color);
+}
+.dialog-pricing .dialog-header .contant p {
+  font-size: var(--md-size);
+  font-weight: 500;
+  font-family: "bold";
+  color: var(--title-header-color);
+}
+.dialog-pricing .inputs-pricing {
+  border-top: 1px dashed var(--input-border-color);
+  padding-top: var(--md-size);
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+.dialog-pricing .inputs-pricing .input-group {
+  flex: 1;
+}
+.dialog-pricing .inputs-pricing .input-group label {
+  font-size: var(--md-size);
+  font-weight: 500;
+  font-family: "medium";
+  color: var(--title-header-color);
+}
+.dialog-pricing .inputs-pricing .input-group input {
+  font-size: var(--md-size);
+  font-weight: 500;
+  font-family: "medium";
+  color: var(--title-header-color);
+  background-color: var(--BgWhite);
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--xl-size-1);
+}
+.dialog-pricing .dialog-footer {
+  display: flex !important;
+  gap: var(--xs-size-3);
+  width: 100%;
+  padding-block: var(--xs-size-3);
+  margin-top: var(--xl-size-2);
+}
+.dialog-pricing .dialog-footer .btn-primary {
+  width: 70%;
+}
+.dialog-pricing .dialog-footer .btn-secondary {
+  width: 30%;
+}
+
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
@@ -7570,6 +7795,14 @@ body::-webkit-scrollbar-thumb:hover {
   flex-direction: column;
   gap: 10px;
   font-family: "Medium";
+}
+.document-page .index-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 .document-page .index-header .btns {
   display: flex;
