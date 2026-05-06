@@ -16,6 +16,7 @@ export default class EditEmployeeParams implements Params {
   public EmployeeRef: string;
   public gender: GenderENum;
   public employeeStatus: EmployeeStatusEnm;
+  public password: string;
 
   public static readonly validation = new ClassValidation().setRules({
     id: { required: true },
@@ -38,7 +39,8 @@ export default class EditEmployeeParams implements Params {
     image: string;
     EmployeeRef: string;
     gender: GenderENum;
-    employeeStatus:EmployeeStatusEnm
+    employeeStatus: EmployeeStatusEnm;
+    password: string;
   }) {
     this.id = data.id;
     this.firstname = data.firstname;
@@ -48,7 +50,8 @@ export default class EditEmployeeParams implements Params {
     this.image = data.image;
     this.EmployeeRef = data.EmployeeRef;
     this.gender = data.gender;
-    this.employeeStatus = data.employeeStatus
+    this.employeeStatus = data.employeeStatus;
+    this.password = data.password;
   }
 
   toMap(): { [p: string]: any } {
@@ -61,7 +64,8 @@ export default class EditEmployeeParams implements Params {
       image: this.image,
       employee_ref: this.EmployeeRef,
       gender: this.gender,
-      status:this.employeeStatus
+      status: this.employeeStatus,
+      password: this.password,
     };
   }
 

@@ -123,7 +123,7 @@
       );
     });
     const params = new AddEducationConfigurationParams({
-      educationClassificatioId: 1,
+      educationClassificatioId: Number(route.params.id),
       numberOfBranches: ConfigurationNumberOfBranchs.value,
       branches: configurationBranches,
     });
@@ -145,7 +145,7 @@
       );
     });
     const params = new AddEducationSubjectParams({
-      educationClassificatioId: 1,
+      educationClassificatioId: Number(route.params.id),
       numberOfBranches: SubjectnumberOfBranchs.value,
       branches: configurationBranches,
       translation: new TranslationParams({
@@ -157,16 +157,19 @@
     await controller.create(params);
   };
 
-  const fillConfigurationForm = (data: EducationConfigurationModel) => {
+  const fillConfigurationForm = (data: EducationConfigurationModel | undefined) => {
+    if (!data) return;
+    console.log(data, 'configurationInitialBranches.value');
     ConfigurationnumberOfBranchs.value = data.numberOfBranches;
     ConfigurationNumberOfBranchs.value = data.numberOfBranches;
     configurationInitialBranches.value = data.branches.map((branch) => ({
-      singular: { ...branch.translation.SingularTitle },
-      plural: { ...branch.translation.PluralTitle },
+      singular: { ...branch.singularTitle },
+      plural: { ...branch.pluralTitle },
     }));
   };
 
-  const fillSubjectForm = (data: EducationSubjectConfigurationModel) => {
+  const fillSubjectForm = (data: EducationSubjectConfigurationModel | undefined) => {
+    if (!data) return;
     SubjectnumberOfBranchs.value = data.numberOfBranches;
     subjectNumberOfBranchs.value = data.numberOfBranches;
     subject_title_Singular.value = { ...data.translation.SingularTitle };
@@ -188,19 +191,19 @@
           educationClassificatioId: Number(route.params.id),
         }),
       ),
-      subjectController.fetchList(),
+      subjectController.fetchList(
+        new IndexEducationConfigurationParams({
+          educationClassificatioId: Number(route.params.id),
+        }),
+      ),
     ]);
 
-    if (configResult instanceof DataSuccess && configResult.data) {
-      fillConfigurationForm(configResult.data);
-    } else {
-      fillConfigurationForm(EducationConfigurationModel.example);
+    if (configResult instanceof DataSuccess) {
+      fillConfigurationForm(configResult.data?.[0]);
     }
 
-    if (subjectResult instanceof DataSuccess && subjectResult.data) {
-      fillSubjectForm(subjectResult.data);
-    } else {
-      fillSubjectForm(EducationSubjectConfigurationModel.example);
+    if (subjectResult instanceof DataSuccess) {
+      fillSubjectForm(subjectResult.data?.[0]);
     }
   });
 </script>

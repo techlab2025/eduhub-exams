@@ -20,6 +20,7 @@ export default class EducationSubjectApiService extends BaseApiService {
   protected get endpoints(): Partial<ApiEndpoints> {
     return {
       create: this.educationSubjectEndpoints.store,
+      index: this.educationSubjectEndpoints.index,
     };
   }
 }

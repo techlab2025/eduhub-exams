@@ -355,6 +355,14 @@ export default abstract class BaseRepository<T, TList = T[]> {
             rawData = paginatedData.data ?? paginatedData;
           }
 
+          if (Array.isArray(rawData) && rawData.length === 0) {
+            return new DataSuccess<TList>({
+              data: null,
+              pagination,
+              message: httpResponse.data.message,
+            });
+          }
+
           return new DataSuccess<TList>({
             data: this.parseList(rawData),
             pagination,

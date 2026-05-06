@@ -25,31 +25,17 @@
   );
 
   watch(
-    () => props.numberOfBranches,
-    (newVal) => {
-      branches.length = 0;
-
-      for (let i = 0; i < newVal; i++) {
+    [() => props.numberOfBranches, () => props.initialBranches],
+    ([newCount, newInitial]) => {
+      branches.splice(0);
+      for (let i = 0; i < newCount; i++) {
         branches.push({
-          singular: { ...props.initialBranches?.[i]?.singular } ?? { en: '', ar: '' },
-          plural: { ...props.initialBranches?.[i]?.plural } ?? { en: '', ar: '' },
+          singular: { ...(newInitial?.[i]?.singular ?? {}) },
+          plural: { ...(newInitial?.[i]?.plural ?? {}) },
         });
       }
     },
-  );
-
-  watch(
-    () => props.initialBranches,
-    (newInitial) => {
-      if (!newInitial?.length) return;
-      branches.length = 0;
-      for (let i = 0; i < props.numberOfBranches; i++) {
-        branches.push({
-          singular: { ...newInitial[i]?.singular },
-          plural: { ...newInitial[i]?.plural },
-        });
-      }
-    },
+    { deep: true },
   );
   const SaveData = () => {
     emit('update', branches);
@@ -60,11 +46,13 @@
   <div class="branches">
     <div v-for="(branch, index) in branches" :key="index" class="branch-row">
       <!-- Singular -->
+       
       <div class="input-group">
         <MultiLangInput
           :field-key="`title_Singular`"
           :label="`${label} ${index + 1} (Singular)`"
           :languages="['en', 'ar']"
+          :type="`title`"
           :model-value="branch.singular"
           @update:model-value="branch.singular = $event"
         />
@@ -76,6 +64,7 @@
           :field-key="`title_Plural`"
           :label="`${label} ${index + 1} (Plural)`"
           :languages="['en', 'ar']"
+          :type="`title`"
           :model-value="branch.plural"
           @update:model-value="branch.plural = $event"
         />
