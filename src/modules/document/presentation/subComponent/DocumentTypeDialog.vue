@@ -55,7 +55,7 @@
 <template>
   <button class="btn btn-primary" @click="visible = true">
     <IndexAddIcon />
-    <span> document type</span>
+    <span> {{ $t('document_type') }}</span>
   </button>
   <Dialog
     v-model:visible="visible"
@@ -71,19 +71,19 @@
       <div class="header-container">
         <DocumentTypeIcon />
         <div class="header-text">
-          <h4>Add New Document Type</h4>
-          <p>Manage and organize your document categories</p>
+          <h4>{{ $t('add_new_document_type') }}</h4>
+          <p>{{ $t('manage_and_organize_your_document_categories') }}</p>
         </div>
       </div>
     </template>
     <div class="document-type-content">
       <div v-for="item in data" :key="item.id" class="document-type-row">
         <div class="item-title">
-          <span class="item-small-title">doc type</span>
+          <span class="item-small-title">{{ $t('document_type') }}</span>
           <span class="item-main-title">{{ item.type }}</span>
         </div>
         <div class="item-statics">
-          <span class="item-small-title">doc number</span>
+          <span class="item-small-title">{{ $t('document_number') }}</span>
           <span class="item-main-title">{{ item.docsNumber }}</span>
         </div>
         <div class="item-status">
@@ -95,22 +95,22 @@
         </div>
       </div>
       <div class="input-wrapper">
-        <label for="doc-name">document type name</label>
+        <label for="doc-name">{{ $t('document_type_name') }}</label>
         <input
           id="doc-name"
           v-model="DocumentTypeName"
           type="text"
           class="input"
-          placeholder="Enter document type (e.g. Books, Notes, Worksheets)"
+          :placeholder="$t('enter_document_type_name')"
         />
       </div>
       <div class="is-master">
-        <span>Is Master Type?</span>
+        <span>{{ $t('is_master') }}</span>
         <ToggleSwitch v-model="isMaster" @update:model-value="ToggleIsMaster" />
       </div>
       <div class="btns">
-        <button class="btn btn-primary" @click="SavenDocumentType">save</button>
-        <button class="btn btn-secondary" @click="visible = false">cancel</button>
+        <button class="btn btn-primary" @click="SavenDocumentType">{{ $t('save') }}</button>
+        <button class="btn btn-secondary" @click="visible = false">{{ $t('cancel') }}</button>
       </div>
     </div>
   </Dialog>

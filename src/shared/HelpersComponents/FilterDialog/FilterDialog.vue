@@ -17,7 +17,7 @@
 
 <template>
   <button class="btn fillter-button" @click="visible = true">
-    filter
+    {{ $t('Filter') }}
     <DialogIconFillter />
   </button>
   <Dialog
@@ -30,7 +30,7 @@
   >
     <template #header>
       <div class="filter-document">
-        <h6 class="filter-title">filter option</h6>
+        <h6 class="filter-title">{{ $t('filter_option') }}</h6>
       </div>
     </template>
 

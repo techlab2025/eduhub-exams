@@ -214,5 +214,22 @@
   "Subject Name": "Subject Name",
   "Subject Type": "Subject Type",
   "percentage (%)": "Percentage (%)",
-  "enter percentage like 20% ": "Enter percentage like 20% "
+  "enter percentage like 20% ": "Enter percentage like 20% ",
+  "All Documents": "All Documents",
+  "Documents": "Documents",
+  "Manage and organize all uploaded documents in one place": "Manage and organize all uploaded documents in one place",
+  "date of remove": "date of remove",
+  "Date Remove": "Date Remove",
+  "Student Name": "Student Name",
+  "added by": "added by",
+  "Document Type": "Document Type",
+  "filter_option": "Filter Option",
+  "add_new_document_type": "Add New Document Type",
+  "manage_and_organize_your_document_categories": "Manage and organize your document categories",
+  "document_number": "Document Number",
+  "document_type_name": "Document Type Name",
+  "is_master": "Is Master Type?",
+  "doc_type": "Doc Type",
+  "enter_document_type_name": "Enter Document Type Name",
+  "enter_document_type_name_placeholder": "Enter document type (e.g. Books, Notes, Worksheets)"
 }

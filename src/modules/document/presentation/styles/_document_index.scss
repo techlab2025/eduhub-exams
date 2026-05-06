@@ -7,6 +7,27 @@
   gap: 10px;
   font-family: 'Medium';
 
+  .badge {
+    background-color: $BadgeBg;
+    color: $PrimaryColor;
+    width: 25%;
+    padding: $XsSize3;
+    position: relative;
+    margin: $XlSize 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      border-width: $XsSize4 0 calc($XlSize3 + 7px) $XlSize2;
+      border-style: solid;
+      border-color: transparent transparent white transparent;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 30px;
+    }
+  }
+
   .index-header {
     @include flex-row(nowrap, space-between, center);
 
@@ -20,15 +41,17 @@
   }
 
   .document-index-title {
-    color: $BgBlack;
-    font-size: 24px;
-    font-weight: 700;
+    color: var(--title-card-color);
+    font-size: $XlSize2;
+    font-weight: $BaseFontWeightBold;
+    font-family: 'bold';
   }
 
   .document-index-dexription {
-    color: $Gray-5;
-    font-size: 16px;
-    font-weight: 500;
+    color: var(--title-header-color);
+    font-size: $MdSize;
+    font-weight: $BaseFontMediumWeight;
+    font-family: 'medium';
   }
 
   .flex {

@@ -6,8 +6,8 @@
 
   .filter-document {
     .filter-title {
-      font-size: 18px;
-      font-weight: 400;
+      font-size: $MdSize2;
+      font-weight: $BaseFontSemiBoldWeight;
       font-family: 'Medium';
       color: var(--Title-input-Color);
     }
