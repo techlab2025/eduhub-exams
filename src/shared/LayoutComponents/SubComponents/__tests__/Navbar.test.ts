@@ -6,6 +6,7 @@ import Navbar from '../Navbar.vue';
 vi.mock('@/stores/user', () => ({
   useUserStore: () => ({
     logout: vi.fn(),
+    user: { name: 'Test User' },
   }),
 }));
 
@@ -71,22 +72,22 @@ describe('Navbar.vue', () => {
 
   it('toggles dropdown menu on user div click', async () => {
     const wrapper = mount(Navbar, mountOptions);
-    const userDiv = wrapper.find('.user.dropdown-trigger');
-    await userDiv.trigger('click');
-    expect(wrapper.find('.dropdown-menu').exists()).toBe(true);
+    const userImg = wrapper.find('.user.dropdown-trigger img');
+    await userImg.trigger('click');
+    expect(wrapper.find('.mega-menu').exists()).toBe(true);
 
-    await userDiv.trigger('click');
-    expect(wrapper.find('.dropdown-menu').exists()).toBe(false);
+    await userImg.trigger('click');
+    expect(wrapper.find('.mega-menu').exists()).toBe(false);
   });
 
-  it('calls logout and navigates to /choose-country on logout click', async () => {
+  it('calls logout and navigates to /login on logout click', async () => {
     const wrapper = mount(Navbar, mountOptions);
 
     // Open dropdown first
-    await wrapper.find('.user.dropdown-trigger').trigger('click');
+    await wrapper.find('.user.dropdown-trigger img').trigger('click');
 
-    const logoutItem = wrapper.find('.dropdown-menu li');
-    await logoutItem.trigger('click');
+    const logoutBtn = wrapper.find('.logout-btn');
+    await logoutBtn.trigger('click');
 
     expect(mockPush).toHaveBeenCalledWith('/login');
   });

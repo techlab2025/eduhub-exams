@@ -7,6 +7,10 @@ import { createPinia, setActivePinia } from 'pinia';
 vi.mock('vue-router', () => ({
   useRoute: () => ({
     path: '/employees',
+    params: {},
+  }),
+  useRouter: () => ({
+    push: vi.fn(),
   }),
 }));
 
