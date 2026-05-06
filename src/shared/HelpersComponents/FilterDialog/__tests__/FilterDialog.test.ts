@@ -10,6 +10,9 @@ const globalConfig = {
     },
     DialogIconFillter: true,
   },
+  mocks: {
+    $t: (msg: string) => msg,
+  },
 };
 
 describe('FilterDialog.vue', () => {
@@ -21,7 +24,7 @@ describe('FilterDialog.vue', () => {
       global: globalConfig,
     });
     expect(wrapper.find('.fillter-button').exists()).toBe(true);
-    expect(wrapper.text()).toContain('filter');
+    expect(wrapper.text()).toContain('Filter');
   });
 
   it('emits update:modelValue when button is clicked', async () => {
@@ -60,6 +63,6 @@ describe('FilterDialog.vue', () => {
     });
 
     expect(wrapper.find('.filter-title').exists()).toBe(true);
-    expect(wrapper.find('.filter-title').text()).toBe('filter option');
+    expect(wrapper.find('.filter-title').text()).toBe('filter_option');
   });
 });

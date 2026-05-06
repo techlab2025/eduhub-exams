@@ -1,11 +1,19 @@
-import { BaseEndpoints } from '@/base/Data/Endpoints/BaseEndpoints';
+import { describe, it, expect } from 'vitest';
+import { EmployeeEndpoints } from './employee.api.endpoints';
 
-export class EmployeeEndpoints extends BaseEndpoints {
-  protected readonly prefix = 'dashboard/';
+describe('EmployeeEndpoints', () => {
+  it('should have the correct prefix', () => {
+    const endpoints = new EmployeeEndpoints();
+    // @ts-ignore - prefix is protected
+    expect(endpoints.prefix).toBe('dashboard/');
+  });
 
-  readonly index = this.url('fetch_employees');
-  readonly show = this.url('show_employee');
-  readonly store = this.url('store_employee');
-  readonly update = this.url('update_employee');
-  readonly delete = this.url('delete_employee');
-}
+  it('should have the correct endpoint URLs', () => {
+    const endpoints = new EmployeeEndpoints();
+    expect(endpoints.index).toContain('fetch_employees');
+    expect(endpoints.show).toContain('show_employee');
+    expect(endpoints.store).toContain('store_employee');
+    expect(endpoints.update).toContain('update_employee');
+    expect(endpoints.delete).toContain('delete_employee');
+  });
+});
