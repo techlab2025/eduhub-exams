@@ -28,12 +28,13 @@ export default class EducationSubjectRepository extends BaseRepository<
   }
 
   protected parseItem(data: unknown): EducationSubjectConfigurationModel {
-
     return EducationSubjectConfigurationModel.fromJson(data as Record<string, unknown>);
   }
 
   protected parseList(data: unknown): EducationSubjectConfigurationModel {
-    const item = Array.isArray(data) ? data[data.length - 1] : data;
-    return EducationSubjectConfigurationModel.fromJson(item as Record<string, unknown>);
+    return data && data?.map((el: any) => EducationSubjectConfigurationModel.fromJson(el));
+
+    // const item = Array.isArray(data) ? data[data.length - 1] : data;
+    // return EducationSubjectConfigurationModel.fromJson(item as Record<string, unknown>);
   }
 }

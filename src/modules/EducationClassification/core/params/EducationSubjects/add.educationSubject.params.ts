@@ -32,7 +32,7 @@ export default class AddEducationSubjectParams implements Params {
     const map: { [key: string]: any } = {
       education_classification_id: this.educationClassificatioId,
       number_of_branches: this.numberOfBranches,
-      translation: this.translation.toMap(),
+      translations: this.translation.toMap(),
       branches: this.branches.map((branch) => branch.toMap()),
     };
     return map;

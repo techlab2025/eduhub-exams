@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-  import { reactive, watch } from 'vue';
+  import {  reactive, watch } from 'vue';
 
   type Branch = {
     singular: Record<string, string>;
@@ -27,6 +27,7 @@
   watch(
     [() => props.numberOfBranches, () => props.initialBranches],
     ([newCount, newInitial]) => {
+      console.log(newCount, 'new');
       branches.splice(0);
       for (let i = 0; i < newCount; i++) {
         branches.push({
@@ -46,7 +47,7 @@
   <div class="branches">
     <div v-for="(branch, index) in branches" :key="index" class="branch-row">
       <!-- Singular -->
-       
+
       <div class="input-group">
         <MultiLangInput
           :field-key="`title_Singular`"

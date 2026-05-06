@@ -48,4 +48,17 @@ export default class ConfigurationBranchesModel {
       pluralTitle: parseLocaleArray(json.plural_title, 'plural_title'),
     });
   }
+
+  static example: ConfigurationBranchesModel = new ConfigurationBranchesModel({
+    id: 1,
+    levelNumber: 1,
+    pluralTitle: {
+      en: 'en',
+      ar: 'ar',
+    },
+    singularTitle: {
+      en: 'en',
+      ar: 'ar',
+    },
+  });
 }
