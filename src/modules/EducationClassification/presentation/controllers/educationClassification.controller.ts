@@ -30,8 +30,10 @@ export default class EducationClassificationController extends BaseController<
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showSuccessDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
+      showErrorDialog: false,
       autoRetry: false,
       maxAutoRetries: 1,
     };

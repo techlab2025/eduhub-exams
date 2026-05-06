@@ -1,6 +1,5 @@
 import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
-
 // class_validation.ts
 export interface ValidationRule {
   required?: boolean;
@@ -83,7 +82,7 @@ export class ClassValidation {
       // Check minLength
       if (
         rule.minLength !== undefined &&
-        typeof value === "string" &&
+        typeof value === 'string' &&
         value.length < rule.minLength
       ) {
         errors.push({
@@ -95,7 +94,7 @@ export class ClassValidation {
       // Check maxLength
       if (
         rule.maxLength !== undefined &&
-        typeof value === "string" &&
+        typeof value === 'string' &&
         value.length > rule.maxLength
       ) {
         errors.push({
@@ -105,11 +104,7 @@ export class ClassValidation {
       }
 
       // Check min
-      if (
-        rule.min !== undefined &&
-        typeof value === "number" &&
-        value < rule.min
-      ) {
+      if (rule.min !== undefined && typeof value === 'number' && value < rule.min) {
         errors.push({
           field,
           message: `${field} must be at least ${rule.min}`,
@@ -117,20 +112,12 @@ export class ClassValidation {
       }
 
       // Check max
-      if (
-        rule.max !== undefined &&
-        typeof value === "number" &&
-        value > rule.max
-      ) {
+      if (rule.max !== undefined && typeof value === 'number' && value > rule.max) {
         errors.push({ field, message: `${field} must be at most ${rule.max}` });
       }
 
       // Check pattern
-      if (
-        rule.pattern &&
-        typeof value === "string" &&
-        !rule.pattern.test(value)
-      ) {
+      if (rule.pattern && typeof value === 'string' && !rule.pattern.test(value)) {
         errors.push({ field, message: `${field} format is invalid` });
       }
 
@@ -141,8 +128,7 @@ export class ClassValidation {
         if (result !== true) {
           errors.push({
             field,
-            message:
-              typeof result === "string" ? result : `${field} is invalid`,
+            message: typeof result === 'string' ? result : `${field} is invalid`,
           });
         }
       }
@@ -173,7 +159,7 @@ export class ClassValidation {
    */
   private isEmpty(value: any): boolean {
     if (value === null || value === undefined) return true;
-    if (typeof value === "string" && value.trim() === "") return true;
+    if (typeof value === 'string' && value.trim() === '') return true;
     if (Array.isArray(value) && value.length === 0) return true;
     return false;
   }
@@ -181,15 +167,11 @@ export class ClassValidation {
 
 export class ValidationError extends Error {
   constructor(public errors: ValidationError[]) {
-    super(
-      `Validation failed: ${errors.map((e) => `${e.field}: ${e.message}`).join(", ")}`,
-    );
-    this.name = "ValidationError";
+    super(`Validation failed: ${errors.map((e) => `${e.field}: ${e.message}`).join(', ')}`);
+    this.name = 'ValidationError';
   }
 
   openDialog() {
-    dialogManager.warning(
-        this.errors.map((e) => `${e.field}: ${e.message}`).join("\n")
-    );
+    dialogManager.toastWarning(this.errors.map((e) => `${e.field}: ${e.message}`).join('\n'));
   }
 }

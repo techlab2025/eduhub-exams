@@ -37,6 +37,12 @@ export interface ControllerConfig {
 
   /** Maximum auto-retry attempts */
   maxAutoRetries?: number;
+
+  /** toast success */
+  showSuccessTosat?: boolean;
+
+  /** toast delete */
+  showErrorTosat?: boolean;
 }
 
 /**
@@ -45,7 +51,9 @@ export interface ControllerConfig {
 const DEFAULT_CONFIG: ControllerConfig = {
   showLoadingDialog: false,
   showSuccessDialog: false,
+  showSuccessTosat: false,
   showErrorDialog: false,
+  showErrorTosat:false,
   autoRetry: false,
   maxAutoRetries: 2,
 };
@@ -309,7 +317,11 @@ export default abstract class BaseController<T, TList = T[]> {
     }
 
     try {
-      const result = await this.repository.show(params, this.mergeOptions(options),this.config.autoRetry);
+      const result = await this.repository.show(
+        params,
+        this.mergeOptions(options),
+        this.config.autoRetry,
+      );
       this.setItemState(result);
       this.handleItemResponse(result);
       return result;
@@ -590,9 +602,20 @@ export default abstract class BaseController<T, TList = T[]> {
     }
   }
 
+  protected showSuccessToast(message: string): void {
+    if (this.config.showSuccessTosat) {
+      dialogManager.toastSuccess(message);
+    }
+  }
+
   protected showErrorDialog(message: string): void {
     if (this.config.showErrorDialog) {
       dialogManager.error(message);
+    }
+  }
+  protected showErrorTosat(message: string): void {
+    if (this.config.showErrorTosat) {
+      dialogManager.toastError(message);
     }
   }
 
@@ -607,10 +630,26 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Handle list response (override for custom dialogs/notifications).
    */
-  protected handleListResponse(_result: DataState<TList>): void {
+  protected handleListResponse(_result: DataState<TList>, successMessage?: string): void {
+    const Message = successMessage || 'Data Fetched Succssesfuly';
     if (_result.hasError) {
       this.handleErrorResponse(_result);
     }
+    //  else if (
+    //   _result instanceof DataSuccess &&
+    //   this.config.showSuccessDialog &&
+    //   !this.config.showSuccessTosat &&
+    //   Message
+    // ) {
+    //   this.showSuccessDialog(Message);
+    // } else if (
+    //   _result instanceof DataSuccess &&
+    //   !this.config.showSuccessDialog &&
+    //   this.config.showSuccessTosat &&
+    //   Message
+    // ) {
+    //   this.showSuccessToast(Message);
+    // }
 
     // Auto-retry if applicable
     if (this.shouldAutoRetry(_result)) {
@@ -625,8 +664,20 @@ export default abstract class BaseController<T, TList = T[]> {
   protected handleItemResponse(_result: DataState<T>, successMessage?: string): void {
     if (_result.hasError) {
       this.handleErrorResponse(_result);
-    } else if (_result instanceof DataSuccess && this.config.showSuccessDialog && successMessage) {
+    } else if (
+      _result instanceof DataSuccess &&
+      this.config.showSuccessDialog &&
+      !this.config.showSuccessTosat &&
+      successMessage
+    ) {
       this.showSuccessDialog(successMessage);
+    } else if (
+      _result instanceof DataSuccess &&
+      !this.config.showSuccessDialog &&
+      this.config.showSuccessTosat &&
+      successMessage
+    ) {
+      this.showSuccessToast(successMessage);
     }
 
     // Auto-retry if applicable
@@ -640,8 +691,10 @@ export default abstract class BaseController<T, TList = T[]> {
    * Handle error response.
    */
   protected handleErrorResponse(_result: DataState<any>): void {
-    if (this.config.showErrorDialog && _result.error) {
+    if (this.config.showErrorDialog && !this.config.showErrorTosat && _result.error) {
       this.showErrorDialog(_result.error.displayMessage);
+    } else if (!this.config.showErrorDialog && this.config.showErrorTosat && _result.error) {
+      this.showErrorTosat(_result.error.displayMessage);
     }
   }
 

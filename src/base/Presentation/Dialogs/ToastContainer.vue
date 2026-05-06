@@ -298,19 +298,19 @@
 
   /* Type-specific borders */
   .toast-type-success {
-    border-left: 4px solid var(--success);
+    border-bottom: 4px solid var(--success);
   }
 
   .toast-type-error {
-    border-left: 4px solid var(--danger);
+    border-bottom: 4px solid var(--danger);
   }
 
   .toast-type-warning {
-    border-left: 4px solid var(--warning);
+    border-bottom: 4px solid var(--warning);
   }
 
   .toast-type-info {
-    border-left: 4px solid var(--info);
+    border-bottom: 4px solid var(--info);
   }
 
   /* Mobile responsive */
