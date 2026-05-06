@@ -125,8 +125,8 @@
     <div class="document-form-header">
       <DocumentIcon />
       <div class="document-form-header-text">
-        <h4>Add document</h4>
-        <p>Upload your document and fill in its details</p>
+        <h4>{{ $t('add_document') }}</h4>
+        <p>{{ $t('Upload your document and fill in its details') }}</p>
       </div>
     </div>
 
@@ -169,7 +169,7 @@
           :params="indexDocumentTypeParams"
           :controller="documentTypeController"
           :model-value="selectedDocumentType"
-          placeholder="Document Type"
+          :placeholder="$t('Document Type')"
           @update:model-value="updateData"
         />
       </div>
@@ -182,7 +182,7 @@
           :params="indexDocumentTypeParams"
           :controller="documentTypeController"
           :model-value="selectedDocumentType"
-          placeholder="Subject Type"
+          :placeholder="$t('Subject Type')"
           @update:model-value="updateData"
         />
       </div>
@@ -199,7 +199,7 @@
       </div>
       <div class="field-group tags-group col-span-2">
         <label class="field-label" for="tag">{{ $t('tag') }}</label>
-        <div class="input-wrap">
+        <div class="input-wrap input-tag-wrap">
           <input
             id="tags"
             v-model="tag"
@@ -208,7 +208,7 @@
             class="field-input"
             @input="updateData"
           />
-          <button class="btn btn-primary" @click="setTags">add tag</button>
+          <button class="btn btn-primary" @click="setTags">{{ $t('add tag') }}</button>
         </div>
 
         <div class="tags-container" :class="tags.length > 0 ? `border` : ``">
@@ -233,8 +233,10 @@
           <template #content>
             <div class="add-imaegs-data">
               <UplaodImageInput />
-              <p class="first-text"><span>Click to upload</span>or drag and drop</p>
-              <p class="second-text">JPG, JPEG, PNG less than 1MB</p>
+              <p class="first-text">
+                {{ $t('Click to upload') }} <span>{{ $t('or drag and drop') }}</span>
+              </p>
+              <p class="second-text">{{ $t('JPG, JPEG, PNG less than 1MB') }}</p>
             </div>
           </template>
         </HandleFilesUpload>
@@ -254,8 +256,11 @@
           <template #content>
             <div class="add-imaegs-data">
               <FileIcon />
-              <p class="first-text"><span>Click to upload</span>the Main Document</p>
-              <p class="second-text">PDF, DOCX,ZIP less than 1MB</p>
+              <p class="first-text">
+                <span>{{ $t('Click to upload') }}</span
+                >{{ $t('the Main Document') }}
+              </p>
+              <p class="second-text">{{ $t('PDF, DOCX,ZIP less than 1MB') }}</p>
             </div>
           </template>
         </HandleFilesUpload>

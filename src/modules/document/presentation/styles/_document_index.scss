@@ -7,6 +7,17 @@
   gap: 10px;
   font-family: 'Medium';
 
+  .search-field {
+    input {
+      &::placeholder {
+        font-family: 'Medium';
+        font-weight: $BaseFontSemiBoldWeight;
+        font-size: $SmSize;
+        color: var(--bread-crumb-color-span);
+      }
+    }
+  }
+
   .badge {
     background-color: $BadgeBg;
     color: $PrimaryColor;

@@ -6889,14 +6889,16 @@ body::-webkit-scrollbar-thumb:hover {
   gap: 5px;
 }
 .document-form-card .document-form-header .document-form-header-text h4 {
-  color: var(--gray-900);
-  font-size: 24px;
+  color: var(--title-card-color);
+  font-size: var(--md-size-2);
   font-weight: 700;
+  font-family: 'bold';
 }
 .document-form-card .document-form-header .document-form-header-text p {
-  color: var(--Gray-5);
+  color: var(--title-header-color);
   font-weight: 500;
-  font-size: 16px;
+  font-family: 'Medium';
+  font-size: var(--md-size);
 }
 .document-form-card .form-header {
   display: flex;
@@ -6969,14 +6971,14 @@ body::-webkit-scrollbar-thumb:hover {
   gap: 10px;
 }
 .document-form-card .field-group.tags-group .input-wrap {
-  border: 1px solid var(--gray-soft);
+  border: 1px solid var(--input-border-color);
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   border-radius: 50px;
-  padding: 3px;
+  padding: var(--xs-size-5) var(--md-size);
 }
 .document-form-card .field-group.tags-group .input-wrap button {
   padding: 10px 12px;
@@ -6984,6 +6986,9 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .document-form-card .field-group.tags-group .input-wrap input {
   width: 80%;
+}
+.document-form-card .field-group.tags-group .input-wrap input:focus {
+  box-shadow: none !important;
 }
 .document-form-card .field-group.tags-group input {
   border: none !important;
@@ -7017,8 +7022,9 @@ body::-webkit-scrollbar-thumb:hover {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--Gray-5);
-  font-size: 16px;
+  color: var(--table-data-color);
+  font-size: var(--md-size);
+  font-family: 'Medium';
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: none;
@@ -7044,7 +7050,10 @@ body::-webkit-scrollbar-thumb:hover {
   font-weight: 500 !important;
 }
 .document-form-card .field-input::placeholder {
-  color: var(--gray-400);
+  color: var(--bread-crumb-color-span);
+  font-weight: 500;
+  font-family: 'Medium';
+  font-size: var(--sm-size);
 }
 .document-form-card .field-input:focus {
   border-color: var(--PrimaryColor);
@@ -7056,6 +7065,12 @@ body::-webkit-scrollbar-thumb:hover {
 .document-form-card .field-input:hover:not(:focus) {
   border-color: var(--gray-300);
   background: var(--bg-main);
+}
+.document-form-card .p-placeholder {
+  color: var(--bread-crumb-color-span) !important;
+  font-weight: 500 !important;
+  font-family: 'Medium';
+  font-size: var(--sm-size);
 }
 .document-form-card :deep(.myacc) {
   border: none;
@@ -7145,6 +7160,12 @@ body::-webkit-scrollbar-thumb:hover {
   flex-direction: column;
   gap: 10px;
   font-family: 'Medium';
+}
+.document-page .search-field input::placeholder {
+  font-family: 'Medium';
+  font-weight: 600;
+  font-size: var(--sm-size);
+  color: var(--bread-crumb-color-span);
 }
 .document-page .badge {
   background-color: var(--badge-bg);
@@ -7447,14 +7468,16 @@ body::-webkit-scrollbar-thumb:hover {
   gap: 5px;
 }
 .p-dialog.add-document-type-dialog .header-container .header-text h4 {
-  color: var(--standard-black);
-  font-size: 20px;
-  font-weight: 600;
+  color: var(--table-header-color);
+  font-size: var(--xl-size-base);
+  font-weight: 700;
+  font-family: 'medium';
 }
 .p-dialog.add-document-type-dialog .header-container .header-text p {
-  color: var(--Gray-5);
-  font-size: 16px;
+  color: var(--title-header-color);
+  font-size: var(--md-size);
   font-weight: 500;
+  font-family: 'medium';
 }
 .p-dialog.add-document-type-dialog .document-type-content {
   display: flex;
@@ -7494,9 +7517,10 @@ body::-webkit-scrollbar-thumb:hover {
   .document-type-row
   .item-statics
   .item-small-title {
-  color: var(--gray-200);
-  font-size: 14px;
+  color: var(--bread-crumb-color-span);
+  font-size: var(--sm-size);
   font-weight: 400;
+  font-family: 'medium';
 }
 .p-dialog.add-document-type-dialog
   .document-type-content
@@ -7508,9 +7532,10 @@ body::-webkit-scrollbar-thumb:hover {
   .document-type-row
   .item-statics
   .item-main-title {
-  color: var(--standard-black);
-  font-size: 16px;
+  color: var(--table-header-color);
+  font-size: var(--md-size);
   font-weight: 500;
+  font-family: 'medium';
 }
 .p-dialog.add-document-type-dialog .document-type-content .document-type-row .item-actions {
   display: flex;
@@ -7519,6 +7544,9 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   align-items: center;
   gap: 3px;
+}
+.p-dialog.add-document-type-dialog .document-type-content .document-type-row .item-actions svg {
+  cursor: pointer;
 }
 .p-dialog.add-document-type-dialog .document-type-content .input-wrapper {
   width: 100%;
@@ -7532,9 +7560,10 @@ body::-webkit-scrollbar-thumb:hover {
   padding: 0 !important;
 }
 .p-dialog.add-document-type-dialog .document-type-content .input-wrapper label {
-  color: var(--Gray-5);
-  font-size: 16px;
+  color: var(--title-header-color);
+  font-size: var(--md-size);
   font-weight: 600;
+  font-family: 'medium';
 }
 .p-dialog.add-document-type-dialog .document-type-content .input-wrapper input {
   padding: 10px;
@@ -7543,20 +7572,22 @@ body::-webkit-scrollbar-thumb:hover {
   font-family: 'Medium';
   font-weight: 500;
   padding-inline: 10px;
+  color: var(--bread-crumb-color-span);
 }
 .p-dialog.add-document-type-dialog .document-type-content .is-master {
   width: 100%;
-  margin-top: 15px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
+  margin: var(--md-size-2) 0;
 }
 .p-dialog.add-document-type-dialog .document-type-content .is-master span {
-  color: var(--Gray-5);
-  font-size: 16px;
+  color: var(--title-header-color);
+  font-size: var(--md-size);
   font-weight: 600;
+  font-family: 'medium';
 }
 .p-dialog.add-document-type-dialog .document-type-content .btns {
   display: flex;
@@ -7570,9 +7601,11 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog.add-document-type-dialog .document-type-content .btns button:first-child {
   width: 80%;
+  font-weight: 600;
 }
 .p-dialog.add-document-type-dialog .document-type-content .btns button:last-child {
   width: 20%;
+  font-weight: 600;
 }
 .p-dialog.add-document-type-dialog .p-toggleswitch .p-toggleswitch-handle {
   background-color: var(--white);

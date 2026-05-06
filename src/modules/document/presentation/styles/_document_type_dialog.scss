@@ -16,15 +16,17 @@
       gap: 5px;
 
       h4 {
-        color: $StandardBlack;
-        font-size: 20px;
-        font-weight: 600;
+        color: var(--table-header-color);
+        font-size: $XlSize;
+        font-weight: $BaseFontWeightBold;
+        font-family: 'medium';
       }
 
       p {
-        color: $Gray-5;
-        font-size: 16px;
-        font-weight: 500;
+        color: var(--title-header-color);
+        font-size: $MdSize;
+        font-weight: $BaseFontMediumWeight;
+        font-family: 'medium';
       }
     }
   }
@@ -48,15 +50,17 @@
         @include flex-column(nowrap, flex-start, flex-start);
 
         .item-small-title {
-          color: var(--gray-200);
-          font-size: 14px;
-          font-weight: 400;
+          color: var(--bread-crumb-color-span);
+          font-size: $SmSize;
+          font-weight: $BaseFontWeight;
+          font-family: 'medium';
         }
 
         .item-main-title {
-          color: $StandardBlack;
-          font-size: 16px;
-          font-weight: 500;
+          color: var(--table-header-color);
+          font-size: $MdSize;
+          font-weight: $BaseFontMediumWeight;
+          font-family: 'medium';
         }
       }
 
@@ -64,6 +68,10 @@
         @include flex-row(nowrap, center, center);
 
         gap: 3px;
+
+        svg {
+          cursor: pointer;
+        }
       }
     }
 
@@ -77,9 +85,10 @@
       padding: 0 !important;
 
       label {
-        color: $Gray-5;
-        font-size: 16px;
-        font-weight: 600;
+        color: var(--title-header-color);
+        font-size: $MdSize;
+        font-weight: $BaseFontSemiBoldWeight;
+        font-family: 'medium';
       }
 
       input {
@@ -87,22 +96,25 @@
 
         &::placeholder {
           font-family: 'Medium';
-          font-weight: 500;
+          font-weight: $BaseFontMediumWeight;
           padding-inline: 10px;
+          color: var(--bread-crumb-color-span);
         }
       }
     }
 
     .is-master {
       width: 100%;
-      margin-top: 15px;
 
       @include flex-row(nowrap, space-between, center);
 
+      margin: $MdSize2 0;
+
       span {
-        color: $Gray-5;
-        font-size: 16px;
-        font-weight: 600;
+        color: var(--title-header-color);
+        font-size: $MdSize;
+        font-weight: $BaseFontSemiBoldWeight;
+        font-family: 'medium';
       }
     }
 
@@ -116,10 +128,12 @@
       button {
         &:first-child {
           width: 80%;
+          font-weight: $BaseFontSemiBoldWeight;
         }
 
         &:last-child {
           width: 20%;
+          font-weight: $BaseFontSemiBoldWeight;
         }
       }
     }
