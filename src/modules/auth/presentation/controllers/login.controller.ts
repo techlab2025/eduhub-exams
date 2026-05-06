@@ -79,4 +79,27 @@ export default class LoginController extends BaseController<LoginModel, never> {
       this.hideLoadingDialog();
     }
   }
+
+  async generalLogin(params: Params): Promise<DataState<LoginModel>> {
+    this.setItemLoading();
+    if (this.config.showLoadingDialog) {
+      this.showLoadingDialog('Logging in...');
+    }
+
+    try {
+      const response = await this.repository.generalLogin(params);
+      this.setItemState(response);
+      this.handleItemResponse(response, 'Logged in successfully');
+      if (response.data) this.userStore.setUser(response.data);
+      router.push('/admin/country');
+      return response;
+    } catch (error: unknown) {
+      const failed = new DataFailed<LoginModel>({ error: error as ErrorModel });
+      this.setItemState(failed);
+      this.handleErrorResponse(failed);
+      return failed;
+    } finally {
+      this.hideLoadingDialog();
+    }
+  }
 }

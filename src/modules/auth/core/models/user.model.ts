@@ -62,7 +62,7 @@ export default class UserModel {
       employeeId: json.employee_id,
       createdAt: json.created_at,
       updatedAt: json.updated_at,
-      apiToken: json.api_token,
+      apiToken: json.token,
       refreshToken: json.refresh_token,
       image: json.image,
     });

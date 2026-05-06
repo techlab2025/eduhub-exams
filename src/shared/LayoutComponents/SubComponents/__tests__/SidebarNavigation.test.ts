@@ -49,7 +49,6 @@ describe('SidebarNavigation.vue', () => {
     // Check for some menu items
     expect(wrapper.text()).toContain('Employees');
     expect(wrapper.text()).toContain('Documents');
-    expect(wrapper.text()).toContain('Countries');
   });
 
   it('applies active class based on current route', () => {

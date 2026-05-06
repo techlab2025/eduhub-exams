@@ -5,3 +5,9 @@ export class LoginEndpoints extends BaseEndpoints {
 
   readonly login = this.url('login');
 }
+
+export class GeneralLoginEndpoints extends BaseEndpoints {
+  protected readonly prefix = 'general/';
+
+  readonly login = this.url('login');
+}

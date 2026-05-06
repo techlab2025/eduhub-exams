@@ -13,8 +13,10 @@
   import FaqsIcon from '@/shared/icons/SidebarIcons/FaqsIcon.vue';
   import { useUserStore } from '@/stores/user';
   import AuthArrowIcon from '@/shared/icons/SidebarIcons/AuthArrowIcon.vue';
+
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
+
   interface MenuItem {
     link: string;
     name: string;
@@ -22,10 +24,29 @@
     badge?: string;
     hasArrow?: boolean;
   }
+
   interface MenuSection {
     group: string;
     items: MenuItem[];
   }
+
+  const adminMenu: MenuSection[] = [
+    {
+      group: 'Management',
+      items: [
+        {
+          link: '/admin',
+          name: 'Admins',
+          icon: SettingIcon,
+        },
+        {
+          link: '/admin/country',
+          name: 'Countries',
+          icon: SettingIcon,
+        },
+      ],
+    },
+  ];
 
   const baseMenu: MenuSection[] = [
     {
@@ -45,32 +66,6 @@
           link: '/documents',
           name: 'Documents',
           icon: DocumentIcon,
-        },
-
-        // {
-        //   link: '/stages',
-        //   name: 'Stages',
-        //   icon: SettingIcon,
-        // },
-        // {
-        //   link: '/subjects',
-        //   name: 'Subjects',
-        //   icon: SettingIcon,
-        // },
-        // {
-        //   link: '/units',
-        //   name: 'Units',
-        //   icon: SettingIcon,
-        // },
-      ],
-    },
-    {
-      group: 'location',
-      items: [
-        {
-          link: '/countries',
-          name: 'Countries',
-          icon: SettingIcon,
         },
       ],
     },
@@ -111,29 +106,38 @@
     },
   ];
 
+  const isAdminRoute = computed(() => route.path.startsWith('/admin'));
+
   const countryCode = computed(() => (route.params?.country_code as string) || '');
 
+  const activeMenu = computed<MenuSection[]>(() => {
+    if (isAdminRoute.value) return adminMenu;
+    return baseMenu;
+  });
+
   const menu = computed<MenuSection[]>(() =>
-    baseMenu.map((group) => ({
+    activeMenu.value.map((group) => ({
       ...group,
       items: group.items.map((item) => ({
         ...item,
-        link: countryCode.value ? `/${countryCode.value}${item.link}` : item.link,
+        link:
+          !isAdminRoute.value && countryCode.value
+            ? `/${countryCode.value}${item.link}`
+            : item.link,
       })),
     })),
   );
 
   const { user } = useUserStore();
 </script>
+
 <template>
   <aside class="sidebar">
     <div class="sidebar-wrapper">
       <div class="logo-container">
         <img class="logo" :src="TechlabLogo" alt="Techlab Logo" />
-        <!-- <h2 class="logo">Logo</h2> -->
       </div>
 
-      <!-- Menu -->
       <div class="menu">
         <div v-for="(group, gIndex) in menu" :key="gIndex" class="menu-group">
           <p v-if="group.group" class="group-title">
@@ -149,13 +153,8 @@
             @click="emit('clickItem')"
           >
             <component :is="item.icon" class="icon" />
-
             <span class="label">{{ item.name }}</span>
-
-            <span v-if="item?.badge" class="badge">
-              {{ item?.badge }}
-            </span>
-
+            <span v-if="item?.badge" class="badge">{{ item?.badge }}</span>
             <span v-if="item?.hasArrow" class="arrow">›</span>
           </router-link>
         </div>

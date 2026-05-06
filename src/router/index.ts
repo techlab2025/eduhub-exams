@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { dashboardRoutes } from './routes/modules';
+import { adminRoutes } from './routes/modules/admin';
+import { countryRoutes } from './routes/modules/country-standalone';
 import { authGuard } from './guards';
 import HomeIcon from '@/shared/icons/BreadcrumbIcons/HomeIcon.vue';
 
@@ -12,9 +14,20 @@ const router = createRouter({
       component: () => import('@/views/auth/LoginCountry.vue'),
     },
     {
+      path: '/login',
+      name: 'General Login',
+      component: () => import('@/views/auth/GeneralLogin.vue'),
+    },
+    {
       path: '/not-found',
       name: 'Not Found',
       component: () => import('@/views/error/Error.vue'),
+    },
+    {
+      path: '/admin',
+      component: () => import('@/views/AppLayout.vue'),
+      children: [{ path: '', redirect: { name: 'Admins' } }, ...adminRoutes, ...countryRoutes],
+      meta: { icon: HomeIcon },
     },
     {
       path: '/:country_code',
@@ -28,7 +41,7 @@ const router = createRouter({
           path: '',
           name: 'Home App',
           component: () => import('@/views/AppLayout.vue'),
-          children: [{ path: '', redirect: { name: 'Countries' } }, ...dashboardRoutes],
+          children: [{ path: '', redirect: { name: 'Employees' } }, ...dashboardRoutes],
           meta: { icon: HomeIcon },
         },
       ],

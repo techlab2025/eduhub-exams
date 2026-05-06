@@ -51,6 +51,13 @@ export default class LoginRepository extends BaseRepository<LoginModel, never> {
     );
   }
 
+  async generalLogin(params: Params): Promise<DataState<LoginModel>> {
+    return this.executeCustom(
+      () => this.apiService.generalLogin(params),
+      (data) => this.parseItem(data),
+    );
+  }
+
   protected get mockItem(): LoginModel {
     return LoginModel.example;
   }

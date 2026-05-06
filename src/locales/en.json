@@ -215,5 +215,18 @@
   "Subject Type": "Subject Type",
   "percentage (%)": "Percentage (%)",
   "enter percentage like 20% ": "Enter percentage like 20% ",
-  "employee_id":"Employee Id"
+  "employee_id": "Employee Id",
+  "admin_name": "Admin Name",
+  "admin_email": "Admin Email",
+  "admin_phone": "Admin Phone",
+  "admin_password": "Admin Password",
+  "no_admins_yet": "No admins yet",
+  "add_first_admin": "Add your first admin",
+  "add_admin": "Add Admin",
+  "search_by_name_or_email": "Search by name or email…",
+  "edit_admin": "Edit Admin",
+  "update_admin_details": "Update the admin details below",
+  "fill_admin_details": "Fill in the admin information",
+  "save_admin": "Save Admin",
+  "update_admin": "Update Admin"
 }

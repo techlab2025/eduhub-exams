@@ -1,18 +1,21 @@
 import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
-import type AdminModel from '../../core/models/admin.model';
-import AdminRepository from '../../data/repositories/admin.repository';
+import type CountryModel from '../../core/models/country.model';
+import CountryRepository from '../../data/repositories/country.repository';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 
-export default class AdminController extends BaseController<AdminModel, AdminModel[]> {
-  private static instance: AdminController;
+export default class CountryStandaloneController extends BaseController<
+  CountryModel,
+  CountryModel[]
+> {
+  private static instance: CountryStandaloneController;
 
   protected get repository() {
-    return AdminRepository.getInstance();
+    return CountryRepository.getInstance();
   }
 
   protected get config(): ControllerConfig {
@@ -29,11 +32,11 @@ export default class AdminController extends BaseController<AdminModel, AdminMod
     super();
   }
 
-  static getInstance(): AdminController {
-    if (!AdminController.instance) {
-      AdminController.instance = new AdminController();
+  static getInstance(): CountryStandaloneController {
+    if (!CountryStandaloneController.instance) {
+      CountryStandaloneController.instance = new CountryStandaloneController();
     }
-    return AdminController.instance;
+    return CountryStandaloneController.instance;
   }
 
   async create(params: Params, options?: ApiCallOptions, formKey?: string) {
@@ -41,7 +44,7 @@ export default class AdminController extends BaseController<AdminModel, AdminMod
 
     const result = await super.create(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ path: '/admin' });
+      router.push({ path: '/admin/country' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
@@ -54,7 +57,7 @@ export default class AdminController extends BaseController<AdminModel, AdminMod
 
     const result = await super.update(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ path: '/admin' });
+      router.push({ path: '/admin/country' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }

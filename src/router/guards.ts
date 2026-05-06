@@ -4,16 +4,35 @@ import { useCountryStore } from '@/stores/country';
 
 export function authGuard(
   to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
   next: NavigationGuardNext,
 ): void {
   const userData = useUserStore();
   const countryStore = useCountryStore();
 
-  if (to.path === '/choose-country' || to.path === '/not-found') {
+  // Public routes
+  if (to.path === '/choose-country' || to.path === '/not-found' || to.path === '/login') {
     return next();
   }
 
+  // Standalone admin / country routes
+  const isStandaloneRoute = to.path.startsWith('/admin');
+
+  if (isStandaloneRoute) {
+    const isLoginPage = to.path === '/login';
+
+    if (!userData.isAuth && !isLoginPage) {
+      return next('/login');
+    }
+
+    if (isLoginPage && userData.isAuth) {
+      return next('/admin/country');
+    }
+
+    return next();
+  }
+
+  // Country-specific routes
   const country = to.params.country_code as string | undefined;
 
   if (!country) {

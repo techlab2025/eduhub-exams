@@ -1,5 +1,6 @@
 import { useUserStore } from '@/stores/user';
 import { useCountryStore } from '@/stores/country';
+import router from '@/router';
 
 class HeaderHandler {
   private static _instance: HeaderHandler;
@@ -21,9 +22,7 @@ class HeaderHandler {
     const userStore = this.userStore;
     const countryStore = this.countryStore;
 
-    const token: string | undefined =
-      // userStore?.user?.apiToken ||
-      '4|wGVp48gP0i6CEUe2jFpiisFwEzKdI1ZpKRqQ5soq6d416862';
+    const token: string | undefined = '4|wGVp48gP0i6CEUe2jFpiisFwEzKdI1ZpKRqQ5soq6d416862';
     if (userStore?.user !== null) {
       if (isAuth) {
         headers['Authorization'] = 'Bearer ' + token;
@@ -37,15 +36,22 @@ class HeaderHandler {
       headers['Accept-Language'] = savedLocale;
     }
 
-    // const countryCode = countryStore?.getCountryCode();
-    // if (countryCode) {
-    //   headers['X-Country-Code'] = countryCode;
-    // }
-
     headers['Content-Type'] = 'application/json';
     headers['Accept'] = 'application/json';
     headers['Authorization'] = 'Bearer ' + token;
-    headers['x-country'] = 'sa';
+
+    const currentPath = router.currentRoute.value.path;
+    const isStandaloneRoute = currentPath.startsWith('/admin') || currentPath === '/login';
+
+    if (!isStandaloneRoute) {
+      const countryCode = countryStore?.getCountryCode();
+      if (countryCode) {
+        headers['x-country'] = countryCode.toLowerCase();
+      } else {
+        headers['x-country'] = 'sa';
+      }
+    }
+
     return headers;
   }
 }
