@@ -6,6 +6,11 @@ describe('DocumentTypeDialog', () => {
   it('renders without errors', () => {
     const wrapper = mount(DocumentTypeDialog, {
       props: { visible: false },
+      global: {
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
     });
     expect(wrapper.exists()).toBe(true);
   });
