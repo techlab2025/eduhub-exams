@@ -65,7 +65,14 @@ export default class EducationSubjectController extends BaseController<
     params?: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<EducationSubjectConfigurationModel>> {
-    const result = await super.fetchList(params, { ...options, useJson: true });
+    const result = await super.fetchList(params, {
+      ...options,
+      useJson: true,
+      headers: {
+        'x-country': options?.headers?.['x-country'] || 'sa',
+        'accept-language': params?.isLocale ? 'en' : '*',
+      },
+    });
     return result;
   }
 }

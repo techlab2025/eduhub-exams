@@ -13,10 +13,11 @@ export default class FetchSubjectParams implements Params {
   }
 
   toMap(): { [p: string]: any } {
-    return {
-      stage_id: this.stage_id,
-      parent_id: this.parent_id ?? null,
+    const map: { [key: string]: any } = {
+      education_classification_subject_id: this.stage_id,
     };
+    if (this.parent_id != null) map.parent_id = this.parent_id;
+    return map;
   }
 
   validate() {

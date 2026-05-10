@@ -1,7 +1,15 @@
 <script setup lang="ts">
-  import { ref, inject, computed } from 'vue';
-  import type { ComputedRef } from 'vue';
+  import { ref, inject, watch } from 'vue';
+  import type { Ref } from 'vue';
   import type EducationSubjectModel from '@/modules/EducationClassification/core/models/EducationSubject/education.subject.model';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
+  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+  import { useI18n } from 'vue-i18n';
+  import RenameSubjectDialog from '@/modules/EducationClassification/subComponent/RenameSubjectDialog.vue';
+  import DeleteEducationSubjectItemParams from '@/modules/EducationClassification/core/params/EducationSubjects/delete.education.subject.item.params';
+  import EducationSubjectItemController from '../../controllers/educationSubject/education.subject.item.controller';
+  import PricingIcon from '@/shared/icons/PricingIcon.vue';
 
   export interface SubjectNode {
     subject: EducationSubjectModel;
@@ -14,40 +22,113 @@
   const props = defineProps<{
     node: SubjectNode;
     selectedSubjectId: number | null;
+    maxDepth: number;
+    parentId: number | null;
   }>();
 
-  const onExpand = inject<(node: SubjectNode) => Promise<void>>('subjectOnExpand')!;
-  const onSelect = inject<(node: SubjectNode) => void>('subjectOnSelect')!;
-  const onAddChild = inject<(subjectId: number, level: number) => void>('subjectOnAddChild')!;
-  const maxDepth = inject<ComputedRef<number>>(
-    'subjectMaxDepth',
-    computed(() => Infinity),
-  );
+  const emit = defineEmits<{
+    (e: 'fetch-children', parentId: number, callback: (children: SubjectNode[]) => void): void;
+    (e: 'add-child', subjectId: number, level: number): void;
+    (e: 'select', node: SubjectNode): void;
+    (e: 'delete-branch', parentId: number | null): void;
+  }>();
 
-  const canAddChild = computed(() => props.node.depth + 1 < maxDepth.value);
+  const refreshSubjectId = inject<Ref<number | null>>('refreshSubjectId', ref(null));
+  const subjectStageId = inject<Ref<number>>('subjectStageId', ref(0));
+
+  const canAddChild = props.node.depth + 1 < props.maxDepth;
   const isOpen = ref(false);
+  const isLoading = ref(false);
+  const hasFetched = ref(false);
+  const children = ref<SubjectNode[]>([]);
+
+  watch(refreshSubjectId, async (id) => {
+    if (id !== props.node.subject.subject_id) return;
+    isLoading.value = true;
+    await new Promise<void>((resolve) => {
+      emit('fetch-children', props.node.subject.subject_id, (fetched) => {
+        children.value = fetched;
+        hasFetched.value = true;
+        isLoading.value = false;
+        resolve();
+      });
+    });
+    isOpen.value = true;
+  });
 
   async function handleRowClick() {
-    onSelect(props.node);
+    emit('select', props.node);
     await handleToggle();
   }
 
   async function handleToggle() {
-    if (!props.node.isLoaded) {
-      await onExpand(props.node);
+    if (hasFetched.value && children.value.length === 0) return;
+
+    if (!hasFetched.value) {
+      isLoading.value = true;
+      await new Promise<void>((resolve) => {
+        emit('fetch-children', props.node.subject.subject_id, (fetched) => {
+          children.value = fetched;
+          hasFetched.value = true;
+          isLoading.value = false;
+          resolve();
+        });
+      });
     }
-    if (props.node.children.length > 0) {
+
+    if (children.value.length > 0) {
       isOpen.value = !isOpen.value;
     }
   }
 
   function handleAddChild() {
-    onAddChild(props.node.subject.subject_id, props.node.depth + 2);
+    emit('add-child', props.node.subject.subject_id, props.node.depth + 2);
+  }
+
+  function onChildFetch(parentId: number, callback: (children: SubjectNode[]) => void) {
+    emit('fetch-children', parentId, callback);
+  }
+
+  function onChildAdd(subjectId: number, level: number) {
+    emit('add-child', subjectId, level);
+  }
+
+  function onChildSelect(node: SubjectNode) {
+    emit('select', node);
   }
 
   function isArabic(text: string) {
     return /[؀-ۿ]/.test(text);
   }
+
+  const ShoweEditDialog = ref(false);
+  const { t } = useI18n();
+  const controller = EducationSubjectItemController.getInstance();
+
+  async function deleteEducationClassification(id: number) {
+    await controller.delete(new DeleteEducationSubjectItemParams({ subject_id: id }));
+    emit('delete-branch', props.parentId);
+  }
+
+  const actionList = (id: number) => [
+    {
+      text: t('rename'),
+      icon: EditIcon,
+      action: () => {
+        ShoweEditDialog.value = true;
+      },
+    },
+    {
+      text: t('delete'),
+      icon: DeletIcon,
+      action: () => deleteEducationClassification(id),
+    },
+    {
+      text: t('pricing'),
+      icon: PricingIcon,
+      action: () => console.log('pricing'),
+    },
+  ];
 </script>
 
 <template>
@@ -59,7 +140,7 @@
       @click="handleRowClick"
     >
       <button
-        v-if="!node.isLoaded || node.children.length > 0"
+        v-if="(!hasFetched || children.length > 0) && node.depth + 1 !== maxDepth"
         class="toggle-btn"
         @click.stop="handleToggle"
       >
@@ -75,7 +156,7 @@
         >
           <path
             d="M5 7l5 5 5-5"
-            stroke="#4caf50"
+            stroke="#6b7280"
             stroke-width="1.5"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -113,7 +194,7 @@
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
       </svg>
 
-      <span v-if="node.depth > 0" class="level-label">Level {{ node.depth }}</span>
+      <span v-if="node.depth > 0" class="level-label">{{ $t('branch') }} {{ node.depth }}</span>
 
       <span class="node-name" :class="{ 'rtl-text': isArabic(node.subject.subject_title) }">
         {{ node.subject.subject_title }}
@@ -129,21 +210,36 @@
       </button>
 
       <button class="icon-btn" @click.stop>
-        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-          <circle cx="10" cy="5" r="1.2" />
-          <circle cx="10" cy="10" r="1.2" />
-          <circle cx="10" cy="15" r="1.2" />
-        </svg>
+        <DropList
+          :action-list="actionList(node.subject.subject_id)"
+          :delete-dialog-title="$t('are_you_sure_you_want_to_remove_this_education_classification')"
+          :delete-dialog-message="
+            $t(
+              'Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed',
+            )
+          "
+        />
+        <RenameSubjectDialog
+          v-model:visable="ShoweEditDialog"
+          :item-id="node.subject.subject_id"
+          :stage-id="subjectStageId"
+        />
       </button>
     </div>
 
     <transition name="slide-down">
-      <div v-if="isOpen && node.children.length > 0" class="children-wrapper">
+      <div v-if="isOpen && children.length > 0" class="children-wrapper">
         <SubjectTreeNode
-          v-for="child in node.children"
+          v-for="child in children"
           :key="child.subject.subject_id"
           :node="child"
+          :max-depth="maxDepth"
           :selected-subject-id="selectedSubjectId"
+          :parent-id="node.subject.subject_id"
+          @fetch-children="onChildFetch"
+          @add-child="onChildAdd"
+          @select="onChildSelect"
+          @delete-branch="$emit('delete-branch', $event)"
         />
       </div>
     </transition>

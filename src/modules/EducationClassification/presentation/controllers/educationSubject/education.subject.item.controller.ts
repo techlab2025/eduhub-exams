@@ -39,4 +39,8 @@ export default class EducationSubjectItemController extends BaseController<
   async create(params: Params, options?: ApiCallOptions) {
     return super.create(params, { ...options, useJson: true });
   }
+
+  async update(params: Params, options?: ApiCallOptions) {
+    return super.update(params, { ...options, useJson: true });
+  }
 }

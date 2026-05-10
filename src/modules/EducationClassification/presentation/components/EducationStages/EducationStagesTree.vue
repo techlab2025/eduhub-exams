@@ -294,8 +294,9 @@
     <div class="right-panel">
       <template v-if="selectedNode">
         <!-- Final-depth stage: show subjects panel -->
+
         <SubjectsPanel
-          v-if="selectedNode.depth + 1 === maxDepth"
+          v-if="selectedNode.depth + 1 === MaxNumberOfBranches"
           :stage-id="selectedNode.stage.stage_id"
           :stage-name="selectedNode.stage.stage_title"
         />

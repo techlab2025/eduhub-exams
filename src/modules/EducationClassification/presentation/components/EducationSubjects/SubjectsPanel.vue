@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, provide, onMounted, computed, watch } from 'vue';
+  import { ref, provide, onMounted, computed, watch, nextTick } from 'vue';
   import { useI18n } from 'vue-i18n';
   import SubjectTreeNode from './SubjectTreeNode.vue';
   import type { SubjectNode } from './SubjectTreeNode.vue';
@@ -12,6 +12,9 @@
   import type EducationSubjectConfigurationModel from '@/modules/EducationClassification/core/models/EducationConfiguration/education.subject.configuration.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import AddEducationSubjectDialog from '@/modules/EducationClassification/subComponent/EducationTree/AddEducationSubjectDialog.vue';
+  import IndexEducationConfigurationParams from '@/modules/EducationClassification/core/params/EducationConfiguration/index.educationConfiguration.params co';
+  import { useRoute } from 'vue-router';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
 
   const props = defineProps<{
     stageId: number;
@@ -25,13 +28,15 @@
   const subjectConfig = ref<EducationSubjectConfigurationModel | null>(null);
   const rootNodes = ref<SubjectNode[]>([]);
   const selectedNode = ref<SubjectNode | null>(null);
-  const showAddTypeDialog = ref(false);
+  const showAddRootDialog = ref(false);
   const showAddBranchDialog = ref(false);
   const branchDialogLevel = ref(1);
   const branchDialogParentId = ref<number | undefined>(undefined);
   const branchDialogName = ref('');
+  const stageExpanded = ref(true);
 
   const subjectMaxDepth = computed(() => subjectConfig.value?.numberOfBranches ?? Infinity);
+  const refreshSubjectId = ref<number | null>(null);
 
   function getSubjectBranchName(depth: number): string {
     const branches = subjectConfig.value?.branches ?? [];
@@ -45,7 +50,7 @@
     const lang = locale.value === 'ar' ? 'ar' : 'en';
     const config = subjectConfig.value;
     if (!config) return 'Subject';
-    return config.SingluarTitle[lang] ?? config.SingluarTitle['en'] ?? 'Subject';
+    return config?.[0].SingluarTitle;
   }
 
   function makeNode(subject: EducationSubjectModel, depth: number): SubjectNode {
@@ -71,21 +76,24 @@
     }
   }
 
-  async function expandNode(node: SubjectNode) {
-    if (node.isLoading) return;
-    node.isLoading = true;
+  async function fetchChildren(parentId: number, callback: (children: SubjectNode[]) => void) {
+    const parentNode = findNode(rootNodes.value, parentId);
     const params = new FetchSubjectParams({
       stage_id: props.stageId,
-      parent_id: node.subject.subject_id,
+      parent_id: parentId,
     });
     const result = await itemController.fetchList(params);
-    if (result instanceof DataSuccess) {
-      node.children = (result.data ?? []).map((s: EducationSubjectModel) =>
-        makeNode(s, node.depth + 1),
-      );
-      node.isLoaded = true;
+    const children =
+      result instanceof DataSuccess
+        ? (result.data ?? []).map((s: EducationSubjectModel) =>
+            makeNode(s, (parentNode?.depth ?? 0) + 1),
+          )
+        : [];
+    if (parentNode) {
+      parentNode.children = children;
+      parentNode.isLoaded = true;
     }
-    node.isLoading = false;
+    callback(children);
   }
 
   function selectNode(node: SubjectNode) {
@@ -99,10 +107,15 @@
     showAddBranchDialog.value = true;
   }
 
-  async function handleAddRoot(name: string) {
-    const params = new AddSubjectItemParams({ title: name, stage_id: props.stageId });
+  async function handleAddRoot(translations: Record<string, string>) {
+    const params = new AddSubjectItemParams({
+      translations: new TranslationParams({
+        title: translations,
+      }),
+      stage_id: props.stageId,
+    });
     await itemController.create(params);
-    showAddTypeDialog.value = false;
+    showAddRootDialog.value = false;
     await fetchRoot();
   }
 
@@ -110,96 +123,232 @@
     name,
     branchId,
   }: {
-    name: string;
+    name: Record<string, string>;
     level: number;
     branchId?: number;
   }) {
     if (!branchId) return;
     const params = new AddSubjectItemParams({
-      title: name,
+      translations: new TranslationParams({
+        title: name,
+      }),
       stage_id: props.stageId,
       parent_id: branchId,
     });
     await itemController.create(params);
     showAddBranchDialog.value = false;
-    const parentNode = findNode(rootNodes.value, branchId);
-    if (parentNode) {
-      parentNode.isLoaded = false;
-      await expandNode(parentNode);
-    }
+    refreshSubjectId.value = branchId;
+    await nextTick();
+    refreshSubjectId.value = null;
   }
 
-  provide('subjectOnExpand', expandNode);
   provide('subjectOnSelect', selectNode);
   provide('subjectOnAddChild', openAddChildDialog);
   provide('subjectMaxDepth', subjectMaxDepth);
+  provide('refreshSubjectId', refreshSubjectId);
+  provide('subjectStageId', computed(() => props.stageId));
+
+  async function handleDeleteBranch(parentId: number | null) {
+    if (parentId === null) {
+      await fetchRoot();
+    } else {
+      refreshSubjectId.value = parentId;
+      await nextTick();
+      refreshSubjectId.value = null;
+    }
+  }
 
   watch(
     () => props.stageId,
     async () => {
+      stageExpanded.value = true;
       await fetchRoot();
     },
   );
 
+  const route = useRoute();
   onMounted(async () => {
-    const configResult = await configController.fetchList();
+    const indexEducationConfigurationParams = new IndexEducationConfigurationParams({
+      educationClassificatioId: Number(route.params.id),
+      isLocale: true,
+    });
+    const configResult = await configController.fetchList(indexEducationConfigurationParams);
     if (configResult instanceof DataSuccess && configResult.data) {
       subjectConfig.value = configResult.data;
     }
     await fetchRoot();
   });
+
+  const AddSubject = () => {
+    showAddRootDialog.value = true;
+  };
 </script>
 
 <template>
+  <!-- {{ subjectConfig }} -->
   <div class="subjects-panel">
-    <div class="subjects-panel-header">
-      <div class="subjects-panel-title">
-        <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-          <rect x="3" y="3" width="14" height="14" rx="2" stroke="#4caf50" stroke-width="1.5" />
+    <!-- Left panel: stage as root branch + subject tree -->
+    <div class="subjects-left">
+      <!-- Stage root node (the deepest stage is the first subject branch) -->
+      <div class="stage-root-row" @click="stageExpanded = !stageExpanded">
+        <button class="toggle-btn" @click.stop="stageExpanded = !stageExpanded">
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            width="14"
+            height="14"
+            :style="{
+              transform: stageExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
+              transition: 'transform 0.2s',
+            }"
+          >
+            <path
+              d="M5 7l5 5 5-5"
+              stroke="#4caf50"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <svg viewBox="0 0 20 20" fill="none" width="16" height="16" class="node-icon">
           <path
-            d="M7 7h6M7 10h6M7 13h4"
+            d="M3 7a2 2 0 012-2h3.5l1.5 1.5H15a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"
             stroke="#4caf50"
-            stroke-width="1.2"
-            stroke-linecap="round"
+            stroke-width="1.3"
+            fill="none"
           />
         </svg>
-        <div class="w-full flex stage-container">
-          <span>{{ stageName }} </span>
-          <span @click="showAddTypeDialog = true">
+        <span class="stage-root-name">{{ stageName }}</span>
+        <span class="spacer" />
+        <!-- showAddRootDialog = true -->
+        <button class="icon-btn" title="Add Subject" @click.stop="AddSubject">
+          <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+            <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
+            <path d="M10 7v6M7 10h6" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Subject tree nodes under the stage root -->
+      <transition name="slide-down">
+        <div v-if="stageExpanded" class="stage-children-wrapper">
+          <div v-if="rootNodes.length === 0" class="hint-text">
+            {{ $t('No subjects yet. Click + to add.') }}
+          </div>
+          <div v-else class="subject-tree-list">
+            <SubjectTreeNode
+              v-for="node in rootNodes"
+              :key="node.subject.subject_id"
+              :node="node"
+              :maxDepth="subjectConfig?.[0]?.numberOfBranches"
+              :selected-subject-id="selectedNode?.subject.subject_id ?? null"
+              :parent-id="null"
+              @fetch-children="fetchChildren"
+              @add-child="openAddChildDialog"
+              @select="selectNode"
+              @delete-branch="handleDeleteBranch"
+            />
+          </div>
+          <div v-if="rootNodes.length > 0" class="subjects-bottom-bar">
+            <button class="btn btn-primary btn-full" @click="showAddRootDialog = true">
+              {{ $t('Add New') }} {{ getSubjectRootName() }}
+            </button>
+          </div>
+        </div>
+      </transition>
+    </div>
+
+    <!-- Right panel: children of selected subject -->
+    <!-- <div class="subjects-right">
+      <template v-if="selectedNode">
+        <div class="right-header">
+          <div class="right-title">
+            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+              <rect x="3" y="3" width="14" height="14" rx="2" stroke="#4caf50" stroke-width="1.5" />
+              <path
+                d="M7 7h6M7 10h6M7 13h4"
+                stroke="#4caf50"
+                stroke-width="1.2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <span>{{ selectedNode.subject.subject_title }}</span>
+          </div>
+          <button
+            v-if="selectedNode.depth + 1 < (subjectMaxDepth ?? 0)"
+            class="btn-add-branch"
+            @click="openAddChildDialog(selectedNode.subject.subject_id, selectedNode.depth + 2)"
+          >
             <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
               <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
               <path d="M10 7v6M7 10h6" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round" />
             </svg>
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject Tree Left + Right split -->
-    <div class="subjects-body">
-      <!-- Left: subject tree list -->
-      <div class="subjects-left">
-        <div class="subject-tree-list">
-          <SubjectTreeNode
-            v-for="node in rootNodes"
-            :key="node.subject.subject_id"
-            :node="node"
-            :selected-subject-id="selectedNode?.subject.subject_id ?? null"
-          />
-        </div>
-
-        <div v-if="rootNodes.length > 0" class="subjects-bottom-bar">
-          <button class="btn btn-primary btn-full" @click="showAddTypeDialog = true">
-            Add New {{ getSubjectRootName() }}
           </button>
         </div>
+
+        <div v-if="selectedNode.children.length > 0" class="right-children">
+          <div
+            v-for="child in selectedNode.children"
+            :key="child.subject.subject_id"
+            class="right-child-row"
+          >
+            <svg viewBox="0 0 20 20" fill="none" width="16" height="16" class="child-icon">
+              <rect
+                x="4"
+                y="3"
+                width="12"
+                height="14"
+                rx="2"
+                stroke="#4caf50"
+                stroke-width="1.3"
+                fill="none"
+              />
+              <path
+                d="M7 8h6M7 11h6M7 14h4"
+                stroke="#4caf50"
+                stroke-width="1.1"
+                stroke-linecap="round"
+              />
+            </svg>
+            <span class="child-name">{{ child.subject.subject_title }}</span>
+            <span class="level-label">{{ getSubjectBranchName(child.depth - 1) }}</span>
+            <span class="spacer" />
+            <button
+              v-if="child.depth + 1 < (subjectMaxDepth ?? 0)"
+              class="icon-btn"
+              @click="openAddChildDialog(child.subject.subject_id, child.depth + 3)"
+            >
+              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+                <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
+                <path
+                  d="M10 7v6M7 10h6"
+                  stroke="#4caf50"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div v-else class="right-empty">
+          <p class="hint-text">
+            {{ $t('No branches yet. Click Add Branch to get started.') }}
+          </p>
+        </div>
+      </template>
+
+      <div v-else class="right-placeholder">
+        <p>{{ $t('Select a subject from the tree to view details') }}</p>
       </div>
-    </div>
+    </div> -->
   </div>
 
+  <!-- {{ showAddRootDialog }} -->
   <AddEducationSubjectDialog
-    v-if="showAddTypeDialog"
-    v-model:visible="showAddTypeDialog"
+    v-if="showAddRootDialog"
+    v-model:visible="showAddRootDialog"
     :header="`Add New ${getSubjectRootName()}`"
     @confirm="handleAddRoot"
   />

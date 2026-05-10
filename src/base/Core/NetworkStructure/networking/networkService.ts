@@ -266,7 +266,7 @@ export default class NetworkService {
     networkConfig?: NetworkRequestConfig,
   ): AxiosRequestConfig {
     return {
-      headers: headers ?? HeaderHandler.Instance.getHeader(isAuth),
+      headers: { ...HeaderHandler.Instance.getHeader(isAuth), ...headers },
       params: queryParams,
       timeout: networkConfig?.timeout ?? env.timeout,
       signal: networkConfig?.signal,

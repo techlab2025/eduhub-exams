@@ -66,16 +66,16 @@
         // },
       ],
     },
-    {
-      group: 'location',
-      items: [
-        {
-          link: '/countries',
-          name: 'Countries',
-          icon: SettingIcon,
-        },
-      ],
-    },
+    // {
+    //   group: 'location',
+    //   items: [
+    //     {
+    //       link: '/countries',
+    //       name: 'Countries',
+    //       icon: SettingIcon,
+    //     },
+    //   ],
+    // },
     {
       group: 'statics',
       items: [
