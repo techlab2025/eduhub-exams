@@ -21,8 +21,10 @@ export default class DocumentController extends BaseController<DocumentModel, Do
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+            showErrorTosat: true,
+      showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,
     };
@@ -55,7 +57,7 @@ export default class DocumentController extends BaseController<DocumentModel, Do
   async update(params: Params, options?: ApiCallOptions, formKey?: string) {
     const FormStore = useFormsStore();
 
-    const result = await super.update(params, options);
+    const result = await super.update(params, { ...options, useJson: true });
     if (result instanceof DataSuccess) {
       router.push({ name: 'Documents' });
       if (formKey) {

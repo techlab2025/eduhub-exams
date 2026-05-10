@@ -1,36 +1,29 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type DocumentTranslationParams from './translation.params';
 
-export default class AddDocumentDocumentParams implements Params {
-  public title: string;
-  public documentTypeId: number;
-  public isMaster: boolean;
+export default class AddDocumentTypeParams implements Params {
+  public translations: DocumentTranslationParams;
 
   public static readonly validation = new ClassValidation().setRules({
-    title: { required: true, minLength: 2, maxLength: 255 },
-    documentTypeId: { required: true },
-    isMaster: { required: true },
+    translations: { required: true },
   });
 
-  constructor(data: { title: string; documentTypeId: number; isMaster: boolean }) {
-    this.title = data.title;
-    this.documentTypeId = data.documentTypeId;
-    this.isMaster = data.isMaster;
+  constructor(data: { translations: DocumentTranslationParams }) {
+    this.translations = data.translations;
   }
 
   toMap(): { [p: string]: any } {
     return {
-      title: this.title,
-      document_type_id: this.documentTypeId,
-      is_master: this.isMaster,
+      translations: this.translations.toMap(),
     };
   }
 
   validate() {
-    return AddDocumentDocumentParams.validation.validate(this);
+    return AddDocumentTypeParams.validation.validate(this);
   }
 
   validateOrThrow() {
-    return AddDocumentDocumentParams.validation.validateOrThrow(this);
+    return AddDocumentTypeParams.validation.validateOrThrow(this);
   }
 }

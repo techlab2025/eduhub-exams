@@ -1,8 +1,8 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import DocumentTypeApiService from '../../api/DocumentType/document.type.api-service';
-import DocumentModel from '@/modules/document/core/models/document.model';
+import DocumentTypeModel from '@/modules/document/core/models/documentType/document.type.model';
 
-export default class DocumentTypeRepository extends BaseRepository<DocumentModel, DocumentModel[]> {
+export default class DocumentTypeRepository extends BaseRepository<DocumentTypeModel, DocumentTypeModel[]> {
   private static instance: DocumentTypeRepository;
 
   protected get apiService() {
@@ -17,15 +17,15 @@ export default class DocumentTypeRepository extends BaseRepository<DocumentModel
     };
   }
 
-  protected get mockItem(): DocumentModel {
-    return DocumentModel.example;
+  protected get mockItem(): DocumentTypeModel {
+    return DocumentTypeModel.example;
   }
 
-  protected get mockList(): DocumentModel[] {
+  protected get mockList(): DocumentTypeModel[] {
     return [
-      DocumentModel.example,
-      { ...DocumentModel.example, id: 2, title: 'Document 2', documentTypeId: 2 },
-      { ...DocumentModel.example, id: 3, title: 'Document 3', documentTypeId: 3 },
+      DocumentTypeModel.example,
+      { ...DocumentTypeModel.example, id: 2, title: 'Document 2',  },
+      { ...DocumentTypeModel.example, id: 3, title: 'Document 3',  },
     ];
   }
 
@@ -36,13 +36,13 @@ export default class DocumentTypeRepository extends BaseRepository<DocumentModel
     return DocumentTypeRepository.instance;
   }
 
-  protected parseItem(data: any): DocumentModel {
-    return DocumentModel.fromJson(data);
+  protected parseItem(data: any): DocumentTypeModel {
+    return DocumentTypeModel.fromJson(data);
   }
 
-  protected parseList(data: any): DocumentModel[] {
+  protected parseList(data: any): DocumentTypeModel[] {
     if (!Array.isArray(data)) return [];
-    return data.reduce((acc: DocumentModel[], item) => {
+    return data.reduce((acc: DocumentTypeModel[], item) => {
       try {
         if (item != null) {
           acc.push(this.parseItem(item));
