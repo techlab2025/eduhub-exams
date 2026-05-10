@@ -208,6 +208,11 @@
   "Select a stage from the tree to view details": "Select a stage from the tree to view details",
   "subject pricing": "Subject Pricing",
   "Manage how each subject is priced within your system.": "Manage how each subject is priced within your system.",
+  "subject skills": "Subject Skills",
+  "Manage how each subject skills are configured within your system.": "Manage how each subject skills are configured within your system.",
+  "time": "Time",
+  "enter_percentage": "Enter percentage",
+  "enter_time": "Enter time",
   "duration (month only)": "Duration (Month Only)",
   "pricing": "Pricing",
   "skills": "Skills",
@@ -247,5 +252,5 @@
   "upload image": "Upload Images",
   "PDF, DOCX,ZIP less than 1MB": "PDF, DOCX,ZIP less than 1MB",
   "the Main Document": "the Main Document",
-  "add_a_new": "Add A New "
+  "add_a_new": "Add A New"
 }

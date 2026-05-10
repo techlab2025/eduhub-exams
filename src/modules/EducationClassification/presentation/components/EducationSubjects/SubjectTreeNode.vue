@@ -10,6 +10,8 @@
   import DeleteEducationSubjectItemParams from '@/modules/EducationClassification/core/params/EducationSubjects/delete.education.subject.item.params';
   import EducationSubjectItemController from '../../controllers/educationSubject/education.subject.item.controller';
   import PricingIcon from '@/shared/icons/PricingIcon.vue';
+  import PricingDialog from '@/modules/EducationClassification/subComponent/EducationTree/PricingDialog.vue';
+  import SkillsDialog from '@/modules/EducationClassification/subComponent/EducationTree/SkillsDialog.vue';
 
   export interface SubjectNode {
     subject: EducationSubjectModel;
@@ -109,6 +111,11 @@
     await controller.delete(new DeleteEducationSubjectItemParams({ subject_id: id }));
     emit('delete-branch', props.parentId);
   }
+  const showPricingDialog = ref<boolean>(false);
+  const showSkillsDialog = ref<boolean>(false);
+
+  const isFirstLevel = props.node.depth === 0;
+  const isLastLevel = props.node.depth + 1 === props.maxDepth;
 
   const actionList = (id: number) => [
     {
@@ -123,11 +130,24 @@
       icon: DeletIcon,
       action: () => deleteEducationClassification(id),
     },
-    {
-      text: t('pricing'),
-      icon: PricingIcon,
-      action: () => console.log('pricing'),
-    },
+    ...(isFirstLevel
+      ? [
+          {
+            text: t('pricing'),
+            icon: PricingIcon,
+            action: () => (showPricingDialog.value = true),
+          },
+        ]
+      : []),
+    ...(isLastLevel
+      ? [
+          {
+            text: t('skills'),
+            icon: PricingIcon,
+            action: () => (showSkillsDialog.value = true),
+          },
+        ]
+      : []),
   ];
 </script>
 
@@ -243,5 +263,18 @@
         />
       </div>
     </transition>
+    <PricingDialog
+      v-model:visible="showPricingDialog"
+      :level="node.depth + 1"
+      :branch-name="node.subject.subject_title"
+      :branch-id="node.subject.subject_id"
+      @update-visible="showPricingDialog = $event"
+    />
+    <SkillsDialog
+      v-model:visible="showSkillsDialog"
+      :level="node.depth + 1"
+      :branch-name="node.subject.subject_title"
+      :branch-id="node.subject.subject_id"
+    />
   </div>
 </template>

@@ -6783,6 +6783,164 @@ body::-webkit-scrollbar-thumb:hover {
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
+.p-dialog.pricing-dialog {
+  background: var(--standard-white) !important;
+  border-radius: 16px;
+  width: 100%;
+  overflow: hidden;
+  font-family: "Medium";
+}
+.p-dialog.pricing-dialog .dialog-footer {
+  display: flex !important;
+  gap: 10px;
+  width: 100%;
+  padding-block: 10px;
+}
+.p-dialog.pricing-dialog .dialog-footer button {
+  width: 50%;
+}
+.p-dialog {
+  font-family: "Regular";
+}
+.p-dialog .dialog-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 20px 16px;
+}
+.p-dialog .dialog-icon {
+  flex-shrink: 0;
+}
+.p-dialog .dialog-header-text {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.p-dialog .dialog-header-text .dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--standard-black);
+  margin: 0 0 4px;
+}
+.p-dialog .dialog-header-text .dialog-subtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-dark-gray);
+}
+.p-dialog .dialog-header-text .dialog-subtitle .dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--standard-black);
+  margin: 0 0 4px;
+}
+.p-dialog .dialog-header-text .dialog-subtitle .dialog-subtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-dark-gray);
+  margin: 0;
+  line-height: 1.4;
+}
+.p-dialog .dialog-header-text .dialog-body {
+  padding: 20px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.p-dialog .dialog-header-text .field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-700-std);
+  text-transform: none;
+}
+.p-dialog .dialog-header-text .field-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--gray-200-std);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--gray-900-std);
+  outline: none;
+  background: var(--Gray-5);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+.p-dialog .dialog-header-text .field-input:focus {
+  border-color: var(--success-green-std);
+  box-shadow: 0 0 0 3px rgba(var(--success-green-std), 0.12);
+  background: var(--standard-white);
+}
+.p-dialog .dialog-header-text .field-input::-moz-placeholder {
+  color: var(--color-placeholder);
+}
+.p-dialog .dialog-header-text .field-input::placeholder {
+  color: var(--color-placeholder);
+}
+.p-dialog .dialog-header-text .btn-confirm {
+  flex: 1;
+  background: var(--success-green-std);
+  color: var(--standard-white);
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.p-dialog .dialog-header-text .btn-confirm:hover:not(:disabled) {
+  background: var(--success-green-hover-std);
+}
+.p-dialog .dialog-header-text .btn-confirm:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.p-dialog .dialog-header-text .btn-confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.p-dialog .dialog-header-text .btn-cancel {
+  flex: 1;
+  background: var(--gray-100-std);
+  color: var(--gray-700-std);
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.p-dialog .dialog-header-text .btn-cancel:hover {
+  background: var(--gray-200-std);
+}
+.p-dialog .dialog-header-text .overlay-fade-enter-active,
+.p-dialog .dialog-header-text .overlay-fade-leave-active {
+  transition: opacity 0.22s ease;
+}
+.p-dialog .dialog-header-text .overlay-fade-enter-from,
+.p-dialog .dialog-header-text .overlay-fade-leave-to {
+  opacity: 0;
+}
+.p-dialog .dialog-header-text .dialog-pop-enter-active {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+.p-dialog .dialog-header-text .dialog-pop-leave-active {
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+.p-dialog .dialog-header-text .dialog-pop-enter-from {
+  transform: scale(0.88) translateY(10px);
+  opacity: 0;
+}
+.p-dialog .dialog-header-text .dialog-pop-leave-to {
+  transform: scale(0.94) translateY(6px);
+  opacity: 0;
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
 .education-classification-configuration-form-container {
   display: flex;
   gap: 10px;
