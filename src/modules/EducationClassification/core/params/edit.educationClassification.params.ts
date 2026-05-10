@@ -14,7 +14,7 @@ export default class EditEducationClassificationParams implements Params {
     translations: { required: true },
   });
 
-  constructor(data: { id: number; translations: TranslationParams }) {
+  constructor(data: { id: number; translations: TranslationParams}) {
     this.id = data.id;
     this.translations = data.translations;
   }

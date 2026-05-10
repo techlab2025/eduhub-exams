@@ -125,13 +125,13 @@
       icon: DeletIcon,
       action: () => deleteEducationClassification(id),
     },
-    {
-      text: t(props.node.stage.status === 1 ? 'active' : 'unactive'),
-      icon: ToggleSwitch,
-      action: () => {
-        toggleStatus(id);
-      },
-    },
+    // {
+    //   text: t(props.node.stage.status === 1 ? 'active' : 'unactive'),
+    //   icon: ToggleSwitch,
+    //   action: () => {
+    //     toggleStatus(id);
+    //   },
+    // },
   ];
 </script>
 
@@ -223,7 +223,10 @@
             )
           "
         />
-        <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
+        <RenameClassificationDialog
+          :itemId="node.stage.stage_id"
+          v-model:visable="ShoweEditDialog"
+        />
       </button>
     </div>
     <transition name="slide-down">

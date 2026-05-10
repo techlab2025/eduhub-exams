@@ -3,17 +3,18 @@
   import Dialog from 'primevue/dialog';
   import RenameIcon from '@/shared/icons/RenameIcon.vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-  import EducationClassificationController from '../presentation/controllers/educationClassification.controller';
-  import EditEducationClassificationParams from '../core/params/edit.educationClassification.params';
   import TranslationParams from '@/modules/about/core/params/translation.params';
+  import { useRoute } from 'vue-router';
+  import EducationStageController from '../presentation/controllers/EducationStages/education.stages.controller';
+  import EditEducationStageParams from '../core/params/EducationStages/edit.education.stage.params';
 
   const props = defineProps<{
     visable: boolean;
     itemId: number;
   }>();
-  const controller = EducationClassificationController.getInstance();
+  const controller = EducationStageController.getInstance();
 
-  const emit = defineEmits(['update:visable']);
+  const emit = defineEmits(['update:visable' , 'update:name']);
 
   const visible = computed({
     get: () => props.visable,
@@ -26,17 +27,20 @@
     visible.value = false;
   };
 
+  const route = useRoute();
   const EditData = async () => {
     visible.value = false;
 
     await controller.update(
-      new EditEducationClassificationParams({
-        id: Number(props.itemId),
+      new EditEducationStageParams({
+        branchId: Number(props.itemId),
         translations: new TranslationParams({
           title: title.value,
         }),
+        classification_id: Number(route.params.id),
       }),
     );
+    emit('update:name');
   };
 </script>
 

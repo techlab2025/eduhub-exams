@@ -210,6 +210,13 @@
       refreshParentId.value = null;
     }
   }
+
+  async function fetchEducationStagesTree() {
+    if (!selectedNode.value) return;
+    refreshParentId.value = selectedNode.value.stage.stage_id;
+    await nextTick();
+    refreshParentId.value = null;
+  }
 </script>
 
 <template>
@@ -266,7 +273,7 @@
           v-for="node in rootNodes"
           :key="node.stage.stage_id"
           :node="node"
-          :max-depth="MaxNumberOfBranches"
+          :MaxDepth="MaxNumberOfBranches"
           :parent-id="null"
           :selected-stage-id="selectedNode?.stage.stage_id ?? null"
           @fetch-children="fetchChildren"
@@ -387,7 +394,11 @@
                     )
                   "
                 />
-                <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
+                <RenameClassificationDialog
+                  :item-id="child.stage.stage_id"
+                  v-model:visable="ShoweEditDialog"
+                  @update:name="fetchEducationStagesTree"
+                />
               </button>
             </div>
           </div>
