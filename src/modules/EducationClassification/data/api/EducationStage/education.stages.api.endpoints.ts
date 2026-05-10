@@ -5,4 +5,5 @@ export class EducationStageEndpoints extends BaseEndpoints {
 
   readonly index = this.url('fetch_education_classification_branches');
   readonly store = this.url('store_education_classification_branch');
+  readonly delete = this.url('delete_education_classification_branch');
 }

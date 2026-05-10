@@ -8,6 +8,8 @@
   import { useI18n } from 'vue-i18n';
   import RenameClassificationDialog from '@/modules/EducationClassification/subComponent/RenameClassificationDialog.vue';
   import ToggleSwitch from 'primevue/toggleswitch';
+  import DeleteEducationStageParams from '@/modules/EducationClassification/core/params/EducationStages/delete.education.stage.params';
+  import EducationStageController from '../../controllers/EducationStages/education.stages.controller';
 
   export interface StageNode {
     stage: EducationStageModel;
@@ -101,9 +103,11 @@
 
   const ShoweEditDialog = ref(false);
   const { t } = useI18n();
+  const controller = EducationStageController.getInstance();
 
-  function deleteEducationClassification(id: number) {
-    console.warn('Delete not implemented for id:', id);
+  async function deleteEducationClassification(id: number) {
+    await controller.delete(new DeleteEducationStageParams({ stage_id: id }));
+    await controller.fetchList();
   }
   function toggleStatus(id: number) {
     console.warn('Toggle status not implemented for id:', id);
@@ -140,7 +144,6 @@
       :style="{ paddingLeft: `${node.depth * 16 + 14}px` }"
       @click="handleRowClick"
     >
-
       <button
         v-if="!hasFetched || children.length > 0"
         class="toggle-btn"

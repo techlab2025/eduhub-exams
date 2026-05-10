@@ -18,6 +18,7 @@ export default class EducationStageApiService extends BaseApiService {
     return {
       index: this.educationStageEndpoints.index,
       create: this.educationStageEndpoints.store,
+      delete: this.educationStageEndpoints.delete,
     };
   }
 }

@@ -34,8 +34,10 @@ export default class LoginController extends BaseController<LoginModel, never> {
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 2,
     };

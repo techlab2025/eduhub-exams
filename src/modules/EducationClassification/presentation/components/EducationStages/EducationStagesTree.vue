@@ -29,6 +29,7 @@
   import Skillsicon from '@/shared/icons/Skillsicon.vue';
   import IndexEducationConfigurationParams from '@/modules/EducationClassification/core/params/EducationConfiguration/index.educationConfiguration.params co';
   import TranslationParams from '@/modules/about/core/params/translation.params';
+  import DeleteEducationStageParams from '@/modules/EducationClassification/core/params/EducationStages/delete.education.stage.params';
 
   const route = useRoute();
   const { locale } = useI18n();
@@ -148,7 +149,6 @@
         classification_id: Number(route.params.id),
       }),
     );
-    console.log(configResult.data, 'configResult.data');
     MaxNumberOfBranches.value = configResult.data?.[0]?.numberOfBranches;
     if (configResult instanceof DataSuccess && configResult.data) {
       educationConfig.value = configResult.data;
@@ -162,7 +162,7 @@
   const showPricingDialog = ref(false);
   const showSkillsDialog = ref(false);
   const { t } = useI18n();
-  const actionList = (id: number, deleteFn: (id: number) => void) => [
+  const actionList = (id: number) => [
     {
       text: t('rename'),
       icon: EditIcon,
@@ -173,7 +173,7 @@
     {
       text: t('delete'),
       icon: DeletIcon,
-      action: () => deleteFn(id),
+      action: () => DeeletStage(id),
     },
     {
       text: t('pricing'),
@@ -199,6 +199,11 @@
   ];
   const duration = ref(0);
   const pricing = ref(0);
+  const DeeletStage = async (id: number) => {
+    console.log(id, 'idd');
+    await controller.delete(new DeleteEducationStageParams({ stage_id: id }));
+    await fetchRoot();
+  };
 </script>
 
 <template>
@@ -350,7 +355,7 @@
               <span class="level-label">{{ getBranchName(child.depth - 1) }}</span>
               <span class="spacer" />
               <button
-                v-if="child.depth < maxDepth"
+                v-if="child.depth < Number(maxDepth)"
                 class="icon-btn"
                 @click="openAddChildDialog(child.stage.stage_id, child.depth + 3)"
               >
@@ -364,16 +369,10 @@
                   />
                 </svg>
               </button>
-              <!-- <button class="icon-btn">
-                <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-                  <circle cx="10" cy="5" r="1.2" />
-                  <circle cx="10" cy="10" r="1.2" />
-                  <circle cx="10" cy="15" r="1.2" />
-                </svg>
-              </button> -->
               <button class="icon-btn" @click.stop>
+                {{ child }}
                 <DropList
-                  :action-list="actionList(child.stage.stage_id, handleDelete)"
+                  :action-list="actionList(child.stage.stage_id)"
                   :delete-dialog-title="
                     $t('are_you_sure_you_want_to_remove_this_education_classification')
                   "
@@ -458,7 +457,7 @@
         </div>
       </div>
     </template>
-    <div class="inputs-pricing">
+    <!-- <div class="inputs-pricing">
       <div class="input-group">
         <UpdatedCustomInputSelect
           id="doc-subject"
@@ -479,7 +478,7 @@
           fluid
         />
       </div>
-    </div>
+    </div> -->
     <div class="dialog-footer">
       <button class="btn btn-primary" @click="showSkillsDialog">{{ $t('add') }}</button>
       <button class="btn btn-secondary" @click="showSkillsDialog = false">
