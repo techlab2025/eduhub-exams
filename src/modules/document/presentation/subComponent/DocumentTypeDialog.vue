@@ -82,8 +82,14 @@ const deleteDocumentType = async (id: number) => {
   await fetchDocumentTypes();
 };
 const editDocumentType = async (data: DocumentTypeModel) => {
-  const res = await controller.fetchOne(new ShowDocumentTypeParams({ document_type_id: data.id! }))
-  DocumentTypeName.value = res.data?.title; 
+  const res = await controller.fetchOne(new ShowDocumentTypeParams({ document_type_id: data.id!, isLocale: false }))
+  DocumentTypeName.value = res.data?.title;
+  const res2 = await controller.update(new EditDocumentTypeParams({
+    document_type_id: String(data.id),
+    translations: new DocumentTranslationTypeParams({
+      title: DocumentTypeName.value,
+    }),
+  }))
 };
 
 const cancel = () => {
