@@ -29,7 +29,8 @@
   import Skillsicon from '@/shared/icons/Skillsicon.vue';
   import IndexEducationConfigurationParams from '@/modules/EducationClassification/core/params/EducationConfiguration/index.educationConfiguration.params co';
   import TranslationParams from '@/modules/about/core/params/translation.params';
-  import DeleteEducationStageParams from '@/modules/EducationClassification/core/params/EducationStages/delete.education.stage.params';
+  import EmptyTree from '@/assets/images/EmptyTree.gif';
+  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
 
   const route = useRoute();
   const { locale } = useI18n();
@@ -50,7 +51,7 @@
   const maxDepth = computed(() => educationConfig.value?.numberOfBranches);
 
   function getBranchName(parentDepth: number): string {
-    const branches = educationConfig.value?.branches ?? [];
+    const branches = educationConfig.value?.[0]?.branches ?? [];
     const branch = branches.find((b) => b.levelNumber === parentDepth + 1);
     if (!branch) return `Branch ${parentDepth + 1}`;
     const lang = locale.value === 'ar' ? 'ar' : 'en';
@@ -173,7 +174,7 @@
     {
       text: t('delete'),
       icon: DeletIcon,
-      action: () => DeeletStage(id),
+      action: () => handleDeleteBranch(null),
     },
     {
       text: t('pricing'),
@@ -199,14 +200,22 @@
   ];
   const duration = ref(0);
   const pricing = ref(0);
-  const DeeletStage = async (id: number) => {
-    console.log(id, 'idd');
-    await controller.delete(new DeleteEducationStageParams({ stage_id: id }));
-    await fetchRoot();
-  };
+
+  async function handleDeleteBranch(parentId: number | null) {
+    if (parentId === null) {
+      await fetchRoot();
+    } else {
+      refreshParentId.value = parentId;
+      await nextTick();
+      refreshParentId.value = null;
+    }
+  }
 </script>
 
 <template>
+  <!-- {{educationConfig?.[0]?.branches}} -->
+  <!-- <DataStatusBuilder :controller="controller.listState.value" :on-retry="fetchRoot"> -->
+  <!-- <template #success> -->
   <div class="education-tree">
     <!-- Left Panel -->
     <div class="left-panel">
@@ -236,12 +245,7 @@
       <!-- Empty State -->
       <div v-if="rootNodes.length === 0" class="empty-state">
         <div class="empty-illustration">
-          <svg viewBox="0 0 80 80" fill="none" width="72" height="72">
-            <rect x="10" y="30" width="60" height="40" rx="4" fill="#e8f5e9" />
-            <rect x="20" y="20" width="40" height="10" rx="2" fill="#c8e6c9" />
-            <circle cx="40" cy="15" r="8" fill="#a5d6a7" />
-            <path d="M30 50h20M30 58h14" stroke="#4caf50" stroke-width="2" stroke-linecap="round" />
-          </svg>
+          <img :src="EmptyTree" alt="empty tree" width="200" />
         </div>
         <p class="empty-title">{{ $t('No Education Tree Yet') }}</p>
         <p class="empty-desc">
@@ -251,7 +255,7 @@
             )
           }}
         </p>
-        <button class="btn btn-primary" @click="showAddTypeDialog = true">
+        <button class="btn btn-primary w-full" @click="showAddTypeDialog = true">
           {{ $t('Add Education Type') }}
         </button>
       </div>
@@ -262,10 +266,13 @@
           v-for="node in rootNodes"
           :key="node.stage.stage_id"
           :node="node"
+          :max-depth="MaxNumberOfBranches"
+          :parent-id="null"
           :selected-stage-id="selectedNode?.stage.stage_id ?? null"
           @fetch-children="fetchChildren"
           @add-child="openAddChildDialog"
           @select="selectNode"
+          @delete-branch="handleDeleteBranch"
         />
       </div>
 
@@ -285,7 +292,6 @@
           :stage-id="selectedNode.stage.stage_id"
           :stage-name="selectedNode.stage.stage_title"
         />
-
         <!-- Non-final stage: show children list -->
         <template v-else>
           <div class="right-header">
@@ -310,7 +316,7 @@
               <span>{{ selectedNode.stage.stage_title }}</span>
             </div>
             <button
-              v-if="selectedNode.depth < maxDepth"
+              v-if="selectedNode.depth + 1 < (maxDepth ?? 0)"
               class="btn-add-branch"
               @click="openAddChildDialog(selectedNode.stage.stage_id, selectedNode.depth + 2)"
             >
@@ -355,7 +361,7 @@
               <span class="level-label">{{ getBranchName(child.depth - 1) }}</span>
               <span class="spacer" />
               <button
-                v-if="child.depth < Number(maxDepth)"
+                v-if="child.depth + 1 < (maxDepth ?? 0)"
                 class="icon-btn"
                 @click="openAddChildDialog(child.stage.stage_id, child.depth + 3)"
               >
@@ -370,7 +376,6 @@
                 </svg>
               </button>
               <button class="icon-btn" @click.stop>
-                {{ child }}
                 <DropList
                   :action-list="actionList(child.stage.stage_id)"
                   :delete-dialog-title="
@@ -388,7 +393,9 @@
           </div>
 
           <div v-else class="right-empty">
-            <p class="hint-text">{{ $t('No branches yet. Click Add Branch to get started.') }}</p>
+            <p class="hint-text">
+              {{ $t('No branches yet. Click Add Branch to get started.') }}
+            </p>
           </div>
         </template>
       </template>
@@ -486,6 +493,8 @@
       </button>
     </div>
   </Dialog>
+
+  <!-- {{ educationConfig[0]?.branches[0].singularTitle[locale] }} -->
   <AddEducationTypeDialog
     v-if="showAddTypeDialog"
     v-model:visible="showAddTypeDialog"
@@ -501,6 +510,8 @@
     :branch-name="branchDialogName"
     @confirm="handleAddBranch"
   />
+  <!-- </template> -->
+  <!-- </DataStatusBuilder> -->
 </template>
 
 <style scoped lang="scss"></style>

@@ -7,6 +7,7 @@
   const props = defineProps<{
     visible: boolean;
     level: number;
+    branchName: string;
     branchId?: number;
   }>();
 
@@ -64,7 +65,7 @@
         <NewBranchIcon />
       </div>
       <div class="dialog-header-text">
-        <h3 class="dialog-title">{{ $t('add_a_new_branch') }}</h3>
+        <h3 class="dialog-title">{{ $t('add_a_new') + $t(branchName) }}</h3>
         <p class="dialog-subtitle">{{ $t('enter_your_preferred_branch_name_within_the_tree') }}</p>
       </div>
     </template>
