@@ -107,7 +107,7 @@
     </div> -->
 
     <div class="form-fields">
-      <div class="field-group">
+      <div class="field-group w-full">
         <MultiLangInput
           :field-key="`title`"
           :label="$t(`title`)"
@@ -120,3 +120,12 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  .form-fields {
+    width: 100%;
+  }
+  .field-group {
+    width: 100%;
+  }
+</style>
