@@ -15,6 +15,11 @@
   import AuthArrowIcon from '@/shared/icons/SidebarIcons/AuthArrowIcon.vue';
   import IconLogout from '@/shared/icons/IconLogout.vue';
 
+  import Accordion from 'primevue/accordion';
+  import AccordionPanel from 'primevue/accordionpanel';
+  import AccordionHeader from 'primevue/accordionheader';
+  import AccordionContent from 'primevue/accordioncontent';
+
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
@@ -176,12 +181,55 @@
         </div>
       </div>
 
-      <div class="auth-container" @click="toggleDropMenu">
+      <Accordion :value="0">
+        <template #collapseicon> </template>
+        <template #expandicon> </template>
+        <AccordionPanel value="0">
+          <AccordionHeader>
+            <div class="auth-container" @click="toggleDropMenu">
+              <div class="auth-data">
+                <img
+                  :src="user?.image || `https://cyber.comolho.com/static/img/avatar.png`"
+                  alt="image"
+                />
+                <div class="user-data">
+                  <span class="name">{{ user?.name }}</span>
+                  <span class="status">Admin</span>
+                </div>
+              </div>
+              <auth-arrow-icon />
+            </div>
+          </AccordionHeader>
+          <AccordionContent>
+            <div class="mega-body">
+              <button class="menu-item">
+                <icon-user-circle />
+                <span>{{ $t('my_profile') }}</span>
+                <icon-chevron-right class="arrow" />
+              </button>
+              <button class="menu-item">
+                <icon-settings />
+                <span>{{ $t('settings') }}</span>
+                <icon-chevron-right class="arrow" />
+              </button>
+              <button class="menu-item">
+                <icon-bell />
+                <span>{{ $t('notifications') }}</span>
+                <icon-chevron-right class="arrow" />
+              </button>
+              <div class="divider"></div>
+              <button class="menu-item danger" @click="logout">
+                <icon-logout />
+                <span>{{ $t('logout') }}</span>
+              </button>
+            </div>
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
+
+      <!-- <div class="auth-container" @click="toggleDropMenu">
         <div class="auth-data">
-          <img
-            :src="user?.image || `https://cyber.comolho.com/static/img/avatar.png`"
-            alt="image"
-          />
+          <img :src="user?.image || `https://cyber.comolho.com/static/img/avatar.png`" alt="image" />
           <div class="user-data">
             <span class="name">{{ user?.name }}</span>
             <span class="status">Admin</span>
@@ -191,27 +239,74 @@
       </div>
       <transition name="mega-menu">
         <div v-if="isDropMenuOpen" class="mega-menu">
+
           <div class="mega-header">
-            <img
-              :src="user?.image || `https://cyber.comolho.com/static/img/avatar.png`"
-              alt="image"
-            />
+            <div class="av-wrap">
+              <img :src="user?.image || 'https://cyber.comolho.com/static/img/avatar.png'" alt="avatar" />
+              <span class="online-dot"></span>
+            </div>
             <div>
               <p class="name">{{ user?.name }}</p>
-              <span class="role">Admin</span>
+              <span class="role-badge">
+                <icon-shield-check />
+                Super Admin
+              </span>
             </div>
           </div>
 
-          <div class="divider"></div>
+          <div class="mega-meta">
+            <div class="meta-row">
+              <span class="meta-lbl"><icon-clock /> Last login</span>
+              <span class="meta-val">{{ lastLoginTime }}</span>
+            </div>
+          </div>
 
-          <div class="mega-actions">
-            <button class="logout-btn" @click="logout">
+          <div class="mega-body">
+            <button class="menu-item">
+              <icon-user-circle />
+              <span>{{ $t('my_profile') }}</span>
+              <icon-chevron-right class="arrow" />
+            </button>
+            <button class="menu-item">
+              <icon-settings />
+              <span>{{ $t('settings') }}</span>
+              <icon-chevron-right class="arrow" />
+            </button>
+            <button class="menu-item">
+              <icon-bell />
+              <span>{{ $t('notifications') }}</span>
+              <icon-chevron-right class="arrow" />
+            </button>
+            <div class="divider"></div>
+            <button class="menu-item danger" @click="logout">
               <icon-logout />
               <span>{{ $t('logout') }}</span>
             </button>
           </div>
         </div>
-      </transition>
+      </transition> -->
     </div>
   </aside>
 </template>
+
+<style scoped>
+  :deep(.p-accordionheader) {
+    padding: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+
+  :deep(.p-accordionheader-link) {
+    padding: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+  }
+
+  :deep(.p-accordion) {
+    margin-top: auto;
+  }
+
+  :deep(.p-accordioncontent-content) {
+    padding: 0 !important;
+  }
+</style>
