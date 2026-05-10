@@ -3,13 +3,13 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export default class SkillParams implements Params {
   public skillId: number;
-  public percentage: number;
+  public percentage: string;
 
   public static readonly validation = new ClassValidation().setRules({
     skillId: { required: true },
   });
 
-  constructor(data: { skillId: number; percentage: number }) {
+  constructor(data: { skillId: number; percentage: string }) {
     this.skillId = data.skillId;
     this.percentage = data.percentage;
   }

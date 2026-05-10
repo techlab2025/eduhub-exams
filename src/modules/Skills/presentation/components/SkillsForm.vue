@@ -1,0 +1,131 @@
+<script setup lang="ts">
+  import { onMounted, ref, watch } from 'vue';
+  import { onBeforeRouteLeave, useRoute } from 'vue-router';
+  import { useFormsStore } from '@/stores/formsStore';
+
+  import type SkillModel from '../../core/models/skills.model';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
+  import EditSkillsParams from '../../core/params/edit.skills.params';
+  import AddSkillsParams from '../../core/params/add.skills.params';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
+
+  const emit = defineEmits(['updateData']);
+
+  const { employee, formKey } = defineProps<{
+    employee?: SkillModel;
+    formKey?: string;
+  }>();
+
+  const FormStore = useFormsStore();
+  onBeforeRouteLeave((to, from) => {
+    const savedData = FormStore.getFormData(formKey!);
+    if (savedData && to.path !== from.path) {
+      FormStore.showReturnWarning(formKey!);
+    }
+  });
+
+  // Form state
+  const translations = ref<Record<string, string>>({});
+
+  watch(
+    () => employee,
+    (newEmployee) => {
+      if (newEmployee) {
+        // translations.value = newEmployee.translations;
+        // Password is not populated for security/editing purposes
+      }
+    },
+    { immediate: true },
+  );
+
+  const route = useRoute();
+
+  const updateData = () => {
+    const data = {
+      translations: new TranslationParams({
+        title: translations.value,
+      }),
+    };
+
+    FormStore.setFormData(formKey!, data);
+
+    let params: any;
+    if (route.params.id) {
+      params = new EditSkillsParams({
+        id: Number(route.params.id),
+        ...data,
+      });
+    } else {
+      params = new AddSkillsParams(data);
+    }
+
+    emit('updateData', params);
+  };
+
+  const resetForm = () => {
+    translations.value = {};
+  };
+
+  onMounted(() => {
+    const saved = FormStore.getFormData(formKey!);
+    if (saved) {
+      translations.value = saved.translations;
+
+      updateData();
+    } else if (!employee) {
+      resetForm();
+    }
+  });
+
+  const updateTranslations = (newTranslations: Record<string, string>) => {
+    console.log(newTranslations, 'newTranslations');
+    translations.value = newTranslations;
+    updateData();
+  };
+</script>
+
+<template>
+  <div class="employee-details-form-card">
+    <header class="form-header">
+      <div class="form-title">
+        <div class="header-text">
+          <h3>{{ route.params.id ? 'Edit Skill' : 'Add New Skill' }}</h3>
+          <p class="header-subtitle">
+            {{
+              route.params.id
+                ? 'Update the skill details below'
+                : 'Fill in the required information to add a new skill'
+            }}
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- <div class="employee-details-form">
+      <p><EmployeeIcon /> {{ $t(`Basic Info`) }}</p>
+      <h6 @click="resetForm">{{ $t(`reset`) }}</h6>
+    </div> -->
+
+    <div class="form-fields">
+      <div class="field-group w-full">
+        <MultiLangInput
+          :field-key="`title`"
+          :label="$t(`title`)"
+          :languages="['ar', 'en']"
+          :model-value="translations"
+          :type="`title`"
+          @update:model-value="updateTranslations"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+  .form-fields {
+    width: 100%;
+  }
+  .field-group {
+    width: 100%;
+  }
+</style>

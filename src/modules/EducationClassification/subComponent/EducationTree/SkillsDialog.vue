@@ -5,6 +5,10 @@
   import EducationSkillsController from '../../presentation/controllers/EducationSkills/education.skills.controller';
   import SubjectSkllsIcon from '@/shared/icons/SubjectSkllsIcon.vue';
   import SkillParams from '../../core/params/EducationSkills/skill.params';
+  import SkillsController from '@/modules/Skills/presentation/controllers/skills.controller';
+  import IndexSkillsParams from '@/modules/Skills/core/params/index.skills.params';
+  import type TitleInterface from '@/base/Data/Models/titleInterface';
+  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
 
   const props = defineProps<{
     visible: boolean;
@@ -12,12 +16,13 @@
     branchName: string;
     branchId?: number;
   }>();
-
+  const controller = SkillsController.getInstance();
+  const indexSkills = new IndexSkillsParams('', 1, 10, 1);
   const emit = defineEmits<{
     (e: 'update:visible', val: boolean): void;
   }>();
 
-  const percentageValue = ref<number>(0);
+  const percentageValue = ref<string>('');
   const timeValue = ref<number>(10);
   const inputRef = ref<HTMLInputElement | null>(null);
 
@@ -28,7 +33,7 @@
 
   watch(dialogVisible, async (val) => {
     if (val) {
-      percentageValue.value = 0;
+      percentageValue.value = '';
       timeValue.value = 0;
       await nextTick();
       inputRef.value?.focus();
@@ -36,13 +41,17 @@
   });
 
   const isInputEmpty = computed(() => !percentageValue.value || !timeValue.value);
+  const selectedSkill = ref<TitleInterface<number>>();
 
+  const updateSelectedSkill = (skill: TitleInterface<number>) => {
+    selectedSkill.value = skill;
+  };
   async function handleConfirm() {
     const params = new AddEducationSubjectSkillsParams({
       id: props.branchId!,
       skills: [
         new SkillParams({
-          skillId: 2,
+          skillId: selectedSkill.value?.id!,
           percentage: percentageValue.value,
         }),
       ],
@@ -84,7 +93,7 @@
           :id="`percentage-input-${level}`"
           ref="inputRef"
           v-model="percentageValue"
-          type="number"
+          type="text"
           :placeholder="$t('enter_percentage')"
           class="field-input"
           @keydown.esc="dialogVisible = false"
@@ -93,25 +102,16 @@
       </div>
 
       <div class="field-group">
-        <!-- <label class="field-label" :for="`time-input-${level}`">{{ $t('time') }}</label>
-        <input
-          :id="`time-input-${level}`"
-          v-model="timeValue"
-          type="number"
-          :placeholder="$t('enter_time')"
-          class="field-input"
-          @keydown.esc="dialogVisible = false"
-          @keydown.enter="!isInputEmpty && handleConfirm()"
-        /> -->
-        <!-- <UpdatedCustomInputSelect
+
+        <UpdatedCustomInputSelect
           id="skills"
           :label="`skills`"
-          :params="indexDocumentTypeParams"
-          :controller="documentTypeController"
-          :model-value="selectedDocumentType"
+          :params="indexSkills"
+          :controller="controller"
+          :model-value="selectedSkill"
           :placeholder="$t('skills')"
-          @update:model-value="handleSkillUpdate"
-        /> -->
+          @update:model-value="updateSelectedSkill"
+        />
       </div>
     </div>
     <div class="dialog-footer">

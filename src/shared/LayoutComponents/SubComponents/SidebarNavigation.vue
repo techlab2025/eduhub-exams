@@ -53,6 +53,11 @@
           name: 'Documents',
           icon: DocumentIcon,
         },
+        {
+          link: '/skills',
+          name: 'Skills',
+          icon: SettingIcon,
+        },
 
         // {
         //   link: '/stages',

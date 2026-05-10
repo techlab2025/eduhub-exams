@@ -6,9 +6,7 @@ export default class AddEducationSubjectSkillsParams implements Params {
   public id: number;
   public skills: SkillParams[];
 
-  public static readonly validation = new ClassValidation().setRules({
-    id: { required: true },
-  });
+  public static readonly validation = new ClassValidation().setRules({});
 
   constructor(data: { id: number; skills: SkillParams[] }) {
     this.id = data.id;
