@@ -2,7 +2,7 @@ import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
-import { DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { type DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import EducationConfigurationRepository from '@/modules/EducationClassification/data/repositories/educationConfiguration/education.configuration.repository';

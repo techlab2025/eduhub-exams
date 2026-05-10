@@ -1,10 +1,12 @@
 import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
-import type DocumentModel from '@/modules/document/core/models/document.model';
+import type Params from '@/base/Core/Params/params';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 
 import DocumentTypeRepository from '@/modules/document/data/repositories/DocumentType/document.type.repository';
+import type DocumentTypeModel from '@/modules/document/core/models/documentType/document.type.model';
 
-export default class DocumentTypeController extends BaseController<DocumentModel, DocumentModel[]> {
+export default class DocumentTypeController extends BaseController<DocumentTypeModel, DocumentTypeModel[]> {
   private static instance: DocumentTypeController;
 
   protected get repository() {
@@ -14,8 +16,10 @@ export default class DocumentTypeController extends BaseController<DocumentModel
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,
     };
@@ -30,5 +34,13 @@ export default class DocumentTypeController extends BaseController<DocumentModel
       DocumentTypeController.instance = new DocumentTypeController();
     }
     return DocumentTypeController.instance;
+  }
+
+  async create(params: Params, options?: ApiCallOptions) {
+    return super.create(params, { ...options, useJson: true });
+  }
+
+  async update(params: Params, options?: ApiCallOptions) {
+    return super.update(params, { ...options, useJson: true });
   }
 }

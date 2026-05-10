@@ -92,5 +92,10 @@
   "delete": "حذف",
   "are_you_sure_you_want_to_remove_this_education_classification": "هل أنت متأكد أنك تريد إزالة هذا التصنيف التعليمي؟",
   "Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed": "سيؤدي حذف هذا التصنيف إلى إزالة جميع البيانات المتعلقة به، بما في ذلك أي تكوينات وهياكل شجرية. هذا الإجراء غير قابل للتراجع ويجب إنشاء التصنيف مرة أخرى إذا لزم الأمر",
-  "logout": "تسجيل الخروج"
+  "logout": "تسجيل الخروج",
+  "add_new_document_type": "إضافة نوع وثيقة جديد",
+  "edit_document_type": "تعديل نوع الوثيقة",
+  "manage_and_organize_your_document_categories": "إدارة وتنظيم فئات الوثائق الخاصة بك",
+  "document_type_name": "اسم نوع الوثيقة",
+  "is_master": "هل هو نوع رئيسي؟"
 }

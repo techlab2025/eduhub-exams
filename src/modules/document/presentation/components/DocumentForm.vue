@@ -15,6 +15,8 @@
   import FileIcon from '@/shared/icons/UploadImage/FileIcon.vue';
   import DocumentTranslationParams from '../../core/params/translation.params';
   import DeleteTagIcon from '@/shared/icons/DocaumentType/DeleteTagIcon.vue';
+  import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
+  import SubjectController from '@/modules/Subjects/presentation/controllers/subject.controller';
 
   const emit = defineEmits(['updateData']);
 
@@ -32,12 +34,16 @@
   });
 
   // Form state
-  const title = ref<string>('');
+  const title = ref<Record<string, string>>({});
   const description = ref<Record<string, string>>({});
   const RefrenceNumber = ref<string>('');
   const selectedDocumentType = ref<TitleInterface<number> | null>(null);
+  const selectedStage = ref<TitleInterface<number> | null>(null);
+  const selectedSubject = ref<TitleInterface<number> | null>(null);
   const indexDocumentTypeParams = new IndexDocumentTypeParams('', 1, 10, 0);
   const documentTypeController = DocumentTypeController.getInstance();
+  const stageController = StageController.getInstance();
+  const subjectController = SubjectController.getInstance();
   const UploadedImage = ref<string[]>([]);
   const UploadedFiles = ref<string[]>([]);
 
@@ -45,37 +51,26 @@
     () => document,
     (newDoc) => {
       if (newDoc) {
-        title.value = newDoc.dovumentName;
+        title.value = newDoc.tranaslations.title;
         selectedDocumentType.value = newDoc.doecumentType;
         description.value = newDoc.tranaslations.description;
         UploadedImage.value = newDoc.images;
         UploadedFiles.value = newDoc.files;
+        RefrenceNumber.value = newDoc.RefNumber;
       }
     },
     { immediate: true },
   );
 
   const updateData = () => {
-    // console.log(selectedDocumentType.value, "selectedDocumentType.value")
-    // FormStore.setFormData(formKey!, {
-    //   title: title.value,
-    //   translations: new DocumentTranslationParams({ description: description.value }),
-    //   documentTypeId: selectedDocumentType.value?.id!,
-    //   files: UploadedFiles.value,
-    //   images: UploadedImage.value,
-    //   refNumber: RefrenceNumber.value,
-    //   subjects: [],
-    //   tags: []
-    // });
-
     const params = new AddDocumentParams({
-      title: title.value,
-      translations: new DocumentTranslationParams({ description: description.value }),
+      translations: new DocumentTranslationParams({ description: description.value , title:title.value}),
       documentTypeId: selectedDocumentType.value?.id || 0,
+      stage_id: selectedStage.value?.id || 0,
+      subjects: selectedSubject.value?.id || 0,
       files: UploadedFiles.value.map((el: any) => el?.base64 || ''),
       images: UploadedImage.value.map((el: any) => el?.base64 || ''),
       refNumber: RefrenceNumber.value,
-      subjects: [],
       tags: tags.value,
     });
     emit('updateData', params);
@@ -133,7 +128,7 @@
     <div class="form-fields">
       <!-- Title -->
       <div class="field-group">
-        <label class="field-label" for="doc-title">{{ $t('Document_name') }}</label>
+        <!-- <label class="field-label" for="doc-title">{{ $t('Document_name') }}</label>
         <div class="input-wrap">
           <input
             id="doc-title"
@@ -143,15 +138,17 @@
             class="field-input"
             @input="updateData"
           />
-        </div>
+        </div> -->
+         <MultiLangInput :field-key="`title`" :label="$t(`Document_name`)" :languages="['en', 'ar']"
+          :model-value="title" :type="`title`" @update:model-value="title = $event; updateData()" />
       </div>
 
       <!-- Ref Number -->
       <div class="field-group col-span-1">
-        <label class="field-label" for="doc-stage">{{ $t('Reference_Number') }}</label>
+        <label class="field-label" for="doc-ref">{{ $t('Reference_Number') }}</label>
         <div class="input-wrap">
           <input
-            id="doc-stage"
+            id="doc-ref"
             v-model="RefrenceNumber"
             type="text"
             :placeholder="$t('enter_refrence_number')"
@@ -170,7 +167,20 @@
           :controller="documentTypeController"
           :model-value="selectedDocumentType"
           :placeholder="$t('Document Type')"
-          @update:model-value="updateData"
+          @update:model-value="selectedDocumentType = $event; updateData()"
+        />
+      </div>
+
+      <!-- Stage -->
+      <div class="field-group col-span-2">
+        <UpdatedCustomInputSelect
+          id="doc-stage"
+          :label="`Stage Name`"
+          :params="indexDocumentTypeParams"
+          :controller="stageController"
+          :model-value="selectedStage"
+          :placeholder="$t('Stage Type')"
+          @update:model-value="selectedStage = $event; updateData()"
         />
       </div>
 
@@ -180,21 +190,21 @@
           id="doc-subject"
           :label="`Subject Name`"
           :params="indexDocumentTypeParams"
-          :controller="documentTypeController"
-          :model-value="selectedDocumentType"
+          :controller="subjectController"
+          :model-value="selectedSubject"
           :placeholder="$t('Subject Type')"
-          @update:model-value="updateData"
+          @update:model-value="selectedSubject = $event; updateData()"
         />
       </div>
 
       <div class="field-group col-span-2">
         <MultiLangInput
-          :field-key="`descriptnio`"
+          :field-key="`description`"
           :label="$t(`Description`)"
           :languages="['en', 'ar']"
           :model-value="description"
           :type="`description`"
-          @update:model-value="description = $event"
+          @update:model-value="description = $event; updateData()"
         />
       </div>
       <div class="field-group tags-group col-span-2">

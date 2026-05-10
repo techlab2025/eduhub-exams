@@ -21,7 +21,7 @@
   import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
   import type TitleInterface from '@/base/Data/Models/titleInterface';
 
-  const controller = DocumentController.getInstance();
+  const controller = DocumentController.getInstance(); 
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
