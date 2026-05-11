@@ -10,6 +10,12 @@
     overflow: hidden;
     font-family: 'Medium';
 
+    .input-label label {
+      color: #5d5d5d !important;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
     .dialog-footer {
       display: flex !important;
       gap: 10px;
@@ -33,6 +39,12 @@
 
   .dialog-icon {
     flex-shrink: 0;
+  }
+  .field-group {
+    &.select-group {
+      gap: 0 !important;
+      align-items: start;
+    }
   }
 
   .dialog-header-text {

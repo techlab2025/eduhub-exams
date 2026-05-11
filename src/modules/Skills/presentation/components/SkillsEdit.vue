@@ -31,7 +31,7 @@
   };
 
   onMounted(async () => {
-    await controller.fetchOne(new ShowSkillsParams(Number(route.params.id)));
+    await controller.fetchOne(new ShowSkillsParams(Number(route.params.id), true));
   });
 </script>
 

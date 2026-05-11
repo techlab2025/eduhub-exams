@@ -6,7 +6,6 @@
   import { useRoute, useRouter } from 'vue-router';
   import { debounce } from '@/base/Presentation/Utils/debouced';
 
-  import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
   import { useFormsStore } from '@/stores/formsStore';
   import IndexPluseIcon from '@/shared/icons/IndexPluseIcon.vue';
   import * as XLSX from 'xlsx';
@@ -19,6 +18,7 @@
   import IndexSkillsParams from '../../core/params/index.skills.params';
   import DeleteSkillsParams from '../../core/params/delete.skills.params';
   import type SkillModel from '../../core/models/skills.model';
+import DeleteSkillsDialog from '../subComponents/DeleteSkillsDialog.vue';
 
   // Controller instance
   const controller = SkillsController.getInstance();
@@ -190,26 +190,11 @@
                   </svg>
                 </router-link>
 
-                <DeleteDialog @delete="deleteSkills(item.id!)">
-                  <template #Dialog>
-                    <button class="action-btn delete" title="Delete">
-                      <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                      </svg>
-                    </button>
-                  </template>
-                </DeleteDialog>
+                <DeleteSkillsDialog
+                  @delete="deleteSkills(item.id!)"
+                  :message="`Are you sure you want to delete this skill?`"
+                >
+                </DeleteSkillsDialog>
               </div>
             </template>
           </AppTable>

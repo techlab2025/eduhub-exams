@@ -44,4 +44,15 @@ export default class SkillsController extends BaseController<SkillModel, SkillMo
     }
     return result;
   }
+
+  async fetchOne(params: Params, options?: ApiCallOptions) {
+    const res = await super.fetchOne(params, {
+      ...options,
+      useJson: true,
+      headers: {
+        'Accept-Language': params?.AllLocale ? '*' : 'en',
+      },
+    });
+    return res;
+  }
 }

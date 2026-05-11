@@ -3,9 +3,9 @@
  */
 export default class SkillModel {
   public readonly id: number;
-  public readonly title: string;
+  public readonly title: Record<string, string>[];
 
-  constructor(data: { id: number; title: string }) {
+  constructor(data: { id: number; title: Record<string, string>[] }) {
     this.id = data.id;
     this.title = data.title;
 
@@ -30,6 +30,6 @@ export default class SkillModel {
 
   static example: SkillModel = new SkillModel({
     id: 1,
-    title: 'John ',
+    title: [{ name: 'John ' }],
   });
 }

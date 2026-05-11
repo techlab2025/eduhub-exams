@@ -31,8 +31,12 @@
     () => skill,
     (newskill) => {
       if (newskill) {
-        // translations.value = newskill.translations;
-        // Password is not populated for security/editing purposes
+        const result = newskill.title.reduce((acc, item) => {
+          acc[item?.locale!] = item.title;
+          return acc;
+        }, {});
+
+        translations.value = result;
       }
     },
     { immediate: true },

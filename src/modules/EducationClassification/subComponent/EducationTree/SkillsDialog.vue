@@ -85,6 +85,18 @@
       </div>
     </template>
     <div class="dialog-inputs">
+      <div class="field-group select-group">
+        <UpdatedCustomInputSelect
+          id="skills"
+          :label="`skills`"
+          :params="indexSkills"
+          :controller="controller"
+          :model-value="selectedSkill"
+          :placeholder="$t('skills')"
+          @update:model-value="updateSelectedSkill"
+        />
+      </div>
+
       <div class="field-group">
         <label class="field-label" :for="`percentage-input-${level}`">
           {{ $t('percentage (%)') }}
@@ -100,19 +112,6 @@
           @keydown.enter="!isInputEmpty && handleConfirm()"
         />
       </div>
-
-      <div class="field-group">
-
-        <UpdatedCustomInputSelect
-          id="skills"
-          :label="`skills`"
-          :params="indexSkills"
-          :controller="controller"
-          :model-value="selectedSkill"
-          :placeholder="$t('skills')"
-          @update:model-value="updateSelectedSkill"
-        />
-      </div>
     </div>
     <div class="dialog-footer">
       <button class="btn btn-primary" :disabled="isInputEmpty" @click="handleConfirm">
@@ -123,7 +122,10 @@
   </Dialog>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+  .input-label {
+    color: black;
+  }
   .field-input {
     background-color: var(--bg-main);
     border-radius: 30px;
@@ -147,5 +149,8 @@
         width: 40%;
       }
     }
+  }
+  .field-input {
+    margin: 0 !important;
   }
 </style>

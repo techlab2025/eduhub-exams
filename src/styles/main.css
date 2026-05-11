@@ -6844,6 +6844,11 @@ body::-webkit-scrollbar-thumb:hover {
   overflow: hidden;
   font-family: "Medium";
 }
+.p-dialog.pricing-dialog .input-label label {
+  color: #5d5d5d !important;
+  font-size: 16px;
+  font-weight: 600;
+}
 .p-dialog.pricing-dialog .dialog-footer {
   display: flex !important;
   gap: 10px;
@@ -6864,6 +6869,10 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .p-dialog .dialog-icon {
   flex-shrink: 0;
+}
+.p-dialog .field-group.select-group {
+  gap: 0 !important;
+  align-items: start;
 }
 .p-dialog .dialog-header-text {
   display: flex;
