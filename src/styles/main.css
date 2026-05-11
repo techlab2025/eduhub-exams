@@ -10156,6 +10156,157 @@ body::-webkit-scrollbar-thumb:hover {
   width: 100%;
 }
 
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.privacy-container {
+  background: var(--bg-main);
+  border-radius: 16px;
+  padding: 20px;
+  font-family: "Medium";
+}
+.privacy-container .privacy-header {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.privacy-container .privacy-header h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--table-header-color);
+}
+.privacy-container .privacy-header p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--table-header-color);
+}
+.privacy-container .form-header-left {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sm-size);
+  margin-bottom: 20px;
+}
+.privacy-container .form-header-left p {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #121212;
+}
+.privacy-container .form-header-left .form-title {
+  color: var(--gray-900);
+  font-size: var(--md-size);
+  font-weight: 700;
+}
+.privacy-container .privacy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.privacy-container .btn-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.privacy-container .btn-container .btn-cancel {
+  background-color: var(--background-btn-outline-color);
+  color: var(--danger-color);
+  border: 1px solid rgb(245, 194, 192);
+  border-radius: 50px;
+  width: 20%;
+}
+@media (max-width: 768px) {
+  .privacy-container .btn-container .btn-cancel {
+    width: 50%;
+  }
+}
+.privacy-container .btn-container .btn-primary {
+  width: 80%;
+}
+@media (max-width: 768px) {
+  .privacy-container .btn-container .btn-primary {
+    width: 50%;
+  }
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.privacy-container .header-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.privacy-container .privacy-content {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5px;
+  font-family: "Medium";
+  padding: 24px;
+  background-color: #fafafa;
+  border-radius: 20px;
+}
+.privacy-container .privacy-content h2 {
+  color: #4faf7c;
+  font-weight: 700;
+  font-size: 20px;
+}
+.privacy-container .privacy-content p {
+  color: #4b4b4b;
+  font-weight: 600;
+  font-size: 16px;
+}
+.privacy-container .empty-data {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  padding: calc(var(--xl-size-3) - 10px) var(--xl-size-base);
+  text-align: center;
+  gap: 12px;
+}
+.privacy-container .empty-data h5 {
+  color: var(--black-soft);
+  font-size: var(--xl-size-base);
+  font-weight: 500;
+  margin: 0;
+}
+.privacy-container .empty-data p {
+  color: var(--color-dark-gray);
+  font-size: var(--md-size);
+  font-weight: 600;
+  margin: 0;
+}
+
 /* ── Pages ─────────────────────────────────────────────────────── */
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub

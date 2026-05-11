@@ -52,7 +52,7 @@
 @use '../modules/SupportContacts/presentation/styles/support_imports';
 @use '../modules/DeleteReasons/presentation/styles/deleted_accounts_imports';
 @use '../modules/faqs/presentation/styles/faqs_imports';
-
+@use '../modules/privacy/presentation/styles/privacy_imports';
 /* ── Pages ─────────────────────────────────────────────────────── */
 @use '../modules/auth/presentation/styles/login';
 @use 'error/error';

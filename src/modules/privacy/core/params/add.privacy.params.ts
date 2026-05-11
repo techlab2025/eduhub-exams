@@ -1,22 +1,24 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 /**
  * Parameters for adding a new country
  */
 export default class AddPrivacyParams implements Params {
-  public privacy: Record<string, string>;
+  public translations: TranslationParams;
+
   public static readonly validation = new ClassValidation().setRules({
-    privacy: { required: true, minLength: 1 },
+    translations: { required: true },
   });
 
-  constructor(data: { privacy: Record<string, string> }) {
-    this.privacy = data.privacy;
+  constructor(data: { translations: TranslationParams }) {
+    this.translations = data.translations;
   }
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {
-      privacy: this.privacy,
+      translations: this.translations.toMap(),
     };
     return map;
   }

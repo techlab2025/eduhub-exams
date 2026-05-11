@@ -1,17 +1,25 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted, computed } from 'vue';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import PrivacyController from '../controllers/privacy.controller';
   import AddPrivacyParams from '../../core/params/add.privacy.params';
   import Privecyicon from '@/shared/icons/privecyicon.vue';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
 
   const emit = defineEmits(['update:data']);
 
-  const data = ref<Record<string, string>>();
+  const title = ref<Record<string, string>>();
+  const description = ref<Record<string, string>>();
+  const privacyController = PrivacyController.getInstance();
 
+  const status = computed(() => privacyController.listState.value);
   const updateData = () => {
-    emit('update:data', data.value);
+    const Data = {
+      title: title.value,
+      description: description.value,
+    };
+    emit('update:data', Data);
   };
 
   // ─── Init ───────────────────────────────
@@ -19,21 +27,34 @@
     updateData();
   });
 
-  const privacyController = PrivacyController.getInstance();
-  const SubmitData = () => {
-    privacyController.create(
+  const SubmitData = async () => {
+    await privacyController.create(
       new AddPrivacyParams({
-        privacy: data.value!,
+        translations: new TranslationParams({
+          title: title.value!,
+          description: description.value!,
+        }),
       }),
     );
+    
   };
 
   const ShowPrivacy = async () => {
-    const result = await privacyController.fetchList();
+    await privacyController.fetchList();
 
-    if (result instanceof DataSuccess) {
-      data.value = result.data[0].privacy;
-    }
+    const titleData = status.value.data?.[0]?.title.reduce((acc, item) => {
+      acc[item?.locale!] = item.title;
+      return acc;
+    }, {});
+    const descriptionData = status.value.data?.[0]?.description.reduce((acc, item) => {
+      acc[item?.locale!] = item.description;
+      return acc;
+    }, {});
+    console.log(titleData, 'titleData');
+    console.log(descriptionData, 'descriptionData');
+
+    title.value = titleData;
+    description.value = descriptionData;
   };
 
   onMounted(() => {
@@ -41,43 +62,50 @@
   });
 
   onUnmounted(() => {
-    data.value = {};
+    title.value = {};
+    description.value = {};
   });
+
+  const ResetData = () => {
+    title.value = {};
+    description.value = {};
+  };
 </script>
 
 <template>
-  <div class="faq-container">
+  <div class="privacy-container">
     <!-- Header -->
-    <div class="faq-header">
+    <div class="privacy-header">
       <h3>{{ $t('Privacy & Policy') }}</h3>
       <p>{{ $t('Define how user data is collected, used, and protected') }}</p>
     </div>
 
-    <div class="faq-details">
+    <div class="form-header-left">
       <p><Privecyicon /> {{ $t(`Policy Details`) }}</p>
-      <h6>{{ $t(`reset`) }}</h6>
+      <button @click="ResetData" class="reset-btn">{{ $t(`reset`) }}</button>
     </div>
 
     <!-- List -->
-    <div class="faq-list">
+    <div class="privacy-list">
       <!-- Question -->
       <div class="field">
         <MultiLangInput
           :field-key="`privacy`"
           :label="`policy title`"
-          :languages="['en', 'ar', 'fr']"
-          :model-value="data"
-          @update:model-value="data = $event"
+          :languages="['en', 'ar']"
+          :type="`title`"
+          :model-value="title"
+          @update:model-value="title = $event"
         />
       </div>
       <div class="field">
         <MultiLangInput
           :field-key="`policy`"
           :label="`Description`"
-          :languages="['en', 'ar', 'fr']"
-          :model-value="data"
+          :languages="['en', 'ar']"
+          :model-value="description"
           :type="`description`"
-          @update:model-value="data = $event"
+          @update:model-value="description = $event"
         />
       </div>
     </div>
@@ -90,62 +118,4 @@
   </div>
 </template>
 
-<style scoped lang="scss">
-  .faq-container {
-    background: var(--bg-main);
-    border: 1px solid var(--border-weak);
-    border-radius: 16px;
-    padding: 20px;
-
-    .faq-details {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-
-      p {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 16px;
-        font-weight: 600;
-        font-family: 'medium';
-        color: var(--table-header-color);
-      }
-
-      h6 {
-        font-size: 16px;
-        font-weight: 600;
-        font-family: 'medium';
-        color: var(--danger-color);
-        cursor: pointer;
-        border-bottom: 3px solid var(--danger-color);
-      }
-    }
-
-    .btn-container {
-      margin-top: 1rem;
-
-      .btn-cancel {
-        background-color: var(--background-btn-outline-color);
-        color: var(--danger-color);
-        border: 1px solid rgba(245, 194, 192, 1);
-        border-radius: 50px;
-        width: 20%;
-
-        @media (max-width: 768px) {
-          width: 50%;
-        }
-      }
-
-      .btn-primary {
-        width: 80%;
-
-        @media (max-width: 768px) {
-          width: 50%;
-        }
-      }
-    }
-  }
-</style>
+<style scoped lang="scss"></style>
