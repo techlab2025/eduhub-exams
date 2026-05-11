@@ -2,10 +2,12 @@
  * Employee model representing an employee entity
  */
 export default class SocialModel {
+  public readonly id?: number;
   public readonly link?: string;
   public readonly icon?: string;
 
-  constructor(data: { link?: string; icon?: string }) {
+  constructor(data: { id?: number; link?: string; icon?: string }) {
+    this.id = data.id;
     this.link = data.link;
     this.icon = data.icon;
 
@@ -23,6 +25,7 @@ export default class SocialModel {
     }
 
     return new SocialModel({
+      id: json.id,
       link: json.link,
       icon: json.icon,
     });

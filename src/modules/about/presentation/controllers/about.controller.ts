@@ -40,11 +40,16 @@ export default class AboutController extends BaseController<AboutModel, AboutMod
     options?: ApiCallOptions,
   ): Promise<DataState<AboutModel> | undefined> {
     return await super.create(params, { ...options, useJson: true });
+    
   }
   async fetchList(params: Params, options?: ApiCallOptions) {
     return super.fetchList(params, { ...options, useJson: true, headers: {
         'Accept-Language': params?.isLocale ? 'en' : '*'
       }
     });
+  }
+
+  async deleteSocialLink(params: Params) {
+    return await this.repository.deleteSocialLink(params);
   }
 }

@@ -59,7 +59,7 @@ export default class SupportContactsController extends BaseController<
 
     const result = await super.create(params, { ...options, useJson: true });
     if (result instanceof DataSuccess) {
-      router.push({ name: 'SupportContacts' });
+      router.push({ name: 'Support' });
     }
     return result;
   }

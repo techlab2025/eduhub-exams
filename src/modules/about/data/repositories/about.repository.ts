@@ -1,12 +1,18 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import AboutApiService from '../api/about.api-service';
 import AboutModel from '../../core/models/about.model';
+import type DeleteSocialLinkParams from '../../core/params/delete.social.link.params';
 
 export default class AboutRepository extends BaseRepository<AboutModel, AboutModel[]> {
   private static instance: AboutRepository;
 
   protected get apiService() {
     return AboutApiService.getInstance();
+  }
+
+  async deleteSocialLink(params: DeleteSocialLinkParams): Promise<string> {
+    const apiResponse = await this.apiService.deleteSocialLink(params);
+    return apiResponse.message;
   }
 
   protected get config(): RepositoryConfig {

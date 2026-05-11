@@ -14,7 +14,8 @@ const route = useRoute();
 const countryCode = (route.params?.country_code as string) || '';
 const formParams = ref<EditFaqsParams | null>(null);
 const isLoaded = ref(false);
-const currentFaq = computed(() => controller.itemState.value)
+// const currentFaq = computed(() => controller.itemState.value)
+const currentFaq = computed(() => controller.itemState.value?.data)
 
 const saveChange = async () => {
   if (!formParams.value || !currentFaq.value?.id) return;
@@ -45,8 +46,8 @@ onMounted(async () => {
       <p class="faqs-description">{{ $t('faqs_description') }}</p>
     </div>
 
-    <FaqsForm v-if="isLoaded" :faq="currentFaq.data!" @update-data="updateData" />
-
+    <!-- <FaqsForm v-if="isLoaded" :faq="currentFaq.data!" @update-data="updateData" /> -->
+    <FaqsForm v-if="isLoaded" :faq="currentFaq!" @update-data="updateData" />
     <div v-if="isLoaded" class="form-actions">
       <button class="btn btn-primary" type="button" @click="saveChange">{{ $t('save_change') }}</button>
       <button class="btn btn-cancel" type="button" @click="cancel">{{ $t('cancel') }}</button>

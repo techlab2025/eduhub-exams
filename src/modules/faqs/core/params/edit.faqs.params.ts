@@ -21,7 +21,7 @@ export default class EditFaqsParams implements Params {
 
   toMap(): { [p: string]: any } {
     return {
-        id: this.id,
+      faq_id: this.id,
       translations: this.translations.toMap(),
     };
   }

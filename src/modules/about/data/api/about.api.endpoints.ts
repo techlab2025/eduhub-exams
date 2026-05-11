@@ -8,4 +8,5 @@ export class AboutEndpoints extends BaseEndpoints {
   readonly store = this.url('store_about_us');
   readonly update = this.url('store_about_us');
   readonly delete = this.url('delete_about_us');
+  readonly deleteSocialLink = this.url('delete_social_link');
 }

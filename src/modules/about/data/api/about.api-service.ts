@@ -1,6 +1,7 @@
 import BaseApiService from '@/base/Data/ApiService/baseApiService';
-import type { ApiEndpoints } from '@/base/Data/ApiService/baseApiService';
+import type { ApiEndpoints, ApiResponse } from '@/base/Data/ApiService/baseApiService';
 import { AboutEndpoints } from './about.api.endpoints';
+import type DeleteSocialLinkParams from '../../core/params/delete.social.link.params';
 
 export default class AboutApiService extends BaseApiService {
   private static instance: AboutApiService;
@@ -24,6 +25,11 @@ export default class AboutApiService extends BaseApiService {
       create: this.aboutEndpoints.store,
       update: this.aboutEndpoints.update,
       delete: this.aboutEndpoints.delete,
+      deleteSocialLink: this.aboutEndpoints.deleteSocialLink,
     };
+  }
+
+  async deleteSocialLink(params: DeleteSocialLinkParams): Promise<ApiResponse<string>> {
+    return this.customPost<string>(this.aboutEndpoints.deleteSocialLink,params);
   }
 }

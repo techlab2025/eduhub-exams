@@ -77,7 +77,7 @@ import DeleteSkillsDialog from '../subComponents/DeleteSkillsDialog.vue';
   const deleteSkills = async (id: number) => {
     await controller.delete(new DeleteSkillsParams(id));
     await fetchSkills();
-  };
+  }; 
 
   const isDraft = computed(() => {
     const data = FormStore?.formData[formRoute.value] ?? {};

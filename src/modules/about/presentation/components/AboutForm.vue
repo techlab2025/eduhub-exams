@@ -11,6 +11,9 @@ import LinksIcon from '@/shared/icons/SocialIcons/LinksIcon.vue';
 import type SocialModel from '../../core/models/social.model';
 import Generalinformaion from '@/shared/icons/generalinformaion.vue';
 import AddAboutParams from '../../core/params/add.about.params';
+import DeleteSocialLinkParams from '../../core/params/delete.social.link.params';
+import AboutController from '../controllers/about.controller';
+import ShowAboutParams from '../../core/params/show.about.params';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -23,6 +26,7 @@ const { about } = defineProps<{
   formKey?: string;
 }>();
 
+
 // ─── Form State ───────────────────────────────────────────────────────────────
 
 const description = ref<Record<string, string>>({});
@@ -32,6 +36,7 @@ const image = ref<string | null>(null);
 const socialMediaList = ref<SocialModel[]>([{ link: '', icon: '' }]);
 
 // ─── Watchers ─────────────────────────────────────────────────────────────────
+
 
 watch(
   () => about,
@@ -45,6 +50,7 @@ watch(
       // Populate social media if provided by the model
       if (newAbout.socialMedia?.length) {
         socialMediaList.value = newAbout.socialMedia.map((item) => ({
+          id: item.id,
           link: item.link ?? '',
           icon: item.icon ?? '',
         }));
@@ -64,6 +70,16 @@ const route = useRoute();
 
 const addSocialMediaEntry = () => {
   socialMediaList.value.push({ link: '', icon: '' });
+};
+
+const controller = AboutController.getInstance();
+
+const deleteSocialLink = async (id: number) => {
+
+  await controller.deleteSocialLink(new DeleteSocialLinkParams(id));
+  // await controller.fetchList();
+  await controller.fetchOne(new ShowAboutParams(1));
+
 };
 
 const removeSocialMediaEntry = (index: number) => {
@@ -213,7 +229,7 @@ const handleImageChange = (file: Array<{ base64: string }>) => {
             <span>+</span>
           </button>
           <button v-else type="button" class="sm-remove-btn" title="Remove this link"
-            @click="removeSocialMediaEntry(index)">
+            @click="deleteSocialLink(entry?.id!)">
             <span>×</span>
           </button>
         </div>
