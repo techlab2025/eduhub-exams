@@ -1,12 +1,13 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import type EditAboutParams from '../../core/params/edit.about.params';
   import AboutController from '../controllers/about.controller';
   import ShowAboutParams from '../../core/params/show.about.params';
   import AboutForm from './AboutForm.vue';
 
   const controller = AboutController.getInstance();
+  const router = useRouter();
   const route = useRoute();
   const formKey = route.fullPath;
 
@@ -23,6 +24,7 @@
 
     console.log(params.value, "params.value")
     await controller.update(params.value, undefined);
+    router.push({ name: 'about' });
   };
 
   const updateData = (updatedParams: EditAboutParams) => {
@@ -33,7 +35,7 @@
     await controller.fetchOne(new ShowAboutParams(1));
   });
 </script>
-
+ 
 <template>
   <div class="employee-edit-page">
     <AboutForm
