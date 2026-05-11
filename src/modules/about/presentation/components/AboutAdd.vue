@@ -29,7 +29,7 @@
 
   const updateData = (updatedParams: AddAboutParams) => {
     params.value = updatedParams;
-  };
+  }; 
 </script>
 
 <template>

@@ -1,5 +1,4 @@
 import SocialModel from './social.model';
-import TranslationModel from './translation.model';
 import Image from '@/assets/images/FeatureHeader.jpg';
 import Facebook from '@/assets/images/SocialLinks/facebook.png';
 import x from '@/assets/images/SocialLinks/x.png';
@@ -10,13 +9,19 @@ import instagram from '@/assets/images/SocialLinks/instagram.png';
  */
 export default class AboutModel {
   public readonly id?: number;
-  public readonly translations: TranslationModel;
+  public readonly translations: {
+    title: Record<string, string>;
+    description: Record<string, string>;
+  };
   public readonly images: string;
   public readonly socialMedia: SocialModel[];
 
   constructor(data: {
     id?: number;
-    translations: TranslationModel;
+    translations: {
+      title: Record<string, string>;
+      description: Record<string, string>;
+    };
     images: string;
     socialMedia: SocialModel[];
   }) {
@@ -29,47 +34,62 @@ export default class AboutModel {
   }
 
   /**
-   * Create EmployeeModel from API response
+   * Create AboutModel from API response
    * @param json - Raw JSON data from API
-   * @returns EmployeeModel instance
+   * @returns AboutModel instance
    */
   static fromJson(json: any): AboutModel {
     if (!json) {
-      throw new Error('Cannot create EmployeeModel from null or undefined');
+      throw new Error('Cannot create AboutModel from null or undefined');
     }
+
+    const mapTranslations = (translations: any[], key: string = 'value') => {
+      const result: Record<string, string> = {};
+      if (Array.isArray(translations)) {
+        translations.forEach((t: any) => {
+          if (t.locale && t[key]) {
+            result[t.locale] = t[key];
+          }
+        });
+      }
+      return result;
+    };
 
     return new AboutModel({
       id: json.id,
-      translations: json.translations,
-      images: json.images,
-      socialMedia: json.social_media.map((el: any) => el.socailMedia.fromJson(el)),
+      translations: {
+        title: mapTranslations(json.titles, 'title'),
+        description: mapTranslations(json.description, 'description'),
+      },
+      images: json.image,
+      socialMedia: (json.social_links || []).map((el: any) => SocialModel.fromJson(el)),
     });
   }
 
   static example: AboutModel = new AboutModel({
     id: 1,
-    translations: new TranslationModel({
-      description: {
-        ar: 'Smart Learning Platform',
-        en: 'Smart Learning Platform',
-      },
+    translations: {
       title: {
-        ar: 'Smart Learning Platform',
+        ar: 'منصة التعلم الذكي',
         en: 'Smart Learning Platform',
       },
-    }),
+      description: {
+        ar: 'وصف منصة التعلم الذكي',
+        en: 'Smart Learning Platform description',
+      },
+    },
     images: Image,
     socialMedia: [
       new SocialModel({
-        link: 'socail/insta',
+        link: 'social/insta',
         icon: instagram,
       }),
       new SocialModel({
-        link: 'socail/face',
+        link: 'social/face',
         icon: Facebook,
       }),
       new SocialModel({
-        link: 'socail/x',
+        link: 'social/x',
         icon: x,
       }),
     ],

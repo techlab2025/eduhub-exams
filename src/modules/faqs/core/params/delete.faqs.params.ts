@@ -11,7 +11,7 @@ export default class DeleteFaqsParams implements Params {
   }
 
   toMap(): { [p: string]: any } {
-    return { id: this.id };
+    return { faq_id: this.id };
   }
 
 

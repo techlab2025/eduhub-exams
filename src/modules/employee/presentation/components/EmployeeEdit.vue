@@ -17,7 +17,7 @@
   /**
    * Update employee
    */
-  const saveEmployee = async () => {
+  const saveEmployee = async () => { 
     if (!params.value) {
       console.error('No employee parameters to save');
       return;

@@ -1,26 +1,32 @@
 <script setup lang="ts">
-  import { onMounted, computed } from 'vue';
-  import { useRoute } from 'vue-router';
-  import AboutController from '../controllers/about.controller';
-  import ShowAboutParams from '../../core/params/show.about.params';
-  import EditpinIcon from '@/shared/icons/EditpinIcon.vue';
-  import LinksIcon from '@/shared/icons/SocialIcons/LinksIcon.vue';
-  import EmptyData from '@/shared/icons/About/EmptyData.vue';
+import { onMounted, computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import AboutController from '../controllers/about.controller';
+import EditpinIcon from '@/shared/icons/EditpinIcon.vue';
+import LinksIcon from '@/shared/icons/SocialIcons/LinksIcon.vue';
+import EmptyData from '@/shared/icons/About/EmptyData.vue';
+import IndexAboutParams from '../../core/params/index.about.params';
 
-  // Controller instance
-  const controller = AboutController.getInstance();
-  const state = computed(() => controller.itemState.value);
-  const route = useRoute();
+// Controller instance
+const controller = AboutController.getInstance();
+const state = computed(() => controller.listState.value);
+const route = useRoute();
 
-  const fetchAbout = async () => {
-    await controller.fetchOne(new ShowAboutParams());
-  };
+const about = computed(() => (state.value.data && state.value.data.length > 0 ? state.value.data[0] : null));
 
-  onMounted(async () => {
-    await fetchAbout();
-  });
+// Pagination state
+const perPage = ref(10);
+const word = ref('');
 
-  const countryCode = computed(() => (route.params?.country_code as string) || '');
+const fetchAbout = async (page: number = 1, wordStr: string = '') => {
+  await controller.fetchList(new IndexAboutParams(wordStr || word.value, page, perPage.value, 1, true));
+};
+
+onMounted(async () => {
+  await fetchAbout();
+});
+
+const countryCode = computed(() => (route.params?.country_code as string) || '');
 </script>
 
 <template>
@@ -37,13 +43,14 @@
         <span>{{ $t('edit') }}</span>
       </router-link>
     </div>
-    <div v-if="state.data != null" class="about-content">
+
+    <div v-if="about" class="about-content">
       <div class="text-content">
-        <h5>{{ state.data?.translations?.title!['ar']! }}</h5>
-        <p>{{ state.data?.translations?.title!['ar']! }}</p>
+        <h5>{{ about.translations?.title?.[$i18n.locale] || about.translations?.title?.['en'] }}</h5>
+        <p>{{ about.translations?.description?.[$i18n.locale] || about.translations?.description?.['en'] }}</p>
       </div>
       <div class="image-content">
-        <img :src="state.data?.images" alt="about-img" />
+        <img v-if="about.images" :src="about.images" alt="about-img" />
       </div>
       <div class="social-content">
         <div class="socail-header">
@@ -51,17 +58,13 @@
           <h5>social media links</h5>
         </div>
         <div class="social-icons">
-          <router-link
-            v-for="(item, index) in state.data?.socialMedia"
-            :key="index"
-            :to="item.link!"
-          >
-            <img :src="item.icon" alt="icon" />
+          <router-link v-for="(item, index) in about.socialMedia" :key="index" :to="item.link || ''">
+            <img v-if="item.icon" :src="item.icon" alt="icon" />
           </router-link>
         </div>
       </div>
     </div>
-    <div v-else class="empty-data">
+    <div v-else-if="!state.loading" class="empty-data">
       <EmptyData />
       <h5>No about information added</h5>
       <p>Add details about your platform to display them to students</p>

@@ -27,8 +27,10 @@ export default class FaqsController extends BaseController<FaqsModel, FaqsModel[
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat:true,
       autoRetry: false,
       maxAutoRetries: 1,
     };
@@ -61,4 +63,17 @@ export default class FaqsController extends BaseController<FaqsModel, FaqsModel[
     }
     return result;
   }
+  
+  async fetchList(params: Params, options?: ApiCallOptions) {
+      return super.fetchList(params, { ...options, useJson: true, headers: {
+          'Accept-Language': params?.isLocale ? 'en' : '*'
+        }
+      });
+    }
+     async fetchOne(params: Params, options?: ApiCallOptions) {
+      return super.fetchOne(params, { ...options, useJson: true, headers: {
+          'Accept-Language': params?.isLocale ? 'en' : '*'
+        }
+      });
+    }
 }
