@@ -21,6 +21,9 @@ export default class SkillsApiService extends BaseApiService {
     return {
       index: this.skillsEndpoints.index,
       create: this.skillsEndpoints.store,
+      show: this.skillsEndpoints.show,
+      update: this.skillsEndpoints.update,
+      delete: this.skillsEndpoints.delete,
     };
   }
 }

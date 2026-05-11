@@ -15,11 +15,11 @@
   const params = ref<EditSkillsParams | null>(null);
 
   /**
-   * Update employee
+   * Update skill
    */
-  const saveEmployee = async () => {
+  const saveSkill = async () => {
     if (!params.value) {
-      console.error('No employee parameters to save');
+      console.error('No skill parameters to save');
       return;
     }
 
@@ -40,15 +40,14 @@
     <SkillsForm :skill="controller.itemData.value!" :form-key="formKey" @update-data="updateData" />
 
     <div class="actions">
-      <AppButton title="Update Employee" size="sm" icon="right" type="submit" @click="saveEmployee">
-        Update Employee
+      <AppButton title="Update Skill" size="sm" icon="right" type="submit" @click="saveSkill">
+        Update Skill
         <template #icon>
           <IconAccept />
         </template>
       </AppButton>
     </div>
 
-    <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error-toast">
       {{ controller.errorMessage.value }}
     </div>
@@ -56,12 +55,6 @@
 </template>
 
 <style scoped lang="scss">
-  // .employee-edit-page {
-  //   padding: 24px;
-  //   max-width: 1000px;
-  //   margin: 0 auto;
-  // }
-
   .actions {
     margin-top: 24px;
     display: flex;

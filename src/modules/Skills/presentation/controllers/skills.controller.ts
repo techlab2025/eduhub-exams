@@ -4,6 +4,8 @@ import SkillsRepository from '../../data/repositories/skills.repository';
 import type SkillModel from '../../core/models/skills.model';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
+import router from '@/router';
+import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
 export default class SkillsController extends BaseController<SkillModel, SkillModel[]> {
   private static instance: SkillsController;
@@ -16,8 +18,8 @@ export default class SkillsController extends BaseController<SkillModel, SkillMo
     return {
       showLoadingDialog: true,
       showSuccessDialog: false,
-      showSuccessTosat: true,
       showErrorDialog: false,
+      showSuccessTosat: true,
       showErrorTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,
@@ -37,6 +39,9 @@ export default class SkillsController extends BaseController<SkillModel, SkillMo
 
   async create(params: Params, options?: ApiCallOptions) {
     const result = await super.create(params, { ...options, useJson: true });
+    if (result instanceof DataSuccess) {
+      router.push({ name: 'Skills' });
+    }
     return result;
   }
 }

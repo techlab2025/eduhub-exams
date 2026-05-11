@@ -152,7 +152,7 @@
       </div>
     </div>
 
-    <DataStatusBuilder :controller="state" :on-retry="async () => await fetchEmployees()">
+    <DataStatusBuilder :controller="state" :on-retry="async () => await fetchSkills()">
       <template #success="{ data }">
         <div class="table-frame">
           <AppTable
@@ -172,7 +172,7 @@
               <div class="row-actions">
                 <router-link
                   class="action-btn edit"
-                  :to="`/${route.params.country_code}/employees/edit/${item.id}`"
+                  :to="`/${route.params.country_code}/skills/edit/${item.id}`"
                   title="Edit"
                 >
                   <svg
@@ -190,7 +190,7 @@
                   </svg>
                 </router-link>
 
-                <DeleteDialog @delete="deleteEmployee(item.id!)">
+                <DeleteDialog @delete="deleteSkills(item.id!)">
                   <template #Dialog>
                     <button class="action-btn delete" title="Delete">
                       <svg

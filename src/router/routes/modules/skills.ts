@@ -19,7 +19,7 @@ export const SkillsRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: 'skills/edit',
+    path: 'skills/edit/:id',
     name: 'Edit Skill',
     component: () => import('@/views/skills/EditSkills.vue'),
     props: true,

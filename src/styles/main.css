@@ -3817,6 +3817,7 @@ body::-webkit-scrollbar-thumb:hover {
 .sidebar .sidebar-wrapper .auth-container {
   margin-top: auto;
   cursor: pointer;
+  width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -3854,68 +3855,124 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .sidebar .sidebar-wrapper .mega-menu {
   position: absolute;
-  left: 25px;
-  bottom: 75px;
-  width: 220px;
-  background: var(--BgWhite);
-  border-radius: 16px;
-  box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0, rgba(255, 255, 255, 0.8) -6px -2px 16px 0;
-  padding: 12px;
+  right: 50px;
+  top: 90px;
+  width: 240px;
+  background: #16181f;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 0.5px solid rgba(255, 255, 255, 0.07);
   z-index: 1000;
-  /* Header */
 }
 .sidebar .sidebar-wrapper .mega-menu .mega-header {
+  padding: 18px 16px 16px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 13px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
+  background: rgba(29, 158, 117, 0.08);
 }
-.sidebar .sidebar-wrapper .mega-menu .mega-header img {
-  width: 40px;
-  height: 40px;
+.sidebar .sidebar-wrapper .mega-menu .mega-header .av-wrap {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+}
+.sidebar .sidebar-wrapper .mega-menu .mega-header .av-wrap img {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+}
+.sidebar .sidebar-wrapper .mega-menu .mega-header .av-wrap .online-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
+  background: #1d9e75;
+  border: 2px solid #16181f;
 }
 .sidebar .sidebar-wrapper .mega-menu .mega-header .name {
-  font-weight: 700;
-  font-family: "Medium";
-  font-size: var(--md-size);
-  color: var(--title-card-color);
+  font-size: 14px;
+  font-weight: 500;
+  color: #f2f2f2;
+  margin: 0 0 5px;
 }
-.sidebar .sidebar-wrapper .mega-menu .mega-header .role {
-  font-weight: 600;
-  font-family: "Medium";
-  font-size: var(--xs-size);
-  color: var(--title-color);
+.sidebar .sidebar-wrapper .mega-menu .mega-header .role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(29, 158, 117, 0.18);
+  color: #4ecda4;
+  font-size: 10.5px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  border: 0.5px solid rgba(29, 158, 117, 0.3);
 }
-.sidebar .sidebar-wrapper .mega-menu {
-  /* Divider */
+.sidebar .sidebar-wrapper .mega-menu .mega-meta {
+  padding: 10px 14px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.06);
 }
-.sidebar .sidebar-wrapper .mega-menu .divider {
-  height: 1px;
-  background: var(--gray-100);
-  margin: 10px 0;
+.sidebar .sidebar-wrapper .mega-menu .mega-meta .meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
 }
-.sidebar .sidebar-wrapper .mega-menu {
-  /* Actions */
+.sidebar .sidebar-wrapper .mega-menu .mega-meta .meta-lbl {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
 }
-.sidebar .sidebar-wrapper .mega-menu .mega-actions .logout-btn {
+.sidebar .sidebar-wrapper .mega-menu .mega-meta .meta-val {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 500;
+}
+.sidebar .sidebar-wrapper .mega-body {
+  padding: 7px;
+}
+.sidebar .sidebar-wrapper .mega-body .menu-item {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 10px;
+  gap: 10px;
+  padding: 9px 0;
+  border-radius: 11px;
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--gray-600);
-  transition: 0.3s;
+  font-size: 13.5px;
+  transition: 0.18s;
+  color: white;
 }
-.sidebar .sidebar-wrapper .mega-menu .mega-actions .logout-btn:hover {
-  background: #fff1f1;
-  color: var(--btn-red);
+.sidebar .sidebar-wrapper .mega-body .menu-item .arrow {
+  margin-left: auto;
+  opacity: 0.3;
 }
-.sidebar .sidebar-wrapper .mega-menu .mega-actions .logout-btn:hover svg path {
-  fill: var(--btn-red);
+.sidebar .sidebar-wrapper .mega-body .menu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+}
+.sidebar .sidebar-wrapper .mega-body .menu-item:hover .arrow {
+  opacity: 0.6;
+}
+.sidebar .sidebar-wrapper .mega-body .menu-item.danger {
+  color: #e07060;
+}
+.sidebar .sidebar-wrapper .mega-body .menu-item.danger:hover {
+  background: rgba(224, 112, 96, 0.1);
+}
+.sidebar .sidebar-wrapper .mega-body .divider {
+  height: 0.5px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 5px 0;
 }
 .sidebar .sidebar-wrapper .mega-menu-enter-active,
 .sidebar .sidebar-wrapper .mega-menu-leave-active {
@@ -3923,18 +3980,15 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .sidebar .sidebar-wrapper .mega-menu-enter-from {
   opacity: 0;
-  transform: translateY(10px) scale(0.98);
+  transform: translateY(-12px) scale(0.97);
 }
 .sidebar .sidebar-wrapper .mega-menu-enter-to {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
-.sidebar .sidebar-wrapper .mega-menu-leave-from {
-  opacity: 1;
-}
 .sidebar .sidebar-wrapper .mega-menu-leave-to {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(8px);
 }
 
 /* =============================================================================
@@ -8662,6 +8716,30 @@ body::-webkit-scrollbar-thumb:hover {
   position: relative;
   font-family: "Medium";
 }
+.about-form-card .general-information-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--sm-size) 0;
+}
+.about-form-card .general-information-header .general-information-title {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: stretch;
+  align-items: center;
+  gap: var(--xs-size-2);
+  font-weight: 600;
+  font-size: calc(var(--sm-size) + 1px);
+  color: var(--gray-900);
+}
+.about-form-card .general-information-header .general-information-title svg {
+  width: var(--md-size-2);
+  height: var(--md-size-2);
+}
 .about-form-card .about-header {
   display: flex;
   flex-direction: column;
@@ -8771,6 +8849,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .about-form-card .form-fields .field-group.social-media-section .social-media-header {
   width: 100%;
+  border-top: 1px dashed var(--input-border-color);
+  padding-top: var(--xl-size-base);
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;

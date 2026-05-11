@@ -11,8 +11,8 @@
 
   const emit = defineEmits(['updateData']);
 
-  const { employee, formKey } = defineProps<{
-    employee?: SkillModel;
+  const { skill, formKey } = defineProps<{
+    skill?: SkillModel;
     formKey?: string;
   }>();
 
@@ -28,10 +28,10 @@
   const translations = ref<Record<string, string>>({});
 
   watch(
-    () => employee,
-    (newEmployee) => {
-      if (newEmployee) {
-        // translations.value = newEmployee.translations;
+    () => skill,
+    (newskill) => {
+      if (newskill) {
+        // translations.value = newskill.translations;
         // Password is not populated for security/editing purposes
       }
     },
@@ -72,7 +72,7 @@
       translations.value = saved.translations;
 
       updateData();
-    } else if (!employee) {
+    } else if (!skill) {
       resetForm();
     }
   });
@@ -107,11 +107,11 @@
     </div> -->
 
     <div class="form-fields">
-      <div class="field-group w-full">
+      <div class="field-group col-span-2 w-full">
         <MultiLangInput
           :field-key="`title`"
           :label="$t(`title`)"
-          :languages="['ar', 'en']"
+          :languages="['en', 'ar']"
           :model-value="translations"
           :type="`title`"
           @update:model-value="updateTranslations"
