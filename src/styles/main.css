@@ -10252,6 +10252,9 @@ body::-webkit-scrollbar-thumb:hover {
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
+.privacy-container {
+  min-height: 80vh;
+}
 .privacy-container .header-container {
   display: flex;
   flex-direction: row;
@@ -10288,11 +10291,15 @@ body::-webkit-scrollbar-thumb:hover {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 100%;
   width: 100%;
   flex: 1;
   padding: calc(var(--xl-size-3) - 10px) var(--xl-size-base);
   text-align: center;
   gap: 12px;
+  font-family: "Medium";
 }
 .privacy-container .empty-data h5 {
   color: var(--black-soft);
@@ -10305,6 +10312,7 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: var(--md-size);
   font-weight: 600;
   margin: 0;
+  max-width: 500px;
 }
 
 /* ── Pages ─────────────────────────────────────────────────────── */

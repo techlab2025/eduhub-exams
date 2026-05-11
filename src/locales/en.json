@@ -254,5 +254,8 @@
   "PDF, DOCX,ZIP less than 1MB": "PDF, DOCX,ZIP less than 1MB",
   "the Main Document": "the Main Document",
   "add_a_new": "Add A New",
-  "General_Information": "General Information"
+  "General_Information": "General Information",
+  "no_privacy_yet": "No Privacy Yet",
+  "Add privacy and policy information so users can know how their data is collected, used, and protected": "Add privacy and policy information so users can know how their data is collected, used, and protected",
+  "add_privacy": "Add Privacy"
 }

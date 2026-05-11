@@ -2,6 +2,7 @@
 @use '../../../../styles/mixins/flex' as *;
 
 .privacy-container {
+  min-height: 80vh;
   .header-container {
     @include flex-row(nowrap, space-between, center);
     width: 100%;
@@ -28,13 +29,15 @@
 
   .empty-data {
     @include flex-column(nowrap, center, center);
-
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 100%;
     width: 100%;
     flex: 1;
     padding: calc($XlSize4 - 10px) $XlSize;
     text-align: center;
     gap: 12px;
-
+    font-family: 'Medium';
     h5 {
       color: var(--black-soft);
       font-size: $XlSize;
@@ -47,6 +50,7 @@
       font-size: $MdSize;
       font-weight: $BaseFontSemiBoldWeight;
       margin: 0;
+      max-width: 500px;
     }
   }
 }

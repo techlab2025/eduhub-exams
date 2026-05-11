@@ -3,14 +3,14 @@
   import PrivacyController from '../controllers/privacy.controller';
   import ShowPrivacyParams from '../../core/params/show.privacy.params';
   import EmptyPrivacy from '@/shared/icons/Privacy/EmptyPrivacy.vue';
-import EditIcon from '@/shared/icons/Privacy/EditIcon.vue';
+  import EditIcon from '@/shared/icons/Privacy/EditIcon.vue';
 
   const privacyController = PrivacyController.getInstance();
   const status = computed(() => privacyController.itemState.value);
 
   const ShowPrivacy = async () => {
     const showPrivacyParams = new ShowPrivacyParams({
-      id: 1,
+      id: 5,
       allLocales: false,
     });
     await privacyController.fetchOne(showPrivacyParams);
@@ -42,8 +42,14 @@ import EditIcon from '@/shared/icons/Privacy/EditIcon.vue';
     <div v-else class="empty-data">
       <EmptyPrivacy />
       <h5>{{ $t('no_privacy_yet') }}</h5>
-      <p>{{ $t('no_privacy_description') }}</p>
-      <router-link :to="{ name: 'Add Privacy' }" class="btn-filled-green">
+      <p>
+        {{
+          $t(
+            'Add privacy and policy information so users can know how their data is collected, used, and protected',
+          )
+        }}
+      </p>
+      <router-link :to="{ name: 'Add Privacy' }" class="btn btn-primary">
         {{ $t('add_privacy') }}
       </router-link>
     </div>
