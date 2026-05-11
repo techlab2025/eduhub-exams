@@ -1,18 +1,24 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue';
-  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import { ref, onMounted, onUnmounted, computed } from 'vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
+  import Privecyicon from '@/shared/icons/privecyicon.vue';
+  import TranslationParams from '@/modules/about/core/params/translation.params';
   import TermsConditionsController from '../controllers/terms-conditions.controller';
   import AddTermsConditionsParams from '../../core/params/add.terms-conditions.params';
-  import TranslationParams from '@/modules/about/core/params/translation.params';
-  import TermsPen from '@/shared/icons/TermsPen.vue';
 
   const emit = defineEmits(['update:data']);
 
-  const data = ref<Record<string, string>>();
+  const title = ref<Record<string, string>>();
+  const description = ref<Record<string, string>>();
+  const termsConditionsController = TermsConditionsController.getInstance();
 
+  const status = computed(() => termsConditionsController.listState.value);
   const updateData = () => {
-    emit('update:data', data.value);
+    const Data = {
+      title: title.value,
+      description: description.value,
+    };
+    emit('update:data', Data);
   };
 
   // ─── Init ───────────────────────────────
@@ -20,85 +26,86 @@
     updateData();
   });
 
-  const titleData = ref({
-    ar: '',
-    en: '',
-    fr: '',
-  });
-  const descriptionData = ref({
-    ar: '',
-    en: '',
-    fr: '',
-  });
-
-  const termsConditionsController = TermsConditionsController.getInstance();
-  const SubmitData = () => {
-    termsConditionsController.create(
+  const SubmitData = async () => {
+    await termsConditionsController.create(
       new AddTermsConditionsParams({
         translations: new TranslationParams({
-          title: { ar: titleData.value, en: titleData.value, fr: titleData.value },
-          description: {
-            ar: descriptionData.value,
-            en: descriptionData.value,
-            fr: descriptionData.value,
-          },
+          title: title.value!,
+          description: description.value!,
         }),
       }),
     );
   };
 
-  const ShowTermsConditions = async () => {
-    const result = await termsConditionsController.fetchList();
+  const ShowPrivacy = async () => {
+    await termsConditionsController.fetchList();
 
-    if (result instanceof DataSuccess) {
-      titleData.value = result.data[0].terms_conditions.title;
-      descriptionData.value = result.data[0].terms_conditions.description;
-    }
+    const titleData = status.value.data?.[0]?.title.reduce((acc, item) => {
+      acc[item?.locale!] = item.title;
+      return acc;
+    }, {});
+    const descriptionData = status.value.data?.[0]?.description.reduce((acc, item) => {
+      acc[item?.locale!] = item.description;
+      return acc;
+    }, {});
+    console.log(titleData, 'titleData');
+    console.log(descriptionData, 'descriptionData');
+
+    title.value = titleData;
+    description.value = descriptionData;
   };
 
   onMounted(() => {
-    ShowTermsConditions();
+    ShowPrivacy();
   });
 
   onUnmounted(() => {
-    data.value = {};
+    title.value = {};
+    description.value = {};
   });
+
+  const ResetData = () => {
+    title.value = {};
+    description.value = {};
+  };
 </script>
 
 <template>
-  <div class="faq-container">
+  <div class="terms-container">
     <!-- Header -->
-    <div class="faq-header">
-      <h3>{{ $t(`terms & conditions`) }}</h3>
-      <p>{{ $t(`Add or update the terms and conditions of your platform`) }}</p>
+    <div class="terms-header">
+      <h3>{{ $t('Terms & Conditions') }}</h3>
+      <p>{{ $t('Add or update the terms and conditions of your platform') }}</p>
     </div>
-
-    <div class="faq-details">
-      <p><TermsPen /> {{ $t(`terms & conditions details`) }}</p>
-      <h6>{{ $t(`reset`) }}</h6>
+ 
+    <div class="form-header-left">
+      <p><Privecyicon /> {{ $t(`Terms Details`) }}</p>
+      <button @click="ResetData" class="reset-btn">{{ $t(`reset`) }}</button>
     </div>
 
     <!-- List -->
-    <div class="faq-list">
+    <div class="terms-list">
       <!-- Question -->
-      <MultiLangInput
-        :field-key="`title`"
-        :label="` title`"
-        :languages="['en', 'ar', 'fr']"
-        :model-value="titleData"
-        @update:model-value="titleData = $event"
-      />
-    </div>
-    <!-- Description -->
-    <div class="faq-list">
-      <MultiLangInput
-        :field-key="` Description`"
-        :label="$t(` Description`)"
-        :languages="['en', 'ar']"
-        :model-value="descriptionData"
-        :type="`description`"
-        @update:model-value="descriptionData = $event"
-      />
+      <div class="field">
+        <MultiLangInput
+          :field-key="`terms`"
+          :label="`terms title`"
+          :languages="['en', 'ar']"
+          :type="`title`"
+          :model-value="title"
+          @update:model-value="title = $event"
+        />
+      </div>
+      <div class="field">
+        <MultiLangInput
+          :field-key="`terms`"
+          :label="`terms description`"
+          :languages="['en', 'ar']"
+          :model-value="description"
+          :type="`description`"
+          @update:model-value="description = $event"
+        />
+      </div>
     </div>
 
     <!-- Add Button -->
@@ -109,66 +116,4 @@
   </div>
 </template>
 
-<style scoped lang="scss">
-  .faq-container {
-    background: var(--bg-main);
-    border: 1px solid var(--border-weak);
-    border-radius: 16px;
-    padding: 20px;
-
-    .faq-details {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-
-      p {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 16px;
-        font-weight: 600;
-        font-family: 'medium';
-        color: var(--table-header-color);
-      }
-
-      h6 {
-        font-size: 16px;
-        font-weight: 600;
-        font-family: 'medium';
-        color: var(--danger-color);
-        cursor: pointer;
-        border-bottom: 3px solid var(--danger-color);
-      }
-    }
-
-    .btn-container {
-      margin-top: 1rem;
-
-      .btn-cancel {
-        background-color: var(--background-btn-outline-color);
-        color: var(--danger-color);
-        border: 1px solid rgba(245, 194, 192, 1);
-        border-radius: 50px;
-        width: 20%;
-
-        @media (max-width: 768px) {
-          width: 50%;
-        }
-      }
-
-      .btn-primary {
-        width: 80%;
-
-        @media (max-width: 768px) {
-          width: 50%;
-        }
-      }
-    }
-
-    .faq-list {
-      margin: 1rem 0;
-    }
-  }
-</style>
+<style scoped lang="scss"></style>

@@ -4,10 +4,21 @@ import TranslationModel from '@/modules/about/core/models/translation.model';
  * Country model representing a nation's geographical and cultural data
  */
 export default class TermsConditionsModel {
-  public readonly translations: TranslationModel;
+  public readonly translations?: TranslationModel;
+  public readonly id?: number;
+  public readonly title?: string;
+  public readonly description?: string;
 
-  constructor(data: { translations: TranslationModel }) {
+  constructor(data: {
+    translations?: TranslationModel;
+    id?: number;
+    title?: string;
+    description?: string;
+  }) {
     this.translations = data.translations;
+    this.id = data.id;
+    this.title = data.title;
+    this.description = data.description;
 
     Object.freeze(this);
   }
@@ -23,7 +34,12 @@ export default class TermsConditionsModel {
     }
 
     return new TermsConditionsModel({
-      translations: TranslationModel.fromJson(json.translations),
+      translations: json?.translations
+        ? TranslationModel.fromJson(json.translations)
+        : undefined,
+      id: json?.id,
+      title: json?.title,
+      description: json?.description,
     });
   }
 
@@ -38,5 +54,8 @@ export default class TermsConditionsModel {
         en: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
       },
     }),
+    id: 5,
+    title: 'terms_conditions_title',
+    description: 'terms_conditions_description',
   });
 }

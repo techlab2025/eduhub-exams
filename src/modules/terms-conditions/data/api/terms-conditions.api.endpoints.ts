@@ -1,11 +1,11 @@
-import { BaseEndpoints } from "@/base/Data/Endpoints/BaseEndpoints";
+import { BaseEndpoints } from '@/base/Data/Endpoints/BaseEndpoints';
 
 export class TermsConditionsEndpoints extends BaseEndpoints {
-  protected readonly prefix = "organization/";
+  protected readonly prefix = 'dashboard/';
 
-  readonly index = this.url("fetch_terms-conditions");
-  readonly show = this.url("show_terms-conditions");
-  readonly store = this.url("store_terms-conditions");
-  readonly update = this.url("update_terms-conditions");
-  readonly delete = this.url("delete_terms-conditions");
+  readonly index = this.url('fetch_term');
+  readonly show = this.url('show_term');
+  readonly store = this.url('store_term');
+  readonly update = this.url('update_term');
+  readonly delete = this.url('delete_term');
 }
