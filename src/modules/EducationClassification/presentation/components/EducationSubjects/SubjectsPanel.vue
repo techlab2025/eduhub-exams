@@ -113,6 +113,7 @@
         title: translations,
       }),
       stage_id: props.stageId,
+      parent_id: props.stageId,
     });
     await itemController.create(params);
     showAddRootDialog.value = false;
