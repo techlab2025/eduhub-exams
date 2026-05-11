@@ -204,15 +204,11 @@
 
     if (configResult instanceof DataSuccess && configResult.data?.[0]) {
       fillConfigurationForm(configResult.data[0]);
-    } else {
-      fillConfigurationForm(EducationConfigurationModel.example);
     }
 
     if (subjectResult instanceof DataSuccess && subjectResult.data?.[0]) {
       fillSubjectForm(subjectResult.data[0]);
-    } else {
-      fillSubjectForm(EducationSubjectConfigurationModel.example);
-    }
+    } 
   });
 </script>
 
