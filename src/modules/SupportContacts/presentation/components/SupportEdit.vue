@@ -6,6 +6,7 @@
   import type SupportContactsModel from '../../core/models/support.contatcts.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import SupportForm from './SupportForm.vue';
+  import IndexSupportContactsParams from '../../core/params/index.about.params';
 
   const controller = SupportContactsController.getInstance();
   const route = useRoute();
@@ -32,7 +33,9 @@
   };
 
   onMounted(async () => {
-    await controller.fetchList();
+    const indexSupportParams = new IndexSupportContactsParams('', 1, 10, true);
+
+    await controller.fetchList(indexSupportParams);
     const state = controller.listState.value;
     if (state instanceof DataSuccess && Array.isArray(state.data)) {
       initialSections.value = state.data as SupportContactsModel[];

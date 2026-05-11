@@ -113,9 +113,10 @@
 
   onMounted(() => {
     if (props.initialSections?.length) {
+      console.log(props.initialSections, 'props.initialSections');
       sections.value = props.initialSections.map((s) => ({
         title: {
-          ...(s.titles?.reduce((acc, item) => {
+          ...(s?.titles?.reduce((acc, item) => {
             acc[item?.locale!] = item.title;
             return acc;
           }, {}) ?? {}),
