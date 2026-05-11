@@ -71,6 +71,9 @@ export default class PrivacyController extends BaseController<PrivacyModel, Priv
     });
     return result;
   }
+
+
+  
   async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<PrivacyModel[]>> {
     const result = await super.fetchList(params, {
       ...options,

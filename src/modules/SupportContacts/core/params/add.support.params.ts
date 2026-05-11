@@ -1,22 +1,26 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type ContactsParams from './contacts.paras';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 /**
  * Parameters for adding a new employee
  */
 export default class AddSupportContactsParams implements Params {
-  public readonly contatcs: ContactsParams[];
+  public readonly translations: TranslationParams;
+  public readonly contacts: ContactsParams[];
 
   public static readonly validation = new ClassValidation().setRules({});
 
-  constructor(data: { contatcs: ContactsParams[] }) {
-    this.contatcs = data.contatcs;
+  constructor(data: { translations: TranslationParams; contacts: ContactsParams[] }) {
+    this.translations = data.translations;
+    this.contacts = data.contacts;
   }
 
   toMap(): { [p: string]: any } {
     return {
-      contatcs: this.contatcs,
+      translations: this.translations,
+      support_contacts: this.contacts.map((contact) => contact.toMap()),
     };
   }
 

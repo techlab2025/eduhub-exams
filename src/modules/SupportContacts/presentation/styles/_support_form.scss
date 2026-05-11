@@ -34,23 +34,20 @@
 
   .sections-list {
     width: 100%;
-
     @include flex-column(nowrap, flex-start, flex-start);
-
     gap: $XlSize3;
     background-color: white;
 
     .support-section-card {
       width: 100%;
       border-radius: $MdSize;
-
+      background-color: #fafafa;
       @include flex-column(nowrap, flex-start, flex-start);
-
       gap: $MdSize;
+      padding: 20px;
 
       .support-section-header {
         width: 100%;
-
         @include flex-row(nowrap, space-between, center);
 
         .support-section-label {

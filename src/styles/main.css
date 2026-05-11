@@ -9160,12 +9160,14 @@ body::-webkit-scrollbar-thumb:hover {
 .about-page .sections-list .support-section-card {
   width: 100%;
   border-radius: var(--md-size);
+  background-color: #fafafa;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: flex-start;
   gap: var(--md-size);
+  padding: 20px;
 }
 .about-page .sections-list .support-section-card .support-section-header {
   width: 100%;
@@ -9402,8 +9404,7 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: flex-start;
   align-items: flex-start;
   gap: 16px;
-  padding: 20px;
-  background-color: var(--gray-soft);
+  background-color: var(--standard-white);
   border-radius: 16px;
 }
 .about-page .support-view-card {

@@ -8,7 +8,7 @@
   import PhoneIcon from '@/shared/icons/Support/PhoneIcon.vue';
   import WhatsIcon from '@/shared/icons/Support/WhatsIcon.vue';
   import EmailIcon from '@/shared/icons/Support/EmailIcon.vue';
-  import TelegramIcon from '@/shared/icons/Support/TelegramIcon.vue';
+  import IndexSupportContactsParams from '../../core/params/index.about.params';
 
   const controller = SupportContactsController.getInstance();
   const route = useRoute();
@@ -23,11 +23,11 @@
 
   const hasData = computed(() => contacts.value.length > 0);
 
-  const getSectionTitle = (section: any): string =>
-    section.translations?.title?.['en'] || section.translations?.title?.['ar'] || 'Support Section';
+  const getSectionTitle = (section: any): string => section.translations?.titles;
 
   onMounted(async () => {
-    await controller.fetchList();
+    const indexSupportParams = new IndexSupportContactsParams('', 1, 10, false);
+    await controller.fetchList(indexSupportParams);
   });
 </script>
 
@@ -52,41 +52,49 @@
     <div v-if="hasData" class="sections-list">
       <div v-for="(section, idx) in contacts" :key="idx" class="support-view-card">
         <div class="section-title-bar">
-          <span>{{ getSectionTitle(section) }}</span>
+          <span>{{ section.titles }}</span>
         </div>
         <div class="contact-info-row">
-          <div v-if="section.phonenumbers?.length" class="contact-item">
+          <div v-if="section.supportContacts?.length" class="contact-item">
             <PhoneIcon />
             <div class="contact-info">
               <span class="contact-label">{{ $t('Phone Number') }}</span>
-              <span class="contact-value">{{ section.phonenumbers[0] }}</span>
+              <span class="contact-value">{{
+                section.supportContacts.find((el) => el.key == 'phonenumbers').value
+              }}</span>
             </div>
           </div>
 
-          <div v-if="section.whatsAppNumebrs?.length" class="contact-item">
+          <div v-if="section.supportContacts?.length" class="contact-item">
             <WhatsIcon />
             <div class="contact-info">
               <span class="contact-label">{{ $t('chat_on_whatsapp') }}</span>
-              <span class="contact-value">{{ section.whatsAppNumebrs[0] }}</span>
+              <span class="contact-value">{{
+                section.supportContacts.find((el) => el.key == 'whatsapp_numbers').value
+              }}</span>
             </div>
           </div>
 
-          <div v-if="section.emails?.length" class="contact-item">
+          <div v-if="section.supportContacts?.length" class="contact-item">
             <EmailIcon />
             <div class="contact-info">
               <span class="contact-label">{{ $t('email_address') }}</span>
-              <span class="contact-value">{{ section.emails[0] }}</span>
+              <span class="contact-value">{{
+                section.supportContacts.find((el) => el.key == 'emails').value
+              }}</span>
             </div>
           </div>
 
-          <div v-if="section.telegramNumbers?.length" class="contact-item">
+          <!-- <div v-if="section.supportContacts?.length" class="contact-item">
             <TelegramIcon />
 
             <div class="contact-info">
               <span class="contact-label">{{ $t('telegram') }}</span>
-              <span class="contact-value">{{ section.telegramNumbers[0] }}</span>
+              <span class="contact-value">{{
+                section.supportContacts.find((el) => el.key == 'telegram_numbers').value
+              }}</span>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -96,7 +104,7 @@
       <h5>{{ $t('no_contact_details') }}</h5>
       <p>{{ $t('no_contact_details_description') }}</p>
       <router-link :to="`/${countryCode}/support/add`" class="btn btn-primary">
-        {{ $t('add_contact') }}
+        {{ $t('add_support') }}
       </router-link>
     </div>
   </div>

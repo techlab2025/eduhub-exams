@@ -85,8 +85,8 @@
     @include flex-column(nowrap, flex-start, flex-start);
 
     gap: 16px;
-    padding: 20px;
-    background-color: var(--gray-soft);
+    // padding: 20px;
+    background-color: var(--standard-white);
     border-radius: 16px;
   }
 

@@ -59,16 +59,19 @@
 
   const emitData = () => {
     const params = new AddSupportContactsParams({
-      contatcs: sections.value.map(
-        (s) =>
-          new ContactsParams({
-            translation: new TranslationParams({ title: s.title }),
-            phonenumbers: s.phonenumbers,
-            whatsAppNumebrs: s.whatsAppNumebrs,
-            emails: s.emails,
-            telegramNumbers: s.telegramNumbers,
-          }),
-      ),
+      translations: new TranslationParams({
+        title: sections.value.map((el) => el.title)[0],
+      }),
+      contacts: sections.value.flatMap((s) => [
+        ...s.phonenumbers.map((num) => new ContactsParams({ key: 'phonenumbers', value: num })),
+        ...s.whatsAppNumebrs.map(
+          (num) => new ContactsParams({ key: 'whatsapp_numbers', value: num }),
+        ),
+        ...s.telegramNumbers.map(
+          (num) => new ContactsParams({ key: 'telegram_numbers', value: num }),
+        ),
+        ...s.emails.map((email) => new ContactsParams({ key: 'emails', value: email })),
+      ]),
     });
     emit('updateData', params);
   };
@@ -111,11 +114,30 @@
   onMounted(() => {
     if (props.initialSections?.length) {
       sections.value = props.initialSections.map((s) => ({
-        title: { ...(s.translations?.title ?? {}) },
-        phonenumbers: [...(s.phonenumbers ?? [])],
-        whatsAppNumebrs: [...(s.whatsAppNumebrs ?? [])],
-        emails: [...(s.emails ?? [])],
-        telegramNumbers: [...(s.telegramNumbers ?? [])],
+        title: {
+          ...(s.titles?.reduce((acc, item) => {
+            acc[item?.locale!] = item.title;
+            return acc;
+          }, {}) ?? {}),
+        },
+        phonenumbers: [
+          ...(s.supportContacts
+            .filter((el) => el.key == 'phonenumbers')
+            .map((item) => item.value) ?? []),
+        ],
+        whatsAppNumebrs: [
+          ...(s.supportContacts
+            .filter((el) => el.key == 'whatsapp_numbers')
+            .map((item) => item.value) ?? []),
+        ],
+        emails: [
+          ...(s.supportContacts.filter((el) => el.key == 'emails').map((item) => item.value) ?? []),
+        ],
+        telegramNumbers: [
+          ...(s.supportContacts
+            .filter((el) => el.key == 'telegram_numbers')
+            .map((item) => item.value) ?? []),
+        ],
         inputs: { phone: '', whatsApp: '', email: '', telegram: '' },
       }));
     }
