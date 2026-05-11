@@ -18,8 +18,10 @@ export default class EducationSubjectItemController extends BaseController<
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,
     };
@@ -38,5 +40,9 @@ export default class EducationSubjectItemController extends BaseController<
 
   async create(params: Params, options?: ApiCallOptions) {
     return super.create(params, { ...options, useJson: true });
+  }
+
+  async update(params: Params, options?: ApiCallOptions) {
+    return super.update(params, { ...options, useJson: true });
   }
 }

@@ -2,14 +2,15 @@
   import { ref, computed, watch, nextTick } from 'vue';
   import Dialog from 'primevue/dialog';
   import NewBranchIcon from '@/shared/icons/NewBranchIcon.vue';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
 
   const props = defineProps<{ visible: boolean }>();
   const emit = defineEmits<{
     (e: 'update:visible', val: boolean): void;
-    (e: 'confirm', name: string): void;
+    (e: 'confirm', name: Record<string, string>): void;
   }>();
 
-  const inputValue = ref('');
+  const inputValue = ref<Record<string, string>>({});
   const inputRef = ref<HTMLInputElement | null>(null);
 
   const dialogVisible = computed({
@@ -19,17 +20,17 @@
 
   watch(dialogVisible, async (val) => {
     if (val) {
-      inputValue.value = '';
+      inputValue.value = {};
       await nextTick();
       inputRef.value?.focus();
     }
   });
 
   function handleConfirm() {
-    const name = inputValue.value.trim();
+    const name = inputValue.value;
     if (!name) return;
     emit('confirm', name);
-    inputValue.value = '';
+    inputValue.value = {};
   }
 </script>
 
@@ -54,8 +55,8 @@
       </div>
     </template>
 
-    <label class="field-label" for="edu-type-input">{{ $t('subject_name') }}</label>
-    <input
+    <!-- <label class="field-label" for="edu-type-input">{{ $t('subject_name') }}</label> -->
+    <!-- <input
       id="edu-type-input"
       ref="inputRef"
       v-model="inputValue"
@@ -64,10 +65,22 @@
       class="field-input"
       @keydown.enter="handleConfirm"
       @keydown.esc="dialogVisible = false"
+    /> -->
+
+    <MultiLangInput
+      ref="inputRef"
+      :field-key="`title`"
+      :label="$t(`title`)"
+      :languages="['en', 'ar']"
+      :model-value="inputValue"
+      :type="`title`"
+      @update:model-value="inputValue = $event"
+      @keydown.enter="handleConfirm"
+      @keydown.esc="dialogVisible = false"
     />
 
     <div class="dialog-footer">
-      <button class="btn btn-primary" :disabled="!inputValue.trim()" @click="handleConfirm">
+      <button class="btn btn-primary" :disabled="!inputValue" @click="handleConfirm">
         {{ $t('add') }}
       </button>
       <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>

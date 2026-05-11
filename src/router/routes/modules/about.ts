@@ -14,7 +14,7 @@ export const AboutRoutes: RouteRecordRaw[] = [
     name: 'Add About',
     component: () => import('@/views/About/AddAbout.vue'),
     meta: {
-      breadcrumb: 'Add Country',
+      breadcrumb: 'Add About',
       parent: 'About',
     },
   },
@@ -24,7 +24,7 @@ export const AboutRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/About/EditAbout.vue'),
     props: true,
     meta: {
-      breadcrumb: 'Edit Country',
+      breadcrumb: 'Edit About',
       parent: 'About',
     },
   },

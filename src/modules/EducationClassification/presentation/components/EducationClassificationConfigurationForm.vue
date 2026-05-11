@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import { onMounted, ref, watch } from 'vue';
-  import { onBeforeRouteLeave, useRoute } from 'vue-router';
+  import { useRoute } from 'vue-router';
   import { useFormsStore } from '@/stores/formsStore';
   import type EducationClassificationModel from '../../core/models/education.classification.model';
-  import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
+  // import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
   import FolderCrudIcon from '@/shared/icons/FolderCrudIcon.vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import SingularPluralForm from '../../subComponent/SingularPluralForm.vue';
@@ -32,15 +32,15 @@
 
   const FormStore = useFormsStore();
 
-  onBeforeRouteLeave((to, from) => {
-    if (formKey) {
-      const savedData = FormStore.getFormData(formKey);
+  // onBeforeRouteLeave((to, from) => {
+  //   if (formKey) {
+  //     const savedData = FormStore.getFormData(formKey);
 
-      if (savedData && to.path !== from.path) {
-        FormStore.showReturnWarning(formKey);
-      }
-    }
-  });
+  //     if (savedData && to.path !== from.path) {
+  //       FormStore.showReturnWarning(formKey);
+  //     }
+  //   }
+  // });
 
   // Form state
   const title = ref<string>('');
@@ -64,11 +64,15 @@
       });
     }
 
-    const params = new AddEducationClassificationParams({
-      title: title.value,
-    });
+    // const params = new AddEducationClassificationParams({
+    //   // title: title.value,
+    //   translation: new TranslationParams({
+    //     PluralTitle:title.value
+    //   })
+    // });
 
-    emit('updateData', params);
+    // emit('updateData', params);
+    emit('updateData');
   };
 
   const resetForm = () => {
@@ -123,7 +127,7 @@
       );
     });
     const params = new AddEducationConfigurationParams({
-      educationClassificatioId: 1,
+      educationClassificatioId: Number(route.params.id),
       numberOfBranches: ConfigurationNumberOfBranchs.value,
       branches: configurationBranches,
     });
@@ -145,7 +149,7 @@
       );
     });
     const params = new AddEducationSubjectParams({
-      educationClassificatioId: 1,
+      educationClassificatioId: Number(route.params.id),
       numberOfBranches: SubjectnumberOfBranchs.value,
       branches: configurationBranches,
       translation: new TranslationParams({
@@ -157,23 +161,26 @@
     await controller.create(params);
   };
 
-  const fillConfigurationForm = (data: EducationConfigurationModel) => {
+  const fillConfigurationForm = (data: EducationConfigurationModel | undefined) => {
+    if (!data) return;
     ConfigurationnumberOfBranchs.value = data.numberOfBranches;
     ConfigurationNumberOfBranchs.value = data.numberOfBranches;
     configurationInitialBranches.value = data.branches.map((branch) => ({
-      singular: { ...branch.translation.SingularTitle },
-      plural: { ...branch.translation.PluralTitle },
+      singular: { ...branch.singularTitle },
+      plural: { ...branch.pluralTitle },
     }));
   };
 
-  const fillSubjectForm = (data: EducationSubjectConfigurationModel) => {
+  const fillSubjectForm = (data: EducationSubjectConfigurationModel | undefined) => {
+    if (!data) return;
+    console.log(data, 'data');
     SubjectnumberOfBranchs.value = data.numberOfBranches;
     subjectNumberOfBranchs.value = data.numberOfBranches;
-    subject_title_Singular.value = { ...data.translation.SingularTitle };
-    subject_title_Plural.value = { ...data.translation.PluralTitle };
+    subject_title_Singular.value = data.SingularTitle;
+    subject_title_Plural.value = data.pluralTitle;
     subjectInitialBranches.value = data.branches.map((branch) => ({
-      singular: { ...branch.translation.SingularTitle },
-      plural: { ...branch.translation.PluralTitle },
+      singular: { ...branch.singularTitle },
+      plural: { ...branch.pluralTitle },
     }));
   };
 
@@ -188,17 +195,21 @@
           educationClassificatioId: Number(route.params.id),
         }),
       ),
-      subjectController.fetchList(),
+      subjectController.fetchList(
+        new IndexEducationConfigurationParams({
+          educationClassificatioId: Number(route.params.id),
+        }),
+      ),
     ]);
 
-    if (configResult instanceof DataSuccess && configResult.data) {
-      fillConfigurationForm(configResult.data);
+    if (configResult instanceof DataSuccess && configResult.data?.[0]) {
+      fillConfigurationForm(configResult.data[0]);
     } else {
       fillConfigurationForm(EducationConfigurationModel.example);
     }
 
-    if (subjectResult instanceof DataSuccess && subjectResult.data) {
-      fillSubjectForm(subjectResult.data);
+    if (subjectResult instanceof DataSuccess && subjectResult.data?.[0]) {
+      fillSubjectForm(subjectResult.data[0]);
     } else {
       fillSubjectForm(EducationSubjectConfigurationModel.example);
     }
@@ -267,6 +278,7 @@
               :label="$t(`subjects_name_(Singular)`)"
               :languages="['en', 'ar']"
               :model-value="subject_title_Singular"
+              :type="`title`"
               @update:model-value="subject_title_Singular = $event"
             />
           </div>
@@ -277,16 +289,18 @@
               :field-key="`title_Plural`"
               :label="$t(`subjects_name_(Plural)`)"
               :languages="['en', 'ar']"
+              :type="`title`"
               :model-value="subject_title_Plural"
               @update:model-value="subject_title_Plural = $event"
             />
           </div>
         </div>
+
         <div class="field-group">
-          <label class="field-label" for="title"> {{ $t('num_of_levels') }} </label>
+          <label class="field-label" for="subject_number"> {{ $t('num_of_levels') }} </label>
           <div class="input-wrap">
             <input
-              id="title"
+              id="subject_number"
               v-model="SubjectnumberOfBranchs"
               type="number"
               :placeholder="$t('num_of_levels')"
@@ -295,10 +309,12 @@
             />
           </div>
         </div>
+
         <button class="save-btn" @click="ApplySubjectBranchs">
           {{ $t('apply') }}
         </button>
       </div>
+
       <SingularPluralForm
         :number-of-branches="subjectNumberOfBranchs"
         :label="$t('name_of_subjects')"

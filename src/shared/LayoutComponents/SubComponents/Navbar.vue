@@ -31,6 +31,7 @@
     isDropMenuOpen.value = !isDropMenuOpen.value;
   };
   const DrawerVisible = ref(false);
+  const { user } = useUserStore();
 </script>
 
 <template>
@@ -48,18 +49,35 @@
         <HeaderDarkModeIcon class="cursor-pointer" @click="themeStore.toggle()" />
         <HeaderSettingIcon class="cursor-pointer" />
 
-        <div class="user cursor-pointer dropdown-trigger" @click="toggleDropMenu">
-          <!-- <IconArrowDownNav class="drop-icon" /> -->
-          <img alt="user" :src="EmployeeImage" />
-          <div v-if="isDropMenuOpen" class="dropdown-menu">
-            <ul>
-              <li @click="logout">
-                <IconLogout />
-                <span> {{ $t('logout') }} </span>
-              </li>
-            </ul>
-          </div>
+        <!-- <IconArrowDownNav class="drop-icon" /> -->
+        <div class="user cursor-pointer dropdown-trigger">
+          <img alt="user" :src="EmployeeImage" @click="toggleDropMenu" />
+
+          <transition name="mega-menu">
+            <div v-if="isDropMenuOpen" class="mega-menu">
+              <div class="mega-header">
+                <img
+                  :src="EmployeeImage || `https://cyber.comolho.com/static/img/avatar.png`"
+                  alt="image"
+                />
+                <div>
+                  <p class="name">{{ user?.name }}</p>
+                  <span class="role">Admin</span>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="mega-actions">
+                <button class="logout-btn" @click="logout">
+                  <icon-logout />
+                  <span>{{ $t('logout') }}</span>
+                </button>
+              </div>
+            </div>
+          </transition>
         </div>
+
         <div class="sidebar-drawer">
           <button class="cursor-pointer" @click="DrawerVisible = true">
             <HeaderSidebarIcon />
@@ -74,6 +92,7 @@
   </header>
 </template>
 
+<style scoped lang="scss"></style>
 <!-- <style scoped>
 .logo-img {
   background-color: red;

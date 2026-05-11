@@ -1,16 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import EducationConfigurationModel from './education.configuration.model';
-import ConfigurationParams from '../../params/EducationConfiguration/Configuration.params';
-import TranslationParams from '../../params/translation.params';
-
-const makeBranch = (level: number) =>
-  new ConfigurationParams({
-    levelNumber: level,
-    translation: new TranslationParams({
-      SingularTitle: { en: `Level ${level}`, ar: `مستوى ${level}` },
-      PluralTitle: { en: `Levels ${level}`, ar: `مستويات ${level}` },
-    }),
-  });
 
 describe('EducationConfigurationModel', () => {
   describe('constructor', () => {
@@ -18,7 +7,20 @@ describe('EducationConfigurationModel', () => {
       const model = new EducationConfigurationModel({
         educationClassificatioId: 1,
         numberOfBranches: 2,
-        branches: [makeBranch(1), makeBranch(2)],
+        branches: [
+          new EducationConfigurationModel.example.branches[0].constructor({
+            id: 1,
+            levelNumber: 1,
+            singularTitle: { en: 'Level 1', ar: 'مستوى 1' },
+            pluralTitle: { en: 'Levels 1', ar: 'مستويات 1' },
+          }),
+          new EducationConfigurationModel.example.branches[0].constructor({
+            id: 2,
+            levelNumber: 2,
+            singularTitle: { en: 'Level 2', ar: 'مستوى 2' },
+            pluralTitle: { en: 'Levels 2', ar: 'مستويات 2' },
+          }),
+        ],
       });
 
       expect(model.educationClassificatioId).toBe(1);
@@ -55,9 +57,8 @@ describe('EducationConfigurationModel', () => {
       expect(model.educationClassificatioId).toBe(3);
       expect(model.numberOfBranches).toBe(2);
       expect(model.branches).toHaveLength(2);
-      expect(model.branches[0]).toBeInstanceOf(ConfigurationParams);
       expect(model.branches[0].levelNumber).toBe(1);
-      expect(model.branches[0].translation.SingularTitle).toEqual({ en: 'Stage', ar: 'مرحلة' });
+      expect(model.branches[0].singularTitle).toEqual({ en: 'Stage', ar: 'مرحلة' });
     });
 
     it('should default branches to [] when missing', () => {
@@ -85,7 +86,7 @@ describe('EducationConfigurationModel', () => {
 
       const model = EducationConfigurationModel.fromJson(json);
 
-      expect(model.branches[0].translation.SingularTitle).toEqual({ en: 'Stage', ar: 'مرحلة' });
+      expect(model.branches[0].singularTitle).toEqual({ en: 'Stage', ar: 'مرحلة' });
     });
 
     it('should throw when JSON is null', () => {

@@ -7,6 +7,8 @@
   import FolderCrudIcon from '@/shared/icons/FolderCrudIcon.vue';
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
+  import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
+  import { date } from '@primeuix/themes/aura/datepicker';
 
   const emit = defineEmits(['updateData', 'save-education-classification']);
 
@@ -57,16 +59,17 @@
     });
 
     emit('updateData', params);
+
+    // console.log("aa")
   };
 
-  const resetForm = () => {
-    title.value = {};
-  };
+  // const resetForm = () => {
+  //   title.value = {};
+  // };
 
   onMounted(() => {
     // if (formKey) {
     //   const saved = FormStore.getFormData(formKey);
-
     //   if (saved) {
     //     title.value = saved.title;
     //     updateData();
@@ -82,6 +85,14 @@
     title.value = data;
     updateData();
   };
+  // fillter
+  const FilterDialogShow = ref<boolean>(false);
+  const ApplayFilter = () => {
+    FilterDialogShow.value = false;
+  };
+  const CloseFiletrDialog = () => {
+    FilterDialogShow.value = false;
+  };
 </script>
 
 <template>
@@ -94,6 +105,18 @@
           {{ $t(' Add education classification') }}
         </h3>
       </div>
+      <FilterDialog v-model="FilterDialogShow">
+        <template #content>
+          <div class="date-remove">
+            <h6>{{ $t('date of remove') }}</h6>
+            <DatePicker v-model="date" class="date-model" :placeholder="$t('Date Remove')" />
+          </div>
+          <div class="filter-action">
+            <button class="btn btn-cancel" @click="CloseFiletrDialog">{{ $t('Reset') }}</button>
+            <button class="btn btn-primary" @click="ApplayFilter">{{ $t('apply') }}</button>
+          </div>
+        </template>
+      </FilterDialog>
     </header>
 
     <!-- ── Fields ────────────────────────────────────────── -->

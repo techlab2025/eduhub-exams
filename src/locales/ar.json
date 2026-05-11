@@ -75,6 +75,11 @@
   "Select a stage from the tree to view details": "اختر مرحلة من الشجرة لعرض التفاصيل",
   "subject pricing": "تسعير المواد",
   "Manage how each subject is priced within your system.": "إدارة كيفية تسعير كل مادة داخل نظامك",
+  "subject skills": "مهارات المادة",
+  "Manage how each subject skills are configured within your system.": "إدارة كيفية ضبط مهارات كل مادة داخل نظامك",
+  "time": "الوقت",
+  "enter_percentage": "أدخل النسبة",
+  "enter_time": "أدخل الوقت",
   "duration (month only)": "المدة (بالشهر فقط)",
   "pricing": "التسعير",
   "skills": "المهارات",
@@ -99,5 +104,11 @@
   "update_admin_details": "قم بتحديث تفاصيل المسؤول أدناه",
   "fill_admin_details": "أدخل معلومات المسؤول",
   "save_admin": "حفظ المسؤول",
-  "update_admin": "تحديث المسؤول"
+  "update_admin": "تحديث المسؤول",
+  "logout": "تسجيل الخروج",
+  "add_new_document_type": "إضافة نوع وثيقة جديد",
+  "edit_document_type": "تعديل نوع الوثيقة",
+  "manage_and_organize_your_document_categories": "إدارة وتنظيم فئات الوثائق الخاصة بك",
+  "document_type_name": "اسم نوع الوثيقة",
+  "is_master": "هل هو نوع رئيسي؟"
 }

@@ -74,7 +74,7 @@ describe('AddBranchDialog', () => {
     expect(wrapper.emitted('confirm')).toBeTruthy();
     const emitted = wrapper.emitted('confirm');
     expect(emitted?.[0]?.[0]).toEqual({
-      name: 'New Branch Name',
+      name: { en: 'New Branch Name' },
       level: 1,
       branchId: 123,
     });

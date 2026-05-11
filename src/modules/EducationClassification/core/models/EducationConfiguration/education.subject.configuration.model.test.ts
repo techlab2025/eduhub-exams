@@ -1,32 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import EducationSubjectConfigurationModel from './education.subject.configuration.model';
-import EducationSubjectParams from '../../params/EducationSubjects/education.subject.params';
-import TranslationParams from '../../params/translation.params';
-
-const makeTranslation = (singular: string, plural: string) =>
-  new TranslationParams({
-    SingularTitle: { en: singular, ar: singular },
-    PluralTitle: { en: plural, ar: plural },
-  });
-
 describe('EducationSubjectConfigurationModel', () => {
   describe('constructor', () => {
     it('should create a valid model', () => {
       const model = new EducationSubjectConfigurationModel({
         educationClassificatioId: 1,
         numberOfBranches: 2,
-        translation: makeTranslation('Subject', 'Subjects'),
+        SingularTitle: { en: 'Subject', ar: 'مادة' },
+        pluralTitle: { en: 'Subjects', ar: 'مواد' },
         branches: [
-          new EducationSubjectParams({
+          new EducationSubjectConfigurationModel.example.branches[0].constructor({
+            id: 1,
             levelNumber: 1,
-            translation: makeTranslation('Part', 'Parts'),
+            singularTitle: { en: 'Part', ar: 'جزء' },
+            pluralTitle: { en: 'Parts', ar: 'اجزاء' },
           }),
         ],
       });
 
       expect(model.educationClassificatioId).toBe(1);
       expect(model.numberOfBranches).toBe(2);
-      expect(model.translation.SingularTitle.en).toBe('Subject');
+      expect(model.SingularTitle.en).toBe('Subject');
       expect(model.branches).toHaveLength(1);
     });
   });
@@ -62,10 +56,9 @@ describe('EducationSubjectConfigurationModel', () => {
 
       expect(model.educationClassificatioId).toBe(2);
       expect(model.numberOfBranches).toBe(2);
-      expect(model.translation.SingularTitle).toEqual({ en: 'Subject', ar: 'مادة' });
-      expect(model.translation.PluralTitle).toEqual({ en: 'Subjects', ar: 'مواد' });
+      expect(model.SingularTitle).toEqual({ en: 'Subject', ar: 'مادة' });
+      expect(model.pluralTitle).toEqual({ en: 'Subjects', ar: 'مواد' });
       expect(model.branches).toHaveLength(2);
-      expect(model.branches[0]).toBeInstanceOf(EducationSubjectParams);
       expect(model.branches[0].levelNumber).toBe(1);
     });
 
@@ -77,8 +70,8 @@ describe('EducationSubjectConfigurationModel', () => {
 
       const model = EducationSubjectConfigurationModel.fromJson(json);
 
-      expect(model.translation.SingularTitle).toEqual({});
-      expect(model.translation.PluralTitle).toEqual({});
+      expect(model.SingularTitle).toEqual({});
+      expect(model.pluralTitle).toEqual({});
       expect(model.branches).toEqual([]);
     });
 
@@ -96,7 +89,7 @@ describe('EducationSubjectConfigurationModel', () => {
       expect(ex).toBeInstanceOf(EducationSubjectConfigurationModel);
       expect(ex.numberOfBranches).toBe(2);
       expect(ex.branches).toHaveLength(2);
-      expect(ex.translation.SingularTitle.en).toBe('Subject');
+      expect(ex.SingularTitle.en).toBe('title 1 ');
     });
   });
 
@@ -105,7 +98,8 @@ describe('EducationSubjectConfigurationModel', () => {
       const model = new EducationSubjectConfigurationModel({
         educationClassificatioId: 1,
         numberOfBranches: 0,
-        translation: makeTranslation('X', 'Xs'),
+        SingularTitle: { en: 'X', ar: 'X' },
+        pluralTitle: { en: 'Xs', ar: 'Xs' },
         branches: [],
       });
 

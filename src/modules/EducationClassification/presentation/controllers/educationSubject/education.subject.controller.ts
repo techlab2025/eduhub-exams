@@ -2,7 +2,7 @@ import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { type DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import EducationSubjectRepository from '@/modules/EducationClassification/data/repositories/educationSubject/education.subject.repository';
@@ -25,9 +25,11 @@ export default class EducationSubjectController extends BaseController<
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
-      autoRetry: true,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
+      autoRetry: false,
       maxAutoRetries: 1,
     };
   }
@@ -57,6 +59,20 @@ export default class EducationSubjectController extends BaseController<
         FormStore.clearFormData(formKey);
       }
     }
+    return result;
+  }
+  async fetchList(
+    params?: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<EducationSubjectConfigurationModel>> {
+    const result = await super.fetchList(params, {
+      ...options,
+      useJson: true,
+      headers: {
+        'x-country': options?.headers?.['x-country'] || 'sa',
+        'accept-language': params?.isLocale ? 'en' : '*',
+      },
+    });
     return result;
   }
 }

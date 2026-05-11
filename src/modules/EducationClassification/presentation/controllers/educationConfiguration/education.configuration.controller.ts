@@ -28,8 +28,10 @@ export default class EducationConfigurationController extends BaseController<
   protected get config(): ControllerConfig {
     return {
       showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,
     };
@@ -62,6 +64,15 @@ export default class EducationConfigurationController extends BaseController<
     }
     return result;
   }
+  
+  async fetchOne(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<EducationConfigurationModel>> {
+    const result = super.fetchOne(params, options);
+    return result;
+  }
+
   async fetchList(
     params?: Params,
     options?: ApiCallOptions,

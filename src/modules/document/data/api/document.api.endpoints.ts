@@ -1,7 +1,7 @@
 import { BaseEndpoints } from "@/base/Data/Endpoints/BaseEndpoints";
 
 export class DocumentEndpoints extends BaseEndpoints {
-  protected readonly prefix = "document/";
+  protected readonly prefix = "dashboard/";
 
   readonly index = this.url("fetch_documents");
   readonly show = this.url("show_document");

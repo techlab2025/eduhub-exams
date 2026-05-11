@@ -10,6 +10,7 @@
   import UplaodImageInput from '@/shared/icons/UploadImage/UplaodImageInput.vue';
   import LinksIcon from '@/shared/icons/SocialIcons/LinksIcon.vue';
   import type SocialModel from '../../core/models/social.model';
+  import Generalinformaion from '@/shared/icons/generalinformaion.vue';
 
   // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -26,7 +27,7 @@
 
   const description = ref<Record<string, string>>({});
   const title = ref<Record<string, string>>({});
-  const image = ref<string>('');
+  const image = ref<string | null>(null);
 
   const socialMediaList = ref<SocialModel[]>([{ link: '', icon: '' }]);
 
@@ -38,7 +39,7 @@
       if (newAbout) {
         description.value = newAbout.translations.description || {};
         title.value = newAbout.translations.title || {};
-        image.value = newAbout.images;
+        image.value = newAbout.images || null;
         socialMediaList.value = newAbout.socialMedia;
 
         // Populate social media if provided by the model
@@ -73,6 +74,13 @@
 
   const resetSocialMedia = () => {
     socialMediaList.value = [{ link: '', icon: '' }];
+  };
+  const uploadKey = ref(0);
+  const resetGeneralInputs = () => {
+    title.value = {};
+    description.value = {};
+    image.value = null;
+    uploadKey.value++;
   };
 
   // ─── Form Actions ─────────────────────────────────────────────────────────────
@@ -111,7 +119,7 @@
   // ─── File Handler ─────────────────────────────────────────────────────────────
 
   const handleImageChange = (file: Array<{ base64: string }>) => {
-    image.value = file?.[0]!.base64;
+    image.value = file?.[0]!.base64 || null;
     updateData();
   };
 </script>
@@ -123,6 +131,15 @@
       <p class="description">
         {{ $t('Manage and review platform information visible to students') }}
       </p>
+    </div>
+    <div class="general-information-header">
+      <div class="general-information-title">
+        <span class="globe-icon">
+          <Generalinformaion />
+        </span>
+        <span>{{ $t('General_Information') }}</span>
+      </div>
+      <button type="button" class="reset-btn" @click="resetGeneralInputs">{{ $t('reset') }}</button>
     </div>
     <div class="form-fields">
       <!-- Title -->
@@ -152,6 +169,7 @@
       <!-- Image Upload -->
       <div class="field-group col-span-2">
         <HandleFilesUpload
+          :key="uploadKey"
           :label="`upload image`"
           accept="image/*"
           :multiple="false"

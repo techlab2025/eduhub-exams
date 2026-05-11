@@ -1,15 +1,15 @@
-import ConfigurationParams from '../../params/EducationConfiguration/Configuration.params';
-import TranslationParams from '../../params/translation.params';
+import TitleInterface from '@/base/Data/Models/titleInterface';
+import ConfigurationBranchesModel from './configuration.branch.model';
 
 export default class EducationConfigurationModel {
-  public readonly educationClassificatioId: number;
+  public readonly educationClassificatioId: TitleInterface<number>;
   public readonly numberOfBranches: number;
-  public readonly branches: ConfigurationParams[];
+  public readonly branches: ConfigurationBranchesModel[];
 
   constructor(data: {
-    educationClassificatioId: number;
+    educationClassificatioId: TitleInterface<number>;
     numberOfBranches: number;
-    branches: ConfigurationParams[];
+    branches: ConfigurationBranchesModel[];
   }) {
     this.educationClassificatioId = data.educationClassificatioId;
     this.numberOfBranches = data.numberOfBranches;
@@ -18,54 +18,42 @@ export default class EducationConfigurationModel {
     Object.freeze(this);
   }
 
-  static fromJson(json: any): EducationConfigurationModel {
+  static fromJson(json: Record<string, unknown>): EducationConfigurationModel {
     if (!json) {
       throw new Error('Cannot create EducationConfigurationModel from null or undefined');
     }
 
     return new EducationConfigurationModel({
-      educationClassificatioId: json.education_classification_id,
-      numberOfBranches: json.number_of_branches,
+      educationClassificatioId: json.education_classification ?? json.education_classification_id,
+      numberOfBranches: json.number_of_branches ?? json.numberOfBranches,
       branches:
-        json.branches?.map(
-          (branch: any) =>
-            new ConfigurationParams({
-              levelNumber: branch.level_number,
-              translation: new TranslationParams({
-                SingularTitle:
-                  branch.translations?.SingularTitle || branch.translation?.SingularTitle || {},
-                PluralTitle:
-                  branch.translations?.PluralTitle || branch.translation?.PluralTitle || {},
-              }),
-            }),
+        (json.branches as unknown[])?.map((branch: any) =>
+          ConfigurationBranchesModel.fromJson(branch as Record<string, any>),
         ) || [],
     });
   }
 
   static example: EducationConfigurationModel = new EducationConfigurationModel({
-    educationClassificatioId: 1,
+    educationClassificatioId: new TitleInterface({ id: 1, title: 'Example' }),
     numberOfBranches: 3,
     branches: [
-      new ConfigurationParams({
+      new ConfigurationBranchesModel({
+        id: 1,
         levelNumber: 1,
-        translation: new TranslationParams({
-          SingularTitle: { en: 'Stage', ar: 'مرحلة' },
-          PluralTitle: { en: 'Stages', ar: 'مراحل' },
-        }),
+        singularTitle: { en: 'Stage', ar: 'مرحلة' },
+        pluralTitle: { en: 'Stages', ar: 'مراحل' },
       }),
-      new ConfigurationParams({
+      new ConfigurationBranchesModel({
+        id: 2,
         levelNumber: 2,
-        translation: new TranslationParams({
-          SingularTitle: { en: 'Grade', ar: 'صف' },
-          PluralTitle: { en: 'Grades', ar: 'صفوف' },
-        }),
+        singularTitle: { en: 'Grade', ar: 'صف' },
+        pluralTitle: { en: 'Grades', ar: 'صفوف' },
       }),
-      new ConfigurationParams({
+      new ConfigurationBranchesModel({
+        id: 3,
         levelNumber: 3,
-        translation: new TranslationParams({
-          SingularTitle: { en: 'Term', ar: 'فصل' },
-          PluralTitle: { en: 'Terms', ar: 'فصول' },
-        }),
+        singularTitle: { en: 'Term', ar: 'فصل' },
+        pluralTitle: { en: 'Terms', ar: 'فصول' },
       }),
     ],
   });

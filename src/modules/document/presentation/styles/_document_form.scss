@@ -23,15 +23,17 @@
       gap: 5px;
 
       h4 {
-        color: $BgBlack;
-        font-size: 24px;
-        font-weight: 700;
+        color: var(--title-card-color);
+        font-size: $MdSize2;
+        font-weight: $BaseFontWeightBold;
+        font-family: 'bold';
       }
 
       p {
-        color: $Gray-5;
-        font-weight: 500;
-        font-size: 16px;
+        color: var(--title-header-color);
+        font-weight: $BaseFontMediumWeight;
+        font-family: 'Medium';
+        font-size: $MdSize;
       }
     }
   }
@@ -120,12 +122,12 @@
 
     &.tags-group {
       .input-wrap {
-        border: 1px solid var(--gray-soft);
+        border: 1px solid var(--input-border-color);
 
         @include flex-row(nowrap, space-between, center);
 
         border-radius: 50px;
-        padding: 3px;
+        padding: $XsSize5 $MdSize;
 
         button {
           padding: 10px 12px;
@@ -134,6 +136,10 @@
 
         input {
           width: 80%;
+
+          &:focus {
+            box-shadow: none !important;
+          }
         }
       }
 
@@ -176,9 +182,10 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: $Gray-5;
-    font-size: 16px;
-    font-weight: 600;
+    color: var(--table-data-color);
+    font-size: $MdSize;
+    font-family: 'Medium';
+    font-weight: $BaseFontSemiBoldWeight;
     letter-spacing: 0.04em;
     text-transform: none;
 
@@ -206,7 +213,10 @@
     font-weight: 500 !important;
 
     &::placeholder {
-      color: var(--gray-400);
+      color: var(--bread-crumb-color-span);
+      font-weight: $BaseFontMediumWeight;
+      font-family: 'Medium';
+      font-size: $SmSize;
     }
 
     &:focus {
@@ -221,6 +231,13 @@
       border-color: var(--gray-300);
       background: var(--bg-main);
     }
+  }
+
+  .p-placeholder {
+    color: var(--bread-crumb-color-span) !important;
+    font-weight: $BaseFontMediumWeight !important;
+    font-family: 'Medium';
+    font-size: $SmSize;
   }
 
   /* ── Deep: Custom Input Select (Accordion) ─────────────────── */

@@ -17,8 +17,8 @@ export default class EducationSubjectModel {
     }
 
     return new EducationSubjectModel({
-      subject_id: json.subject_id as number,
-      subject_title: json.subject_title as string,
+      subject_id: json.id as number,
+      subject_title: json.title as string,
       has_children: json.has_children as boolean,
     });
   }

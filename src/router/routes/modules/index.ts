@@ -11,6 +11,7 @@ import { educationClassificationRoutes } from './education-classification';
 import { AboutRoutes } from './about';
 import { SupportContactsRoutes } from './support';
 import { DeletedAccountsRoutes } from './deleted-accounts';
+import { SkillsRoutes } from './skills';
 
 export const dashboardRoutes: RouteRecordRaw[] = [
   ...employeeRoutes,
@@ -25,4 +26,5 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...AboutRoutes,
   ...SupportContactsRoutes,
   ...DeletedAccountsRoutes,
+  ...SkillsRoutes,
 ];

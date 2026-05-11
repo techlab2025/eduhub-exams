@@ -21,7 +21,7 @@
   import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
   import type TitleInterface from '@/base/Data/Models/titleInterface';
 
-  const controller = DocumentController.getInstance();
+  const controller = DocumentController.getInstance(); 
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
@@ -120,8 +120,11 @@
 
 <template>
   <div class="document-page">
-    <h4 class="document-index-title">Documents</h4>
-    <p class="document-index-dexription">Manage and organize all uploaded documents in one place</p>
+    <h4 class="document-index-title">{{ $t('Documents') }}</h4>
+    <p class="document-index-dexription">
+      {{ $t('Manage and organize all uploaded documents in one place') }}
+    </p>
+    <div class="badge">{{ $t('All Documents') }}</div>
     <div class="index-header">
       <div class="toolbar">
         <div class="search-field">
@@ -152,8 +155,8 @@
         <FilterDialog v-model="FilterDialogShow">
           <template #content>
             <div class="date-remove">
-              <h6>date of remove</h6>
-              <DatePicker v-model="date" class="date-model" placeholder="Date Remove" />
+              <h6>{{ $t('date of remove') }}</h6>
+              <DatePicker v-model="date" class="date-model" :placeholder="$t('Date Remove')" />
             </div>
             <div class="date-remove">
               <UpdatedCustomInputSelect
@@ -162,7 +165,7 @@
                 :params="indexDocumentTypeParams"
                 :controller="documentTypeController"
                 :model-value="selectedDocumentType"
-                placeholder="Document Type"
+                :placeholder="$t('Document Type')"
                 @update:model-value="updateData"
               />
             </div>
@@ -173,13 +176,13 @@
                 :params="indexDocumentTypeParams"
                 :controller="documentTypeController"
                 :model-value="selectedDocumentType"
-                placeholder="Student Name"
+                :placeholder="$t('Student Name')"
                 @update:model-value="updateData"
               />
             </div>
             <div class="filter-action">
-              <button class="btn btn-cancel" @click="CloseFiletrDialog">Reset</button>
-              <button class="btn btn-primary" @click="ApplayFilter">apply</button>
+              <button class="btn btn-cancel" @click="CloseFiletrDialog">{{ $t('Reset') }}</button>
+              <button class="btn btn-primary" @click="ApplayFilter">{{ $t('apply') }}</button>
             </div>
           </template>
         </FilterDialog>
@@ -304,6 +307,10 @@
     border-bottom: 2px dashed rgba(230, 230, 230, 1);
     padding-bottom: 1rem;
     margin: 1rem 0;
+
+    &::placeholder {
+      color: red !important;
+    }
 
     h6 {
       color: rgba(75, 75, 75, 1);

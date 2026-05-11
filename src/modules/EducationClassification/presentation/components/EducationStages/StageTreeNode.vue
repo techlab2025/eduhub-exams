@@ -8,6 +8,8 @@
   import { useI18n } from 'vue-i18n';
   import RenameClassificationDialog from '@/modules/EducationClassification/subComponent/RenameClassificationDialog.vue';
   import ToggleSwitch from 'primevue/toggleswitch';
+  import DeleteEducationStageParams from '@/modules/EducationClassification/core/params/EducationStages/delete.education.stage.params';
+  import EducationStageController from '../../controllers/EducationStages/education.stages.controller';
 
   export interface StageNode {
     stage: EducationStageModel;
@@ -20,21 +22,20 @@
   const props = defineProps<{
     node: StageNode;
     selectedStageId: number | null;
+    MaxDepth: number;
+    parentId: number | null;
   }>();
 
   const emit = defineEmits<{
     (e: 'fetch-children', parentId: number, callback: (children: StageNode[]) => void): void;
     (e: 'add-child', stageId: number, level: number): void;
     (e: 'select', node: StageNode): void;
+    (e: 'delete-branch', parentId: number | null): void;
   }>();
 
-  const maxDepth = inject<ComputedRef<number>>(
-    'maxDepth',
-    computed(() => Infinity),
-  );
   const refreshParentId = inject<Ref<number | null>>('refreshParentId', ref(null));
 
-  const canAddChild = computed(() => props.node.depth + 1 < maxDepth.value);
+  const canAddChild = computed(() => props.node.depth + 1 < props.MaxDepth);
   const isOpen = ref(false);
   const isLoading = ref(false);
   const hasFetched = ref(false);
@@ -101,15 +102,17 @@
 
   const ShoweEditDialog = ref(false);
   const { t } = useI18n();
+  const controller = EducationStageController.getInstance();
 
-  function deleteEducationClassification(id: number) {
-    console.warn('Delete not implemented for id:', id);
+  async function deleteEducationClassification(id: number) {
+    await controller.delete(new DeleteEducationStageParams({ stage_id: id }));
+    emit('delete-branch', props.parentId);
   }
   function toggleStatus(id: number) {
     console.warn('Toggle status not implemented for id:', id);
   }
 
-  const actionList = (id: number, deleteFn: (id: number) => void) => [
+  const actionList = (id: number) => [
     {
       text: t('rename'),
       icon: EditIcon,
@@ -120,15 +123,15 @@
     {
       text: t('delete'),
       icon: DeletIcon,
-      action: () => deleteFn(id),
+      action: () => deleteEducationClassification(id),
     },
-    {
-      text: t(props.node.stage.status === 1 ? 'active' : 'unactive'),
-      icon: ToggleSwitch,
-      action: () => {
-        toggleStatus(id);
-      },
-    },
+    // {
+    //   text: t(props.node.stage.status === 1 ? 'active' : 'unactive'),
+    //   icon: ToggleSwitch,
+    //   action: () => {
+    //     toggleStatus(id);
+    //   },
+    // },
   ];
 </script>
 
@@ -141,7 +144,7 @@
       @click="handleRowClick"
     >
       <button
-        v-if="!hasFetched || children.length > 0"
+        v-if="(!hasFetched || children.length > 0) && node.depth + 1 != MaxDepth"
         class="toggle-btn"
         @click.stop="handleToggle"
       >
@@ -167,7 +170,7 @@
       <span v-else class="toggle-spacer" />
 
       <svg
-        v-if="node.depth + 1 != maxDepth"
+        v-if="node.depth + 1 != MaxDepth"
         viewBox="0 0 20 20"
         fill="none"
         width="16"
@@ -212,7 +215,7 @@
 
       <button class="icon-btn" @click.stop>
         <DropList
-          :action-list="actionList(node.stage.stage_id, deleteEducationClassification)"
+          :action-list="actionList(node.stage.stage_id)"
           :delete-dialog-title="$t('are_you_sure_you_want_to_remove_this_education_classification')"
           :delete-dialog-message="
             $t(
@@ -220,7 +223,10 @@
             )
           "
         />
-        <RenameClassificationDialog v-model:visable="ShoweEditDialog" />
+        <RenameClassificationDialog
+          :itemId="node.stage.stage_id"
+          v-model:visable="ShoweEditDialog"
+        />
       </button>
     </div>
     <transition name="slide-down">
@@ -229,10 +235,13 @@
           v-for="child in children"
           :key="child.stage.stage_id"
           :node="child"
+          :MaxDepth="MaxDepth"
           :selected-stage-id="selectedStageId"
+          :parent-id="node.stage.stage_id"
           @fetch-children="onChildFetch"
           @add-child="onChildAdd"
           @select="onChildSelect"
+          @delete-branch="$emit('delete-branch', $event)"
         />
       </div>
     </transition>

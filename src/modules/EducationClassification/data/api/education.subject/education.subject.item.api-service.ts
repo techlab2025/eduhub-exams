@@ -18,6 +18,8 @@ export default class EducationSubjectItemApiService extends BaseApiService {
     return {
       index: this.endpoints_.index,
       create: this.endpoints_.store,
+      delete: this.endpoints_.delete,
+      update: this.endpoints_.update,
     };
   }
 }

@@ -15,9 +15,12 @@ export default class DocumentTypeApiService extends BaseApiService {
   }
 
   protected get endpoints(): Partial<ApiEndpoints> {
-    return {
+    return { 
       create: this.documentTypeEndpoints.store,
-      index: this.documentTypeEndpoints.idnex,
+      index: this.documentTypeEndpoints.index,
+      delete: this.documentTypeEndpoints.delete,
+      update: this.documentTypeEndpoints.update,
+      show: this.documentTypeEndpoints.show,
     };
   }
 }

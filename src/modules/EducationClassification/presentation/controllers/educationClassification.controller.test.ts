@@ -1,9 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import EducationClassificationController from './educationClassification.controller';
+import type EducationClassificationRepository from '../../data/repositories/educationClassification.repository';
 import EducationClassificationTestFactory from '../../__tests__/educationClassification.test-factory';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
 import EditEducationClassificationParams from '../../core/params/edit.educationClassification.params';
+import TranslationParams from '@/modules/about/core/params/translation.params';
 import router from '@/router';
 
 vi.mock('@/stores/formsStore', () => ({
@@ -19,7 +21,13 @@ vi.mock('@/router', () => ({
 
 describe('EducationClassificationController', () => {
   let controller: EducationClassificationController;
-  let mockRepository: any;
+  let mockRepository: {
+    index: ReturnType<typeof vi.fn>;
+    show: ReturnType<typeof vi.fn>;
+    create: ReturnType<typeof vi.fn>;
+    update: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
     controller = EducationClassificationController.getInstance();
@@ -32,7 +40,11 @@ describe('EducationClassificationController', () => {
       delete: vi.fn(),
     };
 
-    vi.spyOn(controller as any, 'repository', 'get').mockReturnValue(mockRepository);
+    vi.spyOn(
+      controller as unknown as { repository: EducationClassificationRepository },
+      'repository',
+      'get',
+    ).mockReturnValue(mockRepository as unknown as EducationClassificationRepository);
   });
 
   afterEach(() => {
@@ -54,7 +66,8 @@ describe('EducationClassificationController', () => {
         id: 1,
       });
       const successState = new DataSuccess(mockItem);
-      const params = new AddEducationClassificationParams({ title: 'Basic Education' });
+      const translation = new TranslationParams({ title: { en: 'Basic Education' } });
+      const params = new AddEducationClassificationParams({ translation });
       mockRepository.create.mockResolvedValue(successState);
 
       const result = await controller.create(params);
@@ -71,7 +84,8 @@ describe('EducationClassificationController', () => {
         id: 5,
       });
       const successState = new DataSuccess(mockItem);
-      const params = new EditEducationClassificationParams(5, 'Higher Education');
+      const translations = new TranslationParams({ title: { en: 'Higher Education' } });
+      const params = new EditEducationClassificationParams({ id: 5, translations });
       mockRepository.update.mockResolvedValue(successState);
 
       const result = await controller.update(params);
