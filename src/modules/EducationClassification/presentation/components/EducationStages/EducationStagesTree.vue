@@ -25,12 +25,9 @@
   import Dialog from 'primevue/dialog';
   import PriceIconDialog from '@/shared/icons/priceIconDialog.vue';
   import InputNumber from 'primevue/inputnumber';
-  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
   import Skillsicon from '@/shared/icons/Skillsicon.vue';
-  import IndexEducationConfigurationParams from '@/modules/EducationClassification/core/params/EducationConfiguration/index.educationConfiguration.params co';
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import EmptyTree from '@/assets/images/EmptyTree.gif';
-  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
 
   const route = useRoute();
   const { locale } = useI18n();

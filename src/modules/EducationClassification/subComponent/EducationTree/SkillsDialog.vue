@@ -40,7 +40,7 @@
     }
   });
 
-  const isInputEmpty = computed(() => !percentageValue.value || !timeValue.value);
+  const isInputEmpty = computed(() => !percentageValue.value || !selectedSkill.value);
   const selectedSkill = ref<TitleInterface<number>>();
 
   const updateSelectedSkill = (skill: TitleInterface<number>) => {

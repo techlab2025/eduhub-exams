@@ -17,6 +17,7 @@
   import EducationSubjectConfigurationModel from '../../core/models/EducationConfiguration/education.subject.configuration.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import IndexEducationConfigurationParams from '../../core/params/EducationConfiguration/index.educationConfiguration.params co';
+  import { mapLocales } from '@/base/Presentation/Utils/MapLocales';
 
   const emit = defineEmits([
     'updateData',
@@ -32,17 +33,6 @@
 
   const FormStore = useFormsStore();
 
-  // onBeforeRouteLeave((to, from) => {
-  //   if (formKey) {
-  //     const savedData = FormStore.getFormData(formKey);
-
-  //     if (savedData && to.path !== from.path) {
-  //       FormStore.showReturnWarning(formKey);
-  //     }
-  //   }
-  // });
-
-  // Form state
   const title = ref<string>('');
 
   watch(
@@ -55,23 +45,12 @@
     { immediate: true },
   );
 
-  // const route = useRoute();
-
   const updateData = () => {
     if (formKey) {
       FormStore.setFormData(formKey, {
         title: title.value,
       });
     }
-
-    // const params = new AddEducationClassificationParams({
-    //   // title: title.value,
-    //   translation: new TranslationParams({
-    //     PluralTitle:title.value
-    //   })
-    // });
-
-    // emit('updateData', params);
     emit('updateData');
   };
 
@@ -166,21 +145,28 @@
     ConfigurationnumberOfBranchs.value = data.numberOfBranches;
     ConfigurationNumberOfBranchs.value = data.numberOfBranches;
     configurationInitialBranches.value = data.branches.map((branch) => ({
-      singular: { ...branch.singularTitle },
-      plural: { ...branch.pluralTitle },
+      singular: {
+        ...mapLocales(branch.singularTitle, 'locale', 'singular_title'),
+      },
+      plural: {
+        ...mapLocales(branch.pluralTitle, 'locale', 'plural_title'),
+      },
     }));
   };
 
   const fillSubjectForm = (data: EducationSubjectConfigurationModel | undefined) => {
     if (!data) return;
-    console.log(data, 'data');
     SubjectnumberOfBranchs.value = data.numberOfBranches;
     subjectNumberOfBranchs.value = data.numberOfBranches;
-    subject_title_Singular.value = data.SingularTitle;
-    subject_title_Plural.value = data.pluralTitle;
+    subject_title_Singular.value = mapLocales(data.SingluarTitle, 'locale', 'singular_title');
+    subject_title_Plural.value = mapLocales(data.pluralTitle, 'locale', 'plural_title');
     subjectInitialBranches.value = data.branches.map((branch) => ({
-      singular: { ...branch.singularTitle },
-      plural: { ...branch.pluralTitle },
+      singular: {
+        ...mapLocales(branch.singularTitle, 'locale', 'singular_title'),
+      },
+      plural: {
+        ...mapLocales(branch.pluralTitle, 'locale', 'plural_title'),
+      },
     }));
   };
 
@@ -208,7 +194,7 @@
 
     if (subjectResult instanceof DataSuccess && subjectResult.data?.[0]) {
       fillSubjectForm(subjectResult.data[0]);
-    } 
+    }
   });
 </script>
 
@@ -247,7 +233,7 @@
       </div>
 
       <SingularPluralForm
-        :number-of-branches="ConfigurationNumberOfBranchs"
+        :numberOfBranches="ConfigurationNumberOfBranchs"
         :label="$t('name_of_branch')"
         :initial-branches="configurationInitialBranches"
         @update="GetConfigurationBranchs"

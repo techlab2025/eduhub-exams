@@ -226,6 +226,7 @@
         <RenameClassificationDialog
           :itemId="node.stage.stage_id"
           v-model:visable="ShoweEditDialog"
+          @update:name="onChildFetch"
         />
       </button>
     </div>

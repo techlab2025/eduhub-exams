@@ -7,14 +7,16 @@
   import { useRoute } from 'vue-router';
   import EducationStageController from '../presentation/controllers/EducationStages/education.stages.controller';
   import EditEducationStageParams from '../core/params/EducationStages/edit.education.stage.params';
+  import FetchEducationStageParams from '../core/params/EducationStages/fetch.education.stage.params';
 
   const props = defineProps<{
     visable: boolean;
     itemId: number;
+    parentId: number;
   }>();
   const controller = EducationStageController.getInstance();
 
-  const emit = defineEmits(['update:visable' , 'update:name']);
+  const emit = defineEmits(['update:visable', 'update:name']);
 
   const visible = computed({
     get: () => props.visable,
@@ -37,6 +39,12 @@
         translations: new TranslationParams({
           title: title.value,
         }),
+        classification_id: Number(route.params.id),
+      }),
+    );
+    await controller.fetchList(
+      new FetchEducationStageParams({
+        parent_id: props.parentId,
         classification_id: Number(route.params.id),
       }),
     );

@@ -6,8 +6,8 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 export default class ConfigurationBranchesModel {
   levelNumber: number;
   id: number;
-  pluralTitle: Record<string, string>;
-  singularTitle: Record<string, string>;
+  pluralTitle: Record<string, string>[];
+  singularTitle: Record<string, string>[];
 
   public static readonly validation = new ClassValidation().setRules({
     levelNumber: { required: true },
@@ -16,8 +16,8 @@ export default class ConfigurationBranchesModel {
   constructor(data: {
     levelNumber: number;
     id: number;
-    pluralTitle: Record<string, string>;
-    singularTitle: Record<string, string>;
+    pluralTitle: Record<string, string>[];
+    singularTitle: Record<string, string>[];
   }) {
     this.id = data.id;
     this.levelNumber = data.levelNumber;

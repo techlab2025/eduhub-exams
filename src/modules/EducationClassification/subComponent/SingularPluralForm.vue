@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-  import {  reactive, watch } from 'vue';
+  import { onMounted, reactive, watch } from 'vue';
 
   type Branch = {
     singular: Record<string, string>;
@@ -38,6 +38,9 @@
     },
     { deep: true },
   );
+  onMounted(() => {
+    console.log(props.numberOfBranches, 'numberOfBranches');
+  });
   const SaveData = () => {
     emit('update', branches);
   };
