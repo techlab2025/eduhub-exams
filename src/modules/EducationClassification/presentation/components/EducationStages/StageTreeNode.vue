@@ -224,9 +224,10 @@
           "
         />
         <RenameClassificationDialog
-          :itemId="node.stage.stage_id"
           v-model:visable="ShoweEditDialog"
-          @update:name="onChildFetch"
+          :item-id="node.stage.stage_id"
+          :parent-id="parentId ?? 0"
+          @update:name="$emit('delete-branch', parentId)"
         />
       </button>
     </div>

@@ -246,6 +246,7 @@
           v-model:visable="ShoweEditDialog"
           :item-id="node.subject.subject_id"
           :stage-id="subjectStageId"
+          @update:name="$emit('delete-branch', parentId)"
         />
       </button>
     </div>
