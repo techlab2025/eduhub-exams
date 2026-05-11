@@ -21,6 +21,7 @@
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
   import RenameClassificationDialog from '../../subComponent/RenameClassificationDialog.vue';
   import deleteEducationClassificationParams from '../../core/params/delete.educationClassification.params';
+  import RenameEducatuinClassificationDialog from '../../subComponent/RenameEducatuinClassificationDialog.vue';
 
   // Controller instance
   const controller = EducationClassificationController.getInstance();
@@ -31,9 +32,9 @@
 
   // Table headers
   const headers = computed<TableHeader[]>(() => [
-    { key: 'title', label: t('education type'), width: '30%' },
-    { key: 'added_date', label: t('Added date'), width: '30%' },
-    { key: 'status', label: t('status'), width: '30%' },
+    { key: 'title', label: t('education type'), width: '40%' },
+    { key: 'added_date', label: t('Added date'), width: '40%' },
+    // { key: 'status', label: t('status'), width: '30%' },
   ]);
 
   // Pagination state
@@ -156,9 +157,9 @@
               {{ item.created_at }}
             </template>
 
-            <template #cell-status="{ item }">
+            <!-- <template #cell-status="{ item }">
               <ToggleSwitch v-model="item.status" @update:model-value="ToggleStatus(item.id!)" />
-            </template>
+            </template> -->
 
             <template #actions="{ item }">
               <div class="row-actions">
@@ -188,7 +189,10 @@
                     )
                   "
                 />
-                <RenameClassificationDialog v-model:visable="ShoweEditDialog" :item-id="item.id" />
+                <RenameEducatuinClassificationDialog
+                  v-model:visable="ShoweEditDialog"
+                  :item-id="item.id"
+                />
               </div>
             </template>
           </AppTable>

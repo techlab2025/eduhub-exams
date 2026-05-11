@@ -7308,7 +7308,6 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.rename-dialog .content .input-wrap {
   width: 100%;
   border-radius: 50px;
-  margin-bottom: var(--xl-size-2);
 }
 .p-dialog.rename-dialog .content .input-wrap .field-input {
   background-color: var(--standard-white);
