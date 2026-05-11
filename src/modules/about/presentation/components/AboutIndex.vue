@@ -15,7 +15,7 @@ const route = useRoute();
 const about = computed(() => (state.value.data && state.value.data.length > 0 ? state.value.data[0] : null));
 
 // Pagination state
-const perPage = ref(10);
+const perPage = ref(10); 
 const word = ref('');
 
 const fetchAbout = async (page: number = 1, wordStr: string = '') => {

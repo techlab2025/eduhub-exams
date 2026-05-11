@@ -13,7 +13,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'updateData', value: AddFaqsParams): void;
+  // (e: 'updateData', value: AddFaqsParams): void;
+  (e: 'updateData', value: AddFaqsParams | EditFaqsParams): void;
 }>();
 
 const question = ref<Record<string, string>>({});

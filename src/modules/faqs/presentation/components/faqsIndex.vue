@@ -51,7 +51,7 @@
 
   const deleteFaq = async (id: number) => {
     await controller.delete(new DeleteFaqsParams({ id }), undefined);
-    await controller.fetchList();
+    await controller.fetchList(); 
   };
 
   onMounted(async () => {

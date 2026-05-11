@@ -22,9 +22,8 @@
       return;
     }
 
-    console.log(params.value, "params.value")
+    // console.log(params.value, "params.value")
     await controller.update(params.value, undefined);
-    router.push({ name: 'about' });
   };
 
   const updateData = (updatedParams: EditAboutParams) => {
