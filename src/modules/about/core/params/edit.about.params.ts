@@ -28,8 +28,8 @@ export default class EditAboutParams implements Params {
   toMap(): { [p: string]: any } {
     return {
       translations: this.translations,
-      images: this.images,
-      socialMedia: this.socialMedia,
+      image: [this.images],
+      social_links: this.socialMedia,
     };
   }
 

@@ -4,7 +4,7 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 /**
  * Parameters for deleting an employee
  */
-export default class DeleteEmployeeParams implements Params {
+export default class DeleteAboutParams implements Params {
   public id: number;
 
   public static readonly validation = new ClassValidation().setRules({
@@ -17,15 +17,15 @@ export default class DeleteEmployeeParams implements Params {
 
   toMap(): { [p: string]: any } {
     return {
-      employee_id: this.id,
+      about_us_id: this.id,
     };
   }
 
   validate() {
-    return DeleteEmployeeParams.validation.validate(this);
+    return DeleteAboutParams.validation.validate(this);
   }
 
   validateOrThrow() {
-    return DeleteEmployeeParams.validation.validateOrThrow(this);
+    return DeleteAboutParams.validation.validateOrThrow(this);
   }
 }

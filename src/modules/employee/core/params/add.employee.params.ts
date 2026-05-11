@@ -50,7 +50,7 @@ export default class AddEmployeeParams implements Params {
 
   toMap(): { [p: string]: any } {
     return {
-      name: this.firstname,
+      first_name: this.firstname,
       last_name: this.lastname,
       email: this.email,
       phone: this.phone,

@@ -5,25 +5,20 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
  * Parameters for adding a new country
  */
 export default class FaqsDetailsParams implements Params {
-  public answer: Record<string, string>;
-  public question: Record<string, string>;
-
+  public id: number;
+  public isLocale: boolean;
   public static readonly validation = new ClassValidation().setRules({
-    answer: { required: true, minLength: 2, maxLength: 100 },
-    question: { required: true, minLength: 2, maxLength: 100 },
+    id: { required: true },
   });
 
-  constructor(data: { answer: Record<string, string>; question: Record<string, string> }) {
-    this.answer = data.answer;
-    this.question = data.question;
+  constructor(data: { id: number; isLocale?: boolean }) {
+    this.id = data.id;
+    this.isLocale = data.isLocale; 
   }
 
   toMap(): { [p: string]: any } {
     return {
-      translations: {
-        question: this.question,
-        answer: this.answer,
-      },
+      faq_id: this.id,
     };
   }
 

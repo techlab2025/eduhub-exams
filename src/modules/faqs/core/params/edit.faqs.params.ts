@@ -1,10 +1,10 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 export default class EditFaqsParams implements Params {
   public id: number;
-  public question: Record<string, string>;
-  public answer: Record<string, string>;
+  public translations: TranslationParams;
 
   public static readonly validation = new ClassValidation().setRules({
     id: { required: true },
@@ -12,21 +12,17 @@ export default class EditFaqsParams implements Params {
 
   constructor(data: {
     id: number;
-    question: Record<string, string>;
-    answer: Record<string, string>;
+    translations: TranslationParams;
   }) {
 
     this.id = data.id;
-    this.question = data.question;
-    this.answer = data.answer;
+    this.translations = data.translations;
   }
 
   toMap(): { [p: string]: any } {
     return {
-      translations: {
-        question: this.question,
-        answer: this.answer,
-      },
+        id: this.id,
+      translations: this.translations.toMap(),
     };
   }
 
