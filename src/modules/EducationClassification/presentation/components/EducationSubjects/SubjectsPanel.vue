@@ -146,7 +146,10 @@
   provide('subjectOnAddChild', openAddChildDialog);
   provide('subjectMaxDepth', subjectMaxDepth);
   provide('refreshSubjectId', refreshSubjectId);
-  provide('subjectStageId', computed(() => props.stageId));
+  provide(
+    'subjectStageId',
+    computed(() => props.stageId),
+  );
 
   async function handleDeleteBranch(parentId: number | null) {
     if (parentId === null) {
@@ -222,7 +225,12 @@
         <span class="stage-root-name">{{ stageName }}</span>
         <span class="spacer" />
         <!-- showAddRootDialog = true -->
-        <button class="icon-btn" title="Add Subject" @click.stop="AddSubject">
+        <button
+          v-if="subjectConfig && subjectConfig?.[0]?.numberOfBranches > 0"
+          class="icon-btn"
+          title="Add Subject"
+          @click.stop="AddSubject"
+        >
           <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
             <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
             <path d="M10 7v6M7 10h6" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round" />
@@ -258,91 +266,6 @@
         </div>
       </transition>
     </div>
-
-    <!-- Right panel: children of selected subject -->
-    <!-- <div class="subjects-right">
-      <template v-if="selectedNode">
-        <div class="right-header">
-          <div class="right-title">
-            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-              <rect x="3" y="3" width="14" height="14" rx="2" stroke="#4caf50" stroke-width="1.5" />
-              <path
-                d="M7 7h6M7 10h6M7 13h4"
-                stroke="#4caf50"
-                stroke-width="1.2"
-                stroke-linecap="round"
-              />
-            </svg>
-            <span>{{ selectedNode.subject.subject_title }}</span>
-          </div>
-          <button
-            v-if="selectedNode.depth + 1 < (subjectMaxDepth ?? 0)"
-            class="btn-add-branch"
-            @click="openAddChildDialog(selectedNode.subject.subject_id, selectedNode.depth + 2)"
-          >
-            <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-              <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
-              <path d="M10 7v6M7 10h6" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-          </button>
-        </div>
-
-        <div v-if="selectedNode.children.length > 0" class="right-children">
-          <div
-            v-for="child in selectedNode.children"
-            :key="child.subject.subject_id"
-            class="right-child-row"
-          >
-            <svg viewBox="0 0 20 20" fill="none" width="16" height="16" class="child-icon">
-              <rect
-                x="4"
-                y="3"
-                width="12"
-                height="14"
-                rx="2"
-                stroke="#4caf50"
-                stroke-width="1.3"
-                fill="none"
-              />
-              <path
-                d="M7 8h6M7 11h6M7 14h4"
-                stroke="#4caf50"
-                stroke-width="1.1"
-                stroke-linecap="round"
-              />
-            </svg>
-            <span class="child-name">{{ child.subject.subject_title }}</span>
-            <span class="level-label">{{ getSubjectBranchName(child.depth - 1) }}</span>
-            <span class="spacer" />
-            <button
-              v-if="child.depth + 1 < (subjectMaxDepth ?? 0)"
-              class="icon-btn"
-              @click="openAddChildDialog(child.subject.subject_id, child.depth + 3)"
-            >
-              <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
-                <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />
-                <path
-                  d="M10 7v6M7 10h6"
-                  stroke="#4caf50"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div v-else class="right-empty">
-          <p class="hint-text">
-            {{ $t('No branches yet. Click Add Branch to get started.') }}
-          </p>
-        </div>
-      </template>
-
-      <div v-else class="right-placeholder">
-        <p>{{ $t('Select a subject from the tree to view details') }}</p>
-      </div>
-    </div> -->
   </div>
 
   <!-- {{ showAddRootDialog }} -->
