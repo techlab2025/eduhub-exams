@@ -640,21 +640,21 @@ export default abstract class BaseController<T, TList = T[]> {
     if (_result.hasError) {
       this.handleErrorResponse(_result);
     } 
-    else if (
-      _result instanceof DataSuccess &&
-      this.config.showSuccessDialog &&
-      !this.config.showSuccessTosat &&
-      Message
-    ) {
-      this.showSuccessDialog(Message);
-    } else if (
-      _result instanceof DataSuccess &&
-      !this.config.showSuccessDialog &&
-      this.config.showSuccessTosat &&
-      Message
-    ) {
-      this.showSuccessToast(Message);
-    }
+    // else if (
+    //   _result instanceof DataSuccess &&
+    //   this.config.showSuccessDialog &&
+    //   !this.config.showSuccessTosat &&
+    //   Message
+    // ) {
+    //   this.showSuccessDialog(Message);
+    // } else if (
+    //   _result instanceof DataSuccess &&
+    //   !this.config.showSuccessDialog &&
+    //   this.config.showSuccessTosat &&
+    //   Message
+    // ) {
+    //   this.showSuccessToast(Message);
+    // }
 
     // Auto-retry if applicable
     if (this.shouldAutoRetry(_result)) {

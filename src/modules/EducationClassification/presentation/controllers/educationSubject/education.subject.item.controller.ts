@@ -17,7 +17,7 @@ export default class EducationSubjectItemController extends BaseController<
 
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,

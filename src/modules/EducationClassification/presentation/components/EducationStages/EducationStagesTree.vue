@@ -217,9 +217,7 @@
 </script>
 
 <template>
-  <!-- {{educationConfig?.[0]?.branches}} -->
-  <!-- <DataStatusBuilder :controller="controller.listState.value" :on-retry="fetchRoot"> -->
-  <!-- <template #success> -->
+
   <div class="education-tree">
     <!-- Left Panel -->
     <div class="left-panel">
