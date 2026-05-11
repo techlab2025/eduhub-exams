@@ -1,11 +1,11 @@
 import { BaseEndpoints } from '@/base/Data/Endpoints/BaseEndpoints';
 
 export class AboutEndpoints extends BaseEndpoints {
-  protected readonly prefix = 'organization/';
+  protected readonly prefix = 'dashboard/';
 
-  readonly index = this.url('fetch_about');
-  readonly show = this.url('show_about');
-  readonly store = this.url('store_about');
-  readonly update = this.url('update_about');
-  readonly delete = this.url('delete_about');
+  readonly index = this.url('fetch_about_us');
+  readonly show = this.url('show_about_us');
+  readonly store = this.url('store_about_us');
+  readonly update = this.url('store_about_us');
+  readonly delete = this.url('delete_about_us');
 }

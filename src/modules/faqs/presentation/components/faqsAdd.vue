@@ -1,30 +1,30 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
-  import FaqsController from '../controllers/faqs.controller';
-  import AddFaqsParams from '../../core/params/add.faqs.params';
-  import type FaqsDetailsParams from '../../core/params/faqs.details.params';
-  import FaqsForm from './faqsForm.vue';
+import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import FaqsController from '../controllers/faqs.controller';
+import AddFaqsParams from '../../core/params/add.faqs.params';
+import type FaqsDetailsParams from '../../core/params/faqs.details.params';
+import FaqsForm from './faqsForm.vue';
 
-  const controller = FaqsController.getInstance();
-  const router = useRouter();
-  const route = useRoute();
-  const countryCode = (route.params?.country_code as string) || '';
+const controller = FaqsController.getInstance();
+const router = useRouter();
+const route = useRoute();
+const countryCode = (route.params?.country_code as string) || '';
 
-  const formParams = ref<FaqsDetailsParams | null>(null);
+const formParams = ref<AddFaqsParams | null>(null);
 
-  const save = async () => {
-    if (!formParams.value) return;
-    await controller.create(new AddFaqsParams({ faqs: [formParams.value] }), undefined);
-  };
+const save = async () => {
+  if (!formParams.value) return;
+  await controller.create(formParams.value);
+};
 
-  const cancel = () => {
-    router.push(`/${countryCode}/faqs`);
-  };
+const cancel = () => {
+  router.push(`/${countryCode}/faqs`);
+};
 
-  const updateData = (params: FaqsDetailsParams) => {
-    formParams.value = params;
-  };
+const updateData = (params: AddFaqsParams) => {
+  formParams.value = params;
+};
 </script>
 
 <template>
@@ -37,7 +37,7 @@
     <FaqsForm @update-data="updateData" />
 
     <div class="form-actions">
-      <button class="btn btn-primary btn-save" type="button" @click="save">{{ $t('save') }}</button>
+      <button class="btn btn-primary" type="button" @click="save">{{ $t('save') }}</button>
       <button class="btn btn-cancel" type="button" @click="cancel">{{ $t('cancel') }}</button>
     </div>
 

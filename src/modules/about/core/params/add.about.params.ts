@@ -2,6 +2,7 @@ import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type TranslationParams from './translation.params';
 import type SocialParams from './Socail.params';
+import { base64Flag } from '@/base/Presentation/Utils/base64.flag';
 
 /**
  * Parameters for adding a new employee
@@ -27,9 +28,9 @@ export default class AddAboutParams implements Params {
 
   toMap(): { [p: string]: any } {
     return {
-      translation: this.translation,
-      images: this.images,
-      socialMedia: this.socialMedia,
+      translations: this.translation,
+      image: `${base64Flag}${this.images}`,
+      social_links: this.socialMedia,
     };
   }
 

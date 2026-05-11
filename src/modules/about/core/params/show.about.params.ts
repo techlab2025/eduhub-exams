@@ -5,12 +5,20 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
  * Parameters for showing an employee
  */
 export default class ShowAboutParams implements Params {
-  public static readonly validation = new ClassValidation().setRules({});
+  public id: number;
 
-  constructor() {}
+  public static readonly validation = new ClassValidation().setRules({
+    id: { required: true },
+  });
+
+  constructor(id: number) {
+    this.id = id;
+  }
 
   toMap(): { [p: string]: any } {
-    return {};
+    return {
+      about_us_id: this.id,
+    };
   }
 
   validate() {

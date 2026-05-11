@@ -17,10 +17,11 @@
    */
   const saveAbout = async () => {
     if (!params.value) {
-      console.error('No employee parameters to save');
+      console.error('No data to save');
       return;
     }
 
+    console.log(params.value, "params.value")
     await controller.update(params.value, undefined);
   };
 
@@ -29,7 +30,7 @@
   };
 
   onMounted(async () => {
-    await controller.fetchOne(new ShowAboutParams());
+    await controller.fetchOne(new ShowAboutParams(1));
   });
 </script>
 

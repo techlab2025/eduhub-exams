@@ -1,25 +1,24 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
-import type FaqsDetailsParams from './faqs.details.params';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 /**
  * Parameters for adding a new country
  */
 export default class AddFaqsParams implements Params {
-  public faqs: FaqsDetailsParams[];
+  public translations: TranslationParams;
   public static readonly validation = new ClassValidation().setRules({
-    faqs: { required: true, minLength: 1 },
+    translations: { required: true },
   });
 
-  constructor(data: { faqs: FaqsDetailsParams[] }) {
-    this.faqs = data.faqs;
+  constructor(data: { translations: TranslationParams }) {
+    this.translations = data.translations;
   }
 
   toMap(): { [p: string]: any } {
-    const map: { [key: string]: any } = {
-      faqs: this.faqs.map((el) => el.toMap()),
+    return {
+      translations: this.translations.toMap(),
     };
-    return map;
   }
 
   validate() {
