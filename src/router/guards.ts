@@ -30,16 +30,16 @@ export function authGuard(
 
   const isLoginPage = to.path.endsWith('/login');
 
-  if (!userData.isAuth && !isLoginPage) {
-    return next({
-      name: 'Login',
-      params: { country_code: country },
-    });
-  }
+  // if (!userData.isAuth && !isLoginPage) {
+  //   return next({
+  //     name: 'Login',
+  //     params: { country_code: country },
+  //   });
+  // }
 
-  if (isLoginPage && userData.isAuth) {
-    return next({ path: `/${country}/` });
-  }
+  // if (isLoginPage && userData.isAuth) {
+  //   return next({ path: `/${country}/` });
+  // }
 
   next();
 }

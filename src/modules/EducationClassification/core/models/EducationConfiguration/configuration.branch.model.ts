@@ -41,13 +41,25 @@ export default class ConfigurationBranchesModel {
   static example: ConfigurationBranchesModel = new ConfigurationBranchesModel({
     id: 1,
     levelNumber: 1,
-    pluralTitle: {
-      en: 'en',
-      ar: 'ar',
-    },
-    singularTitle: {
-      en: 'en',
-      ar: 'ar',
-    },
+    pluralTitle: [
+      {
+        locale: 'en',
+        plural_title: 'en',
+      },
+      {
+        locale: 'ar',
+        plural_title: 'ar',
+      },
+    ],
+    singularTitle: [
+      {
+        locale: 'en',
+        singular_title: 'en',
+      },
+      {
+        locale: 'ar',
+        singular_title: 'ar',
+      },
+    ],
   });
 }

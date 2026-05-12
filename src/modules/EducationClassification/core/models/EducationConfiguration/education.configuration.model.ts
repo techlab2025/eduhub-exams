@@ -18,7 +18,7 @@ export default class EducationConfigurationModel {
     Object.freeze(this);
   }
 
-  static fromJson(json: Record<string, unknown>): EducationConfigurationModel {
+  static fromJson(json: Record<string, any>): EducationConfigurationModel {
     if (!json) {
       throw new Error('Cannot create EducationConfigurationModel from null or undefined');
     }
@@ -40,20 +40,20 @@ export default class EducationConfigurationModel {
       new ConfigurationBranchesModel({
         id: 1,
         levelNumber: 1,
-        singularTitle: { en: 'Stage', ar: 'مرحلة' },
-        pluralTitle: { en: 'Stages', ar: 'مراحل' },
+        singularTitle: [{ locale: 'en', singular_title: 'Stage' }],
+        pluralTitle: [{ locale: 'en', plural_title: 'Stages' }],
       }),
       new ConfigurationBranchesModel({
         id: 2,
         levelNumber: 2,
-        singularTitle: { en: 'Grade', ar: 'صف' },
-        pluralTitle: { en: 'Grades', ar: 'صفوف' },
+        singularTitle: [{ locale: 'en', singular_title: 'Grade' }],
+        pluralTitle: [{ locale: 'en', plural_title: 'Grades' }],
       }),
       new ConfigurationBranchesModel({
         id: 3,
         levelNumber: 3,
-        singularTitle: { en: 'Term', ar: 'فصل' },
-        pluralTitle: { en: 'Terms', ar: 'فصول' },
+        singularTitle: [{ locale: 'en', singular_title: 'Term' }],
+        pluralTitle: [{ locale: 'en', plural_title: 'Terms' }],
       }),
     ],
   });

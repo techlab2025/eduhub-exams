@@ -3,7 +3,7 @@ export const mapLocales = (
   keyField: string,
   valueField: string
 ) => {
-  return data.reduce((acc, item) => {
+  return data?.reduce((acc, item) => {
     acc[item[keyField]] = item[valueField];
     return acc;
   }, {});

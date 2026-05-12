@@ -4,15 +4,15 @@ import ConfigurationBranchesModel from './configuration.branch.model';
 export default class EducationSubjectConfigurationModel {
   public readonly educationClassification: TitleInterface<number>;
   public readonly numberOfBranches: number;
-  public readonly pluralTitle: Record<string, string>;
-  public readonly SingluarTitle: Record<string, string>;
+  public readonly pluralTitle: Record<string, string>[];
+  public readonly SingluarTitle: Record<string, string>[];
   public readonly branches: ConfigurationBranchesModel[];
 
   constructor(data: {
     educationClassification: TitleInterface<number>;
     numberOfBranches: number;
-    pluralTitle: Record<string, string>;
-    SingluarTitle: Record<string, string>;
+    pluralTitle: Record<string, string>[];
+    SingluarTitle: Record<string, string>[];
     branches: ConfigurationBranchesModel[];
   }) {
     this.educationClassification = data.educationClassification;
@@ -47,8 +47,14 @@ export default class EducationSubjectConfigurationModel {
       title: 'aa',
     },
     numberOfBranches: 2,
-    pluralTitle: { en: 'title 1 ', ar: 'title 1 ' },
-    SingluarTitle: { en: 'title 1 ', ar: 'title 1 ' },
+    pluralTitle: [
+      { locale: 'en', plural_title: 'title 1 ' },
+      { locale: 'ar', plural_title: 'title 1 ' },
+    ],
+    SingluarTitle: [
+      { locale: 'en', singular_title: 'title 1 ' },
+      { locale: 'ar', singular_title: 'title 1 ' },
+    ],
     branches: [ConfigurationBranchesModel.example, ConfigurationBranchesModel.example],
   });
 }
