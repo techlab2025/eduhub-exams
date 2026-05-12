@@ -72,7 +72,7 @@ describe('EducationConfigurationRepository', () => {
       if (result instanceof DataSuccess) {
         expect(result.data).toBeInstanceOf(Array);
         expect(result.data?.[0]).toBeInstanceOf(EducationConfigurationModel);
-        expect(result.data?.[0].educationClassificatioId).toBe(1);
+        expect(result.data?.[0].educationClassification.id).toBe(1);
         expect(result.data?.[0].numberOfBranches).toBe(2);
       }
     });

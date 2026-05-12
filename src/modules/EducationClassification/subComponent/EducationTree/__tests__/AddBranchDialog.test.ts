@@ -7,6 +7,7 @@ describe('AddBranchDialog', () => {
     visible: true,
     level: 1,
     branchId: 123,
+    branchName: 'branch',
   };
 
   it('renders when visible', async () => {
