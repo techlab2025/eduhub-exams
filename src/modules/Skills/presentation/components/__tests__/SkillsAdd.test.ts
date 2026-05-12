@@ -11,6 +11,14 @@ vi.mock('vue-router', () => ({
   useRouter: vi.fn(() => ({
     push: vi.fn(),
   })),
+  createRouter: vi.fn(() => ({
+    push: vi.fn(),
+    resolve: vi.fn(),
+    beforeEach: vi.fn(),
+    afterEach: vi.fn(),
+    install: vi.fn(),
+  })),
+  createWebHistory: vi.fn(),
 }));
 
 vi.mock('../controllers/skills.controller', () => ({
