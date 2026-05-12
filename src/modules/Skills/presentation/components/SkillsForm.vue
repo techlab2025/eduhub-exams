@@ -16,11 +16,13 @@
     formKey?: string;
   }>();
 
-  const FormStore = useFormsStore(); 
+  const FormStore = useFormsStore();
   onBeforeRouteLeave((to, from) => {
-    const savedData = FormStore.getFormData(formKey!);
-    if (savedData && to.path !== from.path) {
-      FormStore.showReturnWarning(formKey!);
+    if (formKey) {
+      const savedData = FormStore.getFormData(formKey);
+      if (savedData && to.path !== from.path) {
+        FormStore.showReturnWarning(formKey);
+      }
     }
   });
 
@@ -31,8 +33,10 @@
     () => skill,
     (newskill) => {
       if (newskill) {
-        const result = newskill.title.reduce((acc, item) => {
-          acc[item?.locale!] = item.title;
+        const result = newskill.title.reduce((acc: Record<string, string>, item) => {
+          if (item?.locale) {
+            acc[item.locale] = item.title;
+          }
           return acc;
         }, {});
 
@@ -51,9 +55,11 @@
       }),
     };
 
-    FormStore.setFormData(formKey!, data);
+    if (formKey) {
+      FormStore.setFormData(formKey, data);
+    }
 
-    let params: any;
+    let params: EditSkillsParams | AddSkillsParams;
     if (route.params.id) {
       params = new EditSkillsParams({
         id: Number(route.params.id),
@@ -71,18 +77,21 @@
   };
 
   onMounted(() => {
-    const saved = FormStore.getFormData(formKey!);
-    if (saved) {
-      translations.value = saved.translations;
+    if (formKey) {
+      const saved = FormStore.getFormData(formKey);
+      if (saved) {
+        translations.value = saved.translations;
 
-      updateData();
+        updateData();
+      } else if (!skill) {
+        resetForm();
+      }
     } else if (!skill) {
       resetForm();
     }
   });
 
   const updateTranslations = (newTranslations: Record<string, string>) => {
-    console.log(newTranslations, 'newTranslations');
     translations.value = newTranslations;
     updateData();
   };
@@ -129,6 +138,7 @@
   .form-fields {
     width: 100%;
   }
+
   .field-group {
     width: 100%;
   }

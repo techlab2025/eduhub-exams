@@ -44,7 +44,9 @@
   });
 
   async function handleConfirm() {
-    await addPricing(props.branchId!);
+    if (!props.branchId) return;
+
+    await addPricing(props.branchId);
     dialogVisible.value = false;
   }
 
@@ -130,16 +132,19 @@
       color: var(--bread-crumb-color-span);
     }
   }
+
   .dialog-inputs {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     gap: 5px;
+
     .field-group {
       &:first-child {
         width: 60%;
       }
+
       &:last-child {
         width: 40%;
       }

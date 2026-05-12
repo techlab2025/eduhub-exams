@@ -21,7 +21,7 @@
   import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
   import type TitleInterface from '@/base/Data/Models/titleInterface';
 
-  const controller = DocumentController.getInstance(); 
+  const controller = DocumentController.getInstance();
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
@@ -313,7 +313,7 @@
     }
 
     h6 {
-      color: rgba(75, 75, 75, 1);
+      color: $Gray-6;
       font-family: medium;
       font-size: 18px;
       font-weight: 600;

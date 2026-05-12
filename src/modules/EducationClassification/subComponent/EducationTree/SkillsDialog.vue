@@ -46,18 +46,37 @@
   const updateSelectedSkill = (skill: TitleInterface<number>) => {
     selectedSkill.value = skill;
   };
+  // async function handleConfirm() {
+  //   const params = new AddEducationSubjectSkillsParams({
+  //     id: props.branchId!,
+  //     skills: [
+  //       new SkillParams({
+  //         skillId: selectedSkill.value?.id!,
+  //         percentage: percentageValue.value,
+  //       }),
+  //     ],
+  //   });
+  //   const controller = EducationSkillsController.getInstance();
+  //   await controller.create(params);
+  //   dialogVisible.value = false;
+  // }
   async function handleConfirm() {
+    if (!props.branchId || !selectedSkill.value?.id) return;
+
     const params = new AddEducationSubjectSkillsParams({
-      id: props.branchId!,
+      id: props.branchId,
       skills: [
         new SkillParams({
-          skillId: selectedSkill.value?.id!,
+          skillId: selectedSkill.value.id,
           percentage: percentageValue.value,
         }),
       ],
     });
+
     const controller = EducationSkillsController.getInstance();
+
     await controller.create(params);
+
     dialogVisible.value = false;
   }
 </script>
@@ -126,6 +145,7 @@
   .input-label {
     color: black;
   }
+
   .field-input {
     background-color: var(--bg-main);
     border-radius: 30px;
@@ -135,21 +155,25 @@
       color: var(--bread-crumb-color-span);
     }
   }
+
   .dialog-inputs {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     gap: 5px;
+
     .field-group {
       &:first-child {
         width: 60%;
       }
+
       &:last-child {
         width: 40%;
       }
     }
   }
+
   .field-input {
     margin: 0 !important;
   }

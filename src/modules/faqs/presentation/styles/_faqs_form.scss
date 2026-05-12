@@ -16,6 +16,7 @@
 
     .form-header-left {
       @include flex-row(nowrap, flex-start, center);
+
       gap: $SmSize;
 
       .form-title {
