@@ -4,6 +4,12 @@ import SubjectsPanel from '../SubjectsPanel.vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type EducationSubjectModel from '@/modules/EducationClassification/core/models/EducationSubject/education.subject.model';
 
+vi.mock('vue-router', () => ({
+  useRoute: () => ({
+    params: { id: '1' },
+  }),
+}));
+
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ locale: { value: 'en' } }),
 }));
@@ -31,7 +37,7 @@ vi.mock('../SubjectTreeNode.vue', () => ({
   default: {
     name: 'SubjectTreeNode',
     template: '<div class="subject-tree-node"></div>',
-    props: ['node', 'selectedSubjectId'],
+    props: ['node', 'selectedSubjectId', 'maxDepth', 'parentId'],
   },
 }));
 
@@ -48,6 +54,7 @@ vi.mock(
     default: {
       name: 'AddEducationSubjectDialog',
       template: '<div class="add-subject-dialog"></div>',
+      props: ['visible'],
     },
   }),
 );
@@ -57,7 +64,11 @@ describe('SubjectsPanel', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockConfigController.fetchList.mockResolvedValue(new DataSuccess({ data: null }));
+    mockConfigController.fetchList.mockResolvedValue(
+      new DataSuccess({
+        data: [{ numberOfBranches: 2, branches: [] }],
+      }),
+    );
     mockItemController.fetchList.mockResolvedValue(
       new DataSuccess<EducationSubjectModel[]>({ data: [] }),
     );
@@ -67,7 +78,12 @@ describe('SubjectsPanel', () => {
   const mountComponent = (props = defaultProps) =>
     mount(SubjectsPanel, {
       props,
-      global: { stubs: { 'router-link': true } },
+      global: {
+        stubs: { 'router-link': true },
+        mocks: {
+          $t: (key: string) => key,
+        },
+      },
     });
 
   it('renders the subjects panel', async () => {
@@ -97,14 +113,16 @@ describe('SubjectsPanel', () => {
   it('opens AddEducationSubjectDialog when the add icon in header is clicked', async () => {
     const wrapper = mountComponent();
     await flushPromises();
-    await wrapper.find('.stage-container span:last-child').trigger('click');
+    const addBtn = wrapper.find('button[title="Add Subject"]');
+    expect(addBtn.exists()).toBe(true);
+    await addBtn.trigger('click');
     expect(wrapper.find('.add-subject-dialog').exists()).toBe(true);
   });
 
   it('closes AddEducationSubjectDialog on update:visible false emit', async () => {
     const wrapper = mountComponent();
     await flushPromises();
-    await wrapper.find('.stage-container span:last-child').trigger('click');
+    await wrapper.find('button[title="Add Subject"]').trigger('click');
     expect(wrapper.find('.add-subject-dialog').exists()).toBe(true);
 
     const dialog = wrapper.getComponent({ name: 'AddEducationSubjectDialog' });

@@ -2,6 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import RenameClassificationDialog from '../RenameClassificationDialog.vue';
 
+vi.mock('vue-router', () => ({
+  useRoute: () => ({
+    params: { id: '1' },
+  }),
+}));
+
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({
     t: (key: string) => key,
