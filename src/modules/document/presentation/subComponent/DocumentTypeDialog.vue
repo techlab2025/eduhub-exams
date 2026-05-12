@@ -17,6 +17,8 @@ import type DocumentModel from '../../core/models/document.model';
 import EditDocumentTypeParams from '../../core/params/documntType/edit.document.type.params';
 import type DocumentTypeModel from '../../core/models/documentType/document.type.model';
 import ShowDocumentTypeParams from '../../core/params/documntType/show.document.type.params';
+import TableDialogSkelaton from '@/shared/HelpersComponents/TableDialogSkelaton.vue';
+import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
 
 const controller = DocumentTypeController.getInstance();
 const state = computed(() => controller.listState.value);
@@ -119,17 +121,26 @@ const cancel = () => {
     </template>
     <div class="document-type-content">
 
-      <div v-for="item in state.data" :key="item.id" class="document-type-row">
-        <div class="item-title">
-          <span class="item-small-title">{{ $t('document_type') }}</span>
-          <span class="item-main-title">{{ item.title }}</span>
-        </div>
-        <div class="item-actions">
-          <EditeIcon @click="editDocumentType(item)" />
-          <DeleteIcon @click="deleteDocumentType(item.id!)" />
+      <DataStatusBuilder :controller="state">
+        <template #success>
+          <div v-for="item in state.data" :key="item.id" class="document-type-row">
+            <div class="item-title">
+              <span class="item-small-title">{{ $t('document_type') }}</span>
+              <span class="item-main-title">{{ item.title }}</span>
+            </div>
+            <div class="item-actions">
+              <EditeIcon @click="editDocumentType(item)" />
+              <DeleteIcon @click="deleteDocumentType(item.id!)" />
 
-        </div>
-      </div>
+            </div>
+          </div>
+
+        </template>
+        <template #loader>
+
+          <TableDialogSkelaton :rows="5" />
+        </template>
+      </DataStatusBuilder>
       <div class="input-wrapper">
         <MultiLangInput :field-key="`title`" :label="$t(`document_type_name`)" :languages="['en', 'ar']"
           :model-value="DocumentTypeName" :type="`title`" @update:model-value="DocumentTypeName = $event" />

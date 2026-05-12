@@ -16,7 +16,7 @@ export default class SkillsController extends BaseController<SkillModel, SkillMo
 
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showSuccessTosat: true,

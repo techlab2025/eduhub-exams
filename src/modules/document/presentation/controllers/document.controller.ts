@@ -20,10 +20,10 @@ export default class DocumentController extends BaseController<DocumentModel, Do
 
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
-            showErrorTosat: true,
+      showErrorTosat: true,
       showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,

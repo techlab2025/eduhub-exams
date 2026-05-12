@@ -20,6 +20,7 @@
   import IndexDocumentTypeParams from '../../core/params/documntType/index.document.type.params';
   import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
   import type TitleInterface from '@/base/Data/Models/titleInterface';
+import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
 
   const controller = DocumentController.getInstance(); 
   const state = computed(() => controller.listState.value);
@@ -285,6 +286,10 @@
             <span>{{ $t('add_document') }}</span>
           </router-link>
         </div>
+      </template>
+          <template #loader>
+        <TableSkelaton :rows="5" :columns="headers.length" :has-actions="true" :show-index="true" :selectable="true">
+        </TableSkelaton>
       </template>
     </DataStatusBuilder>
   </div>
