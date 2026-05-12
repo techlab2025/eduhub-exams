@@ -13,8 +13,8 @@
   import AddEducationSubjectParams from '../../core/params/EducationSubjects/add.educationSubject.params';
   import EducationConfigurationController from '../controllers/educationConfiguration/education.configuration.controller';
   import EducationSubjectController from '../controllers/educationSubject/education.subject.controller';
-  import EducationConfigurationModel from '../../core/models/EducationConfiguration/education.configuration.model';
-  import EducationSubjectConfigurationModel from '../../core/models/EducationConfiguration/education.subject.configuration.model';
+  import type EducationConfigurationModel from '../../core/models/EducationConfiguration/education.configuration.model';
+  import type EducationSubjectConfigurationModel from '../../core/models/EducationConfiguration/education.subject.configuration.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import IndexEducationConfigurationParams from '../../core/params/EducationConfiguration/index.educationConfiguration.params co';
   import { mapLocales } from '@/base/Presentation/Utils/MapLocales';
@@ -158,7 +158,7 @@
     if (!data) return;
     SubjectnumberOfBranchs.value = data.numberOfBranches;
     subjectNumberOfBranchs.value = data.numberOfBranches;
-    subject_title_Singular.value = mapLocales(data.SingluarTitle, 'locale', 'singular_title');
+    subject_title_Singular.value = mapLocales(data.singularTitle, 'locale', 'singular_title');
     subject_title_Plural.value = mapLocales(data.pluralTitle, 'locale', 'plural_title');
     subjectInitialBranches.value = data.branches.map((branch) => ({
       singular: {
@@ -233,7 +233,7 @@
       </div>
 
       <SingularPluralForm
-        :numberOfBranches="ConfigurationNumberOfBranchs"
+        :number-of-branches="ConfigurationNumberOfBranchs"
         :label="$t('name_of_branch')"
         :initial-branches="configurationInitialBranches"
         @update="GetConfigurationBranchs"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted, computed } from 'vue';
-  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import { mapLocales } from '@/base/Presentation/Utils/MapLocales';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import PrivacyController from '../controllers/privacy.controller';
   import AddPrivacyParams from '../../core/params/add.privacy.params';
@@ -36,25 +36,16 @@
         }),
       }),
     );
-    
   };
 
   const ShowPrivacy = async () => {
     await privacyController.fetchList();
 
-    const titleData = status.value.data?.[0]?.title.reduce((acc, item) => {
-      acc[item?.locale!] = item.title;
-      return acc;
-    }, {});
-    const descriptionData = status.value.data?.[0]?.description.reduce((acc, item) => {
-      acc[item?.locale!] = item.description;
-      return acc;
-    }, {});
-    console.log(titleData, 'titleData');
-    console.log(descriptionData, 'descriptionData');
+    const data = status.value.data?.[0];
+    if (!data) return;
 
-    title.value = titleData;
-    description.value = descriptionData;
+    title.value = mapLocales(data.title || [], 'locale', 'title');
+    description.value = mapLocales(data.description || [], 'locale', 'description');
   };
 
   onMounted(() => {
@@ -82,7 +73,7 @@
 
     <div class="form-header-left">
       <p><Privecyicon /> {{ $t(`Policy Details`) }}</p>
-      <button @click="ResetData" class="reset-btn">{{ $t(`reset`) }}</button>
+      <button class="reset-btn" @click="ResetData">{{ $t(`reset`) }}</button>
     </div>
 
     <!-- List -->

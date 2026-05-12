@@ -1,16 +1,12 @@
 /**
- * Country model representing a nation's geographical and cultural data
+ * Privacy model for managing privacy policy data
  */
 export default class PrivacyModel {
   public readonly id: number;
-  public readonly title: Record<string, string>[];
-  public readonly description: Record<string, string>[];
+  public readonly title: unknown[];
+  public readonly description: unknown[];
 
-  constructor(data: {
-    id: number;
-    title: Record<string, string>[];
-    description: Record<string, string>[];
-  }) {
+  constructor(data: { id: number; title: unknown[]; description: unknown[] }) {
     this.id = data.id;
     this.title = data.title;
     this.description = data.description;
@@ -18,38 +14,36 @@ export default class PrivacyModel {
     Object.freeze(this);
   }
 
-  /**
-   * Create CountryModel from API response
-   * @param json - Raw JSON data from API
-   * @returns FaqsModel instance
-   */
-  static fromJson(json: any): PrivacyModel {
+  static fromJson(json: Record<string, unknown>): PrivacyModel {
     if (!json) {
-      throw new Error('Cannot create FaqsModel from null or undefined');
+      throw new Error('Cannot create PrivacyModel from null or undefined');
     }
 
+    const mapToLocaleArray = (data: unknown, key: string) => {
+      if (Array.isArray(data)) return data;
+      if (typeof data === 'object' && data !== null) {
+        return Object.entries(data as Record<string, unknown>).map(([locale, value]) => ({
+          locale,
+          [key]: value as string,
+        }));
+      }
+      return [{ locale: 'en', [key]: data ?? '' }];
+    };
+
+    const translations = (json.translations || {}) as Record<string, unknown>;
+    const titleData = translations.title ?? json.title;
+    const descriptionData = translations.description ?? json.description;
+
     return new PrivacyModel({
-      id: json.id,
-      title: json.title,
-      description: json.description,
+      id: json.id as number,
+      title: mapToLocaleArray(titleData, 'title'),
+      description: mapToLocaleArray(descriptionData, 'description'),
     });
   }
 
   static example: PrivacyModel = new PrivacyModel({
     id: 1,
-    title: [
-      {
-        en: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
-        ar: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
-        fr: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
-      },
-    ],
-    description: [
-      {
-        en: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
-        ar: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
-        fr: 'lorem ipsum dolor sit amet consectetur adipiscing elit',
-      },
-    ],
+    title: [{ locale: 'en', title: 'Privacy Policy' }],
+    description: [{ locale: 'en', description: 'Description here' }],
   });
 }

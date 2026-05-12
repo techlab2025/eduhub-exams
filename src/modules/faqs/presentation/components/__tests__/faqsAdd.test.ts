@@ -19,7 +19,13 @@ vi.mock('vue-router', () => ({
 // Create a stable mock instance with reactive refs
 const mockInstance = {
   create: vi.fn(),
+  update: vi.fn(),
+  fetchOne: vi.fn(),
+  fetchList: vi.fn(),
+  delete: vi.fn(),
   errorMessage: ref(''),
+  itemState: ref(null),
+  listState: ref(null),
 };
 
 // Mock FaqsController
@@ -60,11 +66,11 @@ describe('faqsAdd', () => {
     const controller = FaqsController.getInstance();
 
     // Simulate updating form data
-    const mockParams = { question: { en: 'q' }, answer: { en: 'a' } };
+    const mockParams = { translations: { question: { en: 'q' }, answer: { en: 'a' } } };
     // @ts-expect-error - updateData is internal but we want to trigger it
     wrapper.vm.updateData(mockParams);
 
-    await wrapper.find('.btn-save').trigger('click');
+    await wrapper.find('.btn-primary').trigger('click');
 
     expect(controller.create).toHaveBeenCalled();
   });

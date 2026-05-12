@@ -26,9 +26,17 @@
     }
   });
 
+  const isInputEmpty = computed(() => {
+    return (
+      !inputValue.value ||
+      Object.keys(inputValue.value).length === 0 ||
+      Object.values(inputValue.value).every((val) => !val || val.trim() === '')
+    );
+  });
+
   function handleConfirm() {
+    if (isInputEmpty.value) return;
     const name = inputValue.value;
-    if (!name) return;
     emit('confirm', name);
     inputValue.value = {};
   }
@@ -80,7 +88,7 @@
     />
 
     <div class="dialog-footer">
-      <button class="btn btn-primary" :disabled="!inputValue" @click="handleConfirm">
+      <button class="btn btn-primary" :disabled="isInputEmpty" @click="handleConfirm">
         {{ $t('add') }}
       </button>
       <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>

@@ -22,7 +22,11 @@ vi.mock('vue-router', () => ({
 const mockInstance = {
   fetchList: vi.fn(),
   update: vi.fn(),
+  fetchOne: vi.fn(),
+  create: vi.fn(),
+  delete: vi.fn(),
   listState: ref(null),
+  itemState: ref(null),
   errorMessage: ref(''),
 };
 
@@ -56,24 +60,32 @@ describe('faqsEdit', () => {
 
   it('renders and fetches FAQ on mount', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaq = new FaqsModel({ id: 1, question: { en: 'q' }, answer: { en: 'a' } });
-    vi.mocked(controller.fetchList).mockImplementation(() => {
-      controller.listState.value = new DataSuccess({ data: [mockFaq] });
+    const mockFaq = new FaqsModel({
+      id: 1,
+      question: [{ locale: 'en', question: 'q' }],
+      answer: [{ locale: 'en', answer: 'a' }],
+    });
+    vi.mocked(controller.fetchOne).mockImplementation(() => {
+      controller.itemState.value = new DataSuccess({ data: mockFaq });
       return Promise.resolve();
     });
 
     const wrapper = mount(faqsEdit, mountOptions);
     await flushPromises();
 
-    expect(controller.fetchList).toHaveBeenCalled();
+    expect(controller.fetchOne).toHaveBeenCalled();
     expect(wrapper.find('.faqs-title').text()).toBe('faqs');
   });
 
   it('calls controller.update when save is clicked', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaq = new FaqsModel({ id: 1, question: { en: 'q' }, answer: { en: 'a' } });
-    vi.mocked(controller.fetchList).mockImplementation(() => {
-      controller.listState.value = new DataSuccess({ data: [mockFaq] });
+    const mockFaq = new FaqsModel({
+      id: 1,
+      question: [{ locale: 'en', question: 'q' }],
+      answer: [{ locale: 'en', answer: 'a' }],
+    });
+    vi.mocked(controller.fetchOne).mockImplementation(() => {
+      controller.itemState.value = new DataSuccess({ data: mockFaq });
       return Promise.resolve();
     });
 
@@ -81,23 +93,17 @@ describe('faqsEdit', () => {
     await flushPromises();
 
     // Directly set formParams if possible, or trigger updateData
-    const mockParams = { question: { en: 'new q' }, answer: { en: 'new a' } };
+    const mockParams = { translations: { question: { en: 'new q' }, answer: { en: 'new a' } } };
     // @ts-expect-error - updateData is internal
     await wrapper.vm.updateData(mockParams);
 
-    await wrapper.find('.btn-save').trigger('click');
+    await wrapper.find('.btn-primary').trigger('click');
 
     expect(controller.update).toHaveBeenCalled();
     expect(pushMock).toHaveBeenCalledWith('/eg/faqs');
   });
 
   it('redirects to list when cancel is clicked', async () => {
-    const controller = FaqsController.getInstance();
-    vi.mocked(controller.fetchList).mockImplementation(() => {
-      controller.listState.value = new DataSuccess({ data: [] });
-      return Promise.resolve();
-    });
-
     const wrapper = mount(faqsEdit, mountOptions);
     await flushPromises();
 

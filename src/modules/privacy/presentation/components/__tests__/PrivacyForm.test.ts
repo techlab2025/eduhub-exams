@@ -33,15 +33,15 @@ vi.mock('primevue/config', () => ({
 
 // Mock Controller if it exists in the same directory (simplified)
 // This is to avoid issues with controllers that might have side effects
-// vi.mock('../controllers/privacy.controller', () => ({
-//   default: {
-//     getInstance: () => ({
-//       listState: { value: {} },
-//       fetchList: vi.fn(),
-//       pagination: { value: {} }
-//     })
-//   }
-// }))
+vi.mock('../controllers/privacy.controller', () => ({
+  default: {
+    getInstance: () => ({
+      listState: { value: { data: [] } },
+      fetchList: vi.fn().mockResolvedValue({}),
+      create: vi.fn().mockResolvedValue({}),
+    }),
+  },
+}));
 
 describe('PrivacyForm', () => {
   beforeEach(() => {

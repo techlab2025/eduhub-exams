@@ -10,7 +10,7 @@ import { env } from '@/base/Core/Config';
 
 describe('EducationSubjectRepository', () => {
   let repository: EducationSubjectRepository;
-  let mockApiService: Record<string, unknown>;
+  let mockApiService: Record<string, any>;
 
   beforeEach(() => {
     repository = EducationSubjectRepository.getInstance();
@@ -23,9 +23,7 @@ describe('EducationSubjectRepository', () => {
       delete: vi.fn(),
     };
 
-    vi.spyOn(repository as unknown as { apiService: unknown }, 'apiService', 'get').mockReturnValue(
-      mockApiService,
-    );
+    vi.spyOn(repository as any, 'apiService', 'get').mockReturnValue(mockApiService);
     env.override({ useStaticData: false });
   });
 
@@ -51,17 +49,14 @@ describe('EducationSubjectRepository', () => {
           data: {
             education_classification_id: 2,
             number_of_branches: 2,
-            translation: {
-              SingularTitle: { en: 'Subject', ar: 'مادة' },
-              PluralTitle: { en: 'Subjects', ar: 'مواد' },
-            },
+            singular_title: [{ locale: 'en', singular_title: 'Subject' }],
+            plural_title: [{ locale: 'en', plural_title: 'Subjects' }],
             branches: [
               {
+                id: 1,
                 level_number: 1,
-                translation: {
-                  SingularTitle: { en: 'Part', ar: 'جزء' },
-                  PluralTitle: { en: 'Parts', ar: 'اجزاء' },
-                },
+                singular_title: [{ locale: 'en', singular_title: 'Part' }],
+                plural_title: [{ locale: 'en', plural_title: 'Parts' }],
               },
             ],
           },
@@ -76,9 +71,9 @@ describe('EducationSubjectRepository', () => {
       if (result instanceof DataSuccess) {
         expect(result.data).toBeInstanceOf(Array);
         expect(result.data?.[0]).toBeInstanceOf(EducationSubjectConfigurationModel);
-        expect(result.data?.[0].educationClassificatioId).toBe(2);
+        expect(result.data?.[0].educationClassification.id).toBe(2);
         expect(result.data?.[0].numberOfBranches).toBe(2);
-        expect(result.data?.[0].SingularTitle.en).toBe('Subject');
+        expect(result.data?.[0].singularTitle[0].singular_title).toBe('Subject');
       }
     });
 
@@ -116,7 +111,8 @@ describe('EducationSubjectRepository', () => {
           data: {
             education_classification_id: 1,
             number_of_branches: 1,
-            translation: { SingularTitle: {}, PluralTitle: {} },
+            singular_title: [],
+            plural_title: [],
             branches: [],
           },
         },
@@ -127,11 +123,9 @@ describe('EducationSubjectRepository', () => {
       const params = {
         toMap: () => ({}),
         validate: () => ({ isValid: true, errors: [] }),
-        validateOrThrow: () => {
-          // No-op for testing
-        },
+        validateOrThrow: () => {},
       };
-      const result = await repository.create(params as unknown as any);
+      const result = await repository.create(params as any);
 
       expect(result).toBeInstanceOf(DataSuccess);
       if (result instanceof DataSuccess) {

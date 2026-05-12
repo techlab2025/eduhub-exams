@@ -9,7 +9,7 @@ describe('DeleteFaqsParams', () => {
 
   it('toMap returns the id', () => {
     const params = new DeleteFaqsParams({ id: 7 });
-    expect(params.toMap()).toEqual({ id: 7 });
+    expect(params.toMap()).toEqual({ faq_id: 7 });
   });
 
   it('validate returns isValid:true for a valid id', () => {
@@ -18,7 +18,7 @@ describe('DeleteFaqsParams', () => {
   });
 
   it('validate returns isValid:false when id is null', () => {
-    const params = new DeleteFaqsParams({ id: null as any });
+    const params = new DeleteFaqsParams({ id: null as unknown as number });
     expect(params.validate().isValid).toBe(false);
   });
 });

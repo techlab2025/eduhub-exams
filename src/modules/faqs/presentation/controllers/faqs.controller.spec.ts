@@ -30,6 +30,6 @@ describe('FaqsController', () => {
     // @ts-expect-error - config is protected
     const config = controller.config;
     expect(config.showLoadingDialog).toBe(true);
-    expect(config.showSuccessDialog).toBe(true);
+    expect(config.showSuccessDialog).toBe(false);
   });
 });

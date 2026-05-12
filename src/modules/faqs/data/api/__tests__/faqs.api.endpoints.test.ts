@@ -4,8 +4,8 @@ import { FaqsEndpoints } from '../faqs.api.endpoints';
 describe('FaqsEndpoints', () => {
   const endpoints = new FaqsEndpoints();
 
-  it('index URL contains fetch_faqs', () => {
-    expect(endpoints.index).toContain('fetch_faqs');
+  it('index URL contains fetch_faq', () => {
+    expect(endpoints.index).toContain('fetch_faq');
   });
 
   it('show URL contains show_faq', () => {
@@ -24,9 +24,9 @@ describe('FaqsEndpoints', () => {
     expect(endpoints.delete).toContain('delete_faq');
   });
 
-  it('all URLs share the organization/ prefix', () => {
-    expect(endpoints.index).toContain('organization/');
-    expect(endpoints.store).toContain('organization/');
-    expect(endpoints.delete).toContain('organization/');
+  it('all URLs share the dashboard/ prefix', () => {
+    expect(endpoints.index).toContain('dashboard/');
+    expect(endpoints.store).toContain('dashboard/');
+    expect(endpoints.delete).toContain('dashboard/');
   });
 });

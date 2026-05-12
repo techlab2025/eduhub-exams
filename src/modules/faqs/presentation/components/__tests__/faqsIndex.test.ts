@@ -70,8 +70,16 @@ describe('faqsIndex', () => {
   it('displays faqs when data is present', async () => {
     const controller = FaqsController.getInstance();
     const mockFaqs = [
-      new FaqsModel({ id: 1, question: { en: 'Q1' }, answer: { en: 'A1' } }),
-      new FaqsModel({ id: 2, question: { en: 'Q2' }, answer: { en: 'A2' } }),
+      new FaqsModel({
+        id: 1,
+        question: [{ locale: 'en', question: 'Q1' }],
+        answer: [{ locale: 'en', answer: 'A1' }],
+      }),
+      new FaqsModel({
+        id: 2,
+        question: [{ locale: 'en', question: 'Q2' }],
+        answer: [{ locale: 'en', answer: 'A2' }],
+      }),
     ];
     vi.mocked(controller.fetchList).mockImplementation(() => {
       controller.listState.value = new DataSuccess({ data: mockFaqs });
@@ -100,7 +108,13 @@ describe('faqsIndex', () => {
 
   it('calls controller.delete when delete button is clicked', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaqs = [new FaqsModel({ id: 1, question: { en: 'Q1' }, answer: { en: 'A1' } })];
+    const mockFaqs = [
+      new FaqsModel({
+        id: 1,
+        question: [{ locale: 'en', question: 'Q1' }],
+        answer: [{ locale: 'en', answer: 'A1' }],
+      }),
+    ];
     vi.mocked(controller.fetchList).mockImplementation(() => {
       controller.listState.value = new DataSuccess({ data: mockFaqs });
       return Promise.resolve();
@@ -116,7 +130,13 @@ describe('faqsIndex', () => {
 
   it('toggles expand state when clicking a row', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaqs = [new FaqsModel({ id: 1, question: { en: 'Q1' }, answer: { en: 'A1' } })];
+    const mockFaqs = [
+      new FaqsModel({
+        id: 1,
+        question: [{ locale: 'en', question: 'Q1' }],
+        answer: [{ locale: 'en', answer: 'A1' }],
+      }),
+    ];
     vi.mocked(controller.fetchList).mockImplementation(() => {
       controller.listState.value = new DataSuccess({ data: mockFaqs });
       return Promise.resolve();

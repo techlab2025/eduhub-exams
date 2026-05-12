@@ -46,6 +46,8 @@ describe('StageTreeNode', () => {
       props: {
         node: mockNode,
         selectedStageId: null,
+        MaxDepth: 3,
+        parentId: null,
         ...props,
       },
       global: {

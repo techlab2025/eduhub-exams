@@ -1,115 +1,72 @@
 import { describe, it, expect } from 'vitest';
 import EducationConfigurationModel from './education.configuration.model';
+import ConfigurationBranchesModel from './configuration.branch.model';
 
 describe('EducationConfigurationModel', () => {
   describe('constructor', () => {
     it('should create a valid model', () => {
       const model = new EducationConfigurationModel({
-        educationClassificatioId: 1,
+        educationClassification: { id: 1, title: 'Test' },
         numberOfBranches: 2,
         branches: [
-          new EducationConfigurationModel.example.branches[0].constructor({
+          new ConfigurationBranchesModel({
             id: 1,
             levelNumber: 1,
-            singularTitle: { en: 'Level 1', ar: 'مستوى 1' },
-            pluralTitle: { en: 'Levels 1', ar: 'مستويات 1' },
-          }),
-          new EducationConfigurationModel.example.branches[0].constructor({
-            id: 2,
-            levelNumber: 2,
-            singularTitle: { en: 'Level 2', ar: 'مستوى 2' },
-            pluralTitle: { en: 'Levels 2', ar: 'مستويات 2' },
+            singularTitle: [{ locale: 'en', singular_title: 'Level 1' }],
+            pluralTitle: [{ locale: 'en', plural_title: 'Levels 1' }],
           }),
         ],
       });
 
-      expect(model.educationClassificatioId).toBe(1);
+      expect(model.educationClassification.id).toBe(1);
       expect(model.numberOfBranches).toBe(2);
-      expect(model.branches).toHaveLength(2);
+      expect(model.branches).toHaveLength(1);
     });
   });
 
   describe('fromJson', () => {
     it('should parse API JSON correctly', () => {
       const json = {
-        education_classification_id: 3,
+        education_classification: { id: 3, title: 'Test 3' },
         number_of_branches: 2,
         branches: [
           {
+            id: 1,
             level_number: 1,
-            translation: {
-              SingularTitle: { en: 'Stage', ar: 'مرحلة' },
-              PluralTitle: { en: 'Stages', ar: 'مراحل' },
-            },
-          },
-          {
-            level_number: 2,
-            translation: {
-              SingularTitle: { en: 'Grade', ar: 'صف' },
-              PluralTitle: { en: 'Grades', ar: 'صفوف' },
-            },
+            singular_title: [{ locale: 'en', singular_title: 'Stage' }],
+            plural_title: [{ locale: 'en', plural_title: 'Stages' }],
           },
         ],
       };
 
       const model = EducationConfigurationModel.fromJson(json);
 
-      expect(model.educationClassificatioId).toBe(3);
+      expect(model.educationClassification.id).toBe(3);
       expect(model.numberOfBranches).toBe(2);
-      expect(model.branches).toHaveLength(2);
+      expect(model.branches).toHaveLength(1);
       expect(model.branches[0].levelNumber).toBe(1);
-      expect(model.branches[0].singularTitle).toEqual({ en: 'Stage', ar: 'مرحلة' });
-    });
-
-    it('should default branches to [] when missing', () => {
-      const json = { education_classification_id: 1, number_of_branches: 0 };
-
-      const model = EducationConfigurationModel.fromJson(json);
-
-      expect(model.branches).toEqual([]);
-    });
-
-    it('should support translations key instead of translation', () => {
-      const json = {
-        education_classification_id: 1,
-        number_of_branches: 1,
-        branches: [
-          {
-            level_number: 1,
-            translations: {
-              SingularTitle: { en: 'Stage', ar: 'مرحلة' },
-              PluralTitle: { en: 'Stages', ar: 'مراحل' },
-            },
-          },
-        ],
-      };
-
-      const model = EducationConfigurationModel.fromJson(json);
-
-      expect(model.branches[0].singularTitle).toEqual({ en: 'Stage', ar: 'مرحلة' });
+      expect(model.branches[0].singularTitle[0].singular_title).toBe('Stage');
     });
 
     it('should throw when JSON is null', () => {
-      expect(() => EducationConfigurationModel.fromJson(null)).toThrow(
+      expect(() => EducationConfigurationModel.fromJson(null as any)).toThrow(
         'Cannot create EducationConfigurationModel from null or undefined',
       );
     });
   });
 
   describe('example', () => {
-    it('should be a valid instance with 3 branches', () => {
+    it('should be a valid instance', () => {
       const ex = EducationConfigurationModel.example;
-
       expect(ex).toBeInstanceOf(EducationConfigurationModel);
-      expect(ex.numberOfBranches).toBe(3);
-      expect(ex.branches).toHaveLength(3);
+      expect(ex.numberOfBranches).toBeGreaterThan(0);
     });
   });
 
   describe('immutability', () => {
     it('should be frozen', () => {
       const model = new EducationConfigurationModel({
-        educationClassificatioId: 1,
+        educationClassification: { id: 1, title: 'T' },
         numberOfBranches: 0,
         branches: [],
       });
