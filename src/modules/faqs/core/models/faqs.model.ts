@@ -1,9 +1,9 @@
 export default class FaqsModel {
   public readonly id?: number;
-  public readonly answer: any[];
-  public readonly question: any[];
+  public readonly answer: Record<string, string>;
+  public readonly question: Record<string, string>;
 
-  constructor(data: { id?: number; answer: any[]; question: any[] }) {
+  constructor(data: { id?: number; answer: Record<string, string>; question: Record<string, string> }) {
     this.id = data.id;
     this.answer = data.answer;
     this.question = data.question;
@@ -18,39 +18,28 @@ export default class FaqsModel {
 
     return new FaqsModel({
       id: json.id,
-
-      question: Array.isArray(json.question)
-        ? json.question
-        : [
-            {
-              locale: 'en',
-              question: json.question ?? '',
-            },
-          ],
-
-      answer: Array.isArray(json.answer)
-        ? json.answer
-        : [
-            {
-              locale: 'en',
-              answer: json.answer ?? '',
-            },
-          ],
+      question: FaqsModel.normalizeLocaleField(json.question, 'question'),
+      answer: FaqsModel.normalizeLocaleField(json.answer, 'answer'),
     });
   }
+
+  private static normalizeLocaleField(raw: unknown, valueKey: string): Record<string, string> {
+    if (Array.isArray(raw)) {
+      return (raw as Array<Record<string, string>>).reduce(
+        (acc, item) => {
+          if (item?.locale) acc[item.locale] = item[valueKey] ?? '';
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+    }
+    if (raw && typeof raw === 'object') return raw as Record<string, string>;
+    return {};
+  }
+
   static example: FaqsModel = new FaqsModel({
     id: 1,
-    answer: [
-      {
-        locale: 'en',
-        answer: 'answer',
-      },
-    ],
-    question: [
-      {
-        locale: 'en',
-        question: 'question',
-      },
-    ],
+    answer: { en: 'answer' },
+    question: { en: 'question' },
   });
 }

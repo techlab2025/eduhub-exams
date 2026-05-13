@@ -72,11 +72,11 @@ export default class SupportContactsController extends BaseController<
     });
     return result;
   }
-  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<SupportContactsModel[]>> {
+  async fetchList(params?: Params, options?: ApiCallOptions , isLocale?: boolean): Promise<DataState<SupportContactsModel[]>> {
     const result = await super.fetchList(params, {
       ...options,
       headers: {
-        'Accept-Language': (params as any)?.isLocale ? '*' : 'en',
+        'Accept-Language':  isLocale ? '*' : 'en',
       },
     });
     return result;

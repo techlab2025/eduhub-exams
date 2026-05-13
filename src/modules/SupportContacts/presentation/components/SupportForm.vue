@@ -9,6 +9,8 @@
   import DeleteIcon from '@/shared/icons/Support/DeleteIcon.vue';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
   import DeleteSectionIcon from '@/shared/icons/Support/DeleteSectionIcon.vue';
+  import SupportContactsController from '../controllers/support.controller';
+  import DeleteSupportContactParams from '../../core/params/delete.support.contacts.params';
 
   const { t } = useI18n();
 
@@ -29,6 +31,7 @@
   };
 
   type SectionState = {
+    id: number;
     title: Record<string, string>;
     phonenumbers: string[];
     whatsAppNumebrs: string[];
@@ -47,6 +50,7 @@
   }>();
 
   const createSection = (): SectionState => ({
+    id: 0,
     title: {},
     phonenumbers: [],
     whatsAppNumebrs: [],
@@ -81,8 +85,10 @@
     emitData();
   };
 
-  const removeSection = (index: number) => {
+  const controller = SupportContactsController.getInstance();
+  const removeSection = async (index: number) => {
     if (sections.value.length === 1) return;
+    await controller.delete(new DeleteSupportContactParams(index));
     sections.value.splice(index, 1);
     emitData();
   };
@@ -115,16 +121,8 @@
     if (props.initialSections?.length) {
       console.log(props.initialSections, 'props.initialSections');
       sections.value = props.initialSections.map((s) => ({
-        title: {
-          ...(Array.isArray(s?.titles)
-            ? s?.titles?.reduce((acc: Record<string, string>, item: any) => {
-                if (item?.locale) {
-                  acc[item.locale] = item.title || '';
-                }
-                return acc;
-              }, {})
-            : {}),
-        },
+        id: s.id,
+        title: s.titles ?? {},
         phonenumbers: [
           ...(s.supportContacts
             .filter((el) => el.key == 'phonenumbers')
@@ -170,7 +168,7 @@
             v-if="sections.length > 1"
             type="button"
             class="delete-section-btn"
-            @click="removeSection(sIdx)"
+            @click="removeSection(section.id)"
           >
             <DeleteSectionIcon />
           </button>

@@ -42,8 +42,8 @@
 
     const firstItem = status.value.data?.[0];
     if (firstItem) {
-      title.value = firstItem.title?.[0] || {};
-      description.value = firstItem.description?.[0] || {};
+      title.value = firstItem.title || {};
+      description.value = firstItem.description || {};
     }
   };
 
