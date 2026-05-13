@@ -77,4 +77,11 @@ export default class StageController extends BaseController<
     }
     return result;
   }
+  // Override fetchAsOptions to return full StageModel data
+async fetchAsOptions(params?: Params, options?: ApiCallOptions) {
+  await this.fetchList(params, options);
+  if (!this.isListSuccess()) return [];
+  // ارجع الـ StageModel كامل مش TitleInterface
+  return (this.listData.value ?? []) as StageModel[];
+}
 }

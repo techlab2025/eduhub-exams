@@ -23,12 +23,14 @@
   const updateData = (updatedParams: AddDocumentParams) => {
     params.value = new EditDocumentParams({
       document_id: Number(route.params.id),
-      title: updatedParams.title,
-      subject_id: updatedParams.subject_id,
+      title: updatedParams.translations.title,
+      subject_id: updatedParams.subjects,
       stage_id: updatedParams.stage_id,
-      unit_ids: updatedParams.unit_ids,
-      document_type_id: updatedParams.document_type_id,
-      isAllUnits: updatedParams.isAllUnits,
+      document_type_id: updatedParams.documentTypeId,
+      refNumber: updatedParams.refNumber,
+      description: updatedParams.translations.description,
+      files: updatedParams.files,
+      images: updatedParams.images,
     });
   };
 
@@ -38,7 +40,7 @@
 </script>
 
 <template>
-  <div class="email-crud-example">
+  <div class="document-crud-example">
     <DocumentForm
       :document="controller.itemData.value!"
       :form-key="formKey"
