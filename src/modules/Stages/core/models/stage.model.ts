@@ -1,5 +1,6 @@
 import TitleInterface from "@/base/Data/Models/titleInterface";
 import { EducationType } from "../constants/educationtype.enum";
+import BranchesModel from "./branches.model";
 
 /**
  * Country model representing a nation's geographical and cultural data
@@ -7,15 +8,18 @@ import { EducationType } from "../constants/educationtype.enum";
 export default class StageModel {
   public readonly id?: number;
   public readonly title: string;
+  public readonly branches: BranchesModel[];
   public readonly EducationType: TitleInterface<EducationType>;
 
   constructor(data: {
     id?: number;
     title: string;
+    branches: BranchesModel[];
     EducationType: TitleInterface<EducationType>;
   }) {
     this.id = data.id;
     this.title = data.title;
+    this.branches = data.branches;
     this.EducationType = data.EducationType;
 
     Object.freeze(this);
@@ -34,6 +38,7 @@ export default class StageModel {
     return new StageModel({
       id: json.id,
       title: json.title,
+      branches: json.branches,
       EducationType: json.education_type,
     });
   }
@@ -41,6 +46,7 @@ export default class StageModel {
   static example: StageModel = new StageModel({
     id: 1,
     title: "المرحلة الثانوية",
+    branches: [BranchesModel.example],
     EducationType: new TitleInterface({
       id: EducationType.General,
       title: "General",

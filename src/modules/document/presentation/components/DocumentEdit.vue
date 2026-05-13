@@ -40,7 +40,7 @@
 </script>
 
 <template>
-  <div class="email-crud-example">
+  <div class="document-crud-example">
     <DocumentForm
       :document="controller.itemData.value!"
       :form-key="formKey"
