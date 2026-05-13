@@ -41,9 +41,10 @@
     await termsConditionsController.fetchList();
 
     const firstItem = status.value.data?.[0];
-    if (firstItem?.translations) {
-      title.value = firstItem.translations.title;
-      description.value = firstItem.translations.description;
+    console.log(firstItem, 'firstItem');
+    if (firstItem) {
+      title.value = firstItem?.title;
+      description.value = firstItem?.description;
     }
   };
 
@@ -69,7 +70,7 @@
       <h3>{{ $t('Terms & Conditions') }}</h3>
       <p>{{ $t('Add or update the terms and conditions of your platform') }}</p>
     </div>
- 
+
     <div class="form-header-left">
       <p><Privecyicon /> {{ $t(`Terms Details`) }}</p>
       <button @click="ResetData" class="reset-btn">{{ $t(`reset`) }}</button>

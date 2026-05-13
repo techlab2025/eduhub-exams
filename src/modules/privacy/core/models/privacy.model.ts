@@ -22,8 +22,12 @@ export default class PrivacyModel {
 
     return new PrivacyModel({
       id: json.id,
-      title: PrivacyModel.normalizeLocaleField(json.title, 'title'),
-      description: PrivacyModel.normalizeLocaleField(json.description, 'description'),
+      title: typeof json.title === 'string'
+        ? json.title
+        : PrivacyModel.normalizeLocaleField(json.title, 'title'),
+      description: typeof json.description === 'string'
+        ? json.description
+        : PrivacyModel.normalizeLocaleField(json.description, 'description'),
     });
   }
 

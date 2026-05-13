@@ -16,7 +16,7 @@ export default class AboutController extends BaseController<AboutModel, AboutMod
 
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,

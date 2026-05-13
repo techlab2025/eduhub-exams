@@ -23,7 +23,7 @@ export default class TermsConditionsController extends BaseController<
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,
@@ -62,11 +62,16 @@ export default class TermsConditionsController extends BaseController<
     const result = await super.fetchOne(params, {
       ...options,
       useJson: true,
-      headers: { 'Accept-Language': (params as any).isLocale ? '*' : 'en' },
+      headers: {
+        'Accept-Language': 'en',
+      },
     });
     return result;
   }
-  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<TermsConditionsModel[]>> {
+  async fetchList(
+    params?: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<TermsConditionsModel[]>> {
     const result = await super.fetchList(params, {
       ...options,
       headers: {

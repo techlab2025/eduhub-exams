@@ -6,14 +6,14 @@ import TranslationModel from '@/modules/about/core/models/translation.model';
 export default class TermsConditionsModel {
   public readonly translations?: TranslationModel;
   public readonly id?: number;
-  public readonly title?: string;
-  public readonly description?: string;
+  public readonly title?: Record<string, string> | string;
+  public readonly description?: Record<string, string> | string;
 
   constructor(data: {
     translations?: TranslationModel;
     id?: number;
-    title?: string;
-    description?: string;
+    title?: Record<string, string> | string;
+    description?: Record<string, string> | string;
   }) {
     this.translations = data.translations;
     this.id = data.id;
@@ -34,13 +34,31 @@ export default class TermsConditionsModel {
     }
 
     return new TermsConditionsModel({
-      translations: json?.translations
-        ? TranslationModel.fromJson(json.translations)
-        : undefined,
+      translations: json?.translations ? TranslationModel.fromJson(json.translations) : undefined,
       id: json?.id,
-      title: json?.title,
-      description: json?.description,
+      title:
+        typeof json.title === 'string'
+          ? json.title
+          : TermsConditionsModel.normalizeLocaleField(json.title, 'title'),
+      description:
+        typeof json.description === 'string'
+          ? json.description
+          : TermsConditionsModel.normalizeLocaleField(json.description, 'description'),
     });
+  }
+
+  private static normalizeLocaleField(raw: unknown, valueKey: string): Record<string, string> {
+    if (Array.isArray(raw)) {
+      return (raw as Array<Record<string, string>>).reduce(
+        (acc, item) => {
+          if (item?.locale) acc[item.locale] = item[valueKey] ?? '';
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+    }
+    if (raw && typeof raw === 'object') return raw as Record<string, string>;
+    return {};
   }
 
   static example: TermsConditionsModel = new TermsConditionsModel({
