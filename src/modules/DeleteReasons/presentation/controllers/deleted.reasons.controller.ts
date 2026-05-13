@@ -2,6 +2,9 @@ import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type DeleteResonsModel from '../../core/models/delete.reasons.model';
 import DeleteReasonesRepository from '../../data/repositories/delete.reasons.repository';
+import type Params from '@/base/Core/Params/params';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
 /**
  * Country Controller for managing countries
@@ -24,11 +27,13 @@ export default class DeletedReasonsController extends BaseController<
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
-      autoRetry: true,
-      maxAutoRetries: 1,
+      showLoadingDialog: false,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      autoRetry: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
+      maxAutoRetries: 0,
     };
   }
 
@@ -45,5 +50,12 @@ export default class DeletedReasonsController extends BaseController<
       DeletedReasonsController.instance = new DeletedReasonsController();
     }
     return DeletedReasonsController.instance;
+  }
+
+  async create(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<DeleteResonsModel> | undefined> {
+    return await super.create(params, { ...options, useJson: true });
   }
 }

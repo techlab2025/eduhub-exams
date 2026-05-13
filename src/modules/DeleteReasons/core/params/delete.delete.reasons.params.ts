@@ -15,7 +15,7 @@ export default class DeleteDeleteResonsParams implements Params {
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {};
-
+    map['delete_account_reason_id'] = this.id;
     return map;
   }
 
