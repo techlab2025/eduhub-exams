@@ -18,7 +18,10 @@ export default class EditDeleteResonsParams implements Params {
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {};
-
+    map['delete_account_reason_id'] = this.id;
+    if (this.translations) {
+      map['translations'] = this.translations.toMap();
+    }
     return map;
   }
 

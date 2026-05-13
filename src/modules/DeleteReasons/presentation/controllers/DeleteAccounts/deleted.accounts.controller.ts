@@ -24,11 +24,13 @@ export default class DletedAccountsController extends BaseController<
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
-      autoRetry: true,
-      maxAutoRetries: 1,
+      showLoadingDialog: false,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      autoRetry: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
+      maxAutoRetries: 0,
     };
   }
 

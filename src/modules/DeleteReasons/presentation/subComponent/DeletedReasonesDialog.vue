@@ -12,30 +12,50 @@
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import DeleteDeleteResonsParams from '../../core/params/delete.delete.reasons.params';
   import IndexDelete from '@/shared/icons/DocaumentType/IndexDelete.vue';
+  import ShowDeleteResonsParams from '../../core/params/show.delete.reasons.params';
+  import EditDeleteResonsParams from '../../core/params/edit.delete.reasons.params';
 
   const visible = ref(false);
   const deletedReasonsController = DeletedReasonsController.getInstance();
   const deletedReasonesstae = computed(() => deletedReasonsController.listState.value);
+  const isEdit = ref(false);
+  const editId = ref<number | null>(null);
 
   const title = ref<Record<string, string>>({});
   const SavenDocumentType = async () => {
-    visible.value = false;
-    const addDeletedParams = new AddDeleteResonsParams({
-      translations: new TranslationParams({
-        title: title.value!,
-      }),
-    });
     const deletedReasonsController = DeletedReasonsController.getInstance();
-    await deletedReasonsController.create(addDeletedParams);
+
+    if (isEdit.value) {
+      const editparams = new EditDeleteResonsParams({
+        id: editId.value!,
+        translations: new TranslationParams({
+          title: title.value!,
+        }),
+      });
+
+      await deletedReasonsController.update(editparams);
+    } else {
+      const addDeletedParams = new AddDeleteResonsParams({
+        translations: new TranslationParams({
+          title: title.value!,
+        }),
+      });
+      await deletedReasonsController.create(addDeletedParams);
+    }
+    await FetchReasons();
+    title.value = {};
+    isEdit.value = false;
   };
 
   const FetchReasons = async () => {
     const FetchReasonsParams = new IndexDeleteResonsParams();
     await deletedReasonsController.fetchList(FetchReasonsParams);
   };
-  onMounted(async () => {
+
+  const OpenDialog = async () => {
+    visible.value = true;
     await FetchReasons();
-  });
+  };
   const deleteDialogTitle = ref('Are you sure you want to remove this delete account reasons?');
   const deleteDialogMessage = ref('if you want this reason agiain , you want to write again');
 
@@ -45,11 +65,25 @@
         id: id,
       }),
     );
+    await FetchReasons();
+  };
+  const updatetitle = (data: Record<string, string>) => {
+    title.value = data;
+  };
+
+  const showDetails = async (Id: number) => {
+    isEdit.value = true;
+    editId.value = Id;
+    const showDeleteResonsParams = new ShowDeleteResonsParams({
+      delete_account_reason_id: Id,
+    });
+    const res = await deletedReasonsController.fetchOne(showDeleteResonsParams);
+    title.value = res.data?.titles;
   };
 </script>
 
 <template>
-  <button class="btn btn-primary" @click="visible = true">
+  <button class="btn btn-primary" @click="OpenDialog">
     <IndexAddIcon />
     <span> Deleted Reason</span>
   </button>
@@ -77,11 +111,11 @@
       <div v-for="(item, index) in deletedReasonesstae.data" :key="index" class="document-type-row">
         <div class="item-title">
           <span class="item-small-title">reason</span>
-          <span class="item-main-title">{{ item.Reason.title }}</span>
+          <span class="item-main-title">{{ item.Reason }}</span>
         </div>
 
         <div class="item-actions">
-          <EditeIcon />
+          <EditeIcon @click="showDetails(item.id!)" />
 
           <DeleteDialog
             :title="deleteDialogTitle"
@@ -99,10 +133,10 @@
         <MultiLangInput
           :field-key="`title`"
           :label="`delete account reasons`"
-          :languages="['en', 'ar', 'fr']"
+          :languages="['en', 'ar']"
           :model-value="title"
           :type="'title'"
-          @update:model-value="title = $event"
+          @update:model-value="updatetitle"
         />
       </div>
       <div class="btns">

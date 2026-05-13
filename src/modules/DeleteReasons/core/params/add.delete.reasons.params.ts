@@ -16,6 +16,9 @@ export default class AddDeleteResonsParams implements Params {
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {};
+    if (this.translations) {
+      map['translations'] = this.translations.toMap();
+    }
 
     return map;
   }
