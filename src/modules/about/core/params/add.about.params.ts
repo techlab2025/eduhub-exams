@@ -29,7 +29,7 @@ export default class AddAboutParams implements Params {
   toMap(): { [p: string]: any } {
     return {
       translations: this.translation,
-      image: `${base64Flag}${this.images}`,
+      image: `${this.images}`,
       social_links: this.socialMedia,
     };
   }
