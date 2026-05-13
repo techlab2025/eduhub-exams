@@ -44,8 +44,8 @@ watch(
   () => props.faq,
   (faq) => {
     if (faq) {
-      question.value = faq.question;
-      answer.value = faq.answer;
+      question.value = faq.question as Record<string, string>;
+      answer.value = faq.answer as Record<string, string>;
       emitData();
     }
   },

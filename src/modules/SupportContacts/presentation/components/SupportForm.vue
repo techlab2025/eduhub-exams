@@ -119,28 +119,30 @@
 
   onMounted(() => {
     if (props.initialSections?.length) {
-      console.log(props.initialSections, 'props.initialSections');
-      sections.value = props.initialSections.map((s) => ({
-        id: s.id,
+      sections.value = props.initialSections.map((s: any) => ({
+        id: s.id!,
         title: s.titles ?? {},
         phonenumbers: [
           ...(s.supportContacts
-            .filter((el) => el.key == 'phonenumbers')
-            .map((item) => item.value) ?? []),
+            .filter((el: any) => el.key == 'phonenumbers')
+            .map((item: any) => item.value) ?? []),
         ],
         whatsAppNumebrs: [
           ...(s.supportContacts
-            .filter((el) => el.key == 'whatsapp_numbers')
-            .map((item) => item.value) ?? []),
+            .filter((el: any) => el.key == 'whatsapp_numbers')
+            .map((item: any) => item.value) ?? []),
         ],
         emails: [
-          ...(s.supportContacts.filter((el) => el.key == 'emails').map((item) => item.value) ?? []),
+          ...(s.supportContacts
+            .filter((el: any) => el.key == 'emails')
+            .map((item: any) => item.value) ?? []),
         ],
         telegramNumbers: [
           ...(s.supportContacts
-            .filter((el) => el.key == 'telegram_numbers')
-            .map((item) => item.value) ?? []),
+            .filter((el: any) => el.key == 'telegram_numbers')
+            .map((item: any) => item.value) ?? []),
         ],
+
         inputs: { phone: '', whatsApp: '', email: '', telegram: '' },
       }));
     }

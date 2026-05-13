@@ -8,8 +8,8 @@
 
   const emit = defineEmits(['update:data']);
 
-  const title = ref<Record<string, string>>();
-  const description = ref<Record<string, string>>();
+  const title = ref<Record<string, string> | string>();
+  const description = ref<Record<string, string> | string>();
   const termsConditionsController = TermsConditionsController.getInstance();
 
   const status = computed(() => termsConditionsController.listState.value);
@@ -30,8 +30,8 @@
     await termsConditionsController.create(
       new AddTermsConditionsParams({
         translations: new TranslationParams({
-          title: title.value!,
-          description: description.value!,
+          title: title.value as Record<string, string>,
+          description: description.value as Record<string, string>,
         }),
       }),
     );
@@ -85,7 +85,7 @@
           :label="`terms title`"
           :languages="['en', 'ar']"
           :type="`title`"
-          :model-value="title"
+          :model-value="title as Record<string, string>"
           @update:model-value="title = $event"
         />
       </div>
@@ -94,7 +94,7 @@
           :field-key="`terms`"
           :label="`terms description`"
           :languages="['en', 'ar']"
-          :model-value="description"
+          :modelValue="description as Record<string, string>"
           :type="`description`"
           @update:model-value="description = $event"
         />

@@ -2,12 +2,12 @@
   import { ref, computed, watch } from 'vue';
 
   interface Props {
-    modelValue?: Record<string, string>;
     fieldKey: string;
+    modelValue?: Record<string, string>;
     languages?: string[];
     label?: string;
     placeholder?: string;
-    type: 'title' | 'description';
+    type?: 'title' | 'description';
   }
 
   const props = withDefaults(defineProps<Props>(), {
