@@ -2,13 +2,20 @@
   import { ref, computed, watch, nextTick } from 'vue';
   import Dialog from 'primevue/dialog';
   import AddEducationSubjectSkillsParams from '../../core/params/EducationSkills/add.education.subject.skills.params';
+  import EditEducationSubjectSkillsParams from '../../core/params/EducationSkills/edit.education.subject.skills.params';
+  import DeleteEducationSubjectSkillsParams from '../../core/params/EducationSkills/delete.education.subject.skills.params';
+  import IndexEducationSubjectSkillsParams from '../../core/params/EducationSkills/index.education.subject.skills.params';
+  import ShowEducationSubjectSkillsParams from '../../core/params/EducationSkills/show.education.subject.skills.params';
   import EducationSkillsController from '../../presentation/controllers/EducationSkills/education.skills.controller';
-  import SubjectSkllsIcon from '@/assets/images/Skills.png';
   import SkillParams from '../../core/params/EducationSkills/skill.params';
+  import SubjectSkllsIcon from '@/assets/images/Skills.png';
   import SkillsController from '@/modules/Skills/presentation/controllers/skills.controller';
   import IndexSkillsParams from '@/modules/Skills/core/params/index.skills.params';
   import type TitleInterface from '@/base/Data/Models/titleInterface';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
+  import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
+  import IndexDelete from '@/shared/icons/DocaumentType/IndexDelete.vue';
 
   const props = defineProps<{
     visible: boolean;
@@ -16,14 +23,21 @@
     branchName: string;
     branchId?: number;
   }>();
-  const controller = SkillsController.getInstance();
-  const indexSkills = new IndexSkillsParams('', 1, 10, 1);
+
   const emit = defineEmits<{
     (e: 'update:visible', val: boolean): void;
   }>();
 
+  const skillsController = SkillsController.getInstance();
+  const educationSkillsController = EducationSkillsController.getInstance();
+  const indexSkills = new IndexSkillsParams('', 1, 10, 1);
+
+  const skillsState = computed(() => educationSkillsController.listState.value);
+
+  const isEdit = ref(false);
+  const editId = ref<number | null>(null);
   const percentageValue = ref<string>('');
-  const timeValue = ref<number>(10);
+  const selectedSkill = ref<TitleInterface<number> | undefined>(undefined);
   const inputRef = ref<HTMLInputElement | null>(null);
 
   const dialogVisible = computed({
@@ -33,40 +47,87 @@
 
   watch(dialogVisible, async (val) => {
     if (val) {
-      percentageValue.value = '';
-      timeValue.value = 0;
+      resetForm();
+      await fetchSkills();
       await nextTick();
       inputRef.value?.focus();
     }
   });
 
   const isInputEmpty = computed(() => !percentageValue.value || !selectedSkill.value);
-  const selectedSkill = ref<TitleInterface<number>>();
+
+  function resetForm() {
+    percentageValue.value = '';
+    selectedSkill.value = undefined;
+    isEdit.value = false;
+    editId.value = null;
+  }
+
+  const fetchSkills = async () => {
+    if (!props.branchId) return;
+    await educationSkillsController.fetchList(
+      new IndexEducationSubjectSkillsParams({ subjectId: props.branchId }),
+    );
+  };
 
   const updateSelectedSkill = (skill: TitleInterface<number>) => {
     selectedSkill.value = skill;
   };
-  async function handleConfirm() {
-    const params = new AddEducationSubjectSkillsParams({
-      id: props.branchId!,
-      skills: [
-        new SkillParams({
-          skillId: selectedSkill.value ? selectedSkill.value?.id : 0,
+
+  const handleSave = async () => {
+    if (isEdit.value && editId.value !== null && selectedSkill.value) {
+      await educationSkillsController.update(
+        new EditEducationSubjectSkillsParams({
+          entryId: editId.value,
+          skillId: selectedSkill.value.id,
           percentage: percentageValue.value,
         }),
-      ],
-    });
-    const controller = EducationSkillsController.getInstance();
-    await controller.create(params);
-    dialogVisible.value = false;
-  }
+      );
+    } else if (props.branchId && selectedSkill.value) {
+      await educationSkillsController.create(
+        new AddEducationSubjectSkillsParams({
+          id: props.branchId,
+          skills: [
+            new SkillParams({
+              skillId: selectedSkill.value.id,
+              percentage: percentageValue.value,
+            }),
+          ],
+        }),
+      );
+    }
+    await fetchSkills();
+    resetForm();
+  };
+
+  const deleteSkill = async (id: number) => {
+    await educationSkillsController.delete(new DeleteEducationSubjectSkillsParams({ entryId: id }));
+    await fetchSkills();
+  };
+
+  const showDetails = async (id: number) => {
+    isEdit.value = true;
+    editId.value = id;
+    const res = await educationSkillsController.fetchOne(
+      new ShowEducationSubjectSkillsParams({ entryId: id }),
+    );
+    if (res?.data) {
+      percentageValue.value = String(res.data.percentage);
+      if (res.data.skillId && res.data.skillName) {
+        selectedSkill.value = {
+          id: res.data.skillId,
+          title: res.data.skillName,
+        } as TitleInterface<number>;
+      }
+    }
+  };
 </script>
 
 <template>
   <Dialog
     v-model:visible="dialogVisible"
     modal
-    :style="{ width: '30rem' }"
+    :style="{ width: '35rem' }"
     :pt="{
       root: 'pricing-dialog',
       header: 'dialog-header',
@@ -75,7 +136,6 @@
   >
     <template #header>
       <div class="dialog-icon">
-        <!-- <SubjectSkllsIcon /> -->
         <img :src="SubjectSkllsIcon" alt="skills" width="60" />
       </div>
       <div class="dialog-header-text">
@@ -85,52 +145,114 @@
         </p>
       </div>
     </template>
-    <div class="dialog-inputs">
-      <div class="field-group select-group">
-        <UpdatedCustomInputSelect
-          id="skills"
-          :label="`skills`"
-          :params="indexSkills"
-          :controller="controller"
-          :model-value="selectedSkill as any"
-          :placeholder="$t('skills')"
-          @update:model-value="updateSelectedSkill"
-        />
+
+    <div class="dialog-content">
+      <div v-for="(item, index) in skillsState.data" :key="index" class="document-type-row">
+        <div class="item-title">
+          <span class="item-small-title">{{ $t('skill') }}</span>
+          <span class="item-main-title">{{ item.skillName || item.skillId }}</span>
+        </div>
+        <div class="item-title">
+          <span class="item-small-title">{{ $t('percentage (%)') }}</span>
+          <span class="item-main-title">{{ item.percentage }}%</span>
+        </div>
+        <div class="item-actions">
+          <EditeIcon @click="showDetails(item.id)" />
+          <DeleteDialog
+            :title="$t('Are you sure you want to remove this skill?')"
+            :message="$t('This action cannot be undone.')"
+            :hasbtn="true"
+            @delete="deleteSkill(item.id)"
+          >
+            <template #btn>
+              <IndexDelete />
+            </template>
+          </DeleteDialog>
+        </div>
       </div>
 
-      <div class="field-group">
-        <label class="field-label" :for="`percentage-input-${level}`">
-          {{ $t('percentage (%)') }}
-        </label>
-        <input
-          :id="`percentage-input-${level}`"
-          ref="inputRef"
-          v-model="percentageValue"
-          type="text"
-          :placeholder="$t('enter_percentage')"
-          class="field-input"
-          @keydown.esc="dialogVisible = false"
-          @keydown.enter="!isInputEmpty && handleConfirm()"
-        />
+      <div class="dialog-inputs">
+        <div class="field-group select-group">
+          <UpdatedCustomInputSelect
+            id="skills"
+            :label="`skills`"
+            :params="indexSkills"
+            :controller="skillsController"
+            :model-value="selectedSkill as any"
+            :placeholder="$t('skills')"
+            @update:model-value="updateSelectedSkill"
+          />
+        </div>
+        <div class="field-group">
+          <label class="field-label" :for="`percentage-input-${level}`">
+            {{ $t('percentage (%)') }}
+          </label>
+          <input
+            :id="`percentage-input-${level}`"
+            ref="inputRef"
+            v-model="percentageValue"
+            type="text"
+            :placeholder="$t('enter_percentage')"
+            class="field-input"
+            @keydown.esc="dialogVisible = false"
+            @keydown.enter="!isInputEmpty && handleSave()"
+          />
+        </div>
       </div>
-    </div>
-    <div class="dialog-footer">
-      <button class="btn btn-primary" :disabled="isInputEmpty" @click="handleConfirm">
-        {{ $t('add') }}
-      </button>
-      <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>
+
+      <div class="dialog-footer">
+        <button class="btn btn-primary" :disabled="isInputEmpty" @click="handleSave">
+          {{ isEdit ? $t('save') : $t('add') }}
+        </button>
+        <button v-if="isEdit" class="btn btn-secondary" @click="resetForm">
+          {{ $t('cancel') }}
+        </button>
+        <button class="btn btn-secondary" @click="dialogVisible = false">
+          {{ $t('close') }}
+        </button>
+      </div>
     </div>
   </Dialog>
 </template>
 
 <style scoped lang="scss">
-  .input-label {
+  .dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .document-type-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background-color: var(--color-light-gray);
+  }
+  .item-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .item-small-title {
+    font-size: 0.7rem;
+    color: var(--bread-crumb-color-span);
+  }
+  .item-main-title {
+    font-size: 0.9rem;
+    font-weight: 600;
     color: black;
+  }
+  .item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
   }
   .field-input {
     background-color: var(--bg-main);
     border-radius: 30px;
-    margin-bottom: 1rem;
+    margin: 0 !important;
 
     ::placeholder {
       color: var(--bread-crumb-color-span);
@@ -151,7 +273,8 @@
       }
     }
   }
-  .field-input {
-    margin: 0 !important;
+  .dialog-footer {
+    display: flex;
+    gap: 0.5rem;
   }
 </style>

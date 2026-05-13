@@ -45,4 +45,11 @@ export default class EducationSkillsController extends BaseController<
   ): Promise<DataState<EducationSkillsModel> | undefined> {
     return super.create(params, { ...options, useJson: true });
   }
+
+  async update(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<EducationSkillsModel> | undefined> {
+    return super.update(params, { ...options, useJson: true });
+  }
 }

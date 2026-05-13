@@ -19,6 +19,8 @@ export default class EducationSkillsApiService extends BaseApiService {
       create: this.educationSkillsEndpoints.store,
       update: this.educationSkillsEndpoints.update,
       delete: this.educationSkillsEndpoints.delete,
+      index: this.educationSkillsEndpoints.index,
+      show: this.educationSkillsEndpoints.show,
     };
   }
 }

@@ -9,6 +9,7 @@ import { DataSuccess, type DataState } from '@/base/Core/NetworkStructure/Resour
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import type DocumentShowModel from '../../core/models/document.show.model';
+import type ShowDocumentParams from '../../core/params/show.document.params';
 
 export default class DocumentController extends BaseController<
   DocumentShowModel,
@@ -78,7 +79,7 @@ export default class DocumentController extends BaseController<
       ...options,
       useJson: true,
       headers: {
-        'Accept-Language': params.allLocales ? '*' : 'en',
+        'Accept-Language': (params as ShowDocumentParams).allLocales ? '*' : 'en',
       },
     });
   }

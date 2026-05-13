@@ -104,7 +104,7 @@ const deleteDialogMessage = ref(
 );
 const indexDocumentTypeParams = new IndexDocumentTypeParams();
 const documentTypeController = DocumentTypeController.getInstance();
-const selectedDocumentType = ref<TitleInterface<number>>();
+const selectedDocumentType = ref<TitleInterface<number> | null>(null);
 const updateData = (data: TitleInterface<number>) => {
   selectedDocumentType.value = data;
 };

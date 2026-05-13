@@ -100,8 +100,6 @@ import type DocumentShowModel from '../../core/models/document.show.model';
 
       selectedDocumentType.value = newDoc.documentType;
 
-      description.value = newDoc.translations.description;
-
       UploadedImage.value = newDoc.images;
 
       UploadedFiles.value = newDoc.files;

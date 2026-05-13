@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, ref } from 'vue';
   import Dialog from 'primevue/dialog';
   import IndexAddIcon from '@/shared/icons/IndexAddIcon.vue';
   import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
@@ -78,7 +78,7 @@
       delete_account_reason_id: Id,
     });
     const res = await deletedReasonsController.fetchOne(showDeleteResonsParams);
-    title.value = res.data?.titles;
+    title.value = res.data?.titles ?? {};
   };
 </script>
 

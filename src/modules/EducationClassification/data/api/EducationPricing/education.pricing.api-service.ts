@@ -1,5 +1,5 @@
 import BaseApiService from '@/base/Data/ApiService/baseApiService';
-import type { ApiEndpoints} from '@/base/Data/ApiService/baseApiService';
+import type { ApiEndpoints } from '@/base/Data/ApiService/baseApiService';
 import { EducationPricingEndpoints } from './education.pricing.api.endpoints';
 
 export default class EducationPricingApiService extends BaseApiService {
@@ -22,6 +22,8 @@ export default class EducationPricingApiService extends BaseApiService {
       create: this.educationPricingEndpoints.store,
       update: this.educationPricingEndpoints.update,
       delete: this.educationPricingEndpoints.delete,
+      index: this.educationPricingEndpoints.index,
+      show: this.educationPricingEndpoints.show,
     };
   }
 }

@@ -2,6 +2,7 @@ import BaseController from "@/base/Presentation/Controller/baseController";
 import type { ControllerConfig } from "@/base/Presentation/Controller/baseController";
 import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
 import type Params from "@/base/Core/Params/params";
+import TitleInterface from "@/base/Data/Models/titleInterface";
 import { DataSuccess } from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
 import router from "@/router";
 import { useFormsStore } from "@/stores/formsStore";
@@ -77,11 +78,11 @@ export default class StageController extends BaseController<
     }
     return result;
   }
-  // Override fetchAsOptions to return full StageModel data
-async fetchAsOptions(params?: Params, options?: ApiCallOptions) {
+  async fetchAsOptions(params?: Params, options?: ApiCallOptions): Promise<TitleInterface<string | number>[]> {
   await this.fetchList(params, options);
   if (!this.isListSuccess()) return [];
-  // ارجع الـ StageModel كامل مش TitleInterface
-  return (this.listData.value ?? []) as StageModel[];
+  return (this.listData.value ?? []).map(
+    (stage) => new TitleInterface({ id: stage.id ?? 0, title: stage.title }),
+  );
 }
 }

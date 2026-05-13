@@ -3,11 +3,13 @@
  */
 export default class EducationPricingModel {
   public readonly id: number;
-  public readonly title: string;
+  public readonly duration: number;
+  public readonly price: number;
 
-  constructor(data: { id: number; title: string }) {
+  constructor(data: { id: number; duration: number; price: number }) {
     this.id = data.id;
-    this.title = data.title;
+    this.duration = data.duration;
+    this.price = data.price;
 
     Object.freeze(this);
   }
@@ -24,12 +26,14 @@ export default class EducationPricingModel {
 
     return new EducationPricingModel({
       id: json.id as number,
-      title: json.title as string,
+      duration: json.duration as number,
+      price: json.price as number,
     });
   }
 
   static example: EducationPricingModel = new EducationPricingModel({
     id: 1,
-    title: 'Basic education',
+    duration: 3,
+    price: 300,
   });
 }
