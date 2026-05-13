@@ -5,7 +5,7 @@ import type ContactsModel from './contatcts.model';
  */
 export default class SupportContactsModel {
   public readonly id?: number;
-  public readonly titles?: string;
+  public readonly titles?: any;
   public readonly supportContacts: ContactsModel[];
 
   constructor(data: { id?: number; titles?: string; supportContacts: ContactsModel[] }) {

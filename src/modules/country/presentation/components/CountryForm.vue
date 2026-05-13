@@ -31,9 +31,9 @@
     () => country,
     (newCountry) => {
       if (newCountry) {
-        title.value = newCountry.title;
-        code.value = newCountry.code;
-        flag.value = newCountry.flag;
+        title.value = newCountry.title ?? '';
+        code.value = newCountry.code!;
+        flag.value = newCountry.flag!;
       }
     },
     { immediate: true },

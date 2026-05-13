@@ -8,7 +8,7 @@ type BreadCrumbItem = {
 export const buildBreadcrumb = (route: any, router: any): BreadCrumbItem[] => {
   const result: BreadCrumbItem[] = [];
 
-  const getUrlWithParams = (r: RouteLocationMatched, route: any) => {
+  const getUrlWithParams = (_r: RouteLocationMatched, route: any) => {
     const Params = Object.values(route.params)[0];
     return Params;
   };

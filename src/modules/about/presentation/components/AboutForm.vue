@@ -14,6 +14,7 @@ import AddAboutParams from '../../core/params/add.about.params';
 import DeleteSocialLinkParams from '../../core/params/delete.social.link.params';
 import AboutController from '../controllers/about.controller';
 import ShowAboutParams from '../../core/params/show.about.params';
+import SocialParams from '../../core/params/Socail.params';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -82,13 +83,13 @@ const deleteSocialLink = async (id: number) => {
 
 };
 
-const removeSocialMediaEntry = (index: number) => {
-  if (socialMediaList.value.length === 1) {
-    socialMediaList.value = [{ link: '', icon: '' }];
-    return;
-  }
-  socialMediaList.value.splice(index, 1);
-};
+// const _removeSocialMediaEntry = (index: number) => {
+//   if (socialMediaList.value.length === 1) {
+//     socialMediaList.value = [{ link: '', icon: '' }];
+//     return;
+//   }
+//   socialMediaList.value.splice(index, 1);
+// };
 
 const resetSocialMedia = () => {
   socialMediaList.value = [{ link: '', icon: '' }];
@@ -104,26 +105,23 @@ const resetGeneralInputs = () => {
 // ─── Form Actions ─────────────────────────────────────────────────────────────
 
 const updateData = () => {
-  const socialMedia = socialMediaList.value.filter(
-    (entry) => (entry.link?.trim() || '') !== '' || (entry.icon?.trim() || '') !== '',
-  );
-
-  const data = {
-    translations: new TranslationParams({
-      title: title.value,
-      description: description.value,
-    }),
-    image: image.value!,
-    socialMedia: socialMedia,
-  };
+  const socialMedia = socialMediaList.value
+    .filter((entry) => (entry.link?.trim() || '') !== '' || (entry.icon?.trim() || '') !== '')
+    .map((entry) => new SocialParams({ link: entry.link || '', icon: entry.icon || '' }));
 
   let params: EditAboutParams | AddAboutParams;
   if (route.params.id) {
-    params = new EditAboutParams({ ...data });
+    params = new EditAboutParams({
+      translations: new TranslationParams({
+        title: title.value,
+        description: description.value,
+      }),
+      images: image.value || '',
+      socialMedia: socialMedia,
+    });
   } else {
     params = new AddAboutParams({
-      images: image.value,
-      // image: image.value,
+      images: image.value || '',
       translation: new TranslationParams({
         title: title.value,
         description: description.value,
@@ -132,14 +130,14 @@ const updateData = () => {
     });
   }
 
-  console.log(params, "params")
+  // console.log(params, "params")
   emit('updateData', params);
 };
 
 // ─── File Handler ─────────────────────────────────────────────────────────────
 
 const handleImageChange = (file: Array<{ base64: string }>) => {
-  console.log(file[0], "file");
+  // console.log(file[0], "file");
   image.value = file?.[0]!.base64 || null;
   updateData();
 };
@@ -178,7 +176,7 @@ const handleImageChange = (file: Array<{ base64: string }>) => {
       <!-- Image Upload -->
       <div class="field-group col-span-2">
         <HandleFilesUpload :key="uploadKey" :label="`upload image`" accept="image/*" :multiple="false" :index="1"
-          :file="image" :have-content="true" :class="`image-input`" @change="handleImageChange">
+          :file="image || undefined" :have-content="true" :class="`image-input`" @change="handleImageChange">
           <template #content>
             <div class="add-imaegs-data">
               <UplaodImageInput />

@@ -7,6 +7,7 @@ import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import type FaqsModel from '../../core/models/faqs.model';
 import FaqsRepository from '../../data/repositories/faqs.repository';
+import type FaqsDetailsParams from '../../core/params/faqs.details.params';
 
 /**
  * Country Controller for managing countries
@@ -30,7 +31,7 @@ export default class FaqsController extends BaseController<FaqsModel, FaqsModel[
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,
-      showSuccessTosat:true,
+      showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,
     };
@@ -63,17 +64,20 @@ export default class FaqsController extends BaseController<FaqsModel, FaqsModel[
     }
     return result;
   }
-  
-  async fetchList(params: Params, options?: ApiCallOptions) {
-      return super.fetchList(params, { ...options, useJson: true, headers: {
-          'Accept-Language': params?.isLocale ? 'en' : '*'
-        }
-      });
-    }
-     async fetchOne(params: Params, options?: ApiCallOptions) {
-      return super.fetchOne(params, { ...options, useJson: true, headers: {
-          'Accept-Language': params?.isLocale ? 'en' : '*'
-        }
-      });
-    }
+
+  async fetchList(_params?: Params, options?: ApiCallOptions) {
+    return super.fetchList(_params, {
+      ...options,
+      useJson: true,
+    });
+  }
+  async fetchOne(params: FaqsDetailsParams, options?: ApiCallOptions) {
+    return super.fetchOne(params, {
+      ...options,
+      useJson: true,
+      headers: {
+        'Accept-Language': params?.isLocale ? 'en' : '*',
+      },
+    });
+  }
 }

@@ -1,14 +1,12 @@
 <script setup lang="ts">
-  import { ref, markRaw, onMounted } from 'vue';
+  import { ref, onMounted, type Component } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { useUserStore } from '@/stores/user';
-  import { LangsMap } from '@/constant/langs';
-
-  import IndexLangParams from '@/features/setting/languages/Core/params/indexLangParams';
-  import IndexLangController from '@/features/setting/languages/Presentation/controllers/indexLangController';
-
-  import IconEgypt from '@/shared/icons/IconEgypt.vue';
-  import IconEnglish from '@/shared/icons/IconEnglish.vue';
+  // import { useUserStore } from '@/stores/user';
+  // import { LangsMap } from '@/constant/langs';
+  // import IndexLangParams from '@/features/setting/languages/Core/params/indexLangParams';
+  // import IndexLangController from '@/features/setting/languages/Presentation/controllers/indexLangController';
+  // import IconEgypt from '@/shared/icons/IconEgypt.vue';
+  // import IconEnglish from '@/shared/icons/IconEnglish.vue';
 
   import Popover from 'primevue/popover';
 
@@ -16,7 +14,7 @@
    i18n (Global)
 ================================ */
   const { locale } = useI18n({ useScope: 'global' });
-  const { user } = useUserStore();
+  // const { user } = useUserStore();
 
   /* ===============================
    State
@@ -27,7 +25,7 @@
     {
       locale: string;
       title: string;
-      icon?: any;
+      icon?: Component;
     }[]
   >([]);
 
@@ -84,36 +82,36 @@
   /* ===============================
    Fetch Languages
 ================================ */
-  const fetchLang = async () => {
-    // from user store
-    if (user?.languages?.length) {
-      langDefault.value = user.languages.map((item: any) => ({
-        locale: item.code,
-        title: item.code.toUpperCase(),
-        icon: markRaw(LangsMap[item.code as keyof typeof LangsMap]?.icon || IconEnglish),
-      }));
-      return;
-    }
+  // const fetchLang = async () => {
+  //   // from user store
+  //   if (user?.languages?.length) {
+  //     langDefault.value = user.languages.map((item: any) => ({
+  //       locale: item.code,
+  //       title: item.code.toUpperCase(),
+  //       icon: markRaw(LangsMap[item.code as keyof typeof LangsMap]?.icon || IconEnglish),
+  //     }));
+  //     return;
+  //   }
 
-    // from API
-    const params = new IndexLangParams('', 1, 10, 0);
-    const controller = await IndexLangController.getInstance().getData(params);
-    const response = controller.value;
+  //   // from API
+  //   const params = new IndexLangParams('', 1, 10, 0);
+  //   const controller = await IndexLangController.getInstance().getData(params);
+  //   const response = controller.value;
 
-    if (response?.data?.length) {
-      langDefault.value = response.data.map((item: any) => ({
-        locale: item.code,
-        title: item.code.toUpperCase(),
-        icon: markRaw(LangsMap[item.code as keyof typeof LangsMap]?.icon || IconEnglish),
-      }));
-    } else {
-      // fallback
-      langDefault.value = [
-        { locale: 'en', title: 'English', icon: IconEnglish },
-        { locale: 'ar', title: 'العربية', icon: IconEgypt },
-      ];
-    }
-  };
+  //   if (response?.data?.length) {
+  //     langDefault.value = response.data.map((item: any) => ({
+  //       locale: item.code,
+  //       title: item.code.toUpperCase(),
+  //       icon: markRaw(LangsMap[item.code as keyof typeof LangsMap]?.icon || IconEnglish),
+  //     }));
+  //   } else {
+  //     // fallback
+  //     langDefault.value = [
+  //       { locale: 'en', title: 'English', icon: IconEnglish },
+  //       { locale: 'ar', title: 'العربية', icon: IconEgypt },
+  //     ];
+  //   }
+  // };
 
   /* ===============================
    Popover
@@ -127,7 +125,7 @@
 ================================ */
   onMounted(async () => {
     initializeLang();
-    await fetchLang();
+    // await fetchLang();
   });
 </script>
 
@@ -138,10 +136,7 @@
       class="w-[70%] h-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition"
       @click="toggle"
     >
-      <component
-        :is="langDefault.find((l) => l.locale === lang)?.icon || IconEnglish"
-        class="w-5 h-5"
-      />
+      <component :is="langDefault.find((l) => l.locale === lang)?.icon" class="w-5 h-5" />
     </button>
 
     <!-- Popover -->

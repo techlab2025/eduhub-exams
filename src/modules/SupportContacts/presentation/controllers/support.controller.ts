@@ -6,7 +6,7 @@ import { DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/d
 import router from '@/router';
 import SupportContactsRepository from '../../data/repositories/support.repository';
 import type SupportContactsModel from '../../core/models/support.contatcts.model';
-import type IndexSupportContactsParams from '../../core/params/index.about.params';
+
 
 /**
  * Country Controller for managing countries
@@ -54,7 +54,7 @@ export default class SupportContactsController extends BaseController<
     return SupportContactsController.instance;
   }
 
-  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+  async create(params: Params, options?: ApiCallOptions, _formKey?: string) {
     // const FormStore = useFormsStore();
 
     const result = await super.create(params, { ...options, useJson: true });
@@ -68,15 +68,15 @@ export default class SupportContactsController extends BaseController<
     const result = await super.fetchOne(params, {
       ...options,
       useJson: true,
-      headers: { 'Accept-Language': params.allLocales ? '*' : 'en' },
+      headers: { 'Accept-Language': (params as any).isLocale ? '*' : 'en' },
     });
     return result;
   }
-  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<PrivacyModel[]>> {
+  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<SupportContactsModel[]>> {
     const result = await super.fetchList(params, {
       ...options,
       headers: {
-        'Accept-Language': params?.allLocale ? '*' : 'en',
+        'Accept-Language': (params as any)?.isLocale ? '*' : 'en',
       },
     });
     return result;

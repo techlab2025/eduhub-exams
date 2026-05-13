@@ -20,10 +20,7 @@ export default class CountryApiService extends BaseApiService {
   protected get endpoints(): Partial<ApiEndpoints> {
     return {
       index: this.countryEndpoints.index,
-      show: this.countryEndpoints.show,
-      create: this.countryEndpoints.store,
-      update: this.countryEndpoints.update,
-      delete: this.countryEndpoints.delete,
+ 
     };
   }
 

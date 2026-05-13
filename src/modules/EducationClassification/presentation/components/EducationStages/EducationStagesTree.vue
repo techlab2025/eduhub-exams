@@ -25,7 +25,7 @@
   import Dialog from 'primevue/dialog';
   import PriceIconDialog from '@/shared/icons/priceIconDialog.vue';
   import InputNumber from 'primevue/inputnumber';
-  import Skillsicon from '@/shared/icons/Skillsicon.vue';
+  import Skills from '@/assets/images/Skills.png';
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import EmptyTree from '@/assets/images/EmptyTree.gif';
 
@@ -42,10 +42,10 @@
   const branchDialogLevel = ref(1);
   const branchDialogParentId = ref<number | undefined>(undefined);
   const branchDialogName = ref('');
-  const educationConfig = ref<EducationConfigurationModel | null>(null);
+  const educationConfig = ref<EducationConfigurationModel[] | null>(null);
   const refreshParentId = ref<number | null>(null);
 
-  const maxDepth = computed(() => educationConfig.value?.numberOfBranches);
+  const maxDepth = computed(() => educationConfig.value?.[0]?.numberOfBranches);
 
   function getBranchName(parentDepth: number): string {
     const branches = educationConfig.value?.[0]?.branches ?? [];
@@ -195,6 +195,10 @@
       },
     },
   ];
+  async function toggleStatus(id: number) {
+    console.log('Toggle status for', id);
+    // await controller.toggleStatus(id);
+  }
   const duration = ref(0);
   const pricing = ref(0);
 
@@ -217,7 +221,6 @@
 </script>
 
 <template>
-
   <div class="education-tree">
     <!-- Left Panel -->
     <div class="left-panel">
@@ -392,6 +395,7 @@
                 />
                 <RenameClassificationDialog
                   :item-id="child.stage.stage_id"
+                  :parent-id="selectedNode.stage.stage_id"
                   v-model:visable="ShoweEditDialog"
                   @update:name="fetchEducationStagesTree"
                 />
@@ -444,7 +448,7 @@
       </div>
     </div>
     <div class="dialog-footer">
-      <button class="btn btn-primary" @click="showPricingDialog">{{ $t('add') }}</button>
+      <button class="btn btn-primary" @click="showPricingDialog = false">{{ $t('add') }}</button>
       <button class="btn btn-secondary" @click="showPricingDialog = false">
         {{ $t('cancel') }}
       </button>
@@ -463,7 +467,8 @@
     <template #header>
       <div class="dialog-header">
         <div class="icon">
-          <Skillsicon />
+          <!-- <Skillsicon /> -->
+          <img :src="Skills" alt="skills" width="200" />
         </div>
         <div class="contant">
           <h6>{{ $t('skills') }}</h6>
@@ -494,7 +499,7 @@
       </div>
     </div> -->
     <div class="dialog-footer">
-      <button class="btn btn-primary" @click="showSkillsDialog">{{ $t('add') }}</button>
+      <button class="btn btn-primary" @click="showSkillsDialog = false">{{ $t('add') }}</button>
       <button class="btn btn-secondary" @click="showSkillsDialog = false">
         {{ $t('cancel') }}
       </button>

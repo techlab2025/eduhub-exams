@@ -9,14 +9,11 @@
   const route = useRoute();
   const formKey = route.fullPath;
 
-  const sectionParams = ref<AddSupportContactsParams>({});
+  const sectionParams = ref<AddSupportContactsParams | null>(null);
 
   const saveSupport = async () => {
-    // if (!sectionParams.value.length) return;
-
-    // for (const params of sectionParams.value) {
+    if (!sectionParams.value) return;
     await controller.create(sectionParams.value, undefined);
-    // }
   };
 
   const updateData = (params: AddSupportContactsParams) => {

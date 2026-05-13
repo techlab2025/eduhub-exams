@@ -69,9 +69,13 @@ export default class DocumentModel {
       },
     ],
     tranaslations: new DocumentTranslationParams({
+      title: {
+        ar: 'عنوان',
+        en: 'title',
+      },
       description: {
-        ar: '',
-        en: '',
+        ar: 'وصف',
+        en: 'description',
       },
     }),
     tags: ['tag1', 'tage2'],

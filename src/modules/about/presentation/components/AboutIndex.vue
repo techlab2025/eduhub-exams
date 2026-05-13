@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from 'vue';
+import { DataLoading } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import { useRoute } from 'vue-router';
 import AboutController from '../controllers/about.controller';
 import EditpinIcon from '@/shared/icons/EditpinIcon.vue';
@@ -46,8 +47,8 @@ const countryCode = computed(() => (route.params?.country_code as string) || '')
 
     <div v-if="about" class="about-content">
       <div class="text-content">
-        <h5>{{ about.translations?.title?.[$i18n.locale] || about.translations?.title?.['en'] }}</h5>
-        <p>{{ about.translations?.description?.[$i18n.locale] || about.translations?.description?.['en'] }}</p>
+        <h5>{{ about.translations?.title?.[$i18n.locale as keyof typeof about.translations.title] || about.translations?.title?.['en'] }}</h5>
+        <p>{{ about.translations?.description?.[$i18n.locale as keyof typeof about.translations.description] || about.translations?.description?.['en'] }}</p>
       </div>
       <div class="image-content">
         <img v-if="about.images" :src="about.images" alt="about-img" />
@@ -64,7 +65,7 @@ const countryCode = computed(() => (route.params?.country_code as string) || '')
         </div>
       </div>
     </div>
-    <div v-else-if="!state.loading" class="empty-data">
+    <div v-else-if="!(state instanceof DataLoading)" class="empty-data">
       <EmptyData />
       <h5>No about information added</h5>
       <p>Add details about your platform to display them to students</p>

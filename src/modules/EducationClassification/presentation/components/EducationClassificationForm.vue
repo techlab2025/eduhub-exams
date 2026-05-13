@@ -8,7 +8,7 @@
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
-  import { date } from '@primeuix/themes/aura/datepicker';
+  import DatePicker from 'primevue/datepicker';
 
   const emit = defineEmits(['updateData', 'save-education-classification']);
 
@@ -31,12 +31,13 @@
 
   // Form state
   const title = ref<Record<string, string>>({});
+  const date = ref<Date | null>(null);
 
   watch(
     () => country,
     (newCountry) => {
       if (newCountry) {
-        title.value = newCountry.title;
+        title.value = newCountry.title as any;
       }
     },
     { immediate: true },

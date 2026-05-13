@@ -62,16 +62,16 @@ export default class CountryController extends BaseController<CountryModel, Coun
     return result;
   }
 
-  async update(params: Params, options?: ApiCallOptions, formKey?: string) {
-    const FormStore = useFormsStore();
+  // async update(params: Params, options?: ApiCallOptions, formKey?: string) {
+  //   const FormStore = useFormsStore();
 
-    const result = await super.update(params, options);
-    if (result instanceof DataSuccess) {
-      router.push({ name: 'Countries' });
-      if (formKey) {
-        FormStore.clearFormData(formKey);
-      }
-    }
-    return result;
-  }
+  //   const result = await super.update(params, options);
+  //   if (result instanceof DataSuccess) {
+  //     router.push({ name: 'Countries' });
+  //     if (formKey) {
+  //       FormStore.clearFormData(formKey);
+  //     }
+  //   }
+  //   return result;
+  // }
 }

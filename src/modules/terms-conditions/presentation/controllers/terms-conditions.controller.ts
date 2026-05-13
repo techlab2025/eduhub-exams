@@ -4,8 +4,8 @@ import type TermsConditionsModel from '../../core/models/terms-conditions.model'
 import TermsConditionsRepository from '../../data/repositories/terms-conditions.repository';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import { DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
 export default class TermsConditionsController extends BaseController<
   TermsConditionsModel,
@@ -48,15 +48,12 @@ export default class TermsConditionsController extends BaseController<
     return TermsConditionsController.instance;
   }
 
-  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+  async create(params: Params, options?: ApiCallOptions, _formKey?: string) {
     // const FormStore = useFormsStore();
 
     const result = await super.create(params, { ...options, useJson: true });
     if (result instanceof DataSuccess) {
       router.push({ name: 'TermsConditions' });
-      // if (formKey) {
-      // FormStore.clearFormData(formKey);
-      // }
     }
     return result;
   }
@@ -65,11 +62,11 @@ export default class TermsConditionsController extends BaseController<
     const result = await super.fetchOne(params, {
       ...options,
       useJson: true,
-      headers: { 'Accept-Language': params.allLocales ? '*' : 'en' },
+      headers: { 'Accept-Language': (params as any).isLocale ? '*' : 'en' },
     });
     return result;
   }
-  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<PrivacyModel[]>> {
+  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<TermsConditionsModel[]>> {
     const result = await super.fetchList(params, {
       ...options,
       headers: {

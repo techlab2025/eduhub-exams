@@ -50,7 +50,7 @@ export default class PrivacyController extends BaseController<PrivacyModel, Priv
     return PrivacyController.instance;
   }
 
-  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+  async create(params: Params, options?: ApiCallOptions, _formKey?: string) {
     // const FormStore = useFormsStore();
 
     const result = await super.create(params, { ...options, useJson: true });
@@ -67,7 +67,7 @@ export default class PrivacyController extends BaseController<PrivacyModel, Priv
     const result = await super.fetchOne(params, {
       ...options,
       useJson: true,
-      headers: { 'Accept-Language': params.allLocales ? '*' : 'en' },
+      headers: { 'Accept-Language': (params as any).allLocales ? '*' : 'en' },
     });
     return result;
   }

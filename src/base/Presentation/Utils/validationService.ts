@@ -59,25 +59,25 @@ class ValidationService {
 
     if (mode === 'dialog') {
       if (errors && Object.values(errors).length > 0) {
-        this.message.value = Object.values(errors)[0];
+        this.message.value = Object.values(errors)[0] ?? '';
         dialogManager.error(this.message.value);
       }
       this.isOpen.value = true;
     } else if (mode === 'inline') {
       this.inlineErrors.value = errors;
       Object.keys(errors).forEach((field) => {
-        this.appendError(field, errors[field]);
+        this.appendError(field, errors[field] as string);
         this.monitorInputChanges(field); // Monitor changes for inline errors
       });
     } else {
       if (errors && Object.values(errors).length > 0) {
-        this.message.value = Object.values(errors)[0];
+        this.message.value = Object.values(errors)[0] ?? '';
         dialogManager.error(this.message.value);
       }
       this.isOpen.value = true;
       this.inlineErrors.value = errors;
       Object.keys(errors).forEach((field) => {
-        this.appendError(field, errors[field]);
+        this.appendError(field, errors[field] as string);
         this.monitorInputChanges(field); // Monitor changes for both modes
       });
     }

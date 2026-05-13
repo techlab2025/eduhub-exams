@@ -1,6 +1,6 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
-import type TranslationParams from './translation.params';
+import type TranslationParams from '@/modules/about/core/params/translation.params';
 
 /**
  * Parameters for editing an employee

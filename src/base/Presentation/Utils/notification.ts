@@ -2,7 +2,6 @@ export const displayBrowserNotification = (
   title: string,
   body: string,
   icon: string = 'https://laravel.com/img/notification-icon.png',
-  timestamp: string,
   functionClick: () => void,
 ) => {
   if (Notification.permission === 'granted') {
@@ -11,7 +10,6 @@ export const displayBrowserNotification = (
       icon: icon,
       tag: 'notification-tag',
       requireInteraction: true,
-      timestamp: timestamp,
     });
     playNotificationSound();
 

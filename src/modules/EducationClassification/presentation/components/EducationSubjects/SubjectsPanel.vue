@@ -25,7 +25,7 @@
   const configController = EducationSubjectController.getInstance();
   const itemController = EducationSubjectItemController.getInstance();
 
-  const subjectConfig = ref<EducationSubjectConfigurationModel | null>(null);
+  const subjectConfig = ref<EducationSubjectConfigurationModel[] | null>(null);
   const rootNodes = ref<SubjectNode[]>([]);
   const selectedNode = ref<SubjectNode | null>(null);
   const showAddRootDialog = ref(false);
@@ -35,12 +35,12 @@
   const branchDialogName = ref('');
   const stageExpanded = ref(true);
 
-  const subjectMaxDepth = computed(() => subjectConfig.value?.numberOfBranches ?? Infinity);
+  const subjectMaxDepth = computed(() => subjectConfig.value?.[0]?.numberOfBranches ?? Infinity);
   const refreshSubjectId = ref<number | null>(null);
 
   function getSubjectBranchName(depth: number): string {
-    const branches = subjectConfig.value?.branches ?? [];
-    const branch = branches.find((b) => b.levelNumber === depth + 1);
+    const branches = subjectConfig.value?.[0]?.branches ?? [];
+    const branch = branches.find((b: any) => b.levelNumber === depth + 1);
     if (!branch) return `Level ${depth + 1}`;
     const lang = locale.value === 'ar' ? 'ar' : 'en';
     return branch.singularTitle[lang] ?? branch.singularTitle['en'] ?? `Level ${depth + 1}`;
@@ -49,8 +49,9 @@
   function getSubjectRootName(): string {
     const lang = locale.value === 'ar' ? 'ar' : 'en';
     const config = subjectConfig.value;
-    if (!config) return 'Subject';
-    return config?.[0].SingluarTitle;
+    if (!config || config.length === 0) return 'Subject';
+    const firstConfig = config[0];
+    return firstConfig?.SingluarTitle?.[lang] ?? firstConfig?.SingluarTitle?.['en'] ?? 'Subject';
   }
 
   function makeNode(subject: EducationSubjectModel, depth: number): SubjectNode {
@@ -113,7 +114,7 @@
         title: translations,
       }),
       stage_id: props.stageId,
-      parent_id: props.stageId,
+      // parent_id: props.stageId,
     });
     await itemController.create(params);
     showAddRootDialog.value = false;
@@ -227,7 +228,7 @@
         <span class="spacer" />
         <!-- showAddRootDialog = true -->
         <button
-          v-if="subjectConfig && subjectConfig?.[0]?.numberOfBranches > 0"
+          v-if="subjectConfig && (subjectConfig as any)?.[0]?.numberOfBranches > 0"
           class="icon-btn"
           title="Add Subject"
           @click.stop="AddSubject"
@@ -250,7 +251,7 @@
               v-for="node in rootNodes"
               :key="node.subject.subject_id"
               :node="node"
-              :maxDepth="subjectConfig?.[0]?.numberOfBranches"
+              :maxDepth="(subjectConfig as any)?.[0]?.numberOfBranches"
               :selected-subject-id="selectedNode?.subject.subject_id ?? null"
               :parent-id="null"
               @fetch-children="fetchChildren"

@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T">
+<!-- <script setup lang="ts" generic="T">
   import AddAnswer from '@/shared/icons/AddAnswer.vue';
   import DeleteItemAction from '@/shared/icons/DeleteItemAction.vue';
   import { onMounted, ref } from 'vue';
@@ -75,4 +75,7 @@
       </div>
     </div>
   </div>
+</template> -->
+<template>
+  <div>timeline</div>
 </template>

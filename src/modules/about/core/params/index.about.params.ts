@@ -10,7 +10,7 @@ export default class IndexAboutParams extends IndexParams {
     isLocale?: boolean | undefined,
   ) {
     super(word, pageNumber, perPage, withPage);
-    this.isLocale = isLocale;
+    this.isLocale = isLocale ?? false;
   }
 
   toMap(): Record<string, string | number | number[] | null> {

@@ -25,7 +25,7 @@ export default class SupportContactsRepository extends BaseRepository<
   }
 
   protected get mockList(): SupportContactsModel[] {
-    return [SupportContactsModel.example, SupportContactsModel.example2];
+    return [SupportContactsModel.example, SupportContactsModel.example];
   }
 
   static getInstance(): SupportContactsRepository {

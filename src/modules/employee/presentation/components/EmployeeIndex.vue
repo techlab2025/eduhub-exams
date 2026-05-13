@@ -95,12 +95,11 @@ const exportExcel = () => {
     alert('No data available to export');
     return;
   }
-  const worksheetData = state.value.data.map((item: Record<string, unknown>) => {
-    const it = item as any;
+  const worksheetData = (state.value.data as any).map((item: Record<string, unknown>) => {
     return {
-      name: it.name || 'N/A',
-      email: it.email || null,
-      phone: it.phone || null,
+      name: item.name || 'N/A',
+      email: item.email || null,
+      phone: item.phone || null,
       password: '',
     };
   });

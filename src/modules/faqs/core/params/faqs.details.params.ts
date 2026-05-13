@@ -13,7 +13,7 @@ export default class FaqsDetailsParams implements Params {
 
   constructor(data: { id: number; isLocale?: boolean }) {
     this.id = data.id;
-    this.isLocale = data.isLocale; 
+    this.isLocale = data.isLocale ?? true;
   }
 
   toMap(): { [p: string]: any } {

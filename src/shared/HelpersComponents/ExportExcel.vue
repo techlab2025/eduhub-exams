@@ -53,7 +53,7 @@
   const exportConfig = ref({
     filename: props.filename,
     sheetName: props.sheetName,
-    selectedColumns: [],
+    selectedColumns: [] as any[],
     includeHeader: true,
     autoFitColumns: true,
   });
@@ -69,7 +69,7 @@
     // Auto-detect columns from data
     if (!hasData.value) return [];
 
-    const firstItem = props.data[0];
+    const firstItem = props.data[0] as any;
     return Object.keys(firstItem).map((key) => ({
       key,
       label: key.charAt(0).toUpperCase() + key.slice(1).replace(/[_-]/g, ' '),
@@ -125,7 +125,7 @@
   //   exportConfig.value.selectedColumns = [];
   // };
 
-  const formatCellValue = (item, column) => {
+  const formatCellValue = (item: any, column: any) => {
     const value = item[column.key];
 
     if (column.formatter && typeof column.formatter === 'function') {
@@ -141,7 +141,7 @@
     return String(value);
   };
 
-  const showToast = (message, type = 'success') => {
+  const showToast = (message: string, type = 'success') => {
     toast.value = { show: true, message, type };
     setTimeout(() => hideToast(), 5000);
   };
@@ -168,9 +168,9 @@
       }
 
       // Prepare data for export
-      const exportData = props.data.map((item) => {
-        const row = {};
-        columnsToExport.forEach((col) => {
+      const exportData = (props.data as any[]).map((item: any) => {
+        const row: Record<string, any> = {};
+        (columnsToExport as any[]).forEach((col: any) => {
           const value = formatCellValue(item, col);
           row[col.label || col.key] = value;
         });
@@ -231,7 +231,7 @@
         recordCount: props.data.length,
         columnCount: columnsToExport.length,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Export failed:', error);
       showToast(error.message || 'Failed to export data', 'error');
       emit('export-error', error);

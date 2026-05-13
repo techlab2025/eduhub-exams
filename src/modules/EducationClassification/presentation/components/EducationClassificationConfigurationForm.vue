@@ -17,7 +17,7 @@
   import EducationSubjectConfigurationModel from '../../core/models/EducationConfiguration/education.subject.configuration.model';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import IndexEducationConfigurationParams from '../../core/params/EducationConfiguration/index.educationConfiguration.params co';
-  import { mapLocales } from '@/base/Presentation/Utils/MapLocales';
+  // import { mapLocales } from '@/base/Presentation/Utils/MapLocales';
 
   const emit = defineEmits([
     'updateData',
@@ -142,15 +142,12 @@
 
   const fillConfigurationForm = (data: EducationConfigurationModel | undefined) => {
     if (!data) return;
+    console.log(data, 'data');
     ConfigurationnumberOfBranchs.value = data.numberOfBranches;
     ConfigurationNumberOfBranchs.value = data.numberOfBranches;
     configurationInitialBranches.value = data.branches.map((branch) => ({
-      singular: {
-        ...mapLocales(branch.singularTitle, 'locale', 'singular_title'),
-      },
-      plural: {
-        ...mapLocales(branch.pluralTitle, 'locale', 'plural_title'),
-      },
+      singular: branch.singularTitle,
+      plural: branch.pluralTitle,
     }));
   };
 
@@ -158,15 +155,11 @@
     if (!data) return;
     SubjectnumberOfBranchs.value = data.numberOfBranches;
     subjectNumberOfBranchs.value = data.numberOfBranches;
-    subject_title_Singular.value = mapLocales(data.SingluarTitle, 'locale', 'singular_title');
-    subject_title_Plural.value = mapLocales(data.pluralTitle, 'locale', 'plural_title');
+    subject_title_Singular.value = data.SingluarTitle;
+    subject_title_Plural.value = data.pluralTitle;
     subjectInitialBranches.value = data.branches.map((branch) => ({
-      singular: {
-        ...mapLocales(branch.singularTitle, 'locale', 'singular_title'),
-      },
-      plural: {
-        ...mapLocales(branch.pluralTitle, 'locale', 'plural_title'),
-      },
+      singular: branch.singularTitle,
+      plural: branch.pluralTitle,
     }));
   };
 

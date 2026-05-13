@@ -3,11 +3,7 @@ export default class FaqsModel {
   public readonly answer: any[];
   public readonly question: any[];
 
-  constructor(data: {
-    id?: number;
-    answer: any[];
-    question: any[];
-  }) {
+  constructor(data: { id?: number; answer: any[]; question: any[] }) {
     this.id = data.id;
     this.answer = data.answer;
     this.question = data.question;
@@ -42,4 +38,19 @@ export default class FaqsModel {
           ],
     });
   }
+  static example: FaqsModel = new FaqsModel({
+    id: 1,
+    answer: [
+      {
+        locale: 'en',
+        answer: 'answer',
+      },
+    ],
+    question: [
+      {
+        locale: 'en',
+        question: 'question',
+      },
+    ],
+  });
 }

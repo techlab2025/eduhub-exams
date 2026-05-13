@@ -4,8 +4,9 @@ import { useRouter, useRoute } from 'vue-router';
 import FaqsController from '../controllers/faqs.controller';
 import EditFaqsParams from '../../core/params/edit.faqs.params';
 import FaqsDetailsParams from '../../core/params/faqs.details.params';
-import type FaqsModel from '../../core/models/faqs.model';
+
 import FaqsForm from './faqsForm.vue';
+import type AddFaqsParams from '../../core/params/add.faqs.params';
 
 const controller = FaqsController.getInstance();
 const router = useRouter();
@@ -29,8 +30,8 @@ const cancel = () => {
   router.push(`/${countryCode}/faqs`);
 };
 
-const updateData = (params: EditFaqsParams) => {
-  formParams.value = params;
+const updateData = (params: EditFaqsParams | AddFaqsParams) => {
+  formParams.value = params as EditFaqsParams;
 };
 
 onMounted(async () => {

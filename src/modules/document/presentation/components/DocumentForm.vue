@@ -37,9 +37,9 @@
   const title = ref<Record<string, string>>({});
   const description = ref<Record<string, string>>({});
   const RefrenceNumber = ref<string>('');
-  const selectedDocumentType = ref<TitleInterface<number> | null>(null);
-  const selectedStage = ref<TitleInterface<number> | null>(null);
-  const selectedSubject = ref<TitleInterface<number> | null>(null);
+  const selectedDocumentType = ref<TitleInterface<number | string> | null>(null);
+  const selectedStage = ref<TitleInterface<number | string> | null>(null);
+  const selectedSubject = ref<TitleInterface<number | string> | null>(null);
   const indexDocumentTypeParams = new IndexDocumentTypeParams('', 1, 10, 0);
   const documentTypeController = DocumentTypeController.getInstance();
   const stageController = StageController.getInstance();
@@ -97,7 +97,7 @@
     updateData();
   };
 
-  const handleFilsChange = (files: []) => {
+  const handleFilsChange = (files: any[]) => {
     UploadedFiles.value = files;
     updateData();
   };
@@ -238,7 +238,7 @@
           :file="UploadedImage"
           :have-content="true"
           :class="`image-input`"
-          @change="handleImageChange"
+          @update:model-value="handleImageChange"
         >
           <template #content>
             <div class="add-imaegs-data">

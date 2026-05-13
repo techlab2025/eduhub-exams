@@ -1,7 +1,5 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import AppButton from '@/shared/HelpersComponents/AppButton.vue';
-  import IconAccept from '@/shared/icons/IconAccept.vue';
   import { useRoute } from 'vue-router';
   import type AddSkillsParams from '../../core/params/add.skills.params';
   import SkillsForm from './SkillsForm.vue';
@@ -18,7 +16,6 @@
    */
   const saveEmployee = async () => {
     try {
-      console.log(params.value, 'params');
 
       if (!params.value) {
         console.error('No employee parameters to save');

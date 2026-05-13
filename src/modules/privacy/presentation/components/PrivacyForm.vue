@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted, computed } from 'vue';
-  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import PrivacyController from '../controllers/privacy.controller';
   import AddPrivacyParams from '../../core/params/add.privacy.params';
@@ -36,25 +35,16 @@
         }),
       }),
     );
-    
   };
 
   const ShowPrivacy = async () => {
     await privacyController.fetchList();
 
-    const titleData = status.value.data?.[0]?.title.reduce((acc, item) => {
-      acc[item?.locale!] = item.title;
-      return acc;
-    }, {});
-    const descriptionData = status.value.data?.[0]?.description.reduce((acc, item) => {
-      acc[item?.locale!] = item.description;
-      return acc;
-    }, {});
-    console.log(titleData, 'titleData');
-    console.log(descriptionData, 'descriptionData');
-
-    title.value = titleData;
-    description.value = descriptionData;
+    const firstItem = status.value.data?.[0];
+    if (firstItem) {
+      title.value = firstItem.title?.[0] || {};
+      description.value = firstItem.description?.[0] || {};
+    }
   };
 
   onMounted(() => {

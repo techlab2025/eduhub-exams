@@ -3,7 +3,7 @@
   import Dialog from 'primevue/dialog';
   import AddEducationSubjectSkillsParams from '../../core/params/EducationSkills/add.education.subject.skills.params';
   import EducationSkillsController from '../../presentation/controllers/EducationSkills/education.skills.controller';
-  import SubjectSkllsIcon from '@/shared/icons/SubjectSkllsIcon.vue';
+  import SubjectSkllsIcon from '@/assets/images/Skills.png';
   import SkillParams from '../../core/params/EducationSkills/skill.params';
   import SkillsController from '@/modules/Skills/presentation/controllers/skills.controller';
   import IndexSkillsParams from '@/modules/Skills/core/params/index.skills.params';
@@ -51,7 +51,7 @@
       id: props.branchId!,
       skills: [
         new SkillParams({
-          skillId: selectedSkill.value?.id!,
+          skillId: selectedSkill.value ? selectedSkill.value?.id : 0,
           percentage: percentageValue.value,
         }),
       ],
@@ -75,7 +75,8 @@
   >
     <template #header>
       <div class="dialog-icon">
-        <SubjectSkllsIcon />
+        <!-- <SubjectSkllsIcon /> -->
+        <img :src="SubjectSkllsIcon" alt="skills" width="60" />
       </div>
       <div class="dialog-header-text">
         <h3 class="dialog-title">{{ $t('skills') }}</h3>
@@ -91,7 +92,7 @@
           :label="`skills`"
           :params="indexSkills"
           :controller="controller"
-          :model-value="selectedSkill"
+          :model-value="selectedSkill as any"
           :placeholder="$t('skills')"
           @update:model-value="updateSelectedSkill"
         />

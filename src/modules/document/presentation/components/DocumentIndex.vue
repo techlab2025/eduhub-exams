@@ -104,8 +104,8 @@ import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
   );
   const indexDocumentTypeParams = new IndexDocumentTypeParams();
   const documentTypeController = DocumentTypeController.getInstance();
-  const selectedDocumentType = ref<TitleInterface<number>>();
-  const updateData = (data: TitleInterface<number>) => {
+  const selectedDocumentType = ref<TitleInterface<number | string> | null>(null);
+  const updateData = (data: TitleInterface<number | string> | null) => {
     selectedDocumentType.value = data;
   };
   const FilterDialogShow = ref<boolean>(false);

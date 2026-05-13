@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref } from 'vue';
   import Popover from 'primevue/popover';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import ActionsIcon from '../icons/ActionsIcon.vue';
@@ -15,22 +15,17 @@
   defineOptions({ inheritAttrs: false });
 
   const op = ref();
-  const ActionIconsToggle = ref(false);
 
   const toggle = (event: Event) => {
     op.value.toggle(event);
   };
 
-  const { actionList = [] } = defineProps<{
+  const props = defineProps<{
     actionList: ActionItem[];
     showActions?: boolean;
     deleteDialogTitle?: string;
     deleteDialogMessage?: string;
   }>();
-
-  watch(ActionIconsToggle, (newVal) => {
-    ActionIconsToggle.value = newVal;
-  });
 </script>
 
 <template>
@@ -41,7 +36,7 @@
   <Popover ref="op">
     <div class="list-body">
       <ul class="border-none">
-        <li v-for="action in actionList" :key="action.text" class="list-item cursor-pointer">
+        <li v-for="action in props.actionList" :key="action.text" class="list-item cursor-pointer">
           <router-link v-if="action.link" :to="action.link" class="flex items-center gap-[5px]">
             <span>{{ action.text }}</span>
             <component :is="action.icon" />

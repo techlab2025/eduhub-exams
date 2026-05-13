@@ -4,7 +4,7 @@ import { useCountryStore } from '@/stores/country';
 
 export function authGuard(
   to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
   next: NavigationGuardNext,
 ): void {
   const userData = useUserStore();

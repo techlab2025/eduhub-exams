@@ -116,10 +116,14 @@
       console.log(props.initialSections, 'props.initialSections');
       sections.value = props.initialSections.map((s) => ({
         title: {
-          ...(s?.titles?.reduce((acc, item) => {
-            acc[item?.locale!] = item.title;
-            return acc;
-          }, {}) ?? {}),
+          ...(Array.isArray(s?.titles)
+            ? s?.titles?.reduce((acc: Record<string, string>, item: any) => {
+                if (item?.locale) {
+                  acc[item.locale] = item.title || '';
+                }
+                return acc;
+              }, {})
+            : {}),
         },
         phonenumbers: [
           ...(s.supportContacts

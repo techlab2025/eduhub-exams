@@ -50,7 +50,7 @@ export default class SkillsController extends BaseController<SkillModel, SkillMo
       ...options,
       useJson: true,
       headers: {
-        'Accept-Language': params?.AllLocale ? '*' : 'en',
+        'Accept-Language': (params as any).AllLocale ? '*' : 'en',
       },
     });
     return res;

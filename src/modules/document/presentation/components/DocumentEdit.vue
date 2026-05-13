@@ -23,12 +23,14 @@
   const updateData = (updatedParams: AddDocumentParams) => {
     params.value = new EditDocumentParams({
       document_id: Number(route.params.id),
-      title: updatedParams.title,
-      subject_id: updatedParams.subject_id,
+      refNumber: updatedParams.refNumber,
+      subjects: updatedParams.subjects,
       stage_id: updatedParams.stage_id,
-      unit_ids: updatedParams.unit_ids,
-      document_type_id: updatedParams.document_type_id,
-      isAllUnits: updatedParams.isAllUnits,
+      tags: updatedParams.tags,
+      images: updatedParams.images,
+      files: updatedParams.files,
+      translations: updatedParams.translations,
+      documentTypeId: updatedParams.documentTypeId,
     });
   };
 

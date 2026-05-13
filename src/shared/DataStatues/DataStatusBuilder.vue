@@ -24,7 +24,7 @@
   // Import state components
   // import DataFailedState from './DataFailed.vue';
   import TimeoutState from './TimeoutState.vue';
-  import NoNetworkState from './NoNetworkState.vue';
+  // import NoNetworkState from './NoNetworkState.vue';
   import ProgressState from './ProgressState.vue';
 
   const props = defineProps({

@@ -632,11 +632,7 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Handle list response (override for custom dialogs/notifications).
    */
-  protected handleListResponse(_result: DataState<TList>, successMessage?: string): void {
-    const Message = successMessage || 'Data Fetched Succssesfuly';
-
-    
-
+  protected handleListResponse(_result: DataState<TList>, _successMessage?: string): void {
     if (_result.hasError) {
       this.handleErrorResponse(_result);
     } 

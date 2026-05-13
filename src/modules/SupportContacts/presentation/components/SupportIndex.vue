@@ -23,7 +23,7 @@
 
   const hasData = computed(() => contacts.value.length > 0);
 
-  const getSectionTitle = (section: any): string => section.translations?.titles;
+
 
   onMounted(async () => {
     const indexSupportParams = new IndexSupportContactsParams('', 1, 10, false);
@@ -60,7 +60,7 @@
             <div class="contact-info">
               <span class="contact-label">{{ $t('Phone Number') }}</span>
               <span class="contact-value">{{
-                section.supportContacts.find((el) => el.key == 'phonenumbers').value
+                section.supportContacts.find((el: any) => el.key == 'phonenumbers').value
               }}</span>
             </div>
           </div>
@@ -70,7 +70,7 @@
             <div class="contact-info">
               <span class="contact-label">{{ $t('chat_on_whatsapp') }}</span>
               <span class="contact-value">{{
-                section.supportContacts.find((el) => el.key == 'whatsapp_numbers').value
+                section.supportContacts.find((el: any) => el.key == 'whatsapp_numbers').value
               }}</span>
             </div>
           </div>
@@ -80,7 +80,7 @@
             <div class="contact-info">
               <span class="contact-label">{{ $t('email_address') }}</span>
               <span class="contact-value">{{
-                section.supportContacts.find((el) => el.key == 'emails').value
+                section.supportContacts.find((el: any) => el.key == 'emails').value
               }}</span>
             </div>
           </div>

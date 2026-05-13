@@ -12,7 +12,6 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import ExportExcelIcon from '@/shared/icons/ExportExcelIcon.vue';
 import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
-import { useI18n } from 'vue-i18n';
 import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
 import SkillsController from '../controllers/skills.controller';
 import IndexSkillsParams from '../../core/params/index.skills.params';
@@ -90,7 +89,7 @@ const exportExcel = () => {
     alert('No data available to export');
     return;
   }
-  const worksheetData = state.value.data.map((item: Record<string, unknown>) => {
+  const worksheetData = (state.value.data as any[]).map((item: any) => {
     const it = item as any;
     return {
       name: it.name || 'N/A',
@@ -106,8 +105,6 @@ const exportExcel = () => {
   const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
   saveAs(data, 'Employees.xlsx');
 };
-
-const { t } = useI18n();
 
 const FilterDialogShow = ref<boolean>(false);
 const ApplayFilter = () => {

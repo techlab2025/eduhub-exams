@@ -2,7 +2,7 @@
   import Dialog from 'primevue/dialog';
   import { ref } from 'vue';
   import Galleria from 'primevue/galleria';
-  import HeaderSection from '@/features/Organization/Project/Presentation/components/Details/DetailsHeader/HeaderSection.vue';
+  // import HeaderSection from '@/features/Organization/Project/Presentation/components/Details/DetailsHeader/HeaderSection.vue';
 
   const { images } = defineProps<{ images: string[] }>();
 
@@ -27,11 +27,11 @@
     </button>
     <Dialog v-model:visible="visible" modal maximizable dismissable-mask :style="{ width: '70vw' }">
       <template #header>
-        <HeaderSection
+        <!-- <HeaderSection
           :img="''"
           :title="'All photos (10)'"
           :subtitle="'you can add more or delete photo'"
-        />
+        /> -->
       </template>
       <Galleria
         :value="images"

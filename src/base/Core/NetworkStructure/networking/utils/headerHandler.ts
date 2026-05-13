@@ -1,11 +1,9 @@
 import { useUserStore } from '@/stores/user';
-import { useCountryStore } from '@/stores/country';
 
 class HeaderHandler {
   private static _instance: HeaderHandler;
 
   private userStore = useUserStore();
-  private countryStore = useCountryStore();
 
   private constructor() {}
 
@@ -19,7 +17,6 @@ class HeaderHandler {
   getHeader(isAuth = false): { [key: string]: string } {
     const headers: { [key: string]: string } = {};
     const userStore = this.userStore;
-    const countryStore = this.countryStore;
 
     const token: string | undefined =
       // userStore?.user?.apiToken ||

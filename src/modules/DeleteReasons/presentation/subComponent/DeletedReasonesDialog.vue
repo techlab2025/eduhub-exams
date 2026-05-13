@@ -7,7 +7,7 @@
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import DeletedReasonsController from '../controllers/deleted.reasons.controller';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-  import DeletedAccountsIcon from '@/shared/icons/DeletedAccountsIcon.vue';
+  import DeletedAccountsIcon from '@/assets/images/DeletedReson.png';
   import IndexDeleteResonsParams from '../../core/params/idnex.delete.reasons.params';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import DeleteDeleteResonsParams from '../../core/params/delete.delete.reasons.params';
@@ -65,7 +65,8 @@
   >
     <template #header>
       <div class="header-container">
-        <DeletedAccountsIcon />
+        <!-- <DeletedAccountsIcon /> -->
+        <img :src="DeletedAccountsIcon" alt="DeletedAccountsIcon" width="50" />
         <div class="header-text">
           <h4>Add New reason for delete</h4>
           <p>Define why this item is being removed from the system.</p>

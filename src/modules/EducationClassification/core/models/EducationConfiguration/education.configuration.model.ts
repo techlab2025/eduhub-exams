@@ -24,8 +24,8 @@ export default class EducationConfigurationModel {
     }
 
     return new EducationConfigurationModel({
-      educationClassificatioId: json.education_classification ?? json.education_classification_id,
-      numberOfBranches: json.number_of_branches ?? json.numberOfBranches,
+      educationClassificatioId: (json.education_classification ?? json.education_classification_id) as any,
+      numberOfBranches: (json.number_of_branches ?? json.numberOfBranches) as any,
       branches:
         (json.branches as unknown[])?.map((branch: any) =>
           ConfigurationBranchesModel.fromJson(branch as Record<string, any>),

@@ -10,7 +10,7 @@ import type EducationConfigurationModel from '@/modules/EducationClassification/
 
 export default class EducationConfigurationController extends BaseController<
   EducationConfigurationModel,
-  EducationConfigurationModel
+  EducationConfigurationModel[]
 > {
   private static instance: EducationConfigurationController;
 
@@ -73,7 +73,7 @@ export default class EducationConfigurationController extends BaseController<
   async fetchList(
     params?: Params,
     options?: ApiCallOptions,
-  ): Promise<DataState<EducationConfigurationModel>> {
+  ): Promise<DataState<EducationConfigurationModel[]>> {
     const result = super.fetchList(params, options);
     console.log((await result).data, 'result');
     return result;

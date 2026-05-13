@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import EducationTypeIcon from '@/shared/icons/EducationTypeIcon.vue';
+  import EducationTypeIcon from '@/assets/images/EducationType.png';
   import { ref, computed, watch, nextTick } from 'vue';
   import Dialog from 'primevue/dialog';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
@@ -52,7 +52,8 @@
   >
     <template #header>
       <div class="dialog-icon">
-        <EducationTypeIcon />
+        <!-- <EducationTypeIcon /> -->
+        <img :src="EducationTypeIcon" alt="EducationTypeIcon" width="300">
       </div>
       <div>
         <h3 class="dialog-title">{{ $t('add_education_type') }}</h3>

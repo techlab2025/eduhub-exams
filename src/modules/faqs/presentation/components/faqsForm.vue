@@ -44,14 +44,18 @@ watch(
   () => props.faq,
   (faq) => {
     if (faq) {
-      question.value = faq?.question?.reduce((acc, item) => {
-        acc[item?.locale!] = item.question;
+      question.value = faq?.question?.reduce((acc: Record<string, string>, item: any) => {
+        if (item?.locale) {
+          acc[item.locale] = item.question || '';
+        }
         return acc;
       }, {});
 
 
-      answer.value = faq?.answer?.reduce((acc, item) => {
-        acc[item?.locale!] = item.answer;
+      answer.value = faq?.answer?.reduce((acc: Record<string, string>, item: any) => {
+        if (item?.locale) {
+          acc[item.locale] = item.answer || '';
+        }
         return acc;
       }, {});
       emitData();

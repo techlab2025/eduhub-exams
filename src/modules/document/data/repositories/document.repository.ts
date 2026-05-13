@@ -1,13 +1,8 @@
-import BaseRepository, {
-  type RepositoryConfig,
-} from "@/base/Domain/Repositories/baseRepository";
-import DocumentModel from "../../core/models/document.model";
-import DocumentApiService from "../api/document.api-service";
+import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+import DocumentModel from '../../core/models/document.model';
+import DocumentApiService from '../api/document.api-service';
 
-export default class DocumentRepository extends BaseRepository<
-  DocumentModel,
-  DocumentModel[]
-> {
+export default class DocumentRepository extends BaseRepository<DocumentModel, DocumentModel[]> {
   private static instance: DocumentRepository;
 
   protected get apiService() {
@@ -17,8 +12,8 @@ export default class DocumentRepository extends BaseRepository<
   protected get config(): RepositoryConfig {
     return {
       hasPagination: true,
-      dataKey: "data",
-      paginationKey: "meta",
+      dataKey: 'data',
+      paginationKey: 'meta',
     };
   }
 
@@ -27,11 +22,7 @@ export default class DocumentRepository extends BaseRepository<
   }
 
   protected get mockList(): DocumentModel[] {
-    return [
-      DocumentModel.example,
-      { ...DocumentModel.example, id: 2, title: "Document 2", documentTypeId: 2 },
-      { ...DocumentModel.example, id: 3, title: "Document 3", documentTypeId: 3 },
-    ];
+    return [DocumentModel.example, { ...DocumentModel.example }];
   }
 
   static getInstance(): DocumentRepository {

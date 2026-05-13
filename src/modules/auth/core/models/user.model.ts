@@ -18,6 +18,8 @@ export default class UserModel {
   public readonly apiToken?: string;
   public readonly refreshToken?: string;
   public readonly image?: string;
+  public readonly languages?: any[];
+  public readonly isMaster?: boolean;
 
   constructor(data: {
     id?: number;
@@ -30,6 +32,8 @@ export default class UserModel {
     apiToken?: string;
     refreshToken?: string;
     image?: string;
+    languages?: any[];
+    isMaster?: boolean;
   }) {
     this.id = data.id;
     this.email = data.email;
@@ -41,6 +45,8 @@ export default class UserModel {
     this.apiToken = data.apiToken;
     this.refreshToken = data.refreshToken;
     this.image = data.image;
+    this.languages = data.languages;
+    this.isMaster = data.isMaster;
   }
 
   /**
@@ -65,6 +71,8 @@ export default class UserModel {
       apiToken: json.api_token,
       refreshToken: json.refresh_token,
       image: json.image,
+      languages: json.languages,
+      isMaster: json.is_master,
     });
   }
 

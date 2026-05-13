@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { computed, ref } from 'vue';
   import Dialog from 'primevue/dialog';
-  import RenameIcon from '@/shared/icons/RenameIcon.vue';
+  import RenameIcon from '@/assets/images/RenameImage.png';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import EducationSubjectItemController from '../presentation/controllers/educationSubject/education.subject.item.controller';
@@ -57,7 +57,8 @@
   >
     <template #header>
       <div class="header-container">
-        <RenameIcon class="icon-dialog" />
+      
+        <img :src="RenameIcon" class="icon-dialog" alt="rename-image" />
         <div class="header-text-content">
           <h4 class="header-title">{{ $t('rename_title_of_education_classifications') }}</h4>
           <p class="header-message">

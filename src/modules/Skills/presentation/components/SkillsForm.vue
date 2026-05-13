@@ -31,12 +31,17 @@
     () => skill,
     (newskill) => {
       if (newskill) {
-        const result = newskill.title.reduce((acc, item) => {
-          acc[item?.locale!] = item.title;
-          return acc;
-        }, {});
-
-        translations.value = result;
+        const raw: Record<string, string> | Array<Record<string, string>> = newskill.title;
+        if (Array.isArray(raw)) {
+          translations.value = raw.reduce((acc: Record<string, string>, item: Record<string, string>) => {
+            if (item?.locale) {
+              acc[item.locale] = item.title ?? '';
+            }
+            return acc;
+          }, {});
+        } else {
+          translations.value = raw;
+        }
       }
     },
     { immediate: true },

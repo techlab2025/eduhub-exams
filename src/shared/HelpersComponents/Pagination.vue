@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import type PaginationModel from '@/base/Core/Models/pagination_model';
+  // import type PaginationModel from '@/base/Core/Models/pagination_model';
   import IconArrowDown from '@/shared/icons/IconArrowDown.vue';
 
   import Popover from 'primevue/popover';
@@ -8,11 +8,11 @@
   const emit = defineEmits(['changePage', 'countPerPage']);
 
   const op = ref();
-  const toggle = (event) => {
+  const toggle = (event: Event) => {
     op.value.toggle(event);
   };
   const props = defineProps<{
-    pagination: PaginationModel | null;
+    pagination: any | null;
   }>();
 
   const numberOfPages = computed(() => {

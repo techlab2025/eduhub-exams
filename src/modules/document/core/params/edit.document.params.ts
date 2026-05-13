@@ -1,50 +1,56 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type DocumentTranslationParams from './translation.params';
 
 export default class EditDocumentParams implements Params {
   public document_id: number;
-  public title: string;
-  public subject_id: number;
+  public refNumber: string;
+  public documentTypeId: number;
+  public subjects: number;
   public stage_id: number;
-  public unit_ids: number[];
-  public document_type_id: number;
-  public isAllUnits: boolean;
+  public translations: DocumentTranslationParams;
+  public tags: string[];
+  public images: string[];
+  public files: string[];
 
   public static readonly validation = new ClassValidation().setRules({
     document_id: { required: true },
-    title: { required: true, minLength: 2, maxLength: 255 },
-    subject_id: { required: true },
-    stage_id: { required: true },
-    document_type_id: { required: true },
+    translations: { required: true },
   });
 
   constructor(data: {
     document_id: number;
-    title: string;
-    subject_id: number;
+    refNumber: string;
+    documentTypeId: number;
     stage_id: number;
-    unit_ids: number[];
-    document_type_id: number;
-    isAllUnits: boolean;
+    subjects: number;
+    translations: DocumentTranslationParams;
+    tags: string[];
+    images: string[];
+    files: string[];
   }) {
     this.document_id = data.document_id;
-    this.title = data.title;
-    this.subject_id = data.subject_id;
+    this.refNumber = data.refNumber;
+    this.documentTypeId = data.documentTypeId;
     this.stage_id = data.stage_id;
-    this.unit_ids = data.unit_ids;
-    this.document_type_id = data.document_type_id;
-    this.isAllUnits = data.isAllUnits;
+    this.subjects = data.subjects;
+    this.translations = data.translations;
+    this.tags = data.tags;
+    this.images = data.images;
+    this.files = data.files;
   }
 
   toMap(): { [p: string]: any } {
     return {
       document_id: this.document_id,
-      title: this.title,
-      subject_id: this.subject_id,
+      reference_number: this.refNumber,
+      document_type_id: this.documentTypeId,
       stage_id: this.stage_id,
-      unit_ids: this.unit_ids,
-      document_type_id: this.document_type_id,
-      isAllUnits: this.isAllUnits,
+      subject_id: this.subjects,
+      translations: this.translations.toMap(),
+      tags: this.tags,
+      images: this.images,
+      files: this.files,
     };
   }
 

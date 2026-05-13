@@ -33,7 +33,7 @@ export function filesToBase64(
         filesProcessed += 1;
         if (filesProcessed === fileArray.length) {
           // Return single object if only one file was passed
-          resolve(Array.isArray(files) ? results : results[0]);
+          resolve(Array.isArray(files) ? results : results[0]!);
         }
       };
       reader.onerror = (error) => reject(error);

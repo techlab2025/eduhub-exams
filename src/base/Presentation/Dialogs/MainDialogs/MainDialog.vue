@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   const close = () => {
     // console.log('close')
-    document.querySelector('.dialog')?.close();
+    (document.querySelector('.dialog') as HTMLDialogElement)?.close();
   };
 
   // Automatically close the dialog after 3 seconds once it's opened

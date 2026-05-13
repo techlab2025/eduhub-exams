@@ -40,19 +40,11 @@
   const ShowPrivacy = async () => {
     await termsConditionsController.fetchList();
 
-    const titleData = status.value.data?.[0]?.title.reduce((acc, item) => {
-      acc[item?.locale!] = item.title;
-      return acc;
-    }, {});
-    const descriptionData = status.value.data?.[0]?.description.reduce((acc, item) => {
-      acc[item?.locale!] = item.description;
-      return acc;
-    }, {});
-    console.log(titleData, 'titleData');
-    console.log(descriptionData, 'descriptionData');
-
-    title.value = titleData;
-    description.value = descriptionData;
+    const firstItem = status.value.data?.[0];
+    if (firstItem?.translations) {
+      title.value = firstItem.translations.title;
+      description.value = firstItem.translations.description;
+    }
   };
 
   onMounted(() => {

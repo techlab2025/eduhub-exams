@@ -57,7 +57,7 @@
   const loading = ref(false);
   const message = ref('No Data Found');
   const localValue = ref(props.modelValue);
-  const dynamicOptions = ref<TitleInterface<string>[]>([]);
+  const dynamicOptions = ref<TitleInterface<string | number>[]>([]);
 
   // Computed properties
   const isMultiselect = computed(() => Number(type.value) === 2);
@@ -85,13 +85,13 @@
   syncLocalValue(props.modelValue);
 
   // Methods
-  function ensureArray(value: unknown): TitleInterface<string>[] {
-    return Array.isArray(value) ? value : [];
+  function ensureArray(value: unknown): TitleInterface<string | number>[] {
+    return Array.isArray(value) ? (value as TitleInterface<string | number>[]) : [];
   }
 
   function ensureSingle(value: unknown): TitleInterface<number | string> | null {
     // console.log(value , "single");
-    return value instanceof TitleInterface ? value : null;
+    return value instanceof TitleInterface ? (value as TitleInterface<number | string>) : null;
   }
 
   function syncLocalValue(newValue: typeof props.modelValue): void {
@@ -145,7 +145,7 @@
 
   function handleAutoFill(options: TitleInterface<number | string>[]): void {
     if (autoFill?.value && options.length === 1) {
-      normalizedValue.value = isMultiselect.value ? [options[0]] : options[0];
+      normalizedValue.value = isMultiselect.value ? [options[0]!] : options[0]!;
     }
   }
 

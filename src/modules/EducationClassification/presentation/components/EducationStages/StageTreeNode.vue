@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { ref, inject, watch, computed } from 'vue';
-  import type { Ref, ComputedRef } from 'vue';
+  import type { Ref } from 'vue';
   import type EducationStageModel from '@/modules/EducationClassification/core/models/EducationStage/education.stages.model';
   import DropList from '@/shared/HelpersComponents/DropList.vue';
   import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
   import { useI18n } from 'vue-i18n';
   import RenameClassificationDialog from '@/modules/EducationClassification/subComponent/RenameClassificationDialog.vue';
-  import ToggleSwitch from 'primevue/toggleswitch';
+  // import ToggleSwitch from 'primevue/toggleswitch';
   import DeleteEducationStageParams from '@/modules/EducationClassification/core/params/EducationStages/delete.education.stage.params';
   import EducationStageController from '../../controllers/EducationStages/education.stages.controller';
 
@@ -108,9 +108,9 @@
     await controller.delete(new DeleteEducationStageParams({ stage_id: id }));
     emit('delete-branch', props.parentId);
   }
-  function toggleStatus(id: number) {
-    console.warn('Toggle status not implemented for id:', id);
-  }
+  // function toggleStatus(id: number) {
+  //   console.warn('Toggle status not implemented for id:', id);
+  // }
 
   const actionList = (id: number) => [
     {

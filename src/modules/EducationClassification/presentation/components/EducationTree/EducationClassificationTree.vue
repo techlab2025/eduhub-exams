@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import EducationTypeItem from './EducationTypeItem.vue';
   import AddEducationTypeDialog from '@/modules/EducationClassification/subComponent/EducationTree/AddEducationTypeDialog.vue';
   import AddBranchDialog from '@/modules/EducationClassification/subComponent/EducationTree/AddBranchDialog.vue';
@@ -15,7 +16,17 @@
     level: number;
     children: TreeNode[];
   }
+  const { locale } = useI18n();
   const controller = EducationTreeController.getInstance();
+
+  function getBranchName(level: number): string {
+    const data = state.value.value.data;
+    if (!data || !data[0]) return `Branch ${level + 1}`;
+    const branch = (data[0] as any).branches?.find((b: any) => b.levelNumber === level + 1);
+    if (!branch) return `Branch ${level + 1}`;
+    const lang = locale.value === 'ar' ? 'ar' : 'en';
+    return branch.singularTitle[lang] || branch.singularTitle['en'] || `Branch ${level + 1}`;
+  }
 
   /** Recursively converts a BranchesModel (and all its nested branches) into a TreeNode. */
   function mapBranch(branch: BranchesModel, level: number): TreeNode {
@@ -36,6 +47,7 @@
   const branchDialogLevel = ref(1);
   const branchDialogParent = ref<TreeNode | null>(null);
   const branchDialogBranchId = ref<number | undefined>(undefined);
+  const branchDialogName = ref('');
   const maxLevels = ref(0);
 
   const filteredTypes = ref<TreeNode[]>([]);
@@ -47,25 +59,26 @@
     branchDialogParent.value = node;
     branchDialogLevel.value = level;
     branchDialogBranchId.value = Number(node.id);
+    branchDialogName.value = getBranchName(level - 1);
     showAddBranchDialog.value = true;
   }
 
-  async function handleAddType(name: string) {
+  async function handleAddType(name: Record<string, string>) {
     const AddBranchParams = new AddEducationConfigurationTreeParams({
       education_classification_id: Number(route.params.id),
-      branch_title: name,
+      branch_title: name.en || name.ar || '',
     });
     await controller.create(AddBranchParams);
     showAddTypeDialog.value = false;
   }
 
-  async function handleAddBranch(data: { name: string; level: number; branchId?: number }) {
+  async function handleAddBranch(data: { name: Record<string, string>; level: number; branchId?: number }) {
     if (!branchDialogParent.value) return;
     showAddBranchDialog.value = false;
     const AddBranchParams = new AddEducationConfigurationTreeParams({
       education_classification_id: Number(route.params.id),
       branch_id: data.branchId,
-      branch_title: data.name,
+      branch_title: data.name.en || data.name.ar || '',
     });
     await controller.create(AddBranchParams);
   }
@@ -244,6 +257,7 @@
       v-model:visible="showAddBranchDialog"
       :level="branchDialogLevel"
       :branch-id="branchDialogBranchId"
+      :branch-name="branchDialogName"
       @confirm="handleAddBranch"
     />
   </div>

@@ -1,103 +1,99 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted } from 'vue';
-import Dialog from 'primevue/dialog';
-import IndexAddIcon from '@/shared/icons/IndexAddIcon.vue';
-import ToggleSwitch from 'primevue/toggleswitch';
-import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
-import DeleteIcon from '@/shared/icons/DocaumentType/DeleteIcon.vue';
-import DocumentTypeIcon from '@/shared/icons/DocaumentType/DocumentTypeIcon.vue';
-import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
-import IndexDocumentTypeParams from '../../core/params/documntType/index.document.type.params';
-import { useRoute } from 'vue-router';
-import DeleteDocumentTypeParams from '../../core/params/documntType/delete.document.type.params';
-import MultiLangInput from '@/shared/MultiLangInput.vue';
-import AddDocumentTypeParams from '../../core/params/documntType/add.document.type.params';
-import DocumentTranslationTypeParams from '../../core/params/documntType/translation.params';
-import type DocumentModel from '../../core/models/document.model';
-import EditDocumentTypeParams from '../../core/params/documntType/edit.document.type.params';
-import type DocumentTypeModel from '../../core/models/documentType/document.type.model';
-import ShowDocumentTypeParams from '../../core/params/documntType/show.document.type.params';
-import TableDialogSkelaton from '@/shared/HelpersComponents/TableDialogSkelaton.vue';
-import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+  import { computed, ref, onMounted } from 'vue';
+  import Dialog from 'primevue/dialog';
+  import IndexAddIcon from '@/shared/icons/IndexAddIcon.vue';
+  import ToggleSwitch from 'primevue/toggleswitch';
+  import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
+  import DeleteIcon from '@/shared/icons/DocaumentType/DeleteIcon.vue';
+  import DocumentType from '@/assets/images/DocumentType.png';
+  import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
+  import IndexDocumentTypeParams from '../../core/params/documntType/index.document.type.params';
+  import { useRoute } from 'vue-router';
+  import DeleteDocumentTypeParams from '../../core/params/documntType/delete.document.type.params';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
+  import AddDocumentTypeParams from '../../core/params/documntType/add.document.type.params';
+  import DocumentTranslationTypeParams from '../../core/params/documntType/translation.params';
 
-const controller = DocumentTypeController.getInstance();
-const state = computed(() => controller.listState.value);
+  import EditDocumentTypeParams from '../../core/params/documntType/edit.document.type.params';
+  import type DocumentTypeModel from '../../core/models/documentType/document.type.model';
+  import ShowDocumentTypeParams from '../../core/params/documntType/show.document.type.params';
+  import TableDialogSkelaton from '@/shared/HelpersComponents/TableDialogSkelaton.vue';
+  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
 
-const route = useRoute();
+  const controller = DocumentTypeController.getInstance();
+  const state = computed(() => controller.listState.value);
 
-const visible = ref(false);
-const isMaster = ref<boolean>();
-const DocumentTypeName = ref<Record<string, string>>({
-  en: '',
-  ar: '',
-});
-const SelectedDocumentType = ref<number>();
-const ToggleIsMaster = () => {
-  // console.log('ToggleIsMaster');
-};
+  const route = useRoute();
 
-const resetForm = () => {
-  SelectedDocumentType.value = undefined;
-  DocumentTypeName.value = { en: '', ar: '' };
-};
+  const visible = ref(false);
+  const isMaster = ref<boolean>();
+  const DocumentTypeName = ref<Record<string, string>>({
+    en: '',
+    ar: '',
+  });
+  const SelectedDocumentType = ref<number>();
+  const ToggleIsMaster = () => {
+    // console.log('ToggleIsMaster');
+  };
 
-const SavenDocumentType = async () => {
-  if (SelectedDocumentType.value) {
-    const params = new EditDocumentTypeParams({
-      document_type_id: String(SelectedDocumentType.value),
-      translations: new DocumentTranslationTypeParams({
-        title: DocumentTypeName.value,
-      }),
-    });
-    await controller.update(params);
-  } else {
-    const params = new AddDocumentTypeParams({
-      translations: new DocumentTranslationTypeParams({
-        title: DocumentTypeName.value,
-      }),
-    });
-    await controller.create(params);
-  }
-  await fetchDocumentTypes();
-  resetForm();
-};
+  const resetForm = () => {
+    SelectedDocumentType.value = undefined;
+    DocumentTypeName.value = { en: '', ar: '' };
+  };
 
-const fetchDocumentTypes = async (
-  page: number = 1,
-  searchWord: string = '',
-) => {
-  await controller.fetchList(
-    new IndexDocumentTypeParams(
-      searchWord,
-      route.query.page ? Number(route.query.page) : page,
-      10,
-      1,
-    ),
-  );
-};
+  const SavenDocumentType = async () => {
+    if (SelectedDocumentType.value) {
+      const params = new EditDocumentTypeParams({
+        document_type_id: String(SelectedDocumentType.value),
+        translations: new DocumentTranslationTypeParams({
+          title: DocumentTypeName.value,
+        }),
+      });
+      await controller.update(params);
+    } else {
+      const params = new AddDocumentTypeParams({
+        translations: new DocumentTranslationTypeParams({
+          title: DocumentTypeName.value,
+        }),
+      });
+      await controller.create(params);
+    }
+    await fetchDocumentTypes();
+    resetForm();
+  };
 
-onMounted(async () => {
-  await fetchDocumentTypes();
-});
-const deleteDocumentType = async (id: number) => {
-  await controller.delete(new DeleteDocumentTypeParams({ document_id: id }));
-  await fetchDocumentTypes();
-};
-const editDocumentType = async (data: DocumentTypeModel) => {
-  const res = await controller.fetchOne(new ShowDocumentTypeParams({ document_type_id: data.id!, isLocale: false }))
-  DocumentTypeName.value = res.data?.title;
-  const res2 = await controller.update(new EditDocumentTypeParams({
-    document_type_id: String(data.id),
-    translations: new DocumentTranslationTypeParams({
-      title: DocumentTypeName.value,
-    }),
-  }))
-};
+  const fetchDocumentTypes = async (page: number = 1, searchWord: string = '') => {
+    await controller.fetchList(
+      new IndexDocumentTypeParams(
+        searchWord,
+        route.query.page ? Number(route.query.page) : page,
+        10,
+        1,
+      ),
+    );
+  };
 
-const cancel = () => {
-  visible.value = false;
-  resetForm();
-};
+  onMounted(async () => {
+    await fetchDocumentTypes();
+  });
+  const deleteDocumentType = async (id: number) => {
+    await controller.delete(new DeleteDocumentTypeParams({ document_id: id }));
+    await fetchDocumentTypes();
+  };
+  const editDocumentType = async (data: DocumentTypeModel) => {
+    SelectedDocumentType.value = data.id;
+    const res = await controller.fetchOne(
+      new ShowDocumentTypeParams({ document_type_id: data.id!, isLocale: false }),
+    );
+    if (res.data?.tranaslations?.title) {
+      DocumentTypeName.value = res.data.tranaslations.title;
+    }
+  };
+
+  const cancel = () => {
+    visible.value = false;
+    resetForm();
+  };
 </script>
 
 <template>
@@ -105,22 +101,29 @@ const cancel = () => {
     <IndexAddIcon />
     <span> {{ $t('document_type') }}</span>
   </button>
-  <Dialog v-model:visible="visible" :modal="true" :pt="{
-    root: 'add-document-type-dialog',
-    header: 'dialog-header',
-    content: 'dialog-body',
-  }" :style="{ width: '35rem' }">
+  <Dialog
+    v-model:visible="visible"
+    :modal="true"
+    :pt="{
+      root: 'add-document-type-dialog',
+      header: 'dialog-header',
+      content: 'dialog-body',
+    }"
+    :style="{ width: '35rem' }"
+  >
     <template #header>
       <div class="header-container">
-        <DocumentTypeIcon />
+        <!-- <DocumentTypeIcon /> -->
+        <img :src="DocumentType" alt="document type" width="200" />
         <div class="header-text">
-          <h4>{{ SelectedDocumentType ? $t('edit_document_type') : $t('add_new_document_type') }}</h4>
+          <h4>
+            {{ SelectedDocumentType ? $t('edit_document_type') : $t('add_new_document_type') }}
+          </h4>
           <p>{{ $t('manage_and_organize_your_document_categories') }}</p>
         </div>
       </div>
     </template>
     <div class="document-type-content">
-
       <DataStatusBuilder :controller="state">
         <template #success>
           <div v-for="item in state.data" :key="item.id" class="document-type-row">
@@ -131,19 +134,22 @@ const cancel = () => {
             <div class="item-actions">
               <EditeIcon @click="editDocumentType(item)" />
               <DeleteIcon @click="deleteDocumentType(item.id!)" />
-
             </div>
           </div>
-
         </template>
         <template #loader>
-
           <TableDialogSkelaton :rows="5" />
         </template>
       </DataStatusBuilder>
       <div class="input-wrapper">
-        <MultiLangInput :field-key="`title`" :label="$t(`document_type_name`)" :languages="['en', 'ar']"
-          :model-value="DocumentTypeName" :type="`title`" @update:model-value="DocumentTypeName = $event" />
+        <MultiLangInput
+          :field-key="`title`"
+          :label="$t(`document_type_name`)"
+          :languages="['en', 'ar']"
+          :model-value="DocumentTypeName"
+          :type="`title`"
+          @update:model-value="DocumentTypeName = $event"
+        />
       </div>
       <div class="is-master">
         <span>{{ $t('is_master') }}</span>

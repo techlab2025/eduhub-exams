@@ -45,8 +45,12 @@ export default class DocumentTypeController extends BaseController<DocumentTypeM
   }
 
   async fetchOne(params: Params, options?: ApiCallOptions) {
-    return super.fetchOne(params, { ...options, useJson: true  , headers:{
-      'Accept-Language':params?.isLocale ? 'en':'*' 
-    }} , );
+    return super.fetchOne(params, {
+      ...options,
+      useJson: true,
+      headers: {
+        'Accept-Language': (params as any)?.isLocale ? 'en' : '*',
+      },
+    });
   }
 }

@@ -2,7 +2,10 @@ import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
-import { type DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import {
+  type DataState,
+  DataSuccess,
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import EducationSubjectRepository from '@/modules/EducationClassification/data/repositories/educationSubject/education.subject.repository';
@@ -10,7 +13,7 @@ import type EducationSubjectConfigurationModel from '@/modules/EducationClassifi
 
 export default class EducationSubjectController extends BaseController<
   EducationSubjectConfigurationModel,
-  EducationSubjectConfigurationModel
+  EducationSubjectConfigurationModel[]
 > {
   private static instance: EducationSubjectController;
 
@@ -62,9 +65,9 @@ export default class EducationSubjectController extends BaseController<
     return result;
   }
   async fetchList(
-    params?: Params,
+    params?: Params & { isLocale?: boolean },
     options?: ApiCallOptions,
-  ): Promise<DataState<EducationSubjectConfigurationModel>> {
+  ): Promise<DataState<EducationSubjectConfigurationModel[]>> {
     const result = await super.fetchList(params, {
       ...options,
       useJson: true,

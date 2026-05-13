@@ -30,8 +30,8 @@ export default class EducationSubjectConfigurationModel {
     }
 
     return new EducationSubjectConfigurationModel({
-      pluralTitle: json.plural_title,
-      SingluarTitle: json.singular_title,
+      pluralTitle: EducationSubjectConfigurationModel.normalizeLocaleField(json.plural_title, 'plural_title'),
+      SingluarTitle: EducationSubjectConfigurationModel.normalizeLocaleField(json.singular_title, 'singular_title'),
       educationClassification: json.education_classification,
       numberOfBranches: json.number_of_branches,
       branches:
@@ -39,6 +39,23 @@ export default class EducationSubjectConfigurationModel {
           ConfigurationBranchesModel.fromJson(branch),
         ) || [],
     });
+  }
+
+  private static normalizeLocaleField(
+    raw: unknown,
+    valueKey: string,
+  ): Record<string, string> {
+    if (Array.isArray(raw)) {
+      return (raw as Array<Record<string, string>>).reduce(
+        (acc, item) => {
+          if (item?.locale) acc[item.locale] = item[valueKey] ?? '';
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+    }
+    if (raw && typeof raw === 'object') return raw as Record<string, string>;
+    return {};
   }
 
   static example: EducationSubjectConfigurationModel = new EducationSubjectConfigurationModel({
