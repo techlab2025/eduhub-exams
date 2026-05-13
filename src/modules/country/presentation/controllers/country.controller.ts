@@ -4,7 +4,7 @@ import type CountryModel from '../../core/models/country.model';
 import CountryRepository from '../../data/repositories/country.repository';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { DataState, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 
@@ -26,9 +26,11 @@ export default class CountryController extends BaseController<CountryModel, Coun
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
-      showSuccessDialog: true,
-      showErrorDialog: true,
+      showLoadingDialog: false,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
       autoRetry: false,
       maxAutoRetries: 1,
     };
@@ -60,6 +62,10 @@ export default class CountryController extends BaseController<CountryModel, Coun
       }
     }
     return result;
+  }
+
+  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<CountryModel[]>> {
+    return super.fetchList(params, { ...options, useStaticData: true });
   }
 
   // async update(params: Params, options?: ApiCallOptions, formKey?: string) {

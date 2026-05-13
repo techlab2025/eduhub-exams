@@ -6,6 +6,7 @@
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import IndexCountryParams from '@/modules/country/core/params/index.country.params';
   import { useRoute, useRouter } from 'vue-router';
+  import { useCountryStore } from '@/stores/country';
   // import { debounce } from '@/base/Presentation/Utils/debouced';
   // import { debounce } from '@/base/Presentation/Utils/debouced';
 
@@ -18,10 +19,12 @@
   const route = useRoute();
   const router = useRouter();
 
+  const CountryStore = useCountryStore();
   const selectCountry = (country: CountryModel) => {
     // console.log(country.id, 'Country');
     selectedCountryId.value = country.id;
     selectedCountryCode.value = country.code;
+    CountryStore.setCountryCode(country.code);
   };
 
   const fetchCountries = async (page: number = 1, word: string = '') => {
@@ -33,24 +36,7 @@
       ),
     );
   };
-  // const Search = debounce(() => {
-  //   router.push({
-  //     query: {
-  //       ...route.query,
-  //       page: Number(route.query.page ?? 1),
-  //       word: word.value || undefined,
-  //     },
-  //   });
 
-  //   fetchCountries(1, word.value);
-  // });
-
-  // const isDraft = computed(() => {
-  //   const data = FormStore?.formData[formRoute] ?? {};
-  //   return Object.keys(data).length === 0 || Object.values(data).every((v) => v == null);
-  // });
-
-  // Fetch emails on component mount
   onMounted(async () => {
     if (route.query.word) {
       word.value = String(route.query.word);
@@ -78,33 +64,9 @@
         {{ $t('Choose your country to access localized content and settings') }}
       </p>
     </div>
-    <!-- <div class="search-field">
-      <span class="search-icon">
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-      </span>
-      <input
-        v-model="word"
-        :placeholder="$t('search_by_country')"
-        class="search-input"
-        type="text"
-        @input="Search"
-      />
-    </div> -->
     <DataStatusBuilder :controller="state" :on-retry="async () => await fetchCountries()">
       <template #success="{ data }">
         <div class="country-grid">
-          <!-- <div class="country-item"> -->
           <CountryCard
             v-for="country in data"
             :key="country.id"
@@ -120,7 +82,7 @@
       :class="['btn btn-primary', { disabled: !selectedCountryId }]"
       type="button"
       @click="continueToLogin"
-      >
+    >
       <!-- :disabled="!selectedCountryId" -->
       {{ $t('continue_to_login') }}
     </button>

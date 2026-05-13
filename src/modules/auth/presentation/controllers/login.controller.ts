@@ -33,7 +33,7 @@ export default class LoginController extends BaseController<LoginModel, never> {
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,

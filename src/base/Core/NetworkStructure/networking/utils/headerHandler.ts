@@ -1,3 +1,4 @@
+import { useCountryStore } from '@/stores/country';
 import { useUserStore } from '@/stores/user';
 
 class HeaderHandler {
@@ -17,6 +18,7 @@ class HeaderHandler {
   getHeader(isAuth = false): { [key: string]: string } {
     const headers: { [key: string]: string } = {};
     const userStore = this.userStore;
+    const CountryStore = useCountryStore();
 
     const token: string | undefined =
       // userStore?.user?.apiToken ||
@@ -42,7 +44,7 @@ class HeaderHandler {
     headers['Content-Type'] = 'application/json';
     headers['Accept'] = 'application/json';
     headers['Authorization'] = 'Bearer ' + token;
-    headers['x-country'] = 'sa';
+    headers['x-country'] = CountryStore.getCountryCode();
     return headers;
   }
 }
