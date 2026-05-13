@@ -3,13 +3,15 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export default class ShowDocumentParams implements Params {
   public document_id: number;
+  public allLocales?: boolean;
 
   public static readonly validation = new ClassValidation().setRules({
     document_id: { required: true },
   });
 
-  constructor(data: { document_id: number }) {
+  constructor(data: { document_id: number; allLocales?: boolean }) {
     this.document_id = data.document_id;
+    this.allLocales = data.allLocales;
   }
 
   toMap(): { [p: string]: any } {

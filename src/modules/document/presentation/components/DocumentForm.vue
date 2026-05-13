@@ -2,7 +2,7 @@
   import { ref, watch, computed, onMounted } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import { useFormsStore } from '@/stores/formsStore';
-  import type DocumentModel from '../../core/models/document.model';
+  // import type DocumentModel from '../../core/models/document.model';
   import AddDocumentParams from '../../core/params/add.document.params';
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import DocumentIcon from '@/shared/icons/DocaumentType/DocumentIcon.vue';
@@ -95,11 +95,12 @@ import type DocumentShowModel from '../../core/models/document.show.model';
   () => document,
   (newDoc) => {
     if (newDoc) {
-      title.value = newDoc.tranaslations.title;
 
-      selectedDocumentType.value = newDoc.doecumentType;
+      title.value = newDoc.translations.title;
 
-      description.value = newDoc.tranaslations.description;
+      selectedDocumentType.value = newDoc.documentType;
+
+      description.value = newDoc.translations.description;
 
       UploadedImage.value = newDoc.images;
 
@@ -195,6 +196,7 @@ import type DocumentShowModel from '../../core/models/document.show.model';
 </script>
 
 <template>
+  {{ document }}
   <div class="document-form-card">
     <div class="document-form-header">
       <DocumentIcon />

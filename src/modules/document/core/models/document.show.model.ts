@@ -1,37 +1,53 @@
 import type TitleInterface from '@/base/Data/Models/titleInterface';
-import DocumentTranslationParams from '../params/translation.params';
+// import DocumentTranslationParams from '../params/translation.params';
 
 export default class DocumentShowModel {
   public readonly id?: number;
-  public readonly title: string;
+   public readonly translations: {
+    title: Record<string, string>;
+  };
+  public readonly title: Record<string, string>;
   public readonly RefNumber: string;
-  public readonly doecumentType: TitleInterface<number>;
+
+  public readonly documentType: TitleInterface<number>;
   public readonly stage: TitleInterface<number>;
   public readonly subject: TitleInterface<number>;
-  public readonly tranaslations: DocumentTranslationParams;
+
+  // public readonly translations: DocumentTranslationParams;
   public readonly tags: string[];
   public readonly images: string[];
   public readonly files: string[];
 
   constructor(data: {
     id?: number;
-    title: string;
+
+    translations: {
+      title: Record<string, string>;
+    };
+    title: Record<string, string>;
     RefNumber: string;
-    doecumentType: TitleInterface<number>;
+
+    documentType: TitleInterface<number>;
     stage: TitleInterface<number>;
     subject: TitleInterface<number>;
-    tranaslations: DocumentTranslationParams;
+
+    // translations: DocumentTranslationParams;
+
     tags: string[];
     images: string[];
     files: string[];
   }) {
     this.id = data.id;
+    this.translations = data.translations;
     this.title = data.title;
     this.RefNumber = data.RefNumber;
-    this.doecumentType = data.doecumentType;
+
+    this.documentType = data.documentType;
     this.stage = data.stage;
     this.subject = data.subject;
-    this.tranaslations = data.tranaslations;
+
+    this.translations = data.translations;
+
     this.tags = data.tags;
     this.images = data.images;
     this.files = data.files;
@@ -39,52 +55,71 @@ export default class DocumentShowModel {
     Object.freeze(this);
   }
 
+   static mapTranslations = (translations: any[], key: string = 'value') => {
+      const result: Record<string, string> = {};
+      if (Array.isArray(translations)) {
+        translations.forEach((t: any) => {
+          if (t.locale && t[key]) {
+            result[t.locale] = t[key];
+          }
+        });
+      }
+      return result;
+    };
+
   static fromJson(json: any): DocumentShowModel {
-    if (!json) {
-      throw new Error('Cannot create DocumentShowModel from null or undefined');
-    }
+    if (!json) throw new Error('Invalid DocumentShowModel data');
 
     return new DocumentShowModel({
       id: json.id,
-      title: json.title,
-      RefNumber: json.reference_number,
-      doecumentType: json.document_type,
-      stage: json.stage,
-      subject: json.subject,
-      tranaslations: json.tranaslations,
-      tags: json.tags,
-      images: json.images,
-      files: json.files,
+       translations: {
+        title: this.mapTranslations(json.title, 'title'),
+      },
+      title: this.mapTranslations(json.title ?? []),
+
+      RefNumber: json.RefNumber ?? json.reference_number ?? '',
+
+      documentType: json.doecumentType ?? json.document_type ?? { id: 0, title: '' },
+
+      stage: {
+        id: json.stage?.id,
+        title: json.stage?.titles?.[0]?.title ?? '',
+      },
+
+      subject: {
+        id: json.subject?.id,
+        title: json.subject?.titles?.[0]?.title ?? '',
+      },
+
+      // translations: json.translations
+      //   ? new DocumentTranslationParams(json.translations)
+      //   : new DocumentTranslationParams({
+      //       title: { ar: '', en: '' },
+      //       description: { ar: '', en: '' },
+      //     }),
+
+      tags: json.tags ?? [],
+      images: json.images ?? [],
+      files: json.files ?? [],
     });
   }
 
   static example: DocumentShowModel = new DocumentShowModel({
-    id: 10,
-    title: 'title',
-    RefNumber: '10',
-    doecumentType: {
-      id: 1,
-      title: 'title',
-    },
-    stage: {
-      id: 1,
-      title: 'title',
-    },
-    subject: {
-      id: 1,
-      title: 'title',
-    },
-    tranaslations: new DocumentTranslationParams({
-      title: {
-        ar: '',
-        en: '',
-      },
-      description: {
-        ar: '',
-        en: '',
-      },
-    }),
-    tags: ['tag1', 'tage2'],
+    id: 1,
+    translations: {title: {ar:'title', en:'title'}},
+    title: {ar:'title', en:'title'},
+    RefNumber: '100',
+
+    documentType: { id: 1, title: 'type' },
+    stage: { id: 1, title: 'stage' },
+    subject: { id: 1, title: 'subject' },
+
+    // translations: new DocumentTranslationParams({
+    //   title: { ar: '', en: '' },
+    //   description: { ar: '', en: '' },
+    // }),
+
+    tags: [],
     images: [],
     files: [],
   });

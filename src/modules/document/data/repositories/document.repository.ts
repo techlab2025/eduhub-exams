@@ -1,8 +1,13 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+
 import DocumentModel from '../../core/models/document.model';
 import DocumentApiService from '../api/document.api-service';
+import DocumentShowModel from '../../core/models/document.show.model';
 
-export default class DocumentRepository extends BaseRepository<DocumentModel, DocumentModel[]> {
+export default class DocumentRepository extends BaseRepository<
+  DocumentShowModel,
+  DocumentModel[]
+> {
   private static instance: DocumentRepository;
 
   protected get apiService() {
@@ -17,13 +22,14 @@ export default class DocumentRepository extends BaseRepository<DocumentModel, Do
     };
   }
 
-  protected get mockItem(): DocumentModel {
-    return DocumentModel.example;
+  protected get mockItem(): DocumentShowModel {
+    return DocumentShowModel.example;
   }
 
   protected get mockList(): DocumentModel[] {
     return [DocumentModel.example, { ...DocumentModel.example }];
   }
+
 
   static getInstance(): DocumentRepository {
     if (!DocumentRepository.instance) {
@@ -32,19 +38,13 @@ export default class DocumentRepository extends BaseRepository<DocumentModel, Do
     return DocumentRepository.instance;
   }
 
-  protected parseItem(data: any): DocumentModel {
-    return DocumentModel.fromJson(data);
+  protected parseItem(data: any): DocumentShowModel {
+    return DocumentShowModel.fromJson(data);
   }
 
   protected parseList(data: any): DocumentModel[] {
     if (!Array.isArray(data)) return [];
-    return data.reduce((acc: DocumentModel[], item) => {
-      try {
-        if (item != null) {
-          acc.push(this.parseItem(item));
-        }
-      } catch {}
-      return acc;
-    }, []);
+
+    return data.map((item) => DocumentModel.fromJson(item));
   }
 }
