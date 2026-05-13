@@ -23,7 +23,7 @@
   const updateData = (updatedParams: AddDocumentParams) => {
     params.value = new EditDocumentParams({
       document_id: Number(route.params.id),
-      title: updatedParams.translations.title,
+      title: updatedParams.translations,
       subject_id: updatedParams.subjects,
       stage_id: updatedParams.stage_id,
       document_type_id: updatedParams.documentTypeId,
@@ -35,7 +35,7 @@
   };
 
   onMounted(async () => {
-    await controller.fetchOne(new ShowDocumentParams({ document_id: Number(route.params.id) }));
+    await controller.fetchOne(new ShowDocumentParams({ document_id: Number(route.params.id),allLocales: true})); 
   });
 </script>
 

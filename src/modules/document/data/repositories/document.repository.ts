@@ -1,11 +1,11 @@
-import BaseRepository, {
-  type RepositoryConfig,
-} from "@/base/Domain/Repositories/baseRepository";
-import DocumentModel from "../../core/models/document.model";
-import DocumentApiService from "../api/document.api-service";
+import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+
+import DocumentModel from '../../core/models/document.model';
+import DocumentApiService from '../api/document.api-service';
+import DocumentShowModel from '../../core/models/document.show.model';
 
 export default class DocumentRepository extends BaseRepository<
-  DocumentModel,
+  DocumentShowModel,
   DocumentModel[]
 > {
   private static instance: DocumentRepository;
@@ -17,21 +17,9 @@ export default class DocumentRepository extends BaseRepository<
   protected get config(): RepositoryConfig {
     return {
       hasPagination: true,
-      dataKey: "data",
-      paginationKey: "meta",
+      dataKey: 'data',
+      paginationKey: 'meta',
     };
-  }
-
-  protected get mockItem(): DocumentModel {
-    return DocumentModel.example;
-  }
-
-  protected get mockList(): DocumentModel[] {
-    return [
-      DocumentModel.example,
-      { ...DocumentModel.example, id: 2, title: "Document 2", documentTypeId: 2 },
-      { ...DocumentModel.example, id: 3, title: "Document 3", documentTypeId: 3 },
-    ];
   }
 
   static getInstance(): DocumentRepository {
@@ -41,19 +29,13 @@ export default class DocumentRepository extends BaseRepository<
     return DocumentRepository.instance;
   }
 
-  protected parseItem(data: any): DocumentModel {
-    return DocumentModel.fromJson(data);
+  protected parseItem(data: any): DocumentShowModel {
+    return DocumentShowModel.fromJson(data);
   }
 
   protected parseList(data: any): DocumentModel[] {
     if (!Array.isArray(data)) return [];
-    return data.reduce((acc: DocumentModel[], item) => {
-      try {
-        if (item != null) {
-          acc.push(this.parseItem(item));
-        }
-      } catch {}
-      return acc;
-    }, []);
+
+    return data.map((item) => DocumentModel.fromJson(item));
   }
 }

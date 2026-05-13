@@ -1,18 +1,22 @@
 import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
+
 import type DocumentModel from '../../core/models/document.model';
 import DocumentRepository from '../../data/repositories/document.repository';
-import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
-import type Params from '@/base/Core/Params/params';
-import {
-  type DataState,
-  DataSuccess,
-} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-import router from '@/router';
-import { useFormsStore } from '@/stores/formsStore';
 import type DocumentShowModel from '../../core/models/document.show.model';
 
-export default class DocumentController extends BaseController<DocumentShowModel, DocumentModel[]> {
+import type Params from '@/base/Core/Params/params';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+
+import { DataSuccess, type DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+
+import router from '@/router';
+import { useFormsStore } from '@/stores/formsStore';
+
+export default class DocumentController extends BaseController<
+  DocumentShowModel,
+  DocumentModel[]
+> {
   private static instance: DocumentController;
 
   protected get repository() {
@@ -46,12 +50,12 @@ export default class DocumentController extends BaseController<DocumentShowModel
     const FormStore = useFormsStore();
 
     const result = await super.create(params, { ...options, useJson: true });
+
     if (result instanceof DataSuccess) {
       router.push({ name: 'Documents' });
-      if (formKey) {
-        FormStore.clearFormData(formKey);
-      }
+      if (formKey) FormStore.clearFormData(formKey);
     }
+
     return result;
   }
 
@@ -59,16 +63,26 @@ export default class DocumentController extends BaseController<DocumentShowModel
     const FormStore = useFormsStore();
 
     const result = await super.update(params, { ...options, useJson: true });
+
     if (result instanceof DataSuccess) {
       router.push({ name: 'Documents' });
-      if (formKey) {
-        FormStore.clearFormData(formKey);
-      }
+      if (formKey) FormStore.clearFormData(formKey);
     }
+
     return result;
   }
+
   async fetchList(params: Params, options?: ApiCallOptions): Promise<DataState<DocumentModel[]>> {
-    const result = await super.fetchList(params, { ...options, useJson: true });
-    return result;
+    return await super.fetchList(params, { ...options, useJson: true });
+  }
+
+  async fetchOne(params: Params, options?: ApiCallOptions) {
+    return await super.fetchOne(params, {
+      ...options,
+      useJson: true,
+      headers: {
+        'Accept-Language': params.allLocales ? '*' : 'en',
+      },
+    });
   }
 }
