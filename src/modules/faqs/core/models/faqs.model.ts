@@ -1,9 +1,15 @@
 export default class FaqsModel {
   public readonly id?: number;
-  public readonly answer: Record<string, string>;
-  public readonly question: Record<string, string>;
+  public readonly answer: Record<string, string> | string;
+  public readonly question: Record<string, string> | string;
 
-  constructor(data: { id?: number; answer: Record<string, string>; question: Record<string, string> }) {
+  constructor(
+    data: {
+      id?: number;
+      answer: Record<string, string> | string;
+      question: Record<string, string> | string;
+    },
+  ) {
     this.id = data.id;
     this.answer = data.answer;
     this.question = data.question;
@@ -18,8 +24,12 @@ export default class FaqsModel {
 
     return new FaqsModel({
       id: json.id,
-      question: FaqsModel.normalizeLocaleField(json.question, 'question'),
-      answer: FaqsModel.normalizeLocaleField(json.answer, 'answer'),
+      question: typeof json.question === 'string'
+        ? json.question
+        : FaqsModel.normalizeLocaleField(json.question, 'question'),
+      answer: typeof json.answer === 'string'
+        ? json.answer
+        : FaqsModel.normalizeLocaleField(json.answer, 'answer'),
     });
   }
 

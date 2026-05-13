@@ -76,7 +76,7 @@ export default class FaqsController extends BaseController<FaqsModel, FaqsModel[
       ...options,
       useJson: true,
       headers: {
-        'Accept-Language': params?.isLocale ? 'en' : '*',
+        'Accept-Language': params?.isLocale ? '*' : 'en',
       },
     });
   }

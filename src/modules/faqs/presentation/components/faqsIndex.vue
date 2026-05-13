@@ -17,7 +17,7 @@
 
   const faqs = computed<FaqsModel[]>(() => {
     const data = controller.listState.value?.data;
-    if (Array.isArray(data)) return (data as FaqsModel[]) ?? []; 
+    if (Array.isArray(data)) return (data as FaqsModel[]) ?? [];
     return [];
   });
 
@@ -30,20 +30,12 @@
   };
 
   const getQuestion = (faq: FaqsModel) => {
-  return (
-    faq.question?.find((item) => item.locale === 'en')?.question ||
-    faq.question?.find((item) => item.locale === 'ar')?.question ||
-    ''
-  );
-};
+    return faq.question;
+  };
 
   const getAnswer = (faq: FaqsModel) => {
-  return (
-    faq.answer?.find((item) => item.locale === 'en')?.answer ||
-    faq.answer?.find((item) => item.locale === 'ar')?.answer ||
-    ''
-  );
-};
+    return faq.answer;
+  };
 
   const editFaq = (id: number) => {
     router.push(`/${countryCode.value}/faqs/${id}/edit`);
@@ -51,7 +43,7 @@
 
   const deleteFaq = async (id: number) => {
     await controller.delete(new DeleteFaqsParams({ id }), undefined);
-    await controller.fetchList(); 
+    await controller.fetchList();
   };
 
   onMounted(async () => {
@@ -65,7 +57,7 @@
     <div class="header-container">
       <div class="about-header">
         <h2 class="title">{{ $t('faqs') }}</h2>
-        <p class="description">{{ $t('faqs_description') }}</p> 
+        <p class="description">{{ $t('faqs_description') }}</p>
       </div>
       <div class="header-actions">
         <router-link v-if="hasData" :to="`/${countryCode}/faqs/add`" class="btn-filled-green">
@@ -80,8 +72,8 @@
         <!-- Question row -->
         <div class="faq-row-header" @click="toggleExpand(idx)">
           <div class="faq-row-left">
-            <button type="button" class="expand-btn" :aria-expanded="expandedIndex === idx" >
-              <IconAdd v-if="expandedIndex !== idx"  />
+            <button type="button" class="expand-btn" :aria-expanded="expandedIndex === idx">
+              <IconAdd v-if="expandedIndex !== idx" />
               <IconMins v-else />
             </button>
             <span class="faq-question">{{ getQuestion(faq) }}</span>
