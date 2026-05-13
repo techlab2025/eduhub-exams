@@ -5,6 +5,7 @@ import AboutRepository from '../../data/repositories/about.repository';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import type DeleteSocialLinkParams from '../../core/params/delete.social.link.params';
 
 export default class AboutController extends BaseController<AboutModel, AboutModel[]> {
   private static instance: AboutController;
@@ -40,16 +41,18 @@ export default class AboutController extends BaseController<AboutModel, AboutMod
     options?: ApiCallOptions,
   ): Promise<DataState<AboutModel> | undefined> {
     return await super.create(params, { ...options, useJson: true });
-    
   }
   async fetchList(params: Params, options?: ApiCallOptions) {
-    return super.fetchList(params, { ...options, useJson: true, headers: {
-        'Accept-Language': params?.isLocale ? 'en' : '*'
-      }
+    return super.fetchList(params, {
+      ...options,
+      useJson: true,
+      headers: {
+        'Accept-Language': (params as any).isLocale ? 'en' : '*',
+      },
     });
   }
 
-  async deleteSocialLink(params: Params) {
+  async deleteSocialLink(params: DeleteSocialLinkParams) {
     return await this.repository.deleteSocialLink(params);
   }
 }

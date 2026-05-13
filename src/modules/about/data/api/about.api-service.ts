@@ -25,11 +25,11 @@ export default class AboutApiService extends BaseApiService {
       create: this.aboutEndpoints.store,
       update: this.aboutEndpoints.update,
       delete: this.aboutEndpoints.delete,
-      deleteSocialLink: this.aboutEndpoints.deleteSocialLink,
     };
   }
 
   async deleteSocialLink(params: DeleteSocialLinkParams): Promise<ApiResponse<string>> {
     return this.customPost<string>(this.aboutEndpoints.deleteSocialLink,params);
   }
+
 }

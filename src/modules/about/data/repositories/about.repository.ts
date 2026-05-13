@@ -12,7 +12,7 @@ export default class AboutRepository extends BaseRepository<AboutModel, AboutMod
 
   async deleteSocialLink(params: DeleteSocialLinkParams): Promise<string> {
     const apiResponse = await this.apiService.deleteSocialLink(params);
-    return apiResponse.message;
+    return apiResponse.data;
   }
 
   protected get config(): RepositoryConfig {

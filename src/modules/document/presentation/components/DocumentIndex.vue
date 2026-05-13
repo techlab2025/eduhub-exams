@@ -28,6 +28,7 @@ import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
   const route = useRoute();
   const date = ref();
 
+  
   const headers: TableHeader[] = [
     { key: 'title', label: 'Title', width: '50%', sortable: true },
     { key: 'documentTypeId', label: 'Document Type', width: '50%' },
