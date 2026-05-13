@@ -15,7 +15,6 @@
   import AboutController from '../controllers/about.controller';
   import ShowAboutParams from '../../core/params/show.about.params';
   import SocialParams from '../../core/params/Socail.params';
-  import { filesToBase64 } from '@/base/Presentation/Utils/file_to_base_64';
 
   // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -109,10 +108,8 @@
 
   // ─── File Handler ─────────────────────────────────────────────────────────────
 
-  const handleImageChange = async (file: Array<{ base64: string }>) => {
-    // console.log(file[0], "file");
-    image.value = await filesToBase64(file[0].base64);
-    console.log(image.value, 'image.value');
+  const handleImageChange = (file: Array<{ base64: string }>) => {
+    image.value = file[0]?.base64 ?? null;
     updateData();
   }
 
