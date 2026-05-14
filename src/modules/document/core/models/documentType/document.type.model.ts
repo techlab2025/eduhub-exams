@@ -3,16 +3,16 @@ import DocumentTranslationParams from '../../params/translation.params';
 
 export default class DocumentTypeModel {
   public readonly id?: number;
-  public readonly    translations: {
-      title: Record<string, string>;
-    };
+  public readonly translations: {
+    title: Record<string, string>;
+  };
   public readonly RefNumber: string;
   public readonly doecumentType: TitleInterface<number>;
   public readonly Subjtecs: TitleInterface<number>[];
   public readonly tranaslations: DocumentTranslationParams;
   public readonly title: string;
   constructor(data: {
-    id?: number; 
+    id?: number;
     translations: {
       title: Record<string, string>;
     };
@@ -40,9 +40,9 @@ export default class DocumentTypeModel {
 
     return new DocumentTypeModel({
       id: json.id,
-        translations: {
-      title: this.mapTranslations(json.title, 'title'),
-    },
+      translations: {
+        title: this.mapTranslations(json.title, 'title'),
+      },
       RefNumber: json.ref_number,
       title: json.title,
       doecumentType: json.document_type,
@@ -85,5 +85,11 @@ export default class DocumentTypeModel {
         en: '',
       },
     }),
+    translations: {
+      title: {
+        ar: '',
+        en: '',
+      },
+    },
   });
 }
