@@ -89,7 +89,7 @@
   </button>
   <Dialog
     v-model:visible="visible"
-    :modal="true"
+    :modal="true" 
     :pt="{
       root: 'delete-reason-dialog',
       header: 'dialog-header',
