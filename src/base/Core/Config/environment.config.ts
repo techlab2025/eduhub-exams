@@ -3,7 +3,7 @@
  * Define settings for each deployment stage
  */
 
-import type { EnvironmentConfig, EnvironmentStage } from "./environment.types";
+import type { EnvironmentConfig, EnvironmentStage } from './environment.types';
 
 /**
  * Configuration for all environments
@@ -16,8 +16,8 @@ export const environments: Record<EnvironmentStage, EnvironmentConfig> = {
    * - Real API calls
    */
   development: {
-    stage: "development",
-    apiBaseUrl: "https://api.orbit.techlabeg.com/orbit/",
+    stage: 'development',
+    apiBaseUrl: 'https://api.orbit.techlabeg.com/orbit/',
     timeout: 30000,
     enableLogging: true,
     useStaticData: false,
@@ -33,8 +33,8 @@ export const environments: Record<EnvironmentStage, EnvironmentConfig> = {
    * - Real API calls
    */
   production: {
-    stage: "production",
-    apiBaseUrl: "https://back.orbitconsults.com/orbit/",
+    stage: 'production',
+    apiBaseUrl: 'https://back.orbitconsults.com/orbit/',
     timeout: 15000,
     enableLogging: false,
     useStaticData: false,
@@ -50,8 +50,8 @@ export const environments: Record<EnvironmentStage, EnvironmentConfig> = {
    * - Uses static/mock data
    */
   test: {
-    stage: "test",
-    apiBaseUrl: "http://localhost:3000/",
+    stage: 'test',
+    apiBaseUrl: 'http://localhost:3000/',
     timeout: 5000,
     enableLogging: true,
     useStaticData: true,
@@ -65,23 +65,22 @@ export const environments: Record<EnvironmentStage, EnvironmentConfig> = {
  * Get the default environment based on VITE_APP_ENV or defaults to development
  */
 export function getDefaultStage(): EnvironmentStage {
-  let envVar = import.meta.env?.VITE_APP_ENV;
-  console.log(import.meta.env, "import.meta.env?");
+  const envVar = import.meta.env?.VITE_APP_ENV;
   if (envVar && isValidStage(envVar)) {
     return envVar as EnvironmentStage;
   }
 
   // Check if running in production build
   if (import.meta.env?.PROD) {
-    return "production";
+    return 'production';
   }
 
-  return "development";
+  return 'development';
 }
 
 /**
  * Validate if a string is a valid environment stage
  */
 export function isValidStage(stage: string): stage is EnvironmentStage {
-  return ["development", "production", "test"].includes(stage);
+  return ['development', 'production', 'test'].includes(stage);
 }

@@ -12,4 +12,10 @@ export default class WordParams implements Params {
     data["word"] = this.word;
     return data;
   }
+
+  validate(): { isValid: boolean; errors: [] } {
+    return { isValid: true, errors: [] };
+  }
+
+  validateOrThrow(): void {}
 }

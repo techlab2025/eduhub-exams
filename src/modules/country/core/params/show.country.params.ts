@@ -1,5 +1,5 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 /**
  * Parameters for showing a country

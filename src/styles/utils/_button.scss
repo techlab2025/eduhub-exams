@@ -1,8 +1,9 @@
-@use "../mixins/flex" as *;
-@use "../variables" as *;
+@use '../mixins/flex' as *;
+@use '../variables' as *;
 
 .btn {
   @include flex-center(row, nowrap);
+
   font-size: var(--sm-size);
   font-weight: $BaseFontWeightBold;
   transition: var(--transition);

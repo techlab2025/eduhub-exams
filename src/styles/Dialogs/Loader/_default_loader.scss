@@ -21,6 +21,9 @@
 
 .loader-dialog[open]::backdrop {
   animation: backdrop-fade-in 0.7s ease-out forwards;
+  -webkit-backdrop-filter: blur(5px);
+  -moz-backdrop-filter: blur(5px);
+  -o-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }
 
@@ -45,5 +48,7 @@
 }
 
 @keyframes l6 {
-  100% { inset: 0; }
+  100% {
+    inset: 0;
+  }
 }

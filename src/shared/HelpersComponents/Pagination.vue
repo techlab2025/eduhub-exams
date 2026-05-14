@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import type PaginationModel from '@/base/Core/Models/pagination_model'
-import IconArrowDown from '@/shared/icons/IconArrowDown.vue'
+  // import type PaginationModel from '@/base/Core/Models/pagination_model';
+  import IconArrowDown from '@/shared/icons/IconArrowDown.vue';
 
-import Popover from 'primevue/popover'
-import { computed, ref } from 'vue'
+  import Popover from 'primevue/popover';
+  import { computed, ref } from 'vue';
 
-const emit = defineEmits(['changePage', 'countPerPage'])
+  const emit = defineEmits(['changePage', 'countPerPage']);
 
-const op = ref()
-const toggle = (event) => {
-  op.value.toggle(event)
-}
-const props = defineProps<{
-  pagination: PaginationModel | null
-}>()
+  const op = ref();
+  const toggle = (event: Event) => {
+    op.value.toggle(event);
+  };
+  const props = defineProps<{
+    pagination: any | null;
+  }>();
 
-const numberOfPages = computed(() => {
-  return Array.from({ length: props.pagination?.last! }, (_, i) => i + 1)
-})
+  const numberOfPages = computed(() => {
+    return Array.from({ length: props.pagination?.last || 0 }, (_, i) => i + 1);
+  });
 </script>
 
 <template>
@@ -35,7 +35,7 @@ const numberOfPages = computed(() => {
         Prev
       </button>
       <span
-        v-for="(item,index) in numberOfPages.slice(
+        v-for="item in numberOfPages.slice(
           pagination?.current! > 2 ? pagination?.current! - 2 : 0,
           pagination?.current! + 2,
         )"

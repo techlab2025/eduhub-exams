@@ -16,5 +16,5 @@ export default function getDayFromDate(dateString: string): string {
     "Saturday",
   ];
 
-  return days[date.getDay()];
+  return days[date.getDay()]!;
 }

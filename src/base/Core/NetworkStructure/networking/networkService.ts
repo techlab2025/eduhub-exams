@@ -8,18 +8,15 @@ import type {
   AxiosResponse,
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
-} from "axios";
-import axios from "axios";
-import HeaderHandler from "@/base/Core/NetworkStructure/networking/utils/headerHandler";
-import type PostParams from "@/base/Core/Params/postParams";
-import type GetParams from "@/base/Core/Params/getParams";
-import { env } from "@/base/Core/Config";
-import ErrorHandler from "@/base/Core/NetworkStructure/errors/errorHandler";
-import type {
-  RequestConfig,
-  RetryOptions,
-} from "@/base/Core/Config/environment.types";
-import { DEFAULT_RETRY_OPTIONS } from "@/base/Core/Config/environment.types";
+} from 'axios';
+import axios from 'axios';
+import HeaderHandler from '@/base/Core/NetworkStructure/networking/utils/headerHandler';
+import type PostParams from '@/base/Core/Params/postParams';
+import type GetParams from '@/base/Core/Params/getParams';
+import { env } from '@/base/Core/Config';
+import ErrorHandler from '@/base/Core/NetworkStructure/errors/errorHandler';
+import type { RetryOptions } from '@/base/Core/Config/environment.types';
+import { DEFAULT_RETRY_OPTIONS } from '@/base/Core/Config/environment.types';
 
 /**
  * Progress event callback type
@@ -51,16 +48,6 @@ export interface NetworkRequestConfig {
 
   /** Retry options override */
   retryOptions?: Partial<RetryOptions>;
-}
-
-/**
- * Request metadata for logging and tracking
- */
-interface RequestMetadata {
-  requestId: string;
-  startTime: number;
-  url: string;
-  method: string;
 }
 
 /**
@@ -103,8 +90,8 @@ export default class NetworkService {
       baseURL: env.apiBaseUrl,
       timeout: env.timeout,
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
     });
   }
@@ -123,20 +110,17 @@ export default class NetworkService {
 
         // Log request if enabled
         if (env.isLoggingEnabled) {
-          console.log(
-            `[Network] [${requestId}] ${config.method?.toUpperCase()} ${config.url}`,
-            {
-              params: config.params,
-              data: config.data,
-            },
-          );
+          console.log(`[Network] [${requestId}] ${config.method?.toUpperCase()} ${config.url}`, {
+            params: config.params,
+            data: config.data,
+          });
         }
 
         return config;
       },
       (error) => {
         if (env.isLoggingEnabled) {
-          console.error("[Network] Request Error:", error);
+          console.error('[Network] Request Error:', error);
         }
         return Promise.reject(error);
       },
@@ -151,18 +135,15 @@ export default class NetworkService {
 
         // Log response if enabled
         if (env.isLoggingEnabled) {
-          console.log(
-            `[Network] [${requestId}] Response ${response.status} (${duration}ms)`,
-            {
-              data: response.data,
-            },
-          );
+          console.log(`[Network] [${requestId}] Response ${response.status} (${duration}ms)`, {
+            data: response.data,
+          });
         }
 
         return response;
       },
       (error) => {
-        const requestId = (error.config as any)?.__requestId || "unknown";
+        const requestId = (error.config as any)?.__requestId || 'unknown';
         const startTime = (error.config as any)?.__startTime;
         const duration = Date.now() - (startTime || Date.now());
 
@@ -272,7 +253,7 @@ export default class NetworkService {
       }
     }
 
-    throw lastError || new Error("Request failed after retries");
+    throw lastError || new Error('Request failed after retries');
   }
 
   /**
@@ -285,15 +266,13 @@ export default class NetworkService {
     networkConfig?: NetworkRequestConfig,
   ): AxiosRequestConfig {
     return {
-      headers: headers ?? HeaderHandler.Instance.getHeader(isAuth),
+      headers: { ...HeaderHandler.Instance.getHeader(isAuth), ...headers },
       params: queryParams,
       timeout: networkConfig?.timeout ?? env.timeout,
       signal: networkConfig?.signal,
       onUploadProgress: networkConfig?.onUploadProgress
         ? (event) => {
-            const progress = event.total
-              ? Math.round((event.loaded * 100) / event.total)
-              : 0;
+            const progress = event.total ? Math.round((event.loaded * 100) / event.total) : 0;
             networkConfig.onUploadProgress!({
               loaded: event.loaded,
               total: event.total,
@@ -303,9 +282,7 @@ export default class NetworkService {
         : undefined,
       onDownloadProgress: networkConfig?.onDownloadProgress
         ? (event) => {
-            const progress = event.total
-              ? Math.round((event.loaded * 100) / event.total)
-              : 0;
+            const progress = event.total ? Math.round((event.loaded * 100) / event.total) : 0;
             networkConfig.onDownloadProgress!({
               loaded: event.loaded,
               total: event.total,
@@ -327,12 +304,7 @@ export default class NetworkService {
     { url, data, headers, queryParams, isAuth = false }: PostParams,
     networkConfig?: NetworkRequestConfig,
   ): Promise<AxiosResponse> {
-    const config = this.buildConfig(
-      isAuth,
-      headers,
-      queryParams,
-      networkConfig,
-    );
+    const config = this.buildConfig(isAuth, headers, queryParams, networkConfig);
 
     const requestFn = () => this.axiosInstance.post(url, data, config);
 
@@ -353,7 +325,7 @@ export default class NetworkService {
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== "") {
+      if (value !== null && value !== undefined && value !== '') {
         if (value instanceof File) {
           formData.append(key, value);
         } else if (Array.isArray(value)) {
@@ -364,7 +336,7 @@ export default class NetworkService {
               formData.append(`${key}[${index}]`, String(item));
             }
           });
-        } else if (typeof value === "object") {
+        } else if (typeof value === 'object') {
           formData.append(key, JSON.stringify(value));
         } else {
           formData.append(key, String(value));
@@ -372,15 +344,10 @@ export default class NetworkService {
       }
     });
 
-    const config = this.buildConfig(
-      isAuth,
-      headers,
-      queryParams,
-      networkConfig,
-    );
+    const config = this.buildConfig(isAuth, headers, queryParams, networkConfig);
     config.headers = {
       ...config.headers,
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
     };
 
     const requestFn = () => this.axiosInstance.post(url, formData, config);
@@ -399,12 +366,7 @@ export default class NetworkService {
     { url, headers, queryParams, isAuth = false }: GetParams,
     networkConfig?: NetworkRequestConfig,
   ): Promise<AxiosResponse> {
-    const config = this.buildConfig(
-      isAuth,
-      headers,
-      queryParams,
-      networkConfig,
-    );
+    const config = this.buildConfig(isAuth, headers, queryParams, networkConfig);
 
     const requestFn = () => this.axiosInstance.get(url, config);
 
@@ -422,12 +384,7 @@ export default class NetworkService {
     { url, headers, queryParams, isAuth = false }: GetParams,
     networkConfig?: NetworkRequestConfig,
   ): Promise<AxiosResponse> {
-    const config = this.buildConfig(
-      isAuth,
-      headers,
-      queryParams,
-      networkConfig,
-    );
+    const config = this.buildConfig(isAuth, headers, queryParams, networkConfig);
 
     const requestFn = () => this.axiosInstance.delete(url, config);
 
@@ -445,12 +402,7 @@ export default class NetworkService {
     { url, data, headers, queryParams, isAuth = false }: PostParams,
     networkConfig?: NetworkRequestConfig,
   ): Promise<AxiosResponse> {
-    const config = this.buildConfig(
-      isAuth,
-      headers,
-      queryParams,
-      networkConfig,
-    );
+    const config = this.buildConfig(isAuth, headers, queryParams, networkConfig);
 
     const requestFn = () => this.axiosInstance.put(url, data, config);
 
@@ -468,12 +420,7 @@ export default class NetworkService {
     { url, data, headers, queryParams, isAuth = false }: PostParams,
     networkConfig?: NetworkRequestConfig,
   ): Promise<AxiosResponse> {
-    const config = this.buildConfig(
-      isAuth,
-      headers,
-      queryParams,
-      networkConfig,
-    );
+    const config = this.buildConfig(isAuth, headers, queryParams, networkConfig);
 
     const requestFn = () => this.axiosInstance.patch(url, data, config);
 

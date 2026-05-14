@@ -1,24 +1,26 @@
 import TestDataFactory from '@/base/Core/Testing/testDataFactory';
-import EmailModel from '../core/models/email.model';
+import UserModel from '../core/models/user.model';
 import { EmailType } from '../core/constants/emailType.enum';
 
 /**
- * Test data factory for email-related test data
- * Provides utilities to create mock emails for testing
+ * Test data factory for user-related test data
+ * Provides utilities to create mock users for testing
  */
 export class EmailTestFactory extends TestDataFactory {
     /**
-     * Create a mock EmailModel with default or custom values
+     * Create a mock UserModel with default or custom values
      */
     static createMockEmail(overrides?: Partial<{
         id: number;
+        name: string;
         email: string;
         type: EmailType;
         employeeId: number;
         createdAt: string;
         updatedAt: string;
-    }>): EmailModel {
-        return new EmailModel({
+    }>): UserModel {
+        return new UserModel({
+            name: overrides?.name ?? `Test User ${this.randomInt()}`,
             id: overrides?.id ?? this.randomInt(1, 1000),
             email: overrides?.email ?? `test${this.randomInt()}@example.com`,
             type: overrides?.type ?? EmailType.EMPLOYEE,
@@ -50,9 +52,9 @@ export class EmailTestFactory extends TestDataFactory {
     }
 
     /**
-     * Create an array of mock emails
+     * Create an array of mock users
      */
-    static createMockEmailList(count: number = 5): EmailModel[] {
+    static createMockEmailList(count: number = 5): UserModel[] {
         return this.generateArray(count, (index) =>
             this.createMockEmail({
                 id: index + 1,
@@ -125,12 +127,13 @@ export class EmailTestFactory extends TestDataFactory {
     }
 
     /**
-     * Create email with boundary values
+     * Create user with boundary values
      */
-    static createBoundaryEmail(boundary: 'min' | 'max'): EmailModel {
+    static createBoundaryEmail(boundary: 'min' | 'max'): UserModel {
         if (boundary === 'min') {
-            return new EmailModel({
+            return new UserModel({
                 id: 1,
+                name: 'Min User',
                 email: 'a@b.c',  // Minimum valid length
                 type: EmailType.EMPLOYEE,
                 employeeId: 1,
@@ -138,8 +141,9 @@ export class EmailTestFactory extends TestDataFactory {
         } else {
             const longLocal = 'a'.repeat(64);
             const longDomain = 'b'.repeat(63);
-            return new EmailModel({
+            return new UserModel({
                 id: 999999,
+                name: 'Max User',
                 email: `${longLocal}@${longDomain}.com`,
                 type: EmailType.OTHER,
                 employeeId: 999999,
@@ -148,9 +152,9 @@ export class EmailTestFactory extends TestDataFactory {
     }
 
     /**
-     * Create emails with different types
+     * Create users with different types
      */
-    static createEmailsByType(): EmailModel[] {
+    static createEmailsByType(): UserModel[] {
         return Object.values(EmailType).map((type, index) =>
             this.createMockEmail({
                 id: index + 1,

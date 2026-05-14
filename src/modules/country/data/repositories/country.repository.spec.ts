@@ -1,15 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import CountryRepository from "./country.repository";
-import CountryTestFactory from "../../__tests__/country.test-factory";
-import {
-  DataSuccess,
-  DataFailed,
-  DataEmpty,
-} from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import CountryModel from "../../core/models/country.model";
-import { env } from "@/base/Core/Config";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import CountryRepository from './country.repository';
+import CountryTestFactory from '../../__tests__/country.test-factory';
+import { DataSuccess, DataEmpty, DataFailed } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import CountryModel from '../../core/models/country.model';
+import { env } from '@/base/Core/Config';
 
-describe("CountryRepository", () => {
+describe('CountryRepository', () => {
   let repository: CountryRepository;
   let mockApiService: any;
 
@@ -26,9 +22,7 @@ describe("CountryRepository", () => {
     };
 
     // Spy on the apiService getter to return our mock
-    vi.spyOn(repository as any, "apiService", "get").mockReturnValue(
-      mockApiService,
-    );
+    vi.spyOn(repository as any, 'apiService', 'get').mockReturnValue(mockApiService);
 
     // Disable static data to test actual repository-to-api-service interaction
     env.override({ useStaticData: false });
@@ -39,8 +33,8 @@ describe("CountryRepository", () => {
     env.reset(); // Reset environment changes
   });
 
-  describe("singleton pattern", () => {
-    it("should return the same instance", () => {
+  describe('singleton pattern', () => {
+    it('should return the same instance', () => {
       const instance1 = CountryRepository.getInstance();
       const instance2 = CountryRepository.getInstance();
 
@@ -48,11 +42,10 @@ describe("CountryRepository", () => {
     });
   });
 
-  describe("index - fetch list", () => {
-    it("should return DataSuccess with parsed country list", async () => {
+  describe('index - fetch list', () => {
+    it('should return DataSuccess with parsed country list', async () => {
       const mockCountries = CountryTestFactory.createMockCountryJsonList(3);
-      const mockResponse =
-        CountryTestFactory.createCountryListApiResponse(mockCountries);
+      const mockResponse = CountryTestFactory.createCountryListApiResponse(mockCountries);
       mockApiService.index.mockResolvedValue(mockResponse);
 
       const result = await repository.index();
@@ -66,9 +59,9 @@ describe("CountryRepository", () => {
       }
     });
 
-    it("should return DataEmpty when response contains no data", async () => {
+    it('should return DataEmpty when response contains no data', async () => {
       const mockResponse = {
-        data: { data: null, status: true, message: "No countries found" },
+        data: { data: null, status: true, message: 'No countries found' },
         statusCode: 200,
       };
       mockApiService.index.mockResolvedValue(mockResponse);
@@ -78,9 +71,9 @@ describe("CountryRepository", () => {
       expect(result).toBeInstanceOf(DataEmpty);
     });
 
-    it("should return DataFailed on API error", async () => {
+    it('should return DataFailed on API error', async () => {
       const errorResponse = CountryTestFactory.createErrorCountryResponse(
-        "Failed to fetch countries",
+        'Failed to fetch countries',
         500,
       );
       mockApiService.index.mockResolvedValue(errorResponse);
@@ -91,8 +84,8 @@ describe("CountryRepository", () => {
     });
   });
 
-  describe("show - fetch single item", () => {
-    it("should return DataSuccess with parsed country", async () => {
+  describe('show - fetch single item', () => {
+    it('should return DataSuccess with parsed country', async () => {
       const mockCountry = CountryTestFactory.createMockCountryJson({ id: 10 });
       const mockResponse = CountryTestFactory.createCountryApiResponse(mockCountry);
       mockApiService.show.mockResolvedValue(mockResponse);
@@ -113,31 +106,31 @@ describe("CountryRepository", () => {
     });
   });
 
-  describe("create - create new item", () => {
-    it("should return DataSuccess with created country", async () => {
+  describe('create - create new item', () => {
+    it('should return DataSuccess with created country', async () => {
       const mockCountry = CountryTestFactory.createMockCountryJson({
-        title: "New Country",
-        code: "NC",
+        title: 'New Country',
+        code: 'NC',
       });
       const mockResponse = CountryTestFactory.createCountryApiResponse(mockCountry);
       mockApiService.create.mockResolvedValue(mockResponse);
 
-      const params = { title: "New Country", code: "NC", flag: "🏳️" };
+      const params = { title: 'New Country', code: 'NC', flag: '🏳️' };
       const result = await repository.create(params as any);
 
       expect(result).toBeInstanceOf(DataSuccess);
       if (result instanceof DataSuccess) {
         expect(result.data).toBeInstanceOf(CountryModel);
-        expect(result.data.title).toBe("New Country");
+        expect(result.data.title).toBe('New Country');
       }
     });
   });
 
-  describe("update - update existing item", () => {
-    it("should return DataSuccess with updated country", async () => {
+  describe('update - update existing item', () => {
+    it('should return DataSuccess with updated country', async () => {
       const mockCountry = CountryTestFactory.createMockCountryJson({
         id: 5,
-        title: "Updated Country",
+        title: 'Updated Country',
       });
       const mockResponse = CountryTestFactory.createCountryApiResponse(mockCountry);
       mockApiService.update.mockResolvedValue(mockResponse);
@@ -145,7 +138,7 @@ describe("CountryRepository", () => {
       const params = {
         toMap: () => ({
           id: 5,
-          title: "Updated Country",
+          title: 'Updated Country',
         }),
         validate: () => ({ isValid: true, errors: [] }),
         validateOrThrow: () => {},
@@ -155,15 +148,15 @@ describe("CountryRepository", () => {
       expect(result).toBeInstanceOf(DataSuccess);
       if (result instanceof DataSuccess) {
         expect(result.data).toBeInstanceOf(CountryModel);
-        expect(result.data.title).toBe("Updated Country");
+        expect(result.data.title).toBe('Updated Country');
       }
     });
   });
 
-  describe("delete - delete item", () => {
-    it("should return DataSuccess on successful delete", async () => {
+  describe('delete - delete item', () => {
+    it('should return DataSuccess on successful delete', async () => {
       const mockResponse = {
-        data: { status: true, message: "Country deleted" },
+        data: { status: true, message: 'Country deleted' },
         statusCode: 200,
       };
       mockApiService.delete.mockResolvedValue(mockResponse);

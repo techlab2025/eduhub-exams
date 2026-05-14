@@ -1,12 +1,14 @@
-@use "../mixins/grid" as *;
-@use "../mixins/flex" as *;
+@use '../mixins/grid' as *;
+@use '../mixins/flex' as *;
 
 .permission {
   width: 100%;
 
   .tabs {
     width: 100%;
+
     @include grid(3, 1fr, 10px);
+
     gap: 10px;
 
     .tab {
@@ -36,6 +38,7 @@
 
         .card-content {
           @include flex(column, wrap, start, start);
+
           margin-top: 1rem;
           gap: 5px;
 
@@ -62,13 +65,14 @@
       padding: 20px 15px;
       margin-block: 1rem;
       font-size: var(--md-size-2);
-      font-family: "Bold";
+      font-family: 'Bold';
       color: var(--PrimaryColor);
       gap: 5px;
       border-radius: var(--radius-md);
 
       .select_all {
         @include flex(row, wrap, flex-end, center);
+
         gap: 5px;
 
         input {
@@ -91,7 +95,7 @@
           transition: var(--transition-fast);
 
           &::after {
-            content: "";
+            content: '';
             position: absolute;
             display: none;
             left: 5px;
@@ -117,6 +121,7 @@
 
     .tab-content {
       @include grid(3, 1fr, 10px);
+
       gap: 10px;
       height: 50vh;
       overflow-y: auto;
@@ -133,28 +138,33 @@
         border-radius: var(--radius-lg);
         background: var(--gray-50);
         padding: 12px;
+
         @include flex(column, wrap, start, start);
+
         width: 100%;
         gap: 8px;
 
         .card-header {
           width: 100%;
+
           @include flex(row, wrap, space-between, center);
+
           border-bottom: 1px solid var(--gray-200);
 
           h5 {
             color: var(--gray-800);
-            font-family: "Bold";
+            font-family: 'Bold';
             font-size: var(--xl-size-base);
           }
 
           .select_all {
             @include flex(row-reverse, wrap, center, center);
+
             gap: 8px;
 
             span {
               color: var(--gray-400);
-              font-family: "Bold";
+              font-family: 'Bold';
               font-size: var(--xs-size);
             }
 
@@ -178,7 +188,7 @@
               transition: var(--transition-fast);
 
               &::after {
-                content: "";
+                content: '';
                 position: absolute;
                 display: none;
                 left: 5px;
@@ -204,6 +214,7 @@
 
         .card-body {
           width: 100%;
+
           @include grid(3, 1fr);
 
           @media screen and (max-width: 900px) {
@@ -214,6 +225,7 @@
 
           label {
             @include flex(row, wrap, center, center);
+
             width: 100%;
             text-align: center;
 

@@ -1,5 +1,5 @@
-import type Params from "@/base/Core/Params/params";
-import { ClassValidation } from "@/base/Presentation/Utils/classValidation";
+import type Params from '@/base/Core/Params/params';
+import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 /**
  * Parameters for creating/updating employee email
@@ -20,7 +20,7 @@ export default class LoginParams implements Params {
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {
-      email: this.email,
+      credentials: this.email,
       password: this.password,
     };
 

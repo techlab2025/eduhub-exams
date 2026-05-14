@@ -1,26 +1,23 @@
-import type { Ref, ComputedRef } from "vue";
-import { ref, computed } from "vue";
+import type { Ref, ComputedRef } from 'vue';
+import { ref, computed } from 'vue';
 import {
   DataFailed,
   DataInitial,
   DataLoading,
-  DataState,
+  type DataState,
   DataSuccess,
-  DataTimeout,
-  DataNoNetwork,
-  DataProgress,
   isDataSuccess,
   isDataFailed,
   isDataLoading,
   isRetryableState,
-} from "@/base/Core/NetworkStructure/Resources/dataState/dataState";
-import type Params from "@/base/Core/Params/params";
-import type BaseRepository from "@/base/Domain/Repositories/baseRepository";
-import type { ApiCallOptions } from "@/base/Data/ApiService/baseApiService";
-import { dialogManager } from "@/base/Presentation/Dialogs/dialog.manager";
-import { env } from "@/base/Core/Config";
-import type PaginationModel from "@/base/Core/Models/paginationModel";
-import TitleInterface from "@/base/Data/Models/titleInterface";
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import type Params from '@/base/Core/Params/params';
+import type BaseRepository from '@/base/Domain/Repositories/baseRepository';
+import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+import { env } from '@/base/Core/Config';
+import type PaginationModel from '@/base/Core/Models/paginationModel';
+import TitleInterface from '@/base/Data/Models/titleInterface';
 
 /**
  * Controller configuration options
@@ -40,6 +37,12 @@ export interface ControllerConfig {
 
   /** Maximum auto-retry attempts */
   maxAutoRetries?: number;
+
+  /** toast success */
+  showSuccessTosat?: boolean;
+
+  /** toast delete */
+  showErrorTosat?: boolean;
 }
 
 /**
@@ -48,7 +51,9 @@ export interface ControllerConfig {
 const DEFAULT_CONFIG: ControllerConfig = {
   showLoadingDialog: false,
   showSuccessDialog: false,
+  showSuccessTosat: false,
   showErrorDialog: false,
+  showErrorTosat: false,
   autoRetry: false,
   maxAutoRetries: 2,
 };
@@ -57,7 +62,7 @@ const DEFAULT_CONFIG: ControllerConfig = {
  * Last operation info for retry
  */
 interface LastOperation {
-  type: "fetchList" | "fetchOne" | "create" | "update" | "delete" | "custom";
+  type: 'fetchList' | 'fetchOne' | 'create' | 'update' | 'delete' | 'custom';
   params?: any;
   options?: ApiCallOptions;
 }
@@ -153,13 +158,8 @@ export default abstract class BaseController<T, TList = T[]> {
   // Constructor
   // =========================================================================
 
-  protected constructor(
-    initialList: TList | null = null,
-    initialItem: T | null = null,
-  ) {
-    this.listState = ref(new DataInitial<TList>(initialList)) as Ref<
-      DataState<TList>
-    >;
+  protected constructor(initialList: TList | null = null, initialItem: T | null = null) {
+    this.listState = ref(new DataInitial<TList>(initialList)) as Ref<DataState<TList>>;
     this.itemState = ref(new DataInitial<T>(initialItem)) as Ref<DataState<T>>;
   }
 
@@ -205,9 +205,7 @@ export default abstract class BaseController<T, TList = T[]> {
    */
   get errorMessage(): ComputedRef<string | null> {
     return computed(() => {
-      const state = this.itemState.value.hasError
-        ? this.itemState.value
-        : this.listState.value;
+      const state = this.itemState.value.hasError ? this.itemState.value : this.listState.value;
       return state.error?.displayMessage || state.error?.title || null;
     });
   }
@@ -217,10 +215,7 @@ export default abstract class BaseController<T, TList = T[]> {
    */
   get canRetry(): ComputedRef<boolean> {
     return computed(() => {
-      return (
-        isRetryableState(this.listState.value) ||
-        isRetryableState(this.itemState.value)
-      );
+      return isRetryableState(this.listState.value) || isRetryableState(this.itemState.value);
     });
   }
 
@@ -231,31 +226,31 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Fetch list of items.
    */
-  async fetchList(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<TList>> {
-    this._lastOperation = { type: "fetchList", params, options };
+  async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<TList>> {
+    this._lastOperation = { type: 'fetchList', params, options };
     this._autoRetryCount = 0;
 
     this.setListLoading();
 
     if (this.config.showLoadingDialog) {
-      this.showLoadingDialog("Loading...");
+      this.showLoadingDialog('Loading...');
     }
 
     try {
       const result = await this.repository.index(
         params,
         this.mergeOptions(options),
+        this.config.autoRetry,
       );
       this.setListState(result);
       this.handleListResponse(result);
+
       return result;
     } catch (error: any) {
       const failed = new DataFailed<TList>({ error });
       this.setListState(failed);
       this.handleErrorResponse(failed);
+
       return failed;
     } finally {
       this.hideLoadingDialog();
@@ -265,22 +260,13 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Append items to existing list (for pagination).
    */
-  async appendToList(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<TList>> {
+  async appendToList(params?: Params, options?: ApiCallOptions): Promise<DataState<TList>> {
     this.startPaginationLoading();
 
     try {
-      const result = await this.repository.index(
-        params,
-        this.mergeOptions(options),
-      );
+      const result = await this.repository.index(params, this.mergeOptions(options));
 
-      if (
-        result instanceof DataSuccess &&
-        this.listState.value instanceof DataSuccess
-      ) {
+      if (result instanceof DataSuccess && this.listState.value instanceof DataSuccess) {
         const currentData = this.listState.value.data;
         const newData = result.data;
 
@@ -310,11 +296,8 @@ export default abstract class BaseController<T, TList = T[]> {
    * Refresh list (re-fetch with same params)
    */
   async refreshList(): Promise<DataState<TList>> {
-    if (this._lastOperation?.type === "fetchList") {
-      return this.fetchList(
-        this._lastOperation.params,
-        this._lastOperation.options,
-      );
+    if (this._lastOperation?.type === 'fetchList') {
+      return this.fetchList(this._lastOperation.params, this._lastOperation.options);
     }
     return this.fetchList();
   }
@@ -326,22 +309,20 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Fetch single item by ID.
    */
-  async fetchOne(
-    params: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<T>> {
-    this._lastOperation = { type: "fetchOne", params, options };
+  async fetchOne(params: Params, options?: ApiCallOptions): Promise<DataState<T>> {
+    this._lastOperation = { type: 'fetchOne', params, options };
 
     this.setItemLoading();
 
     if (this.config.showLoadingDialog) {
-      this.showLoadingDialog("Loading...");
+      this.showLoadingDialog('Loading...');
     }
 
     try {
       const result = await this.repository.show(
         params,
         this.mergeOptions(options),
+        this.config.autoRetry,
       );
       this.setItemState(result);
       this.handleItemResponse(result);
@@ -359,18 +340,15 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Create new item.
    */
-  async create(
-    params: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<T> | undefined> {
-    this._lastOperation = { type: "create", params, options };
+  async create(params: Params, options?: ApiCallOptions): Promise<DataState<T> | undefined> {
+    this._lastOperation = { type: 'create', params, options };
 
     // console.log("[Controller] Creating item with params:", params);
 
     this.setItemLoading();
 
     if (this.config.showLoadingDialog) {
-      this.showLoadingDialog("Creating...");
+      this.showLoadingDialog('Creating...');
     }
 
     params.validate();
@@ -387,7 +365,7 @@ export default abstract class BaseController<T, TList = T[]> {
       );
       this.setItemState(result);
 
-      this.handleItemResponse(result, "Created successfully");
+      this.handleItemResponse(result, 'Created successfully');
       return result;
     } catch (error: any) {
       const failed = new DataFailed<T>({ error });
@@ -402,16 +380,13 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Update existing item.
    */
-  async update(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<T> | undefined> {
-    this._lastOperation = { type: "update", params, options };
+  async update(params?: Params, options?: ApiCallOptions): Promise<DataState<T> | undefined> {
+    this._lastOperation = { type: 'update', params, options };
 
     this.setItemLoading();
 
     if (this.config.showLoadingDialog) {
-      this.showLoadingDialog("Updating...");
+      this.showLoadingDialog('Updating...');
     }
 
     params?.validate();
@@ -427,7 +402,7 @@ export default abstract class BaseController<T, TList = T[]> {
         this.config.autoRetry,
       );
       this.setItemState(result);
-      this.handleItemResponse(result, "Updated successfully");
+      this.handleItemResponse(result, 'Updated successfully');
       return result;
     } catch (error: any) {
       const failed = new DataFailed<T>({ error });
@@ -442,16 +417,13 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Delete item by ID.
    */
-  async delete(
-    params?: Params,
-    options?: ApiCallOptions,
-  ): Promise<DataState<void> | undefined> {
-    this._lastOperation = { type: "delete", params, options };
+  async delete(params?: Params, options?: ApiCallOptions): Promise<DataState<void> | undefined> {
+    this._lastOperation = { type: 'delete', params, options };
 
     this.setItemLoading();
 
     if (this.config.showLoadingDialog) {
-      this.showLoadingDialog("Deleting...");
+      this.showLoadingDialog('Deleting...');
     }
 
     params?.validate();
@@ -460,16 +432,13 @@ export default abstract class BaseController<T, TList = T[]> {
       return;
     }
     try {
-      const result = await this.repository.delete(
-        params,
-        this.mergeOptions(options),
-      );
+      const result = await this.repository.delete(params, this.mergeOptions(options));
 
       // Reset item state on successful delete
       if (result instanceof DataSuccess) {
         this.setItemState(new DataInitial<T>());
         if (this.config.showSuccessDialog) {
-          this.showSuccessDialog("Deleted successfully");
+          this.showSuccessDialog('Deleted successfully');
           this.setItemState(result);
         }
       }
@@ -493,7 +462,7 @@ export default abstract class BaseController<T, TList = T[]> {
   async retryLastOperation(): Promise<DataState<any> | null> {
     if (!this._lastOperation) {
       if (env.isLoggingEnabled) {
-        console.warn("[Controller] No operation to retry");
+        console.warn('[Controller] No operation to retry');
       }
       return null;
     }
@@ -501,15 +470,15 @@ export default abstract class BaseController<T, TList = T[]> {
     const op = this._lastOperation;
 
     switch (op.type) {
-      case "fetchList":
+      case 'fetchList':
         return this.fetchList(op.params, op.options);
-      case "fetchOne":
+      case 'fetchOne':
         return this.fetchOne(op.params, op.options);
-      case "create":
+      case 'create':
         return (await this.create(op.params, op.options)) ?? null;
-      case "update":
+      case 'update':
         return (await this.update(op.params, op.options)) ?? null;
-      case "delete":
+      case 'delete':
         return (await this.delete(op.params, op.options)) ?? null;
       default:
         return null;
@@ -535,16 +504,14 @@ export default abstract class BaseController<T, TList = T[]> {
 
     if (!this.isListSuccess()) return [];
 
-    return ((this.listData.value as any[]) ?? []).map((el: any) =>
-      this.toTitleInterface(el),
-    );
+    return ((this.listData.value as any[]) ?? []).map((el: any) => this.toTitleInterface(el));
   }
 
   protected toTitleInterface(el: any): TitleInterface<string | number> {
     return new TitleInterface({
-      id: el?.id ?? el?.value ?? "",
-      title: el?.title ?? el?.name ?? el?.label ?? String(el?.id ?? ""),
-      subtitle: el?.subtitle ?? "",
+      id: el?.id ?? el?.value ?? '',
+      title: el?.title ?? el?.name ?? el?.label ?? String(el?.id ?? ''),
+      subtitle: el?.subtitle ?? '',
     });
   }
   // =========================================================================
@@ -623,7 +590,7 @@ export default abstract class BaseController<T, TList = T[]> {
   // DIALOG INTEGRATION
   // =========================================================================
 
-  protected showLoadingDialog(message: string = "Loading..."): void {
+  protected showLoadingDialog(message: string = 'Loading...'): void {
     dialogManager.loading(message);
   }
 
@@ -637,9 +604,20 @@ export default abstract class BaseController<T, TList = T[]> {
     }
   }
 
+  protected showSuccessToast(message: string): void {
+    if (this.config.showSuccessTosat) {
+      dialogManager.toastSuccess(message);
+    }
+  }
+
   protected showErrorDialog(message: string): void {
     if (this.config.showErrorDialog) {
       dialogManager.error(message);
+    }
+  }
+  protected showErrorTosat(message: string): void {
+    if (this.config.showErrorTosat) {
+      dialogManager.toastError(message);
     }
   }
 
@@ -654,10 +632,25 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Handle list response (override for custom dialogs/notifications).
    */
-  protected handleListResponse(_result: DataState<TList>): void {
+  protected handleListResponse(_result: DataState<TList>, _successMessage?: string): void {
     if (_result.hasError) {
       this.handleErrorResponse(_result);
-    }
+    } 
+    // else if (
+    //   _result instanceof DataSuccess &&
+    //   this.config.showSuccessDialog &&
+    //   !this.config.showSuccessTosat &&
+    //   Message
+    // ) {
+    //   this.showSuccessDialog(Message);
+    // } else if (
+    //   _result instanceof DataSuccess &&
+    //   !this.config.showSuccessDialog &&
+    //   this.config.showSuccessTosat &&
+    //   Message
+    // ) {
+    //   this.showSuccessToast(Message);
+    // }
 
     // Auto-retry if applicable
     if (this.shouldAutoRetry(_result)) {
@@ -669,18 +662,23 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Handle item response (override for custom dialogs/notifications).
    */
-  protected handleItemResponse(
-    _result: DataState<T>,
-    successMessage?: string,
-  ): void {
+  protected handleItemResponse(_result: DataState<T>, successMessage?: string): void {
     if (_result.hasError) {
       this.handleErrorResponse(_result);
     } else if (
       _result instanceof DataSuccess &&
       this.config.showSuccessDialog &&
+      !this.config.showSuccessTosat &&
       successMessage
     ) {
       this.showSuccessDialog(successMessage);
+    } else if (
+      _result instanceof DataSuccess &&
+      !this.config.showSuccessDialog &&
+      this.config.showSuccessTosat &&
+      successMessage
+    ) {
+      this.showSuccessToast(successMessage);
     }
 
     // Auto-retry if applicable
@@ -694,8 +692,10 @@ export default abstract class BaseController<T, TList = T[]> {
    * Handle error response.
    */
   protected handleErrorResponse(_result: DataState<any>): void {
-    if (this.config.showErrorDialog && _result.error) {
+    if (this.config.showErrorDialog && !this.config.showErrorTosat && _result.error) {
       this.showErrorDialog(_result.error.displayMessage);
+    } else if (!this.config.showErrorDialog && this.config.showErrorTosat && _result.error) {
+      this.showErrorTosat(_result.error.displayMessage);
     }
   }
 

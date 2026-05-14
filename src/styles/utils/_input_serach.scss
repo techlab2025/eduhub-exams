@@ -1,5 +1,5 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
+@use '../variables' as *;
+@use '../mixins/flex' as *;
 
 .input-search {
   position: relative;
@@ -7,7 +7,9 @@
   input {
     width: 100%;
     border: 1px solid var(--main-border);
+
     @include flex-row(nowrap, flex-start, center);
+
     padding: var(--xs-size) var(--md-size);
     border-radius: calc(var(--xl-size-2) + 10px);
     font-family: var(--font-family);
@@ -40,7 +42,7 @@
   }
 }
 
-html[dir="rtl"] .input-search {
+html[dir='rtl'] .input-search {
   .icon-remove {
     left: auto;
     right: var(--md-size);

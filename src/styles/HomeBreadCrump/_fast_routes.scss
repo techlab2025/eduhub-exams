@@ -1,5 +1,5 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
+@use '../variables' as *;
+@use '../mixins/flex' as *;
 
 .fast-route-container {
   font-family: var(--font-family);
@@ -10,6 +10,7 @@
 
   .fast-route {
     @include flex-row(wrap, center, center);
+
     gap: var(--xs-size-2);
     padding-block: 12px;
 

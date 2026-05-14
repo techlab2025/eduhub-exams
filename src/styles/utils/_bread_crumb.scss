@@ -1,15 +1,17 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
+@use '../variables' as *;
+@use '../mixins/flex' as *;
 
 .breadcrumbs {
   width: 100%;
 
   ul {
     @include flex(row, nowrap, flex-start, center);
+
     gap: var(--xs-size);
 
     li {
       @include flex(row, nowrap, flex-start, center);
+
       gap: var(--xs-size);
       color: var(--gray-500);
       font-weight: $BaseFontMediumWeight;

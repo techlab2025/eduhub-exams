@@ -1,244 +1,136 @@
-@use "../../../../styles/mixins/grid" as *;
-@use "../../../../styles/mixins/flex" as *;
-@use "../../../../styles/variables" as *;
+@use '../../../../styles/mixins/grid' as *;
+@use '../../../../styles/mixins/flex' as *;
+@use '../../../../styles/variables' as *;
 
 .login {
-  @include grid(2, 1fr, 10px);
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    var(--PrimaryColor-dark) 0%,
-    var(--bg-sidebar) 100%
-  );
+  padding: 32px 20px;
 
-  @media screen and (max-width: 1179px) {
-    @include flex(column-reverse, wrap, center, center);
-    gap: var(--md-size);
-    padding: var(--md-size);
+  @include flex(column, nowrap, center, center);
+
+  gap: 28px;
+
+  @media screen and (max-width: 600px) {
+    padding: 24px 16px;
+    gap: 20px;
   }
 
-  .images {
-    @include flex(row, wrap, center, center);
-    position: relative;
-    width: 100%;
-    height: 100%;
+  /* ── Top Logo ─────────────────────────────────────────── */
+  .login-header {
+    @include flex(row, nowrap, center, center);
 
-    @media screen and (max-width: 1179px) {
-      display: none;
-    }
-
-    .login-image {
-      @include flex(row, wrap, center, center);
-      position: relative;
-      width: 100%;
-      height: 100%;
-
-      .top-glass-card,
-      .bottom-glass-card {
-        @include flex(column, nowrap, flex-start, flex-start);
-        position: absolute;
-        width: 272px;
-        padding: var(--xs-size-3) var(--md-size);
-        gap: var(--xs-size-2);
-        border-radius: var(--radius-lg);
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-
-        p {
-          color: var(--BgWhite);
-          font-size: var(--md-size);
-
-          @media screen and (min-width: 1101px) and (max-width: 1350px) {
-            width: 80%;
-          }
-        }
-
-        span {
-          color: rgba(255, 255, 255, 0.75);
-          font-family: "Light";
-        }
-      }
-
-      .top-glass-card {
-        top: 13%;
-        transform: translateX(-48%);
-
-        p {
-          font-family: "Regular";
-
-          @media screen and (min-width: 1101px) and (max-width: 1440px) {
-            width: 80%;
-          }
-        }
-      }
-
-      .bottom-glass-card {
-        bottom: 10%;
-        left: 68%;
-        transform: translateX(-48%);
-
-        p {
-          font-family: "Regular";
-
-          @media screen and (min-width: 1101px) and (max-width: 1440px) {
-            width: 80%;
-          }
-        }
-      }
-
-      img {
-        @media screen and (min-width: 1101px) and (max-width: 1350px) {
-          width: 100%;
-          height: 55%;
-        }
-      }
-    }
-
-    svg {
-      position: absolute;
-      bottom: 1rem;
-      left: 1rem;
+    .logo-img {
+      height: 36px;
+      object-fit: contain;
     }
   }
 
+  /* ── Form Card ─────────────────────────────────────────── */
   .login-form {
-    @include flex(column, wrap, center, center);
-    width: 100%;
-    padding: var(--md-size);
-    background-color: var(--BgWhite);
-    border-radius: var(--radius-xl) 0 0 var(--radius-xl);
-    box-shadow: var(--shadow-xl);
+    @include flex(column, nowrap, space-between, center);
 
-    @media screen and (max-width: 1179px) {
-      @include flex(column, wrap, center, center);
-      gap: var(--md-size);
-      border-radius: var(--radius-sm);
-      width: 70%;
-    }
+    position: relative;
+    width: 713px;
+    max-width: 100%;
+    padding: 80px;
+    background-color: var(--BgWhite);
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    gap: 28px;
+    height: 557px;
 
     @media screen and (max-width: 600px) {
       width: 100%;
+      padding: 28px 20px 24px;
+    }
+
+    /* ── Language Switcher ─────────────────────────────────── */
+    .lang-switcher {
+      position: absolute;
+      top: 14px;
+      right: 14px;
     }
 
     /* ── Title ─────────────────────────────────────────── */
     .title {
-      @include flex(column, wrap, center, center);
-      gap: 5rem;
+      @include flex(column, nowrap, center, center);
 
-      @media screen and (max-width: 1179px) {
-        gap: 2rem;
-      }
-
-      .logo {
-        @include flex(row, wrap, center, center);
-        gap: var(--xs-size-3);
-
-        h2 {
-          font-size: var(--xl-size-1);
-          font-family: "Bold", sans-serif;
-          color: var(--gray-900);
-        }
-      }
-
-      .text {
-        @include flex(column, wrap, center, center);
-        width: 100%;
-        text-align: center;
-
-        p {
-          font-family: "Bold", sans-serif;
-          font-size: var(--xl-size-base);
-          color: var(--gray-900);
-        }
-
-        span {
-          font-family: "Regular", sans-serif;
-          font-size: var(--md-size-base);
-          color: var(--gray-400);
-        }
-      }
-    }
-
-    .tabs {
-      @include flex(row, wrap, center, center);
       width: 100%;
-      gap: 1rem;
-      margin-block: 2rem;
+      gap: 8px;
+      text-align: center;
+      margin-top: 8px;
 
-      .tab {
-        padding: 0.5rem 1rem;
-        background-color: var(--PrimaryColor-light);
-        border-bottom: 2px solid var(--PrimaryColor);
-        cursor: pointer;
-        transition: var(--transition);
-        width: fit-content;
-        font-family: "Regular", sans-serif;
-        font-size: 1rem;
-        color: var(--gray-700);
-        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      h2 {
+        color: $StandardBlack;
+        font-size: 40px;
+        font-weight: 700;
+        font-family: 'Bold';
+      }
 
-        &.active {
-          background-color: var(--PrimaryColor);
-          color: var(--BgWhite);
-          font-family: "Bold", sans-serif;
-          box-shadow: var(--shadow);
-        }
-
-        &:hover:not(.active) {
-          background-color: var(--gray-100);
-        }
+      p {
+        font-family: 'Medium';
+        color: $Gray-5;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.5;
+        padding-top: 10px;
       }
     }
 
+    /* ── Inputs ─────────────────────────────────────────── */
     .inputs {
-      @include flex(column, wrap, center, center);
+      @include flex(column, nowrap, flex-start, flex-start);
+
       width: 100%;
-      gap: var(--md-size);
-      margin-block: var(--xl-size-1);
+      gap: 18px;
 
       .input-wrapper {
         position: relative;
         width: 100%;
 
+        @include flex(column, nowrap, flex-start, flex-start);
+
+        gap: 6px;
+        padding: 0 !important;
+
+        label {
+          font-family: 'Medium';
+          color: $StandardBlack;
+          font-size: 14px;
+          font-weight: 600;
+        }
+
         input {
           width: 100%;
-          padding: 1rem 1rem 1rem 2.3rem;
+          padding: 0.75rem 3rem 0.75rem 1rem;
           border: 1px solid var(--gray-200);
-          border-radius: var(--radius-md);
+          border-radius: 50px;
           transition: var(--transition-fast);
-          color: var(--gray-800);
-          background-color: var(--gray-50);
+          color: var(--Black) !important;
+          background: $StandardWhite !important;
+          box-shadow: 0 0 0 1000px $StandardWhite inset !important;
+          -webkit-text-fill-color: $StandardBlack !important;
 
           &:focus {
             outline: none;
             border-color: var(--PrimaryColor);
             box-shadow: 0 0 0 3px var(--PrimaryColor-light);
-            background-color: var(--BgWhite);
           }
 
           &::placeholder {
-            font-family: "Regular", sans-serif;
+            font-family: 'Regular', sans-serif;
             font-size: var(--md-size-base);
             color: var(--gray-400);
           }
         }
 
-        .icon {
-          position: absolute;
-          left: 1.15rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--gray-400);
-        }
-
         .icon-eye {
           position: absolute;
-          top: 1rem;
+          bottom: 0.75rem;
           right: 1rem;
-          height: 25px;
-          width: 25px;
+          height: 20px;
+          width: 20px;
           cursor: pointer;
           color: var(--gray-400);
           transition: var(--transition-fast);
@@ -256,3 +148,10 @@
     }
   }
 }
+
+// input:-webkit-autofill,
+// input:-webkit-autofill:hover,
+// input:-webkit-autofill:focus {
+//   background-color: white !important;
+//   // transition: background-color 5000s ease-in-out 0s;
+// }

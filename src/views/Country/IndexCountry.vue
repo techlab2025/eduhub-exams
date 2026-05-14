@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CountryIndex from "@/modules/country/presentation/components/CountryIndex.vue";
+  import CountryIndex from '@/modules/country/presentation/components/CountryIndex.vue';
 </script>
 
 <template>

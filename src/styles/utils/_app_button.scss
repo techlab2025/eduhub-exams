@@ -1,12 +1,11 @@
-@use "../variables" as *;
-@use "../mixins/flex" as *;
-@use "../mixins/border" as *;
-
-@use "button";
-@use "primary_btn";
-@use "secondary_btn";
-@use "third_btn";
-@use "danger_btn";
+@use '../variables' as *;
+@use '../mixins/flex' as *;
+@use '../mixins/border' as *;
+@use 'button';
+@use 'primary_btn';
+@use 'secondary_btn';
+@use 'third_btn';
+@use 'danger_btn';
 
 /* ── Sizes ─────────────────────────────────────────────────────── */
 .btn--sm {
@@ -58,28 +57,41 @@
 }
 
 @keyframes btn-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ── Icon ──────────────────────────────────────────────────────── */
 .btn__icon {
   @include flex-center;
+
   flex-shrink: 0;
   width: 1em;
   height: 1em;
 
-  svg { width: 100%; height: 100%; }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
-.btn__icon--left { margin-inline-end: var(--xs-size-4); }
-.btn__icon--right { margin-inline-start: var(--xs-size-4); }
+.btn__icon--left {
+  margin-inline-end: var(--xs-size-4);
+}
+
+.btn__icon--right {
+  margin-inline-start: var(--xs-size-4);
+}
 
 .btn--icon-only {
   padding: var(--xs-size);
   aspect-ratio: 1;
   justify-content: center;
 
-  .btn__icon { margin: 0; }
+  .btn__icon {
+    margin: 0;
+  }
 }
 
 /* ── Outline ───────────────────────────────────────────────────── */
@@ -91,6 +103,7 @@
   &.btn-primary {
     border-color: var(--PrimaryColor);
     color: var(--PrimaryColor);
+
     &:hover {
       background-color: var(--PrimaryColor);
       color: var(--BgWhite);
@@ -100,6 +113,7 @@
   &.btn-secondary {
     border-color: var(--third-color);
     color: var(--third-color);
+
     &:hover {
       background-color: var(--third-color);
       color: var(--BgWhite);
@@ -109,6 +123,7 @@
   &.btn-third {
     border-color: var(--gray-400);
     color: var(--gray-400);
+
     &:hover {
       background-color: var(--gray-400);
       color: var(--BgWhite);
@@ -118,6 +133,7 @@
   &.btn-danger {
     border-color: var(--Red);
     color: var(--Red);
+
     &:hover {
       background-color: var(--Red);
       color: var(--BgWhite);
@@ -132,21 +148,33 @@
 
   &.btn-primary {
     color: var(--PrimaryColor);
-    &:hover { background-color: var(--gray-50); }
+
+    &:hover {
+      background-color: var(--gray-50);
+    }
   }
 
   &.btn-secondary {
     color: var(--third-color);
-    &:hover { background-color: var(--gray-50); }
+
+    &:hover {
+      background-color: var(--gray-50);
+    }
   }
 
   &.btn-third {
     color: var(--gray-400);
-    &:hover { background-color: var(--gray-50); }
+
+    &:hover {
+      background-color: var(--gray-50);
+    }
   }
 
   &.btn-danger {
     color: var(--Red);
-    &:hover { background-color: var(--danger-light); }
+
+    &:hover {
+      background-color: var(--danger-light);
+    }
   }
 }

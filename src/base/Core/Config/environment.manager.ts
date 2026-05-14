@@ -3,9 +3,9 @@
  * Singleton for managing environment configuration with runtime switching
  */
 
-import { ref, readonly, type Ref } from "vue";
-import type { EnvironmentConfig, EnvironmentStage } from "./environment.types";
-import { environments, getDefaultStage } from "./environment.config";
+import { ref, readonly, type Ref } from 'vue';
+import type { EnvironmentConfig, EnvironmentStage } from './environment.types';
+import { environments, getDefaultStage } from './environment.config';
 
 /**
  * Environment Manager - Singleton
@@ -22,7 +22,6 @@ class EnvironmentManager {
   private _config: Ref<EnvironmentConfig>;
 
   private constructor() {
-    console.log(getDefaultStage(), "getDefaultStage()");
     const initialStage = getDefaultStage();
     this._stage = ref(initialStage);
     this._config = ref(environments[initialStage]);
@@ -123,22 +122,22 @@ class EnvironmentManager {
    * Check if running in development
    */
   get isDevelopment(): boolean {
-    return this._stage.value === "development";
+    return this._stage.value === 'development';
   }
 
   /**
    * Check if running in production
    */
   get isProduction(): boolean {
-    return this._stage.value === "production";
+    return this._stage.value === 'production';
   }
 
   /**
    * Check if running in test mode
    */
   get isTest(): boolean {
-    console.log(this._stage.value, "this._stage.value");
-    return this._stage.value === "test";
+    console.log(this._stage.value, 'this._stage.value');
+    return this._stage.value === 'test';
   }
 
   // Runtime switching (primarily for testing)

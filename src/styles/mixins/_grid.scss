@@ -7,13 +7,13 @@
   // Handle responsive breakpoints
   @if $breakpoints {
     @each $breakpoint, $cols in $breakpoints {
-      @media (max-width: $breakpoint) {
+      /* stylelint-disable-next-line media-query-no-invalid */
+      @media (max-width: #{$breakpoint}) {
         grid-template-columns: repeat($cols, 1fr);
       }
     }
   }
 }
-
 
 @mixin grid-item($column, $row) {
   grid-column: $column;

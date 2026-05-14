@@ -1,12 +1,12 @@
-import type { Ref } from "vue";
-import { ref } from "vue";
+import type { Ref } from 'vue';
+import { ref } from 'vue';
 import {
   DataFailed,
   DataInitial,
   DataLoading,
-  DataState,
-  DataSuccess
-} from "../../Core/NetworkStructure/Resources/dataState/dataState";
+  type DataState,
+  DataSuccess,
+} from '../../Core/NetworkStructure/Resources/dataState/dataState';
 
 abstract class ControllerInterface<T> {
   public state: Ref<DataState<T>>;

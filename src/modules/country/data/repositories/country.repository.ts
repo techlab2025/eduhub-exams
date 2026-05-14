@@ -1,8 +1,6 @@
-import BaseRepository, {
-  type RepositoryConfig,
-} from "@/base/Domain/Repositories/baseRepository";
-import CountryModel from "../../core/models/country.model";
-import CountryApiService from "../api/country.api-service";
+import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+import CountryModel from '../../core/models/country.model';
+import CountryApiService from '../api/country.api-service';
 
 /**
  * Country Repository for API data operations
@@ -10,10 +8,7 @@ import CountryApiService from "../api/country.api-service";
  * This repository handles all data access for countries,
  * including parsing API responses and error handling.
  */
-export default class CountryRepository extends BaseRepository<
-  CountryModel,
-  CountryModel[]
-> {
+export default class CountryRepository extends BaseRepository<CountryModel, CountryModel[]> {
   private static instance: CountryRepository;
 
   protected get apiService() {
@@ -23,8 +18,8 @@ export default class CountryRepository extends BaseRepository<
   protected get config(): RepositoryConfig {
     return {
       hasPagination: true,
-      dataKey: "data",
-      paginationKey: "meta",
+      dataKey: 'data',
+      paginationKey: 'meta',
     };
   }
 
@@ -34,13 +29,47 @@ export default class CountryRepository extends BaseRepository<
 
   protected get mockList(): CountryModel[] {
     return [
-      CountryModel.example,
-      { ...CountryModel.example, title: "Country 2", code: "CO2", flag: "🇨🇴" },
-        {
+      {
         ...CountryModel.example,
-        title: "Country 10",
-        code: "CO10",
-        flag: "🇨🇴",
+        title: 'sa Countery For Test',
+        code: 'sa',
+        id: 2,
+        flag: '/src/assets/images/egypt.png',
+      },
+      {
+        ...CountryModel.example,
+        title: 'sa Countery For Test',
+        code: 'sa',
+        id: 3,
+        flag: '/src/assets/images/egypt.png',
+      },
+      {
+        ...CountryModel.example,
+        title: 'sa Countery For Test',
+        code: 'sa',
+        id: 4,
+        flag: '/src/assets/images/egypt.png',
+      },
+      {
+        ...CountryModel.example,
+        title: 'sa Countery For Test',
+        code: 'sa',
+        id: 5,
+        flag: '/src/assets/images/egypt.png',
+      },
+      {
+        ...CountryModel.example,
+        title: 'sa Countery For Test',
+        code: 'sa',
+        id: 6,
+        flag: '/src/assets/images/egypt.png',
+      },
+      {
+        ...CountryModel.example,
+        title: 'sa Countery For Test',
+        code: 'sa',
+        id: 7,
+        flag: '/src/assets/images/egypt.png',
       },
     ];
   }

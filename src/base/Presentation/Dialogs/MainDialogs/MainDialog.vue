@@ -1,25 +1,23 @@
 <script lang="ts" setup>
-import { onMounted } from "vue";
+  const close = () => {
+    // console.log('close')
+    (document.querySelector('.dialog') as HTMLDialogElement)?.close();
+  };
 
-const close = () => {
-  // console.log('close')
-  document.querySelector(".dialog")?.close();
-};
-
-// Automatically close the dialog after 3 seconds once it's opened
-// const autoCloseDialog = () => {
-//   const dialog = document.querySelector<HTMLDialogElement>(".dialog");
-//   if (dialog) {
-//     dialog.showModal(); // Ensure the dialog is opened before closing
-//     setTimeout(() => {
-//       dialog.close();
-//     }, 5000);
-//   }
-// };
-//
-// onMounted(() => {
-//   autoCloseDialog();
-// });
+  // Automatically close the dialog after 3 seconds once it's opened
+  // const autoCloseDialog = () => {
+  //   const dialog = document.querySelector<HTMLDialogElement>(".dialog");
+  //   if (dialog) {
+  //     dialog.showModal(); // Ensure the dialog is opened before closing
+  //     setTimeout(() => {
+  //       dialog.close();
+  //     }, 5000);
+  //   }
+  // };
+  //
+  // onMounted(() => {
+  //   autoCloseDialog();
+  // });
 </script>
 
 <template>
