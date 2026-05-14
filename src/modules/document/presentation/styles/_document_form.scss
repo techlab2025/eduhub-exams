@@ -12,6 +12,9 @@
   position: relative;
   font-family: 'Medium';
 
+  .ref-number-group{
+    justify-content: end
+  }
   .document-form-header {
     @include flex-row(nowrap, flex-start, flex-start);
 
