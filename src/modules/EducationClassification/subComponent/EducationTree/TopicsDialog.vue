@@ -26,9 +26,9 @@
   }>();
 
   const educationTopicsController = EducationTopicsController.getInstance();
-  const indexEducationSubjectTopicParams = new IndexEducationSubjectTopicParams({
-    TopicId: Number(props.branchId),
-  });
+  // const indexEducationSubjectTopicParams = new IndexEducationSubjectTopicParams({
+  //   TopicId: Number(props.branchId),
+  // });
 
   const topicsState = computed(() => educationTopicsController.listState.value);
 
