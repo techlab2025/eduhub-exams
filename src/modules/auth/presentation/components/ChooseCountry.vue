@@ -44,9 +44,9 @@
 
     await fetchCountries(route.query.page ? Number(route.query.page) : 1, word.value);
   });
-
   const continueToLogin = () => {
     if (!selectedCountryId.value) return;
+
     router.push({
       name: 'Login',
       params: {

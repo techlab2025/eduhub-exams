@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { countryRoutes } from './country';
+// import { countryRoutes } from './country';
 import { employeeRoutes } from './employee';
 import { documentRoutes } from './document';
 import { faqsRoutes } from './faqs';
@@ -15,7 +15,7 @@ import { DeletedAccountsRoutes } from './deleted-accounts';
 import { SkillsRoutes } from './skills';
 
 export const dashboardRoutes: RouteRecordRaw[] = [
-  ...countryRoutes,
+  // ...countryRoutes,
   ...employeeRoutes,
   ...documentRoutes,
   ...faqsRoutes,

@@ -38,7 +38,7 @@ export function authGuard(
   }
 
   if (isLoginPage && userData.isAuth) {
-    return next({ path: `/${country}/` });
+    return next({ name: 'About' ,params: { country_code: country }});
   }
 
   next();
