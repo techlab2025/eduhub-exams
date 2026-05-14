@@ -154,7 +154,7 @@ import Question from '@/shared/icons/question.vue';
 
   const logout = () => {
     userStore.logout();
-    router.push('/login');
+    router.push('/eg/login');
   };
 
   const isDropMenuOpen = ref(false);
