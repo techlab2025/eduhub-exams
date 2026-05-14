@@ -173,7 +173,6 @@
         </div>
       </div>
 
-      {{ selectedSkill }}
       <div class="dialog-inputs">
         <div class="field-group select-group">
           <UpdatedCustomInputSelect

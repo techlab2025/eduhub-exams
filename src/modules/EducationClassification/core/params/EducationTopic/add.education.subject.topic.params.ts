@@ -4,19 +4,19 @@ import type TranslationParams from '@/modules/about/core/params/translation.para
 
 export default class AddEducationSubjectTopicParams implements Params {
   public id: number;
-  public titles: TranslationParams;
+  public translations: TranslationParams;
 
   public static readonly validation = new ClassValidation().setRules({});
 
-  constructor(data: { id: number; titles: TranslationParams }) {
+  constructor(data: { id: number; translations: TranslationParams }) {
     this.id = data.id;
-    this.titles = data.titles;
+    this.translations = data.translations;
   }
 
   toMap(): { [p: string]: any } {
     return {
       education_classification_subject_id: this.id,
-      titles: this.titles,
+      translations: this.translations,
     };
   }
 

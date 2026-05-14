@@ -1,11 +1,10 @@
 export default class ShowEducationTopicModel {
   public readonly id: number;
-  public readonly title: string;
+  public readonly titles: Record<string, string>;
 
-  constructor(data: { id: number; title?: string }) {
+  constructor(data: { id: number; titles?: Record<string, string> }) {
     this.id = data.id;
-
-    this.title = data.title ?? '';
+    this.titles = data.titles ?? {};
     Object.freeze(this);
   }
 
@@ -15,12 +14,25 @@ export default class ShowEducationTopicModel {
     }
     return new ShowEducationTopicModel({
       id: json.id as number,
-      title: json.title as string,
+      titles: this.mapTranslations(json.titles as any, 'title'),
     });
   }
-
+  static mapTranslations = (translations: any[], key: string = 'value') => {
+    const result: Record<string, string> = {};
+    if (Array.isArray(translations)) {
+      translations.forEach((t: any) => {
+        if (t.locale && t[key]) {
+          result[t.locale] = t[key];
+        }
+      });
+    }
+    return result;
+  };
   static example: ShowEducationTopicModel = new ShowEducationTopicModel({
     id: 1,
-    title: 'Math',
+    titles: {
+      en: 'Math',
+      ar: 'الرياضيات',
+    },
   });
 }
