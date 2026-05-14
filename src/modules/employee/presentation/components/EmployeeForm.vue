@@ -219,13 +219,13 @@
         </div>
       </div>
       <div class="field-group" :class="{ disabled: loading }">
-        <label class="field-label" for="employeeId">{{ $t('employee_id') }}</label>
+        <label class="field-label" for="employeeId">{{ $t('employee_ref_number') }}</label>
         <div class="input-wrap">
           <input
             id="employeeId"
             v-model="employeeId"
             type="tel"
-            placeholder="Enter Employee ID"
+            placeholder="Enter Employee Ref Number"
             class="field-input"
             @input="updateData"
           />
