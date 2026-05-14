@@ -173,6 +173,7 @@
         </div>
       </div>
 
+      {{ selectedSkill }}
       <div class="dialog-inputs">
         <div class="field-group select-group">
           <UpdatedCustomInputSelect
@@ -180,7 +181,8 @@
             :label="`skills`"
             :params="indexSkills"
             :controller="skillsController"
-            :model-value="selectedSkill as any"
+            :type="1"
+            :model-value="selectedSkill as TitleInterface<number>"
             :placeholder="$t('skills')"
             @update:model-value="updateSelectedSkill"
           />
