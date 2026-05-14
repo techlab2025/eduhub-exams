@@ -119,6 +119,11 @@
           name: 'add logout reasons',
           icon: SidebarTerms,
         },
+        {
+          link: '/Questions',
+          name: 'Questions',
+          icon: SidebarTerms,
+        },
       ],
     },
   ];
