@@ -11,6 +11,7 @@
   const formKey = route.fullPath;
 
   const params = ref<EditAboutParams | null>(null);
+  const loading = ref(false);
 
   /**
    * Update employee
@@ -21,8 +22,13 @@
       return;
     }
 
-    // console.log(params.value, "params.value")
-    await controller.update(params.value, undefined);
+    loading.value = true;
+    try {
+      // console.log(params.value, "params.value")
+      await controller.update(params.value, undefined);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const updateData = (updatedParams: EditAboutParams) => {
@@ -39,10 +45,11 @@
     <AboutForm
       :about="controller.itemState.value.data!"
       :form-key="formKey"
+      :loading="loading"
       @update-data="updateData"
     />
 
-    <div class="actions">
+    <div class="actions" :class="{ disabled: loading }">
       <!-- <AppButton title="Update Employee" size="sm" icon="right" type="submit" @click="saveAbout">
         Update Employee
         <template #icon>
@@ -70,6 +77,11 @@
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   .error-toast {

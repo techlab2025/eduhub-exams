@@ -10,11 +10,13 @@
   const formKey = route.fullPath;
 
   const params = ref<AddAboutParams | null>(null);
+  const loading = ref(false);
 
   /**
    * Save new employee
    */
   const saveAbout = async () => {
+    loading.value = true;
     try {
       if (!params.value) {
         console.error('No employee parameters to save');
@@ -24,19 +26,21 @@
       await controller.create(params.value, undefined);
     } catch (error) {
       console.error('Error saving employee:', error);
+    } finally {
+      loading.value = false;
     }
   };
 
   const updateData = (updatedParams: AddAboutParams) => {
     params.value = updatedParams;
-  }; 
+  };
 </script>
 
 <template>
   <div class="employee-add-page">
-    <AboutForm :form-key="formKey" @update-data="updateData" />
+    <AboutForm :form-key="formKey" :loading="loading" @update-data="updateData" />
 
-    <div class="actions">
+    <div class="actions" :class="{ disabled: loading }">
       <!-- <AppButton title="Save Employee" size="sm" icon="right" type="submit" @click="saveEmployee">
         Save Employee
         <template #icon>
@@ -58,6 +62,11 @@
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   .error-toast {

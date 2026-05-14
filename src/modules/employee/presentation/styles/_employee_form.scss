@@ -118,6 +118,11 @@
       @include flex-column(nowrap, flex-start, flex-start);
 
       gap: $XsSize2;
+      &.disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.7;
+      }
 
       &.col-span-2 {
         grid-column: span 2;

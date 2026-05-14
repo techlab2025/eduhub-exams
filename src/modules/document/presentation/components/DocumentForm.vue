@@ -22,9 +22,10 @@
 
   const emit = defineEmits(['updateData']);
 
-  const { document, formKey } = defineProps<{
+  const { document, formKey, loading } = defineProps<{
     document?: DocumentShowModel;
     formKey?: string;
+    loading?: boolean;
   }>();
 
   const FormStore = useFormsStore();
@@ -203,7 +204,7 @@
 
     <div class="form-fields">
       <!-- Title -->
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`title`"
           :label="$t(`Document_name`)"
@@ -218,7 +219,7 @@
       </div>
 
       <!-- Ref Number -->
-      <div class="field-group col-span-1">
+      <div class="field-group col-span-1" :class="{ disabled: loading }">
         <label class="field-label" for="doc-ref">{{ $t('Reference_Number') }}</label>
         <div class="input-wrap">
           <input
@@ -233,7 +234,7 @@
       </div>
 
       <!-- Document Type -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <UpdatedCustomInputSelect
           id="documentType"
           :label="`Document Type`"
@@ -249,7 +250,7 @@
       </div>
 
       <!-- Branch: كل الـ branches من كل الـ stages -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <UpdatedCustomInputSelect
           id="doc-branch"
           :label="`Stage Name`"
@@ -262,7 +263,7 @@
       </div>
 
       <!-- Subject: يظهر بس لو الـ branch المختار عنده subjects -->
-      <div v-if="selectedBranch && subjectOptions.length > 0" class="field-group col-span-2">
+      <div v-if="selectedBranch && subjectOptions.length > 0" class="field-group col-span-2" :class="{ disabled: loading }">
         <UpdatedCustomInputSelect
           id="doc-subject"
           :label="`Subject Name`"
@@ -280,7 +281,7 @@
       </div>
 
       <!-- Description -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`description`"
           :label="$t(`Description`)"
@@ -295,7 +296,7 @@
       </div>
 
       <!-- Tags -->
-      <div class="field-group tags-group col-span-2">
+      <div class="field-group tags-group col-span-2" :class="{ disabled: loading }">
         <label class="field-label" for="tag">{{ $t('tag') }}</label>
         <div class="input-wrap input-tag-wrap">
           <input
@@ -318,7 +319,7 @@
       </div>
 
       <!-- Upload Image -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <HandleFilesUpload
           :label="`upload image`"
           accept="image/*"
@@ -342,7 +343,7 @@
       </div>
 
       <!-- Upload Files -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <HandleFilesUpload
           :label="`upload image`"
           accept=".pdf"
@@ -368,3 +369,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .field-group {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

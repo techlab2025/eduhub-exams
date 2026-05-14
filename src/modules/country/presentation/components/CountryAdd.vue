@@ -12,10 +12,12 @@
   const formKey = route.fullPath;
   // Form state
   const params = ref<AddCountryParams | null>(null);
+  const loading = ref(false);
   /**
    * Save (create or update) email
    */
   const saveEmail = async () => {
+    loading.value = true;
     try {
       if (!params.value) {
         console.error('No email parameters to save');
@@ -27,6 +29,8 @@
       await controller.create(paramsToSave, undefined, formKey);
     } catch (error) {
       console.error('Error saving email:', error);
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -41,16 +45,19 @@
     <CountryForm
       :form-key="formKey"
       :email="controller.itemData.value!"
+      :loading="loading"
       @update-data="updateData"
     />
 
-    <AppButton :title="$t('Save')" size="sm" icon="right" type="submit" @click="saveEmail">
-      {{ $t('Save') }}
+    <div class="actions" :class="{ disabled: loading }">
+      <AppButton :title="$t('Save')" size="sm" icon="right" type="submit" @click="saveEmail">
+        {{ $t('Save') }}
 
-      <template #icon>
-        <IconAccept />
-      </template>
-    </AppButton>
+        <template #icon>
+          <IconAccept />
+        </template>
+      </AppButton>
+    </div>
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error">
@@ -59,11 +66,19 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   :deep(.input-file) {
     border: 1px solid #d9dbe9 !important;
     padding: 11px;
     border-radius: 20px !important;
     cursor: pointer;
+  }
+
+  .actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 </style>

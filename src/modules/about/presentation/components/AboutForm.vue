@@ -22,9 +22,10 @@
 
   const emit = defineEmits(['updateData']);
 
-  const { about } = defineProps<{
+  const { about, loading } = defineProps<{
     about?: AboutModel;
     formKey?: string;
+    loading?: boolean;
   }>();
 
   // ─── Form State ───────────────────────────────────────────────────────────────
@@ -157,7 +158,7 @@
     </div>
     <div class="form-fields">
       <!-- Title -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`title`"
           :label="$t(`title`)"
@@ -172,7 +173,7 @@
       </div>
 
       <!-- Description -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`description`"
           :label="$t(`Description`)"
@@ -187,7 +188,7 @@
       </div>
 
       <!-- Image Upload -->
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <HandleFilesUpload
           :key="uploadKey"
           :label="`upload image`"
@@ -273,3 +274,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .field-group {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

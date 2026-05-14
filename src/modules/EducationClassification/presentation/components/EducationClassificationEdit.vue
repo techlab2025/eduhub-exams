@@ -11,6 +11,7 @@
 
   // Form state
   const params = ref<EditEducationClassificationParams | null>(null);
+  const loading = ref(false);
   /**
    * Save (create or update) education classification
    */
@@ -20,7 +21,12 @@
       return;
     }
 
-    await controller.update(params.value);
+    loading.value = true;
+    try {
+      await controller.update(params.value);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const updateData = (updatedParams: EditEducationClassificationParams) => {
@@ -41,10 +47,13 @@
     <EducationClassificationForm
       v-if="controller.itemData.value"
       :country="controller.itemData.value"
+      :loading="loading"
       @update-data="updateData"
     />
 
-    <button type="button" @click="saveEducationClassification">{{ $t('Save') }}</button>
+    <div class="actions" :class="{ disabled: loading }">
+      <button type="button" @click="saveEducationClassification">{{ $t('Save') }}</button>
+    </div>
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error">
@@ -52,6 +61,16 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>
 
 <!-- <style scoped>
   .email-crud-example {
