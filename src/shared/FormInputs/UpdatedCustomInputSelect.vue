@@ -80,6 +80,9 @@
   // Watchers
   watch(modelValue, syncLocalValue);
   watch([params, controller], handleOptionUpdates, { immediate: true });
+  watch(mergedOptions, () => {
+    if (modelValue.value) syncLocalValue(modelValue.value);
+  });
 
   // Initialization
   syncLocalValue(props.modelValue);
@@ -95,8 +98,12 @@
   }
 
   function syncLocalValue(newValue: typeof props.modelValue): void {
-    if (newValue !== localValue.value) {
-      // console.log(newValue);
+    if (newValue === localValue.value) return;
+    if (newValue && !Array.isArray(newValue) && mergedOptions.value.length > 0) {
+      const id = (newValue as TitleInterface<string | number>).id;
+      const match = mergedOptions.value.find((opt) => opt.id === id);
+      localValue.value = match ?? newValue;
+    } else {
       localValue.value = newValue;
     }
   }
@@ -190,7 +197,6 @@
     </slot>
     <slot v-else name="Header"></slot>
   </div>
-
   <slot v-if="!hascontent">
     <component
       :is="componentType"
