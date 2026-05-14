@@ -3,7 +3,7 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type DocumentTranslationTypeParams from './translation.params';
 
 export default class EditDocumentTypeParams implements Params {
-  public document_type_id: string;
+  public document_type_id: number;
   public translations: DocumentTranslationTypeParams;
 
   public static readonly validation = new ClassValidation().setRules({
@@ -12,7 +12,7 @@ export default class EditDocumentTypeParams implements Params {
   });
 
   constructor(data: {
-    document_type_id: string;
+    document_type_id: number;
     translations: DocumentTranslationTypeParams;
   }) {
     this.document_type_id = data.document_type_id;
