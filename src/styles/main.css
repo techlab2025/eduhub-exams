@@ -7945,6 +7945,9 @@ body::-webkit-scrollbar-thumb:hover {
   position: relative;
   font-family: "Medium";
 }
+.document-form-card .ref-number-group {
+  justify-content: end;
+}
 .document-form-card .document-form-header {
   display: flex;
   flex-direction: row;
@@ -8613,6 +8616,7 @@ body::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-light-gray);
   border-radius: 16px;
   padding: 16px;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -10481,6 +10485,306 @@ body::-webkit-scrollbar-thumb:hover {
   font-weight: 600;
   margin: 0;
   max-width: 500px;
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.employee-page {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--xl-size-1);
+}
+.employee-page .index-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--md-size);
+}
+.employee-page .index-header .search-input::-moz-placeholder {
+  font-family: "Medium";
+}
+.employee-page .index-header .search-input::placeholder {
+  font-family: "Medium";
+}
+.employee-page .index-header .btns-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-4);
+}
+.employee-page .employee-status {
+  font-size: var(--sm-size);
+  font-weight: 700;
+  font-family: "Bold";
+  color: var(--success);
+}
+.employee-page .employee-status.dis-active {
+  color: var(--in-active-color);
+}
+.employee-page .employee-name {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--md-size);
+}
+.employee-page .employee-name img {
+  width: 30px;
+  height: 30px;
+}
+.employee-page .row-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xs-size-3);
+}
+.employee-page .action-btn {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: calc(var(--xl-size-2) + 2px);
+  height: calc(var(--xl-size-2) + 2px);
+  border-radius: var(--xs-size-2);
+  border: 1px solid var(--border-weak);
+  background: var(--white);
+  color: var(--gray-500);
+  transition: all 0.2s ease;
+}
+.employee-page .action-btn:hover {
+  transform: translateY(-1px);
+}
+.employee-page .action-btn.edit:hover {
+  border-color: var(--PrimaryColor);
+  color: var(--PrimaryColor);
+}
+.employee-page .action-btn.delete:hover {
+  border-color: var(--Red);
+  color: var(--Red);
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.employee-details-form-card {
+  border: none !important;
+  box-shadow: none !important;
+  font-family: "Medium";
+  min-height: 75vh;
+}
+.employee-details-form-card .form-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: stretch;
+  align-items: center;
+  gap: var(--sm-size);
+  padding: var(--xs-size-3) 0;
+}
+.employee-details-form-card .form-header .form-title {
+  width: 100%;
+  display: flex;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.employee-details-form-card .form-header .form-title .employee-status {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: stretch;
+  align-items: center;
+  gap: var(--xl-size-base);
+  background-color: var(--background-color-soft-light);
+  padding: var(--md-size);
+  border-radius: var(--xl-size-1);
+}
+.employee-details-form-card .form-header .form-title .employee-status .title h6 {
+  color: var(--title-color);
+  font-size: var(--sm-size);
+  font-weight: 600;
+}
+.employee-details-form-card .form-header .form-title .employee-status .title p {
+  color: var(--PrimaryColor);
+  font-size: var(--sm-size);
+  font-weight: 600;
+}
+.employee-details-form-card .form-header .form-title .employee-status .title p.warn {
+  color: var(--danger-alt);
+}
+.employee-details-form-card .form-header .header-text h3 {
+  font-size: var(--xl-size-1);
+  font-weight: 700;
+  color: var(--gray-900-std);
+  margin: 0;
+}
+.employee-details-form-card .form-header .header-text .header-subtitle {
+  font-size: var(--md-size);
+  font-weight: 400;
+  color: var(--gray-5);
+}
+.employee-details-form-card .form-header .p-toggleswitch .p-toggleswitch-handle {
+  background-color: var(--white);
+}
+.employee-details-form-card .employee-details-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--xl-size-base);
+}
+.employee-details-form-card .employee-details-form p {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-3);
+  font-size: var(--xl-size-base);
+  font-weight: 600;
+  color: var(--title-color);
+}
+.employee-details-form-card .employee-details-form h6 {
+  font-size: var(--sm-size);
+  font-weight: 600;
+  color: var(--danger-color);
+  cursor: pointer;
+  border-bottom: 2px solid var(--danger-color);
+}
+.employee-details-form-card .upload-image-employee {
+  padding: 0 var(--xl-size-1) var(--xl-size-1);
+}
+.employee-details-form-card .genders-inputs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: stretch;
+  align-items: center;
+  gap: var(--xl-size-base);
+}
+.employee-details-form-card .form-fields {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--xl-size-base);
+  width: 100%;
+  /* stylelint-disable-next-line media-query-no-invalid */
+}
+@media (max-width: 600) {
+  .employee-details-form-card .form-fields {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+.employee-details-form-card .form-fields .field-group {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--xs-size-2);
+}
+.employee-details-form-card .form-fields .field-group.col-span-2 {
+  grid-column: span 2;
+}
+.employee-details-form-card .form-fields .field-group .gender-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xl-size-2);
+}
+.employee-details-form-card .form-fields .field-group .gender-group .input-field {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-4);
+}
+.employee-details-form-card .form-fields .field-group .gender-group .input-field .p-radiobutton-box {
+  background: none !important;
+}
+.employee-details-form-card .form-fields .field-group .gender-group .input-field .p-radiobutton-checked .p-radiobutton-icon {
+  background-color: var(--PrimaryColor) !important;
+}
+.employee-details-form-card .form-fields .field-group .image-input {
+  width: 100%;
+}
+.employee-details-form-card .form-fields .field-group .image-input .upload-area {
+  background-color: var(--standard-white) !important;
+}
+.employee-details-form-card .form-fields .field-group .image-input .add-imaegs-data {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xs-size-5);
+}
+.employee-details-form-card .form-fields .field-group .image-input .add-imaegs-data .first-text {
+  color: var(--Gray-5);
+  font-size: var(--xs-size);
+  font-weight: 600;
+}
+.employee-details-form-card .form-fields .field-group .image-input .add-imaegs-data .first-text span {
+  color: var(--PrimaryColor);
+  padding-inline: var(--xs-size-5);
+}
+.employee-details-form-card .form-fields .field-group .image-input .add-imaegs-data .second-text {
+  color: var(--second-text);
+  font-size: var(--xs-size);
+  font-weight: 400;
+}
+.employee-details-form-card .form-fields .field-group .field-label {
+  font-size: var(--md-size);
+  color: var(--gray-5) !important;
+  text-transform: none;
+  font-weight: 600 !important;
+}
+.employee-details-form-card .form-fields .field-group .input-wrap {
+  width: 100%;
+}
+.employee-details-form-card .form-fields .field-group .input-wrap .field-input {
+  width: 100%;
+  padding: var(--xs-size) var(--md-size);
+  border: 1px solid var(--input-border-color) !important;
+  border-radius: var(--xl-size-3) !important;
+  font-size: var(--sm-size);
+  color: var(--Gray-6);
+  background: var(--BgWhite) !important;
+  outline: none;
+  transition: all 0.25s ease;
+}
+.employee-details-form-card .form-fields .field-group .input-wrap .field-input:focus {
+  border-color: var(--PrimaryColor);
+  background: var(--bg-main);
+  box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+}
+@media (max-width: 600px) {
+  .employee-details-form-card .form-fields {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Pages ─────────────────────────────────────────────────────── */
