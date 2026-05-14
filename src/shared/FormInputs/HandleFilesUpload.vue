@@ -133,7 +133,7 @@
       const type = EXT_MIME_MAP[ext] ?? 'application/octet-stream';
 
       return {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).substring(2),
         name,
         type,
         size: '',
@@ -164,7 +164,7 @@
       incoming.map(async (file) => {
         const base64 = await fileToBase64(file);
         return {
-          id: crypto.randomUUID(),
+          id: Math.random().toString(36).substring(2),
           name: file.name,
           type: file.type || resolveMime(file.name), // fallback for OS edge cases
           size: formatFileSize(file.size),
