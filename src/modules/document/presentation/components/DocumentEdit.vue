@@ -35,7 +35,9 @@
   };
 
   onMounted(async () => {
-    await controller.fetchOne(new ShowDocumentParams({ document_id: Number(route.params.id),allLocales: true})); 
+    await controller.fetchOne(
+      new ShowDocumentParams({ document_id: Number(route.params.id), allLocales: true }),
+    );
   });
 </script>
 

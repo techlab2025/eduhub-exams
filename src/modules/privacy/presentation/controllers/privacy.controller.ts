@@ -25,7 +25,7 @@ export default class PrivacyController extends BaseController<PrivacyModel, Priv
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,
@@ -72,8 +72,6 @@ export default class PrivacyController extends BaseController<PrivacyModel, Priv
     return result;
   }
 
-
-  
   async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<PrivacyModel[]>> {
     const result = await super.fetchList(params, {
       ...options,

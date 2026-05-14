@@ -1,7 +1,7 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins/flex' as *;
 
-.about-page {
+.support-contact-page {
   @include flex-column(nowrap, flex-start, flex-start);
 
   gap: $XlSize;

@@ -18,7 +18,7 @@
   import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
   import type StageModel from '@/modules/Stages/core/models/stage.model';
   import type BranchesModel from '@/modules/Stages/core/models/branches.model';
-import type DocumentShowModel from '../../core/models/document.show.model';
+  import type DocumentShowModel from '../../core/models/document.show.model';
 
   const emit = defineEmits(['updateData']);
 
@@ -64,17 +64,15 @@ import type DocumentShowModel from '../../core/models/document.show.model';
   // ─── Branch options: كل الـ branches من كل الـ stages مجمعين ─────────────
   const branchOptions = computed<TitleInterface<number>[]>(() =>
     allStages.value.flatMap((stage: StageModel) =>
-      stage.branches.map((b: BranchesModel) =>
-        new TitleInterface({ id: b.id!, title: b.title })
-      )
-    )
+      stage.branches.map((b: BranchesModel) => new TitleInterface({ id: b.id!, title: b.title })),
+    ),
   );
 
   // selectedBranch as TitleInterface (for v-model in select)
   const selectedBranchTitle = computed<TitleInterface<number> | null>(() =>
     selectedBranch.value
       ? new TitleInterface({ id: selectedBranch.value.id!, title: selectedBranch.value.title })
-      : null
+      : null,
   );
 
   // ─── Subject options: من الـ branch المختار ──────────────────────────────
@@ -82,71 +80,71 @@ import type DocumentShowModel from '../../core/models/document.show.model';
   //   (selectedBranch.value?.subjects ?? []) as TitleInterface<number>[]
   // );
   const subjectOptions = computed<TitleInterface<number>[]>(() =>
-  (selectedBranch.value?.subjects ?? []).map((subject: any) =>
-    new TitleInterface({
-      id: subject.id,
-      title: subject.title,
-    })
-  )
-);
+    (selectedBranch.value?.subjects ?? []).map(
+      (subject: any) =>
+        new TitleInterface({
+          id: subject.id,
+          title: subject.title,
+        }),
+    ),
+  );
 
   // ─── Watch document prop for edit mode ────────────────────────────────────
   watch(
-  () => document,
-  (newDoc) => {
-    if (newDoc) {
+    () => document,
+    (newDoc) => {
+      if (newDoc) {
+        title.value = newDoc.translations.title;
 
-      title.value = newDoc.translations.title;
+        selectedDocumentType.value = newDoc.documentType;
 
-      selectedDocumentType.value = newDoc.documentType;
+        UploadedImage.value = newDoc.images;
 
-      UploadedImage.value = newDoc.images;
+        UploadedFiles.value = newDoc.files;
 
-      UploadedFiles.value = newDoc.files;
+        RefrenceNumber.value = newDoc.RefNumber;
 
-      RefrenceNumber.value = newDoc.RefNumber;
+        // stage
+        selectedBranch.value = {
+          id: newDoc.stage.id,
+          title: newDoc.stage.title,
+          subjects: [],
+        } as BranchesModel;
 
-      // stage
-      selectedBranch.value = {
-        id: newDoc.stage.id,
-        title: newDoc.stage.title,
-        subjects: [],
-      } as BranchesModel;
-
-      // subject
-      selectedSubject.value = new TitleInterface({
-        id: newDoc.subject.id,
-        title: newDoc.subject.title,
-      });
-    }
-  },
-  { immediate: true },
-);
+        // subject
+        selectedSubject.value = new TitleInterface({
+          id: newDoc.subject.id,
+          title: newDoc.subject.title,
+        });
+        selectedDocumentType.value = new TitleInterface({
+          id: newDoc.documentType.id,
+          title: newDoc.documentType.title,
+        });
+      }
+    },
+    { immediate: true },
+  );
 
   // ─── updateData ───────────────────────────────────────────────────────────
- const updateData = () => {
-  const params = new AddDocumentParams({
-    translations: new DocumentTranslationParams({
-      description: description.value,
-      title: title.value,
-    }),
+  const updateData = () => {
+    const params = new AddDocumentParams({
+      translations: new DocumentTranslationParams({
+        description: description.value,
+        title: title.value,
+      }),
+      documentTypeId: selectedDocumentType.value?.id || 0,
+      // هنا التعديل
+      stage_id: selectedBranch.value?.id || 0,
+      // subject id
+      subjects: selectedSubject.value?.id || 0,
+      files: UploadedFiles.value.map((el: any) => el?.base64 || ''),
+      images: UploadedImage.value.map((el: any) => el?.base64 || ''),
+      refNumber: RefrenceNumber.value,
+      tags: tags.value,
+    });
 
-    documentTypeId: selectedDocumentType.value?.id || 0,
-
-    // هنا التعديل
-    stage_id: selectedBranch.value?.id || 0,
-
-    // subject id
-    subjects: selectedSubject.value?.id || 0,
-
-    files: UploadedFiles.value.map((el: any) => el?.base64 || ''),
-    images: UploadedImage.value.map((el: any) => el?.base64 || ''),
-    refNumber: RefrenceNumber.value,
-    tags: tags.value,
-  });
-
-  emit('updateData', params);
-};
+    emit('updateData', params);
+  };
 
   // ─── Branch handler: find full BranchesModel by id → reset subject ───────
   const handleBranchChange = (selected: TitleInterface<number> | null) => {
@@ -194,7 +192,6 @@ import type DocumentShowModel from '../../core/models/document.show.model';
 </script>
 
 <template>
-  {{ document }}
   <div class="document-form-card">
     <div class="document-form-header">
       <DocumentIcon />
@@ -213,7 +210,10 @@ import type DocumentShowModel from '../../core/models/document.show.model';
           :languages="['en', 'ar']"
           :model-value="title"
           :type="`title`"
-          @update:model-value="title = $event; updateData()"
+          @update:model-value="
+            title = $event;
+            updateData();
+          "
         />
       </div>
 
@@ -239,9 +239,12 @@ import type DocumentShowModel from '../../core/models/document.show.model';
           :label="`Document Type`"
           :params="indexDocumentTypeParams"
           :controller="documentTypeController"
-          :model-value="selectedDocumentType"
+          :model-value="selectedDocumentType as TitleInterface<number>"
           :placeholder="$t('Document Type')"
-          @update:model-value="selectedDocumentType = $event; updateData()"
+          @update:model-value="
+            selectedDocumentType = $event;
+            updateData();
+          "
         />
       </div>
 
@@ -250,7 +253,7 @@ import type DocumentShowModel from '../../core/models/document.show.model';
         <UpdatedCustomInputSelect
           id="doc-branch"
           :label="`Stage Name`"
-          :static-options="branchOptions" 
+          :static-options="branchOptions"
           :model-value="selectedBranchTitle"
           :placeholder="$t('Stage Name')"
           :reload="false"
@@ -284,7 +287,10 @@ import type DocumentShowModel from '../../core/models/document.show.model';
           :languages="['en', 'ar']"
           :model-value="description"
           :type="`description`"
-          @update:model-value="description = $event; updateData()"
+          @update:model-value="
+            description = $event;
+            updateData();
+          "
         />
       </div>
 

@@ -7,7 +7,6 @@ import router from '@/router';
 import SupportContactsRepository from '../../data/repositories/support.repository';
 import type SupportContactsModel from '../../core/models/support.contatcts.model';
 
-
 /**
  * Country Controller for managing countries
  *
@@ -29,7 +28,7 @@ export default class SupportContactsController extends BaseController<
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,
@@ -72,11 +71,15 @@ export default class SupportContactsController extends BaseController<
     });
     return result;
   }
-  async fetchList(params?: Params, options?: ApiCallOptions , isLocale?: boolean): Promise<DataState<SupportContactsModel[]>> {
+  async fetchList(
+    params?: Params,
+    options?: ApiCallOptions,
+    isLocale?: boolean,
+  ): Promise<DataState<SupportContactsModel[]>> {
     const result = await super.fetchList(params, {
       ...options,
       headers: {
-        'Accept-Language':  isLocale ? '*' : 'en',
+        'Accept-Language': isLocale ? '*' : 'en',
       },
     });
     return result;

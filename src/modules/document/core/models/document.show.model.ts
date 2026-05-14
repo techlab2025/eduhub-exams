@@ -1,38 +1,28 @@
 import type TitleInterface from '@/base/Data/Models/titleInterface';
-// import DocumentTranslationParams from '../params/translation.params';
-
 export default class DocumentShowModel {
   public readonly id?: number;
-   public readonly translations: {
+  public readonly translations: {
     title: Record<string, string>;
   };
   public readonly title: Record<string, string>;
   public readonly RefNumber: string;
-
   public readonly documentType: TitleInterface<number>;
   public readonly stage: TitleInterface<number>;
   public readonly subject: TitleInterface<number>;
-
-  // public readonly translations: DocumentTranslationParams;
   public readonly tags: string[];
   public readonly images: string[];
   public readonly files: string[];
 
   constructor(data: {
     id?: number;
-
     translations: {
       title: Record<string, string>;
     };
     title: Record<string, string>;
     RefNumber: string;
-
     documentType: TitleInterface<number>;
     stage: TitleInterface<number>;
     subject: TitleInterface<number>;
-
-    // translations: DocumentTranslationParams;
-
     tags: string[];
     images: string[];
     files: string[];
@@ -55,48 +45,37 @@ export default class DocumentShowModel {
     Object.freeze(this);
   }
 
-   static mapTranslations = (translations: any[], key: string = 'value') => {
-      const result: Record<string, string> = {};
-      if (Array.isArray(translations)) {
-        translations.forEach((t: any) => {
-          if (t.locale && t[key]) {
-            result[t.locale] = t[key];
-          }
-        });
-      }
-      return result;
-    };
+  static mapTranslations = (translations: any[], key: string = 'value') => {
+    const result: Record<string, string> = {};
+    if (Array.isArray(translations)) {
+      translations.forEach((t: any) => {
+        if (t.locale && t[key]) {
+          result[t.locale] = t[key];
+        }
+      });
+    }
+    return result;
+  };
 
   static fromJson(json: any): DocumentShowModel {
     if (!json) throw new Error('Invalid DocumentShowModel data');
 
     return new DocumentShowModel({
       id: json.id,
-       translations: {
+      translations: {
         title: this.mapTranslations(json.title, 'title'),
       },
       title: this.mapTranslations(json.title ?? []),
-
       RefNumber: json.RefNumber ?? json.reference_number ?? '',
-
-      documentType: json.doecumentType ?? json.document_type ?? { id: 0, title: '' },
-
+      documentType: this.getLocalizedData(json.document_type, 'en'),
       stage: {
         id: json.stage?.id,
         title: json.stage?.titles?.[0]?.title ?? '',
       },
-
       subject: {
         id: json.subject?.id,
         title: json.subject?.titles?.[0]?.title ?? '',
       },
-
-      // translations: json.translations
-      //   ? new DocumentTranslationParams(json.translations)
-      //   : new DocumentTranslationParams({
-      //       title: { ar: '', en: '' },
-      //       description: { ar: '', en: '' },
-      //     }),
 
       tags: json.tags ?? [],
       images: json.images ?? [],
@@ -106,8 +85,8 @@ export default class DocumentShowModel {
 
   static example: DocumentShowModel = new DocumentShowModel({
     id: 1,
-    translations: {title: {ar:'title', en:'title'}},
-    title: {ar:'title', en:'title'},
+    translations: { title: { ar: 'title', en: 'title' } },
+    title: { ar: 'title', en: 'title' },
     RefNumber: '100',
 
     documentType: { id: 1, title: 'type' },
@@ -123,4 +102,29 @@ export default class DocumentShowModel {
     images: [],
     files: [],
   });
+
+  static getLocalizedData<T extends Record<string, any>>(
+    obj: T,
+    locale: string,
+  ): TitleInterface<number> {
+    const result: TitleInterface<number> = {
+      id: obj.id,
+    };
+
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+
+      if (Array.isArray(value)) {
+        const localizedItem = value.find((item) => item.locale === locale);
+
+        if (localizedItem) {
+          const { locale: _, ...rest } = localizedItem;
+
+          Object.assign(result, rest);
+        }
+      }
+    });
+
+    return result;
+  }
 }
