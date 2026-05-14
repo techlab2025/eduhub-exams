@@ -1,4 +1,4 @@
-import type TitleInterface from '@/base/Data/Models/titleInterface';
+import TitleInterface from '@/base/Data/Models/titleInterface';
 export default class DocumentShowModel {
   public readonly id?: number;
   public readonly translations: {
@@ -57,31 +57,43 @@ export default class DocumentShowModel {
     return result;
   };
 
-  static fromJson(json: any): DocumentShowModel {
-    if (!json) throw new Error('Invalid DocumentShowModel data');
+ static fromJson(json: any): DocumentShowModel {
+  if (!json) throw new Error('Invalid DocumentShowModel data');
 
-    return new DocumentShowModel({
-      id: json.id,
-      translations: {
-        title: this.mapTranslations(json.title, 'title'),
-      },
-      title: this.mapTranslations(json.title ?? []),
-      RefNumber: json.RefNumber ?? json.reference_number ?? '',
-      documentType: this.getLocalizedData(json.document_type, 'en'),
-      stage: {
-        id: json.stage?.id,
-        title: json.stage?.titles?.[0]?.title ?? '',
-      },
-      subject: {
-        id: json.subject?.id,
-        title: json.subject?.titles?.[0]?.title ?? '',
-      },
+  return new DocumentShowModel({
+    id: json.id,
 
-      tags: json.tags ?? [],
-      images: json.images ?? [],
-      files: json.files ?? [],
-    });
-  }
+    translations: {
+      title: this.mapTranslations(json.title, 'title'),
+    },
+
+    title: this.mapTranslations(json.title ?? [], 'title'),
+
+    RefNumber: json.RefNumber ?? json.reference_number ?? '',
+
+    documentType: new TitleInterface({
+      id: json.document_type?.id,
+      title:
+        json.document_type?.title?.find(
+          (item: any) => item.locale === 'en',
+        )?.title ?? '',
+    }),
+
+    stage: new TitleInterface({
+      id: json.stage?.id,
+      title: json.stage?.titles?.[0]?.title ?? '',
+    }),
+
+    subject: new TitleInterface({
+      id: json.subject?.id,
+      title: json.subject?.titles?.[0]?.title ?? '',
+    }),
+
+    tags: json.tags ?? [],
+    images: json.images ?? [],
+    files: json.files ?? [],
+  });
+}
 
   static example: DocumentShowModel = new DocumentShowModel({
     id: 1,
