@@ -65,9 +65,10 @@
 
   const fetchSkills = async () => {
     if (!props.branchId) return;
-    await educationSkillsController.fetchList(
+    const res = await educationSkillsController.fetchList(
       new IndexEducationSubjectSkillsParams({ subjectId: props.branchId }),
     );
+    console.log(res.data, 'res');
   };
 
   const updateSelectedSkill = (skill: TitleInterface<number>) => {
@@ -81,6 +82,7 @@
           entryId: editId.value,
           skillId: selectedSkill.value.id,
           percentage: percentageValue.value,
+          educationClassificationSubjectId: props.branchId!,
         }),
       );
     } else if (props.branchId && selectedSkill.value) {
@@ -150,7 +152,7 @@
       <div v-for="(item, index) in skillsState.data" :key="index" class="document-type-row">
         <div class="item-title">
           <span class="item-small-title">{{ $t('skill') }}</span>
-          <span class="item-main-title">{{ item.skillName || item.skillId }}</span>
+          <span class="item-main-title">{{ item.skill.title }}</span>
         </div>
         <div class="item-title">
           <span class="item-small-title">{{ $t('percentage (%)') }}</span>
