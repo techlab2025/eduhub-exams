@@ -115,10 +115,10 @@
     );
     if (res?.data) {
       percentageValue.value = String(res.data.percentage);
-      if (res.data.skillId && res.data.skillName) {
+      if (res.data.skill) {
         selectedSkill.value = {
-          id: res.data.skillId,
-          title: res.data.skillName,
+          id: res.data.skill.id,
+          title: res.data.skill.title,
         } as TitleInterface<number>;
       }
     }
