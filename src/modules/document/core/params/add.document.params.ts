@@ -44,9 +44,9 @@ export default class AddDocumentParams implements Params {
       stage_id: this.stage_id,
       subject_id: this.subjects,
       translations: this.translations.toMap(),
-      tags: this.tags,
-      images: this.images,
-      files: this.files,
+      document_tags: this.tags,
+      image: this.images,
+      document_file: this.files,
     };
   }
 
