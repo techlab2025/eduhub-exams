@@ -1,0 +1,48 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins/flex' as *;
+@use '../../../../styles/mixins/grid' as *;
+
+.contant_tabs {
+  .new-form-group {
+    margin-bottom: $XsSize;
+
+    .input-select {
+      background-color: var(--standard-white);
+        color: var(--title-header-color);
+        font-weight: $BaseFontSemiBoldWeight;
+        font-size: $SmSize;
+        font-family: 'Medium';
+    }
+  }
+  .form-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $MdSize;
+    margin-bottom: $XsSize;
+    .input {
+      .input-label {
+        color: var(--title-header-color);
+        font-weight: $BaseFontSemiBoldWeight;
+        font-size: $SmSize;
+        font-family: 'Medium';
+        
+      }
+      .input-select {
+        background-color: var(--standard-white);
+      }
+    }
+  }
+  .title{
+      h5 {
+    color: var(--title-header-color);
+    font-weight: $BaseFontSemiBoldWeight;
+    font-size: $SmSize;
+    font-family: 'Medium';
+  }
+  }
+  .question_source{
+    background-color: var(--background-color-soft-light);
+    padding: $MdSize;
+    border-radius: $XlSize2;
+  }
+}

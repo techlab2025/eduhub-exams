@@ -20,6 +20,7 @@ import { EmployeeStatusEnm } from '../../core/constant/employee.status.enum';
 import { useI18n } from 'vue-i18n';
 import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
 import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
+import MultiSelectionTabs from '../subComponents/MultiSelectionTabs.vue';
 
 // Controller instance
 const controller = EmployeeController.getInstance();
@@ -133,6 +134,7 @@ const CloseFiletrDialog = () => {
 </script>
 
 <template>
+  <MultiSelectionTabs />
   <div class="employee-page">
     <div class="index-header">
       <div class="search-field">
