@@ -19,6 +19,7 @@
   import AccordionPanel from 'primevue/accordionpanel';
   import AccordionHeader from 'primevue/accordionheader';
   import AccordionContent from 'primevue/accordioncontent';
+import Question from '@/shared/icons/question.vue';
 
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
@@ -87,6 +88,16 @@
     //   ],
     // },
     {
+      group: 'Apps Kits',
+      items: [
+        {
+          link: '/questions',
+          name: 'Questions',
+          icon: Question,
+        },
+      ],
+    },
+    {
       group: 'statics',
       items: [
         {
@@ -119,6 +130,7 @@
           name: 'add logout reasons',
           icon: SidebarTerms,
         },
+
       ],
     },
   ];

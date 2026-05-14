@@ -3,14 +3,19 @@ import DocumentTranslationParams from '../../params/translation.params';
 
 export default class DocumentTypeModel {
   public readonly id?: number;
-  public readonly title: string;
+  public readonly    translations: {
+      title: Record<string, string>;
+    };
   public readonly RefNumber: string;
   public readonly doecumentType: TitleInterface<number>;
   public readonly Subjtecs: TitleInterface<number>[];
   public readonly tranaslations: DocumentTranslationParams;
-
+  public readonly title: string;
   constructor(data: {
     id?: number; 
+    translations: {
+      title: Record<string, string>;
+    };
     title: string;
     RefNumber: string;
     doecumentType: TitleInterface<number>;
@@ -18,11 +23,12 @@ export default class DocumentTypeModel {
     tranaslations: DocumentTranslationParams;
   }) {
     this.id = data.id;
-    this.title = data.title;
+    this.translations = data.translations;
     this.RefNumber = data.RefNumber;
     this.doecumentType = data.doecumentType;
     this.Subjtecs = data.Subjtecs;
     this.tranaslations = data.tranaslations;
+    this.title = data.title;
 
     Object.freeze(this);
   }
@@ -34,14 +40,27 @@ export default class DocumentTypeModel {
 
     return new DocumentTypeModel({
       id: json.id,
-      title: json.title,
+        translations: {
+      title: this.mapTranslations(json.title, 'title'),
+    },
       RefNumber: json.ref_number,
+      title: json.title,
       doecumentType: json.document_type,
       Subjtecs: json.subjtecs ?? [],
       tranaslations: json.tranaslations,
     });
   }
-
+  static mapTranslations = (translations: any[], key: string = 'value') => {
+    const result: Record<string, string> = {};
+    if (Array.isArray(translations)) {
+      translations.forEach((t: any) => {
+        if (t.locale && t[key]) {
+          result[t.locale] = t[key];
+        }
+      });
+    }
+    return result;
+  };
   static example: DocumentTypeModel = new DocumentTypeModel({
     id: 10,
     title: 'title',

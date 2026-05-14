@@ -42,6 +42,7 @@
       background-color: $ColorLightGray;
       border-radius: 16px;
       padding: 16px;
+      margin-bottom: 1rem;
 
       @include flex-row(nowrap, space-between, center);
 

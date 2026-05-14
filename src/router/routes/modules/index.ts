@@ -13,6 +13,7 @@ import { AboutRoutes } from './about';
 import { SupportContactsRoutes } from './support';
 import { DeletedAccountsRoutes } from './deleted-accounts';
 import { SkillsRoutes } from './skills';
+import { questionsRoutes } from './question';
 
 export const dashboardRoutes: RouteRecordRaw[] = [
   // ...countryRoutes,
@@ -29,4 +30,5 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...SupportContactsRoutes,
   ...DeletedAccountsRoutes,
   ...SkillsRoutes,
+  ...questionsRoutes,
 ];
