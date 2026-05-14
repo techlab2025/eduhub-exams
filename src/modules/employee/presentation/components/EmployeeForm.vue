@@ -15,9 +15,10 @@
 
   const emit = defineEmits(['updateData']);
 
-  const { employee, formKey } = defineProps<{
+  const { employee, formKey, loading } = defineProps<{
     employee?: EmployeeModel;
     formKey?: string;
+    loading?: boolean;
   }>();
 
   const FormStore = useFormsStore();
@@ -74,7 +75,7 @@
       lastname: lastName.value,
       phone: phone.value,
       employeeStatus: checked.value ? EmployeeStatusEnm.active : EmployeeStatusEnm.disavtive,
-      password:password.value
+      password: password.value,
     };
 
     FormStore.setFormData(formKey!, data);
@@ -164,7 +165,7 @@
     </div>
 
     <div class="form-fields">
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="name">{{ $t(`First Name`) }}</label>
         <div class="input-wrap">
           <input
@@ -177,7 +178,7 @@
           />
         </div>
       </div>
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="name">{{ $t(`Last Name`) }}</label>
         <div class="input-wrap">
           <input
@@ -190,7 +191,7 @@
           />
         </div>
       </div>
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="password">{{ $t(`password`) }}</label>
         <div class="input-wrap">
           <input
@@ -204,7 +205,7 @@
         </div>
       </div>
 
-      <div class="field-group col-span-1">
+      <div class="field-group col-span-1" :class="{ disabled: loading }">
         <label class="field-label" for="email">{{ $t(`Email`) }}</label>
         <div class="input-wrap">
           <input
@@ -217,20 +218,20 @@
           />
         </div>
       </div>
-      <div class="field-group">
-        <label class="field-label" for="employeeId">{{ $t('employee_id') }}</label>
+      <div class="field-group" :class="{ disabled: loading }">
+        <label class="field-label" for="employeeId">{{ $t('employee_ref_number') }}</label>
         <div class="input-wrap">
           <input
             id="employeeId"
             v-model="employeeId"
             type="tel"
-            placeholder="Enter Employee ID"
+            placeholder="Enter Employee Ref Number"
             class="field-input"
             @input="updateData"
           />
         </div>
       </div>
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="phone">{{ $t(`Phone`) }}</label>
         <div class="input-wrap">
           <input
@@ -244,7 +245,7 @@
         </div>
       </div>
 
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="phone">{{ $t(`Gender`) }}</label>
 
         <div class="gender-group">
@@ -265,7 +266,7 @@
         </div>
       </div>
 
-      <div class="field-group col-span-2">
+      <div class="field-group col-span-2" :class="{ disabled: loading }">
         <HandleFilesUpload
           :label="`upload image`"
           accept="image/*"

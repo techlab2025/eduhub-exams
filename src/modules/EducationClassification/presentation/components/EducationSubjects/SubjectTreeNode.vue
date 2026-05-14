@@ -12,6 +12,7 @@
   import PricingIcon from '@/shared/icons/PricingIcon.vue';
   import PricingDialog from '@/modules/EducationClassification/subComponent/EducationTree/PricingDialog.vue';
   import SkillsDialog from '@/modules/EducationClassification/subComponent/EducationTree/SkillsDialog.vue';
+  import TopicsDialog from '@/modules/EducationClassification/subComponent/EducationTree/TopicsDialog.vue';
 
   export interface SubjectNode {
     subject: EducationSubjectModel;
@@ -113,7 +114,7 @@
   }
   const showPricingDialog = ref<boolean>(false);
   const showSkillsDialog = ref<boolean>(false);
-
+  const showTopicsDialog = ref<boolean>(false);
   const isFirstLevel = props.node.depth === 0;
   const isLastLevel = props.node.depth + 1 === props.maxDepth;
 
@@ -145,6 +146,11 @@
             text: t('skills'),
             icon: PricingIcon,
             action: () => (showSkillsDialog.value = true),
+          },
+          {
+            text: t('topics'),
+            icon: PricingIcon,
+            action: () => (showTopicsDialog.value = true),
           },
         ]
       : []),
@@ -276,6 +282,12 @@
     />
     <SkillsDialog
       v-model:visible="showSkillsDialog"
+      :level="node.depth + 1"
+      :branch-name="node.subject.subject_title"
+      :branch-id="node.subject.subject_id"
+    />
+    <TopicsDialog
+      v-model:visible="showTopicsDialog"
       :level="node.depth + 1"
       :branch-name="node.subject.subject_title"
       :branch-id="node.subject.subject_id"

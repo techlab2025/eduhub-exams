@@ -11,6 +11,7 @@
   const title = ref<Record<string, string> | string>();
   const description = ref<Record<string, string> | string>();
   const termsConditionsController = TermsConditionsController.getInstance();
+  const loading = ref(false);
 
   const status = computed(() => termsConditionsController.listState.value);
   const updateData = () => {
@@ -27,14 +28,19 @@
   });
 
   const SubmitData = async () => {
-    await termsConditionsController.create(
-      new AddTermsConditionsParams({
-        translations: new TranslationParams({
-          title: title.value as Record<string, string>,
-          description: description.value as Record<string, string>,
+    loading.value = true;
+    try {
+      await termsConditionsController.create(
+        new AddTermsConditionsParams({
+          translations: new TranslationParams({
+            title: title.value as Record<string, string>,
+            description: description.value as Record<string, string>,
+          }),
         }),
-      }),
-    );
+      );
+    } finally {
+      loading.value = false;
+    }
   };
 
   const ShowPrivacy = async () => {
@@ -79,7 +85,7 @@
     <!-- List -->
     <div class="terms-list">
       <!-- Question -->
-      <div class="field">
+      <div class="field" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`terms`"
           :label="`terms title`"
@@ -89,7 +95,7 @@
           @update:model-value="title = $event"
         />
       </div>
-      <div class="field">
+      <div class="field" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`terms`"
           :label="`terms description`"
@@ -102,11 +108,27 @@
     </div>
 
     <!-- Add Button -->
-    <div class="btn-container">
+    <div class="btn-container" :class="{ disabled: loading }">
       <button class="btn btn-primary" @click="SubmitData">{{ $t(`Save`) }}</button>
       <button class="btn btn-cancel">{{ $t(`cancel`) }}</button>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .field {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+
+  .btn-container {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

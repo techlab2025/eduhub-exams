@@ -215,7 +215,7 @@
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  const inputId = `file-upload-${props.index ?? crypto.randomUUID()}`;
+  const inputId = `file-upload-${props.index ?? Math.random().toString(36).substring(2)}`;
 </script>
 
 <template>

@@ -10,10 +10,16 @@
   const formKey = route.fullPath;
 
   const sectionParams = ref<AddSupportContactsParams | null>(null);
+  const loading = ref(false);
 
   const saveSupport = async () => {
     if (!sectionParams.value) return;
-    await controller.create(sectionParams.value, undefined);
+    loading.value = true;
+    try {
+      await controller.create(sectionParams.value, undefined);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const updateData = (params: AddSupportContactsParams) => {
@@ -23,9 +29,9 @@
 
 <template>
   <div class="support-add-page">
-    <SupportForm :form-key="formKey" @update-data="updateData" />
+    <SupportForm :form-key="formKey" :loading="loading" @update-data="updateData" />
 
-    <div class="actions">
+    <div class="actions" :class="{ disabled: loading }">
       <button class="btn btn-primary w-full" type="submit" @click="saveSupport">
         {{ $t('save') }}
       </button>
@@ -42,6 +48,11 @@
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   .error-toast {

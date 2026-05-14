@@ -14,13 +14,19 @@
   const countryCode = (route.params?.country_code as string) || '';
   const formParams = ref<EditFaqsParams | null>(null);
   const isLoaded = ref(false);
+  const loading = ref(false);
   // const currentFaq = computed(() => controller.itemState.value)
   const currentFaq = computed(() => controller.itemState.value?.data);
 
   const saveChange = async () => {
     if (!formParams.value || !currentFaq.value?.id) return;
-    await controller.update(formParams.value);
-    router.push(`/${countryCode}/faqs`);
+    loading.value = true;
+    try {
+      await controller.update(formParams.value);
+      router.push(`/${countryCode}/faqs`);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const cancel = () => {
@@ -45,8 +51,8 @@
     </div>
 
     <!-- <FaqsForm v-if="isLoaded" :faq="currentFaq.data!" @update-data="updateData" /> -->
-    <FaqsForm v-if="isLoaded" :faq="currentFaq!" @update-data="updateData" />
-    <div v-if="isLoaded" class="form-actions">
+    <FaqsForm v-if="isLoaded" :faq="currentFaq!" :loading="loading" @update-data="updateData" />
+    <div v-if="isLoaded" class="form-actions" :class="{ disabled: loading }">
       <button class="btn btn-primary" type="button" @click="saveChange">
         {{ $t('save_change') }}
       </button>
@@ -58,3 +64,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .form-actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

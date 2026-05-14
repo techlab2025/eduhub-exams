@@ -13,17 +13,19 @@
   const formKey = route.fullPath;
 
   const params = ref<EditEmployeeParams | null>(null);
-
+  const loading = ref(false);
   /**
    * Update employee
    */
-  const saveEmployee = async () => { 
+  const saveEmployee = async () => {
     if (!params.value) {
       console.error('No employee parameters to save');
       return;
     }
 
+    loading.value = true;
     await controller.update(params.value, undefined, formKey);
+    loading.value = false;
   };
 
   const updateData = (updatedParams: EditEmployeeParams) => {
@@ -40,11 +42,19 @@
     <EmployeeForm
       :employee="controller.itemData.value!"
       :form-key="formKey"
+      :loading="loading"
       @update-data="updateData"
     />
 
-    <div class="actions">
-      <AppButton title="Update Employee" size="sm" icon="right" type="submit" @click="saveEmployee">
+    <div class="actions" :class="{ disabled: loading }">
+      <AppButton
+        title="Update Employee"
+        :loading="loading"
+        size="sm"
+        icon="right"
+        type="submit"
+        @click="saveEmployee"
+      >
         Update Employee
         <template #icon>
           <IconAccept />
@@ -60,16 +70,21 @@
 </template>
 
 <style scoped lang="scss">
-// .employee-edit-page {
-//   padding: 24px;
-//   max-width: 1000px;
-//   margin: 0 auto;
-// }
+  // .employee-edit-page {
+  //   padding: 24px;
+  //   max-width: 1000px;
+  //   margin: 0 auto;
+  // }
 
   .actions {
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   .error-toast {

@@ -11,10 +11,16 @@
   const countryCode = (route.params?.country_code as string) || '';
 
   const formParams = ref<AddFaqsParams | null>(null);
+  const loading = ref(false);
 
   const save = async () => {
     if (!formParams.value) return;
-    await controller.create(formParams.value);
+    loading.value = true;
+    try {
+      await controller.create(formParams.value);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const cancel = () => {
@@ -33,9 +39,9 @@
       <p class="faqs-description">{{ $t('faqs_description') }}</p>
     </div>
 
-    <FaqsForm @update-data="updateData" />
+    <FaqsForm :loading="loading" @update-data="updateData" />
 
-    <div class="form-actions">
+    <div class="form-actions" :class="{ disabled: loading }">
       <button class="btn btn-primary" type="button" @click="save">{{ $t('save') }}</button>
       <button class="btn btn-cancel" type="button" @click="cancel">{{ $t('cancel') }}</button>
     </div>
@@ -45,3 +51,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .form-actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

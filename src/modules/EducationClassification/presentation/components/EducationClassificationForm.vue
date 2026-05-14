@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref, watch } from 'vue';
+  import { ref, watch } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import { useFormsStore } from '@/stores/formsStore';
   import type EducationClassificationModel from '../../core/models/education.classification.model';
@@ -12,9 +12,10 @@
 
   const emit = defineEmits(['updateData', 'save-education-classification']);
 
-  const { country, formKey } = defineProps<{
+  const { country, formKey, loading } = defineProps<{
     country?: EducationClassificationModel;
     formKey?: string;
+    loading?: boolean;
   }>();
 
   const FormStore = useFormsStore();
@@ -60,27 +61,7 @@
     });
 
     emit('updateData', params);
-
-    // console.log("aa")
   };
-
-  // const resetForm = () => {
-  //   title.value = {};
-  // };
-
-  onMounted(() => {
-    // if (formKey) {
-    //   const saved = FormStore.getFormData(formKey);
-    //   if (saved) {
-    //     title.value = saved.title;
-    //     updateData();
-    //   } else if (!country) {
-    //     resetForm();
-    //   }
-    // } else if (!country) {
-    //   resetForm();
-    // }
-  });
 
   const getTitle = (data: any) => {
     title.value = data;
@@ -122,21 +103,7 @@
 
     <!-- ── Fields ────────────────────────────────────────── -->
     <div class="education-classification-form-fields">
-      <!-- Email Field -->
-      <!-- <div class="field-group">
-        <label class="field-label" for="title"> {{ $t('education classification') }} </label>
-        <div class="input-wrap">
-          <input
-            id="title"
-            v-model="title"
-            type="text"
-            :placeholder="$t('Enter education type')"
-            class="field-input"
-            @input="updateData"
-          />
-        </div>
-      </div> -->
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`title`"
           :label="$t(`education classification`)"
@@ -146,9 +113,23 @@
           @update:model-value="getTitle"
         />
       </div>
-      <button class="save-btn" @click="emit('save-education-classification')">
+      <button
+        class="save-btn"
+        :class="{ disabled: loading }"
+        @click="emit('save-education-classification')"
+      >
         {{ $t('Save') }}
       </button>
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .field-group {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

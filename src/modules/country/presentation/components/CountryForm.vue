@@ -7,9 +7,10 @@
 
   const emit = defineEmits(['updateData']);
 
-  const { country, formKey } = defineProps<{
+  const { country, formKey, loading } = defineProps<{
     country?: CountryModel;
     formKey?: string;
+    loading?: boolean;
   }>();
 
   const FormStore = useFormsStore();
@@ -96,7 +97,7 @@
     <!-- ── Fields ────────────────────────────────────────── -->
     <div class="form-fields">
       <!-- Email Field -->
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="title"> {{ $t('Country Title') }} </label>
         <div class="input-wrap">
           <input
@@ -110,7 +111,7 @@
         </div>
       </div>
 
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="code"> {{ $t('Country Code') }} </label>
         <div class="input-wrap">
           <input
@@ -124,7 +125,7 @@
         </div>
       </div>
 
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="flag"> {{ $t('Country Flag') }} </label>
         <div class="input-wrap">
           <input
@@ -140,3 +141,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .field-group {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

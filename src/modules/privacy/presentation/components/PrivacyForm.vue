@@ -11,6 +11,7 @@
   const title = ref<Record<string, string>>();
   const description = ref<Record<string, string>>();
   const privacyController = PrivacyController.getInstance();
+  const loading = ref(false);
 
   const status = computed(() => privacyController.listState.value);
   const updateData = () => {
@@ -27,14 +28,19 @@
   });
 
   const SubmitData = async () => {
-    await privacyController.create(
-      new AddPrivacyParams({
-        translations: new TranslationParams({
-          title: title.value!,
-          description: description.value!,
+    loading.value = true;
+    try {
+      await privacyController.create(
+        new AddPrivacyParams({
+          translations: new TranslationParams({
+            title: title.value!,
+            description: description.value!,
+          }),
         }),
-      }),
-    );
+      );
+    } finally {
+      loading.value = false;
+    }
   };
 
   const ShowPrivacy = async () => {
@@ -78,7 +84,7 @@
     <!-- List -->
     <div class="privacy-list">
       <!-- Question -->
-      <div class="field">
+      <div class="field" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`privacy`"
           :label="`policy title`"
@@ -88,7 +94,7 @@
           @update:model-value="title = $event"
         />
       </div>
-      <div class="field">
+      <div class="field" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`policy`"
           :label="`Description`"
@@ -101,11 +107,27 @@
     </div>
 
     <!-- Add Button -->
-    <div class="btn-container">
+    <div class="btn-container" :class="{ disabled: loading }">
       <button class="btn btn-primary" @click="SubmitData">{{ $t(`Save`) }}</button>
       <button class="btn btn-cancel">{{ $t(`cancel`) }}</button>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .field {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+
+  .btn-container {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

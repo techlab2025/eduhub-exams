@@ -10,13 +10,14 @@
   const formKey = route.fullPath;
 
   const params = ref<AddSkillsParams | null>(null);
+  const loading = ref(false);
 
   /**
    * Save new employee
    */
   const saveEmployee = async () => {
+    loading.value = true;
     try {
-
       if (!params.value) {
         console.error('No employee parameters to save');
         return;
@@ -25,6 +26,8 @@
       await controller.create(params.value, undefined);
     } catch (error) {
       console.error('Error saving employee:', error);
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -35,9 +38,9 @@
 
 <template>
   <div class="employee-add-page">
-    <SkillsForm :form-key="formKey" @update-data="updateData" />
+    <SkillsForm :form-key="formKey" :loading="loading" @update-data="updateData" />
 
-    <div class="actions">
+    <div class="actions" :class="{ disabled: loading }">
       <button class="btn btn-primary" @click="saveEmployee">{{ $t(`save`) }}</button>
       <button class="btn btn-cancel">{{ $t(`cancel`) }}</button>
     </div>
@@ -57,6 +60,11 @@
     width: 100%;
     button {
       width: 50%;
+    }
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
     }
   }
 
