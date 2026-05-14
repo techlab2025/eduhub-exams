@@ -27,7 +27,7 @@ export default class FaqsController extends BaseController<FaqsModel, FaqsModel[
    */
   protected get config(): ControllerConfig {
     return {
-      showLoadingDialog: true,
+      showLoadingDialog: false,
       showSuccessDialog: false,
       showErrorDialog: false,
       showErrorTosat: true,

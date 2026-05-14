@@ -114,7 +114,7 @@
     <template #header>
       <div class="header-container">
         <!-- <DocumentTypeIcon /> -->
-        <img :src="DocumentType" alt="document type" width="200" />
+        <img :src="DocumentType" alt="document type" width="60" />
         <div class="header-text">
           <h4>
             {{ SelectedDocumentType ? $t('edit_document_type') : $t('add_new_document_type') }}
