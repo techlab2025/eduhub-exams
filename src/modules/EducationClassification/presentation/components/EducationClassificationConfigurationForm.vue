@@ -143,25 +143,30 @@
 
   const fillConfigurationForm = (data: EducationConfigurationModel | undefined) => {
     if (!data) return;
-    console.log(data, 'data');
     ConfigurationnumberOfBranchs.value = data.numberOfBranches;
-    ConfigurationNumberOfBranchs.value = data.numberOfBranches;
     configurationInitialBranches.value = data.branches.map((branch) => ({
       singular: branch.singularTitle,
       plural: branch.pluralTitle,
     }));
+    // Auto-apply only when existing data has branches — no click needed
+    if (data.numberOfBranches > 0) {
+      ConfigurationNumberOfBranchs.value = data.numberOfBranches;
+    }
   };
 
   const fillSubjectForm = (data: EducationSubjectConfigurationModel | undefined) => {
     if (!data) return;
     SubjectnumberOfBranchs.value = data.numberOfBranches;
-    subjectNumberOfBranchs.value = data.numberOfBranches;
     subject_title_Singular.value = data.SingluarTitle;
     subject_title_Plural.value = data.pluralTitle;
     subjectInitialBranches.value = data.branches.map((branch) => ({
       singular: branch.singularTitle,
       plural: branch.pluralTitle,
     }));
+    // Auto-apply only when existing data has branches — no click needed
+    if (data.numberOfBranches > 0) {
+      subjectNumberOfBranchs.value = data.numberOfBranches;
+    }
   };
 
   const controller = EducationConfigurationController.getInstance();

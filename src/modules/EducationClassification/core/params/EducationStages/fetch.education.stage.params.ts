@@ -17,7 +17,7 @@ export default class FetchEducationStageParams implements Params {
   toMap(): { [p: string]: any } {
     return {
       education_classification_id: this.classification_id,
-      parent_id: this.parent_id ?? null,
+      parent_id: this.parent_id === 0 ? null : this.parent_id,
     };
   }
 
