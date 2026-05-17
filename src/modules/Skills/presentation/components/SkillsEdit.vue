@@ -13,6 +13,7 @@
   const formKey = route.fullPath;
  
   const params = ref<EditSkillsParams | null>(null);
+  const loading = ref(false);
 
   /**
    * Update skill
@@ -23,7 +24,12 @@
       return;
     }
 
-    await controller.update(params.value, undefined);
+    loading.value = true;
+    try {
+      await controller.update(params.value, undefined);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const updateData = (updatedParams: EditSkillsParams) => {
@@ -37,9 +43,9 @@
 
 <template>
   <div class="skills-edit-page">
-    <SkillsForm :skill="controller.itemData.value!" :form-key="formKey" @update-data="updateData" />
+    <SkillsForm :skill="controller.itemData.value!" :form-key="formKey" :loading="loading" @update-data="updateData" />
 
-    <div class="actions">
+    <div class="actions" :class="{ disabled: loading }">
       <AppButton title="Update Skill" size="sm" icon="right" type="submit" @click="saveSkill">
         Update Skill
         <template #icon>
@@ -59,6 +65,11 @@
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   .error-toast {

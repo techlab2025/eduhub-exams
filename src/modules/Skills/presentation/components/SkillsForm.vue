@@ -11,9 +11,10 @@
 
   const emit = defineEmits(['updateData']);
 
-  const { skill, formKey } = defineProps<{
+  const { skill, formKey, loading } = defineProps<{
     skill?: SkillModel;
     formKey?: string;
+    loading?: boolean;
   }>();
 
   const FormStore = useFormsStore(); 
@@ -116,7 +117,7 @@
     </div> -->
 
     <div class="form-fields">
-      <div class="field-group col-span-2 w-full">
+      <div class="field-group col-span-2 w-full" :class="{ disabled: loading }">
         <MultiLangInput
           :field-key="`title`"
           :label="$t(`title`)"
@@ -130,11 +131,16 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .form-fields {
     width: 100%;
   }
   .field-group {
     width: 100%;
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 </style>

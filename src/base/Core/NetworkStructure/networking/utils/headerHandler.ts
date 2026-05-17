@@ -21,8 +21,7 @@ class HeaderHandler {
     const CountryStore = useCountryStore();
 
     const token: string | undefined =
-      // userStore?.user?.apiToken ||
-      '4|wGVp48gP0i6CEUe2jFpiisFwEzKdI1ZpKRqQ5soq6d416862';
+      userStore?.user?.apiToken 
     if (userStore?.user !== null) {
       if (isAuth) {
         headers['Authorization'] = 'Bearer ' + token;

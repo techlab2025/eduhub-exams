@@ -4,7 +4,7 @@ import { ref, computed } from 'vue';
 export const useCountryStore = defineStore(
   'country',
   () => {
-    const countryCode = ref<string>('');
+    const countryCode = ref<string>('eg');
 
     const isCountrySet = computed(() => countryCode.value.length > 0);
 

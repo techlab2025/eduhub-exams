@@ -43,6 +43,7 @@
   const props = defineProps<{
     formKey?: string;
     initialSections?: SupportContactsModel[];
+    loading?: boolean;
   }>();
 
   const emit = defineEmits<{
@@ -151,7 +152,7 @@
 </script>
 
 <template>
-  <div class="about-page">
+  <div class="about-page" :class="{ disabled: props.loading }">
     <div class="header-container">
       <div class="about-header">
         <h2 class="title">{{ $t('support_contacts') }}</h2>
@@ -303,3 +304,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .about-page {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

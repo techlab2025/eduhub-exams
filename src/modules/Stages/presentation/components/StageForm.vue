@@ -11,9 +11,10 @@
 
   const emit = defineEmits(['updateData']);
 
-  const { stage, formKey } = defineProps<{
+  const { stage, formKey, loading } = defineProps<{
     stage?: StageModel;
     formKey?: string;
+    loading?: boolean;
   }>();
 
   const FormStore = useFormsStore();
@@ -112,7 +113,7 @@
     <!-- ── Fields ────────────────────────────────────────── -->
     <div class="form-fields">
       <!-- Email Field -->
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <label class="field-label" for="title"> Stage Title </label>
         <div class="input-wrap">
           <input
@@ -126,7 +127,7 @@
         </div>
       </div>
 
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: loading }">
         <!-- <label class="field-label" for="code"> Education Type </label> -->
         <div class="input-wrap">
           <UpdatedCustomInputSelect
@@ -142,3 +143,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .field-group {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

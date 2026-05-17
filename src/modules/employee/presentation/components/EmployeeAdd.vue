@@ -12,11 +12,12 @@
   const formKey = route.fullPath;
 
   const params = ref<AddEmployeeParams | null>(null);
-
+  const loading = ref(false);
   /**
    * Save new employee
    */
   const saveEmployee = async () => {
+    loading.value = true;
     try {
       if (!params.value) {
         console.error('No employee parameters to save');
@@ -24,8 +25,11 @@
       }
 
       await controller.create(params.value, undefined, formKey);
+      await controller.fetchList();
     } catch (error) {
       console.error('Error saving employee:', error);
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -36,7 +40,12 @@
 
 <template>
   <div class="employee-add-page">
-    <EmployeeForm :form-key="formKey" @update-data="updateData" />
+    <EmployeeForm
+      :form-key="formKey"
+      :loading="loading"
+      @update-data="updateData"
+      @save-employee="saveEmployee"
+    />
 
     <div class="actions">
       <AppButton
@@ -45,6 +54,7 @@
         icon="right"
         type="submit"
         class="save-emp"
+        :class="{ disabled: loading }"
         @click="saveEmployee"
       >
         Save Employee
@@ -90,6 +100,10 @@
 
   .save-emp {
     width: 60%;
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
   }
 
   .actions {

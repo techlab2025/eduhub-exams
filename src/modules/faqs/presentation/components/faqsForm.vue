@@ -10,6 +10,7 @@ import EditFaqsParams from '../../core/params/edit.faqs.params';
 
 const props = defineProps<{
   faq?: FaqsModel;
+  loading?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -72,7 +73,7 @@ const reset = () => {
     </div>
 
     <div class="faq-form-fields">
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: props.loading }">
         <MultiLangInput field-key="question" :label="$t('question')" :languages="['en', 'ar']" :type="`title`"
           :model-value="question" :placeholder="$t('enter_question')" @update:model-value="
             question = $event;
@@ -80,7 +81,7 @@ const reset = () => {
           " />
       </div>
 
-      <div class="field-group">
+      <div class="field-group" :class="{ disabled: props.loading }">
         <MultiLangInput field-key="answer" :label="$t('answer')" :languages="['en', 'ar']" :model-value="answer"
           :type="`description`" :placeholder="$t('enter_answer')" @update:model-value="
             answer = $event;
@@ -91,4 +92,12 @@ const reset = () => {
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  .field-group {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

@@ -24,9 +24,10 @@
     'save-education-classification',
     'save-education-subjects',
   ]);
-  const { country, formKey } = defineProps<{
+  const { country, formKey, loading } = defineProps<{
     country?: EducationClassificationModel;
     formKey?: string;
+    loading?: boolean;
   }>();
   const ConfigurationnumberOfBranchs = ref<number>(0);
   const SubjectnumberOfBranchs = ref<number>(0);
@@ -207,7 +208,7 @@
       <!-- ── Fields ────────────────────────────────────────── -->
       <div class="education-classification-form-fields">
         <!-- Email Field -->
-        <div class="field-group">
+        <div class="field-group" :class="{ disabled: loading }">
           <label class="field-label" for="title"> {{ $t('number_of_branchs') }} </label>
           <div class="input-wrap">
             <input
@@ -246,7 +247,7 @@
       <!-- ── Fields ────────────────────────────────────────── -->
       <div class="education-classification-form-fields">
         <!-- Email Field -->
-        <div class="field-group">
+        <div class="field-group" :class="{ disabled: loading }">
           <div class="input-wrap">
             <MultiLangInput
               :field-key="`title_Singular`"
@@ -258,7 +259,7 @@
             />
           </div>
         </div>
-        <div class="field-group">
+        <div class="field-group" :class="{ disabled: loading }">
           <div class="input-wrap">
             <MultiLangInput
               :field-key="`title_Plural`"
@@ -271,7 +272,7 @@
           </div>
         </div>
 
-        <div class="field-group">
+        <div class="field-group" :class="{ disabled: loading }">
           <label class="field-label" for="subject_number"> {{ $t('num_of_levels') }} </label>
           <div class="input-wrap">
             <input
@@ -299,3 +300,13 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .field-group {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>

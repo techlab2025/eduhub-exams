@@ -10,11 +10,17 @@
   const formKey = route.fullPath;
 
   const params = ref<AddDocumentParams | null>(null);
+  const loading = ref(false);
 
   const saveDocument = async () => {
     if (!params.value) return;
-    console.log(params, 'params');
-    await controller.create(params.value, undefined, formKey);
+    loading.value = true;
+    try {
+      console.log(params, 'params');
+      await controller.create(params.value, undefined, formKey);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const updateData = (updatedParams: AddDocumentParams) => {
@@ -24,7 +30,7 @@
 
 <template>
   <div class="document-crud-example">
-    <DocumentForm :form-key="formKey" @update-data="updateData" />
+    <DocumentForm :form-key="formKey" :loading="loading" @update-data="updateData" />
 
     <!-- <AppButton :title="$t('save_document')" size="sm" icon="right" type="submit" @click="saveDocument">
       {{ $t('save_document') }}
@@ -32,9 +38,11 @@
         <IconAccept />
       </template>
 </AppButton> -->
-    <button class="btn btn-primary w-full" type="submit" @click="saveDocument">
-      {{ $t('save_document') }}
-    </button>
+    <div class="actions" :class="{ disabled: loading }">
+      <button class="btn btn-primary w-full" type="submit" @click="saveDocument">
+        {{ $t('save_document') }}
+      </button>
+    </div>
 
     <div v-if="controller.errorMessage.value" class="error">
       {{ controller.errorMessage.value }}
@@ -42,9 +50,17 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .document-crud-example {
     margin: 0 auto;
+  }
+
+  .actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   .error {

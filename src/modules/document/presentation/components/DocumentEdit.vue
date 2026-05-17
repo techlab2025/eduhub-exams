@@ -14,10 +14,16 @@
   const formKey = route.fullPath;
 
   const params = ref<EditDocumentParams | null>(null);
+  const loading = ref(false);
 
   const saveDocument = async () => {
     if (!params.value) return;
-    await controller.update(params.value, undefined, formKey);
+    loading.value = true;
+    try {
+      await controller.update(params.value, undefined, formKey);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const updateData = (updatedParams: AddDocumentParams) => {
@@ -46,21 +52,24 @@
     <DocumentForm
       :document="controller.itemData.value!"
       :form-key="formKey"
+      :loading="loading"
       @update-data="updateData"
     />
 
-    <AppButton
-      :title="$t('save_document')"
-      size="sm"
-      icon="right"
-      type="submit"
-      @click="saveDocument"
-    >
-      {{ $t('save_document') }}
-      <template #icon>
-        <IconAccept />
-      </template>
-    </AppButton>
+    <div class="actions" :class="{ disabled: loading }">
+      <AppButton
+        :title="$t('save_document')"
+        size="sm"
+        icon="right"
+        type="submit"
+        @click="saveDocument"
+      >
+        {{ $t('save_document') }}
+        <template #icon>
+          <IconAccept />
+        </template>
+      </AppButton>
+    </div>
 
     <div v-if="controller.errorMessage.value" class="error">
       {{ controller.errorMessage.value }}
@@ -68,10 +77,18 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .email-crud-example {
     padding: 20px;
     margin: 0 auto;
+  }
+
+  .actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   .error {

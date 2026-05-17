@@ -11,6 +11,7 @@
 
   // Form state
   const params = ref<EditUnitParams | null>(null);
+  const loading = ref(false);
   /**
    * Save (create or update) email
    */
@@ -20,7 +21,12 @@
       return;
     }
 
-    await controller.update(params.value);
+    loading.value = true;
+    try {
+      await controller.update(params.value);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const updateData = (updatedParams: EditUnitParams) => {
@@ -36,9 +42,11 @@
 
 <template>
   <div class="email-crud-example">
-    <UnitForm :unit="controller.itemData.value!" @update-data="updateData" />
+    <UnitForm :unit="controller.itemData.value!" :loading="loading" @update-data="updateData" />
 
-    <button type="button" @click="saveEmail">Save Email</button>
+    <div class="actions" :class="{ disabled: loading }">
+      <button type="button" @click="saveEmail">Save Email</button>
+    </div>
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error">
@@ -46,6 +54,16 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  }
+</style>
 
 <!-- <style scoped>
   .email-crud-example {

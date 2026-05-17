@@ -18,10 +18,16 @@
   const initialSections = ref<SupportContactsModel[]>([]);
   const formParams = ref<AddSupportContactsParams | null>(null);
   const isLoaded = ref(false);
+  const loading = ref(false);
 
   const saveSupport = async () => {
     if (!formParams.value) return;
-    await controller.create(formParams.value, undefined);
+    loading.value = true;
+    try {
+      await controller.create(formParams.value, undefined);
+    } finally {
+      loading.value = false;
+    }
   };
 
   const cancel = () => {
@@ -50,10 +56,11 @@
       v-if="isLoaded"
       :form-key="formKey"
       :initial-sections="initialSections"
+      :loading="loading"
       @update-data="updateData"
     />
 
-    <div v-if="isLoaded" class="edit-actions">
+    <div v-if="isLoaded" class="edit-actions" :class="{ disabled: loading }">
       <button class="btn btn-primary" type="button" @click="saveSupport">
         {{ $t('save_change') }}
       </button>
@@ -81,6 +88,11 @@
     gap: 16px;
     margin-top: 24px;
     width: 100%;
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
 
     .btn-primary {
       width: 80%;

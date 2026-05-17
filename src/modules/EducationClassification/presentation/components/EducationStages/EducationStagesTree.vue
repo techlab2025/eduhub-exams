@@ -18,10 +18,7 @@
   import RenameClassificationDialog from '@/modules/EducationClassification/subComponent/RenameClassificationDialog.vue';
   import DropList from '@/shared/HelpersComponents/DropList.vue';
   import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
-  import { ToggleSwitch } from 'primevue';
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
-  import PriceDialog from '@/shared/icons/priceDialog.vue';
-  import SkillsDilaog from '@/shared/icons/SkillsDilaog.vue';
   import Dialog from 'primevue/dialog';
   import PriceIconDialog from '@/shared/icons/priceIconDialog.vue';
   import InputNumber from 'primevue/inputnumber';
@@ -160,7 +157,7 @@
   const showPricingDialog = ref(false);
   const showSkillsDialog = ref(false);
   const { t } = useI18n();
-  const actionList = (id: number) => [
+  const actionList = (_id: number) => [
     {
       text: t('rename'),
       icon: EditIcon,
@@ -173,32 +170,32 @@
       icon: DeletIcon,
       action: () => handleDeleteBranch(null),
     },
-    {
-      text: t('pricing'),
-      icon: PriceDialog,
-      action: () => {
-        showPricingDialog.value = true;
-      },
-    },
-    {
-      text: t('skills'),
-      icon: SkillsDilaog,
-      action: () => {
-        showSkillsDialog.value = true;
-      },
-    },
-    {
-      text: t('unactive'),
-      icon: ToggleSwitch,
-      action: () => {
-        toggleStatus(id);
-      },
-    },
+    // {
+    //   text: t('pricing'),
+    //   icon: PriceDialog,
+    //   action: () => {
+    //     showPricingDialog.value = true;
+    //   },
+    // },
+    // {
+    //   text: t('skills'),
+    //   icon: SkillsDilaog,
+    //   action: () => {
+    //     showSkillsDialog.value = true;
+    //   },
+    // },
+    // {
+    //   text: t('unactive'),
+    //   icon: ToggleSwitch,
+    //   action: () => {
+    //     toggleStatus(id);
+    //   },
+    // },
   ];
-  async function toggleStatus(id: number) {
-    console.log('Toggle status for', id);
-    // await controller.toggleStatus(id);
-  }
+  // async function toggleStatus(id: number) {
+  //   console.log('Toggle status for', id);
+  //   // await controller.toggleStatus(id);
+  // }
   const duration = ref(0);
   const pricing = ref(0);
 

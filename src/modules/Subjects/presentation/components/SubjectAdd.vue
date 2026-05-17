@@ -13,10 +13,12 @@
   const formKey = route.fullPath;
   // Form state
   const params = ref<AddSubjectParams | null>(null);
+  const loading = ref(false);
   /**
    * Save (create or update) email
    */
   const saveEmail = async () => {
+    loading.value = true;
     try {
       if (!params.value) {
         console.error('No email parameters to save');
@@ -28,6 +30,8 @@
       await controller.create(paramsToSave, undefined, formKey);
     } catch (error) {
       console.error('Error saving email:', error);
+    } finally {
+      loading.value = false;
     }
   };
 
@@ -42,16 +46,19 @@
     <SubjectForm
       :form-key="formKey"
       :subject="controller.itemData.value!"
+      :loading="loading"
       @update-data="updateData"
     />
 
-    <AppButton title="Save Email" size="sm" icon="right" type="submit" @click="saveEmail">
-      Save Subject
+    <div class="actions" :class="{ disabled: loading }">
+      <AppButton title="Save Email" size="sm" icon="right" type="submit" @click="saveEmail">
+        Save Subject
 
-      <template #icon>
-        <IconAccept />
-      </template>
-    </AppButton>
+        <template #icon>
+          <IconAccept />
+        </template>
+      </AppButton>
+    </div>
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error">
@@ -60,12 +67,20 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   :deep(.input-file) {
     border: 1px solid var(--input-file-border) !important;
     padding: 11px;
     border-radius: 20px !important;
     cursor: pointer;
+  }
+
+  .actions {
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   }
 
   /* .email-crud-example {
