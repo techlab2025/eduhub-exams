@@ -200,3 +200,11 @@ body {
     width: 100% !important;
   }
 }
+
+.questions-details-form-card {
+  .p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader svg path,
+  .p-accordionpanel:not(.p-accordionpanel-active, .p-disabled) > .p-accordionheader:hover svg path {
+    stroke: var(--PrimaryColor) !important;
+    fill: var(--white) !important;
+  }
+}

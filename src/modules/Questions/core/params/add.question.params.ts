@@ -13,13 +13,14 @@ import type SolutionStepsParams from './subParams/soluation.steps.params';
  */
 export default class AddquestionsParams implements Params {
   public title: string;
-  public image: string;
+  public image: string[];
   public questionType: QuestionTypeEnum;
-  public subjectId: number;
+  public subjectId: number | null;
   public topics: number[];
-  public difficultyLevel: QuestionDifficultyEnum;
+  public questionSequenceId: number | null;
+  public difficultyLevel: QuestionDifficultyEnum | null;
   public skills: QuestionSkillParams[];
-  public questionSource: QuestionSourceParams[];
+  public questionSource: QuestionSourceParams;
   public answers: AnswersParams[];
   public isQuestionClarification?: boolean;
   public questionClarification?: QuestionClarificationParams;
@@ -32,9 +33,9 @@ export default class AddquestionsParams implements Params {
     title: { required: true },
     image: { required: true },
     questionType: { required: true },
-    subjectId: { required: true },
+    subjectId: { required: false },
     topics: { required: true },
-    difficultyLevel: { required: true },
+    difficultyLevel: { required: false },
     skills: { required: true },
     answers: { required: true },
     questionSource: { required: true },
@@ -42,13 +43,14 @@ export default class AddquestionsParams implements Params {
 
   constructor(data: {
     title: string;
-    image: string;
+    image: string[];
     questionType: QuestionTypeEnum;
-    subjectId: number;
+    subjectId: number | null;
     topics: number[];
-    difficultyLevel: QuestionDifficultyEnum;
+    questionSequenceId: number | null;
+    difficultyLevel: QuestionDifficultyEnum | null;
     skills: QuestionSkillParams[];
-    questionSource: QuestionSourceParams[];
+    questionSource: QuestionSourceParams;
     answers: AnswersParams[];
     isQuestionClarification?: boolean;
     questionClarification?: QuestionClarificationParams;
@@ -62,6 +64,7 @@ export default class AddquestionsParams implements Params {
     this.questionType = data.questionType;
     this.subjectId = data.subjectId;
     this.topics = data.topics;
+    this.questionSequenceId = data.questionSequenceId;
     this.difficultyLevel = data.difficultyLevel;
     this.skills = data.skills;
     this.answers = data.answers;
@@ -81,6 +84,7 @@ export default class AddquestionsParams implements Params {
       question_type: this.questionType,
       subject_id: this.subjectId,
       topics: this.topics,
+      question_sequence_id: this.questionSequenceId,
       difficulty_level: this.difficultyLevel,
       skills: this.skills,
       answers: this.answers,

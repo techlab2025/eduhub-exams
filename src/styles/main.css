@@ -10590,6 +10590,163 @@ body::-webkit-scrollbar-thumb:hover {
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
+.questions-details-form-card .form-header {
+  padding-left: 0 !important;
+}
+.questions-details-form-card .form-fields {
+  padding: 0 !important;
+}
+.questions-details-form-card .form-fields {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--xl-size-base);
+  width: 100%;
+  /* stylelint-disable-next-line media-query-no-invalid */
+}
+@media (max-width: 600) {
+  .questions-details-form-card .form-fields {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+.questions-details-form-card .form-fields .field-group {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--xs-size-2);
+}
+.questions-details-form-card .form-fields .field-group.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.questions-details-form-card .form-fields .field-group.col-span-2 {
+  grid-column: span 2;
+}
+.questions-details-form-card .form-fields .field-group .gender-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xl-size-2);
+}
+.questions-details-form-card .form-fields .field-group .gender-group .input-field {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-4);
+}
+.questions-details-form-card .form-fields .field-group .gender-group .input-field .p-radiobutton-box {
+  background: none !important;
+}
+.questions-details-form-card .form-fields .field-group .gender-group .input-field .p-radiobutton-checked .p-radiobutton-icon {
+  background-color: var(--PrimaryColor) !important;
+}
+.questions-details-form-card .form-fields .field-group .image-input {
+  width: 100%;
+}
+.questions-details-form-card .form-fields .field-group .image-input .upload-area {
+  background-color: var(--standard-white) !important;
+}
+.questions-details-form-card .form-fields .field-group .image-input .add-imaegs-data {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xs-size-5);
+}
+.questions-details-form-card .form-fields .field-group .image-input .add-imaegs-data .first-text {
+  color: var(--Gray-5);
+  font-size: var(--xs-size);
+  font-weight: 600;
+}
+.questions-details-form-card .form-fields .field-group .image-input .add-imaegs-data .first-text span {
+  color: var(--PrimaryColor);
+  padding-inline: var(--xs-size-5);
+}
+.questions-details-form-card .form-fields .field-group .image-input .add-imaegs-data .second-text {
+  color: var(--second-text);
+  font-size: var(--xs-size);
+  font-weight: 400;
+}
+.questions-details-form-card .form-fields .field-group .field-label {
+  font-size: var(--md-size);
+  color: var(--gray-5) !important;
+  text-transform: none;
+  font-weight: 600 !important;
+}
+.questions-details-form-card .form-fields .field-group .input-wrap {
+  width: 100%;
+}
+.questions-details-form-card .form-fields .field-group .input-wrap .field-input {
+  width: 100%;
+  padding: var(--xs-size) var(--md-size);
+  border: 1px solid var(--input-border-color) !important;
+  border-radius: var(--xl-size-3) !important;
+  font-size: var(--sm-size);
+  color: var(--Gray-6);
+  background: var(--BgWhite) !important;
+  outline: none;
+  transition: all 0.25s ease;
+}
+.questions-details-form-card .form-fields .field-group .input-wrap .field-input:focus {
+  border-color: var(--PrimaryColor);
+  background: var(--bg-main);
+  box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+}
+.questions-details-form-card .all_tabs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row !important;
+  gap: var(--md-size);
+  margin-bottom: var(--xl-size-1);
+  width: 100% !important;
+}
+.questions-details-form-card .all_tabs .tab-item {
+  background-color: var(--bg-main);
+  color: var(--table-data-color);
+  border: 1px solid var(--input-border-color);
+  padding: var(--xl-size-1);
+  width: 100%;
+  border-radius: var(--xl-size-3);
+  display: flex;
+  gap: var(--xs-size-4);
+  cursor: pointer;
+}
+.questions-details-form-card .all_tabs .tab-item input[type=radio] {
+  accent-color: white;
+}
+.questions-details-form-card .all_tabs .tab-item.active {
+  background-color: var(--PrimaryColor-alpha-10);
+  color: var(--primary-green);
+  border: 1px solid var(--primary-green);
+  padding: var(--xl-size-1);
+  width: 100%;
+  border-radius: var(--xl-size-3);
+  cursor: pointer;
+}
+.questions-details-form-card .all_tabs .tab-item.active input[type=radio] {
+  background-color: green;
+  accent-color: green;
+}
+.questions-details-form-card .all_tabs .p-radiobutton-box {
+  background: none !important;
+}
+.questions-details-form-card .all_tabs .p-radiobutton-checked .p-radiobutton-icon {
+  background-color: var(--PrimaryColor) !important;
+}
+
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
@@ -10642,8 +10799,25 @@ body::-webkit-scrollbar-thumb:hover {
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
+.contant_tabs {
+  width: 100%;
+}
+.contant_tabs.document-tab {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--md-size);
+  margin-bottom: var(--xs-size);
+  width: 100%;
+}
+.contant_tabs.document-tab .form-group {
+  background-color: #fafafa;
+  padding: 16px;
+  border-radius: 25px;
+}
 .contant_tabs .new-form-group {
   margin-bottom: var(--xs-size);
+  width: 100%;
 }
 .contant_tabs .new-form-group .input-select {
   background-color: var(--standard-white);
@@ -10657,6 +10831,7 @@ body::-webkit-scrollbar-thumb:hover {
   grid-template-columns: repeat(2, 1fr);
   gap: var(--md-size);
   margin-bottom: var(--xs-size);
+  width: 100%;
 }
 .contant_tabs .form-group .input .input-label {
   color: var(--title-header-color);
@@ -11927,4 +12102,10 @@ body div {
 }
 .p-drawer .p-drawer-content .sidebar {
   width: 100% !important;
+}
+
+.questions-details-form-card .p-accordionpanel:not(.p-disabled).p-accordionpanel-active > .p-accordionheader svg path,
+.questions-details-form-card .p-accordionpanel:not(.p-accordionpanel-active, .p-disabled) > .p-accordionheader:hover svg path {
+  stroke: var(--PrimaryColor) !important;
+  fill: var(--white) !important;
 }/*# sourceMappingURL=main.css.map */
