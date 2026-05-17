@@ -123,7 +123,6 @@
 
   const handleImageChange = (files: UploadedFile[]) => {
     UploadedImage.value = files?.[0]?.base64;
-    console.log(UploadedImage.value, 'UploadedImage.value');
     updateData();
   };
 
