@@ -1,49 +1,28 @@
 <script setup lang="ts">
   import { ref, watch, computed, onMounted } from 'vue';
-
   import { onBeforeRouteLeave } from 'vue-router';
-
   import { useFormsStore } from '@/stores/formsStore';
-
-  // import type DocumentModel from '../../core/models/document.model';
-
   import AddDocumentParams from '../../core/params/add.document.params';
-
   import TitleInterface from '@/base/Data/Models/titleInterface';
-
   import DocumentIcon from '@/shared/icons/DocaumentType/DocumentIcon.vue';
-
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
-
   import IndexDocumentTypeParams from '../../core/params/documntType/index.document.type.params';
-
   import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
-
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-
-  import HandleFilesUpload from '@/shared/FormInputs/HandleFilesUpload.vue';
-
+  import HandleFilesUpload, { type UploadedFile } from '@/shared/FormInputs/HandleFilesUpload.vue';
   import UplaodImageInput from '@/shared/icons/UploadImage/UplaodImageInput.vue';
-
   import FileIcon from '@/shared/icons/UploadImage/FileIcon.vue';
-
   import DocumentTranslationParams from '../../core/params/translation.params';
-
   import DeleteTagIcon from '@/shared/icons/DocaumentType/DeleteTagIcon.vue';
-
   import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
-
   import type StageModel from '@/modules/Stages/core/models/stage.model';
-
   import type BranchesModel from '@/modules/Stages/core/models/branches.model';
-
   import type DocumentShowModel from '../../core/models/document.show.model';
 
   const emit = defineEmits(['updateData']);
 
   const { document, formKey } = defineProps<{
     document?: DocumentShowModel;
-
     formKey?: string;
   }>();
 
@@ -57,199 +36,103 @@
     }
   });
 
-  // ─── Form state ───────────────────────────────────────────────────────────
-
   const title = ref<Record<string, string>>({});
-
   const description = ref<Record<string, string>>({});
-
   const RefrenceNumber = ref<string>('');
-
   const selectedDocumentType = ref<TitleInterface<number> | null>(null);
-
-  // ─── Cascading state: Branch → Subject ───────────────────────────────────
-
   const selectedBranch = ref<BranchesModel | null>(null);
-
   const selectedSubject = ref<TitleInterface<number> | null>(null);
-
-  // All stages data (full model to access branches + subjects)
-
   const allStages = ref<StageModel[]>([]);
-
   const indexDocumentTypeParams = new IndexDocumentTypeParams('', 1, 10, 0);
-
   const documentTypeController = DocumentTypeController.getInstance();
-
   const stageController = StageController.getInstance();
-
-  const UploadedImage = ref<string[]>([]);
-
-  const UploadedFiles = ref<string[]>([]);
-
-  // ─── Fetch full stages on mount ───────────────────────────────────────────
+  const UploadedImage = ref<string>();
+  const UploadedFiles = ref<string>();
 
   onMounted(async () => {
     await stageController.fetchList(indexDocumentTypeParams);
-
     allStages.value = (stageController.listData.value ?? []) as StageModel[];
   });
 
-  // ─── Branch options: كل الـ branches من كل الـ stages مجمعين ─────────────
+  const branchOptions = computed<TitleInterface<number>[]>(() => {
+    return allStages.value.flatMap((stage: StageModel) =>
+      stage.branches.flatMap((b: BranchesModel) =>
+        b.subjects.map(
+          (s) =>
+            new TitleInterface<number>({
+              id: s.id!,
+              title: `${b.title} -> ${s.title}`,
+              subtitle: b.id,
+            }),
+        ),
+      ),
+    );
+  });
 
-  const branchOptions = computed<TitleInterface<number>[]>(() =>
-    allStages.value.flatMap((stage: StageModel) =>
-      stage.branches.map((b: BranchesModel) => new TitleInterface({ id: b.id!, title: b.title })),
-    ),
-  );
-
-  // selectedBranch as TitleInterface (for v-model in select)
-
-  const selectedBranchTitle = computed<TitleInterface<number> | null>(() =>
-    selectedBranch.value
-      ? new TitleInterface({ id: selectedBranch.value.id!, title: selectedBranch.value.title })
-      : null,
-  );
-
-  // ─── Subject options: من الـ branch المختار ──────────────────────────────
-
-  // const subjectOptions = computed<TitleInterface<number>[]>(() =>
-
-  //   (selectedBranch.value?.subjects ?? []) as TitleInterface<number>[]
-
-  // );
-
-  const subjectOptions = computed<TitleInterface<number>[]>(() =>
-    (selectedBranch.value?.subjects ?? []).map(
-      (subject: any) =>
-        new TitleInterface({
-          id: subject.id,
-
-          title: subject.title,
-        }),
-    ),
-  );
-
-  // ─── Watch document prop for edit mode ────────────────────────────────────
-
+  const selectedBranchTitle = ref<TitleInterface<number>>();
   watch(
     () => document,
-
     (newDoc) => {
       if (newDoc) {
         title.value = newDoc.translations.title;
-
         selectedDocumentType.value = newDoc.documentType;
-
         UploadedImage.value = newDoc.images;
-
         UploadedFiles.value = newDoc.files;
-
         RefrenceNumber.value = newDoc.RefNumber;
-
-        // stage
-
         selectedBranch.value = {
           id: newDoc.stage.id,
-
           title: newDoc.stage.title,
-
           subjects: [],
         } as BranchesModel;
-
-        // subject
-
         selectedSubject.value = new TitleInterface({
           id: newDoc.subject.id,
-
           title: newDoc.subject.title,
         });
-
         selectedDocumentType.value = new TitleInterface({
           id: newDoc.documentType.id,
-
           title: newDoc.documentType.title,
         });
       }
     },
-
     { immediate: true },
   );
 
-  // ─── updateData ───────────────────────────────────────────────────────────
-
   const updateData = () => {
+    console.log(UploadedImage.value, 'UploadedImage emit');
     const params = new AddDocumentParams({
       translations: new DocumentTranslationParams({
         description: description.value,
-
         title: title.value,
       }),
-
       documentTypeId: selectedDocumentType.value?.id || 0,
-
-      // هنا التعديل
-
-      stage_id: selectedBranch.value?.id || 0,
-
-      // subject id
-
-      subjects: selectedSubject.value?.id || 0,
-
-      files: UploadedFiles.value.map((el: any) => el?.base64 || ''),
-
-      images: UploadedImage.value.map((el: any) => el?.base64 || ''),
-
+      stage_id: selectedBranchTitle.value?.subtitle || 0,
+      subjects: selectedBranchTitle.value?.id || 0,
+      files: UploadedFiles.value!,
+      images: UploadedImage.value || '',
       refNumber: RefrenceNumber.value,
-
       tags: tags.value,
     });
 
     emit('updateData', params);
   };
 
-  // ─── Branch handler: find full BranchesModel by id → reset subject ───────
-
-  const handleBranchChange = (selected: TitleInterface<number> | null) => {
-    if (!selected) {
-      selectedBranch.value = null;
-    } else {
-      // ابحث عن الـ BranchesModel الكامل من allStages
-
-      for (const stage of allStages.value) {
-        const found = stage.branches.find((b: BranchesModel) => b.id === selected.id);
-
-        if (found) {
-          selectedBranch.value = found;
-
-          break;
-        }
-      }
-    }
-
-    selectedSubject.value = null;
-
+  const handleBranchChange = (selected: TitleInterface<number> | undefined) => {
+    selectedBranchTitle.value = selected;
     updateData();
   };
 
-  // ─── File handlers ────────────────────────────────────────────────────────
-
-  const handleImageChange = (files: []) => {
-    UploadedImage.value = files;
-
+  const handleImageChange = (files: UploadedFile[]) => {
+    UploadedImage.value = files?.[0]?.base64;
+    console.log(UploadedImage.value, 'UploadedImage.value');
     updateData();
   };
 
-  const handleFilsChange = (files: any[]) => {
-    UploadedFiles.value = files;
-
+  const handleFilsChange = (files: UploadedFile[]) => {
+    UploadedFiles.value = files?.[0]?.base64;
     updateData();
   };
-
-  // ─── Tags ─────────────────────────────────────────────────────────────────
 
   const tag = ref<string>('');
-
   const tags = ref<string[]>([]);
 
   const setTags = () => {
@@ -278,8 +161,6 @@
     </div>
 
     <div class="form-fields">
-      <!-- Title -->
-
       <div class="field-group">
         <MultiLangInput
           :field-key="`title`"
@@ -289,13 +170,10 @@
           :type="`title`"
           @update:model-value="
             title = $event;
-
             updateData();
           "
         />
       </div>
-
-      <!-- Ref Number -->
 
       <div class="field-group col-span-1 ref-number-group">
         <label class="field-label" for="doc-ref">{{ $t('Reference_Number') }}</label>
@@ -312,25 +190,22 @@
         </div>
       </div>
 
-      <!-- Document Type -->
-
-      <div class="field-group col-span-2">
+      <div class="field-group select-group col-span-2">
         <UpdatedCustomInputSelect
           id="documentType"
+          :class="`field-input`"
           :label="`Document Type`"
           :params="indexDocumentTypeParams"
-          :controller="documentTypeController"
-          :model-value="selectedDocumentType as TitleInterface<number>"
-          :placeholder="$t('Document Type')"
+          :controller="documentTypeController as any"
+          :model-value="selectedDocumentType"
+          :relaod="false"
+          :placeholder="$t('Select_document_type')"
           @update:model-value="
             selectedDocumentType = $event;
-
             updateData();
           "
         />
       </div>
-
-      <!-- Branch: كل الـ branches من كل الـ stages -->
 
       <div class="field-group col-span-2">
         <UpdatedCustomInputSelect
@@ -344,28 +219,6 @@
         />
       </div>
 
-      <!-- Subject: يظهر بس لو الـ branch المختار عنده subjects -->
-
-      <div v-if="selectedBranch && subjectOptions.length > 0" class="field-group col-span-2">
-        <UpdatedCustomInputSelect
-          id="doc-subject"
-          :label="`Subject Name`"
-          :static-options="subjectOptions"
-          :model-value="selectedSubject"
-          :placeholder="$t('Subject Type')"
-          :reload="false"
-          @update:model-value="
-            (event) => {
-              selectedSubject = event;
-
-              updateData();
-            }
-          "
-        />
-      </div>
-
-      <!-- Description -->
-
       <div class="field-group col-span-2">
         <MultiLangInput
           :field-key="`description`"
@@ -375,13 +228,10 @@
           :type="`description`"
           @update:model-value="
             description = $event;
-
             updateData();
           "
         />
       </div>
-
-      <!-- Tags -->
 
       <div class="field-group tags-group col-span-2">
         <label class="field-label" for="tag">{{ $t('tag') }}</label>
@@ -408,8 +258,6 @@
         </div>
       </div>
 
-      <!-- Upload Image -->
-
       <div class="field-group col-span-2">
         <HandleFilesUpload
           :label="`upload image`"
@@ -419,7 +267,7 @@
           :file="UploadedImage"
           :have-content="true"
           :class="`image-input`"
-          @update:model-value="handleImageChange"
+          @change="handleImageChange"
         >
           <template #content>
             <div class="add-imaegs-data">
@@ -434,8 +282,6 @@
           </template>
         </HandleFilesUpload>
       </div>
-
-      <!-- Upload Files -->
 
       <div class="field-group col-span-2">
         <HandleFilesUpload

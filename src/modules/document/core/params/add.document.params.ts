@@ -10,8 +10,8 @@ export default class AddDocumentParams implements Params {
   public stage_id:number;
   public translations: DocumentTranslationParams;
   public tags: string[];
-  public images: string[];
-  public files: string[];
+  public images: string;
+  public files: string;
 
   public static readonly validation = new ClassValidation().setRules({
     translations: {   required: true  },
@@ -24,8 +24,8 @@ export default class AddDocumentParams implements Params {
     subjects: number;
     translations: DocumentTranslationParams;
     tags: string[];
-    images: string[];
-    files: string[];
+    images: string;
+    files: string;
   }) {
     this.refNumber = data.refNumber;
     this.documentTypeId = data.documentTypeId;

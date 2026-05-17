@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted, computed } from 'vue';
 
-  interface UploadedFile {
+  export interface UploadedFile {
     id: string;
     name: string;
     type: string;

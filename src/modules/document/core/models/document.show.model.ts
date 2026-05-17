@@ -10,8 +10,8 @@ export default class DocumentShowModel {
   public readonly stage: TitleInterface<number>;
   public readonly subject: TitleInterface<number>;
   public readonly tags: string[];
-  public readonly images: string[];
-  public readonly files: string[];
+  public readonly images: string;
+  public readonly files: string;
 
   constructor(data: {
     id?: number;
@@ -24,8 +24,8 @@ export default class DocumentShowModel {
     stage: TitleInterface<number>;
     subject: TitleInterface<number>;
     tags: string[];
-    images: string[];
-    files: string[];
+    images: string;
+    files: string;
   }) {
     this.id = data.id;
     this.translations = data.translations;
@@ -57,43 +57,40 @@ export default class DocumentShowModel {
     return result;
   };
 
- static fromJson(json: any): DocumentShowModel {
-  if (!json) throw new Error('Invalid DocumentShowModel data');
+  static fromJson(json: any): DocumentShowModel {
+    if (!json) throw new Error('Invalid DocumentShowModel data');
 
-  return new DocumentShowModel({
-    id: json.id,
+    return new DocumentShowModel({
+      id: json.id,
 
-    translations: {
-      title: this.mapTranslations(json.title, 'title'),
-    },
+      translations: {
+        title: this.mapTranslations(json.title, 'title'),
+      },
 
-    title: this.mapTranslations(json.title ?? [], 'title'),
+      title: this.mapTranslations(json.title ?? [], 'title'),
 
-    RefNumber: json.RefNumber ?? json.reference_number ?? '',
+      RefNumber: json.RefNumber ?? json.reference_number ?? '',
 
-    documentType: new TitleInterface({
-      id: json.document_type?.id,
-      title:
-        json.document_type?.title?.find(
-          (item: any) => item.locale === 'en',
-        )?.title ?? '',
-    }),
+      documentType: new TitleInterface({
+        id: json.document_type?.id,
+        title: json.document_type?.title?.find((item: any) => item.locale === 'en')?.title ?? '',
+      }),
 
-    stage: new TitleInterface({
-      id: json.stage?.id,
-      title: json.stage?.titles?.[0]?.title ?? '',
-    }),
+      stage: new TitleInterface({
+        id: json.stage?.id,
+        title: json.stage?.titles?.[0]?.title ?? '',
+      }),
 
-    subject: new TitleInterface({
-      id: json.subject?.id,
-      title: json.subject?.titles?.[0]?.title ?? '',
-    }),
+      subject: new TitleInterface({
+        id: json.subject?.id,
+        title: json.subject?.titles?.[0]?.title ?? '',
+      }),
 
-    tags: json.tags ?? [],
-    images: json.images ?? [],
-    files: json.files ?? [],
-  });
-}
+      tags: json.tags ?? [],
+      images: json.images ?? [],
+      files: json.files ?? [],
+    });
+  }
 
   static example: DocumentShowModel = new DocumentShowModel({
     id: 1,
@@ -111,8 +108,8 @@ export default class DocumentShowModel {
     // }),
 
     tags: [],
-    images: [],
-    files: [],
+    images: '',
+    files: '',
   });
 
   static getLocalizedData<T extends Record<string, any>>(
