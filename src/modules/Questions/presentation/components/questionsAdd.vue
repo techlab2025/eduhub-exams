@@ -3,11 +3,11 @@ import { ref } from 'vue';
 import AppButton from '@/shared/HelpersComponents/AppButton.vue';
 import IconAccept from '@/shared/icons/IconAccept.vue';
 import { useRoute } from 'vue-router';
-import EmployeeController from '../controllers/questions.controller';
-import EmployeeForm from './questionsForm.vue';
+import questionsController from '../controllers/questions.controller';
+import questionsForm from './questionsForm.vue';
 import type AddEmployeeParams from '../../core/params/add.question.params';
 
-const controller = EmployeeController.getInstance();
+const controller = questionsController.getInstance();
 const route = useRoute();
 const formKey = route.fullPath;
 
@@ -35,8 +35,8 @@ const updateData = (updatedParams: AddEmployeeParams) => {
 </script>
 
 <template>
-  <div class="employee-add-page">
-    <EmployeeForm :form-key="formKey" @update-data="updateData" />
+  <div class="questions-add-page">
+    <questionsForm :form-key="formKey" @update-data="updateData" />
 
     <div class="actions">
       <AppButton title="Save Employee" size="sm" icon="right" type="submit" class="save-emp" @click="saveEmployee">

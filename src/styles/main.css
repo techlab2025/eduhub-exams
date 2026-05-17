@@ -10491,6 +10491,101 @@ body::-webkit-scrollbar-thumb:hover {
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
+.questions-page {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--xl-size-1);
+}
+.questions-page .index-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--md-size);
+}
+.questions-page .index-header .search-input::-moz-placeholder {
+  font-family: "Medium";
+}
+.questions-page .index-header .search-input::placeholder {
+  font-family: "Medium";
+}
+.questions-page .index-header .btns-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-4);
+}
+.questions-page .status {
+  font-size: var(--sm-size);
+  font-weight: 700;
+  font-family: "Bold";
+  color: var(--success);
+}
+.questions-page .status.status-approved {
+  color: var(--success);
+}
+.questions-page .status.status-not-reviewed {
+  color: var(--warning);
+}
+.questions-page .status.status-rejected {
+  color: var(--error);
+}
+.questions-page .status.status-under-review {
+  color: var(--info);
+}
+.questions-page .employee-name {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--md-size);
+}
+.questions-page .employee-name img {
+  width: 30px;
+  height: 30px;
+}
+.questions-page .row-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xs-size-3);
+}
+.questions-page .action-btn {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: calc(var(--xl-size-2) + 2px);
+  height: calc(var(--xl-size-2) + 2px);
+  border-radius: var(--xs-size-2);
+  border: 1px solid var(--border-weak);
+  background: var(--white);
+  color: var(--gray-500);
+  transition: all 0.2s ease;
+}
+.questions-page .action-btn:hover {
+  transform: translateY(-1px);
+}
+.questions-page .action-btn.edit:hover {
+  border-color: var(--PrimaryColor);
+  color: var(--PrimaryColor);
+}
+.questions-page .action-btn.delete:hover {
+  border-color: var(--Red);
+  color: var(--Red);
+}
+
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */

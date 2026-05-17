@@ -17,7 +17,7 @@ export default class ShowquestionsParams implements Params {
 
   toMap(): { [p: string]: any } {
     return {
-      employee_id: this.id,
+      question_id: this.id,
     };
   }
 
