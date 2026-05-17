@@ -72,7 +72,6 @@ export default class EducationSubjectController extends BaseController<
       ...options,
       useJson: true,
       headers: {
-        'x-country': options?.headers?.['x-country'] || 'sa',
         'accept-language': params?.isLocale ? 'en' : '*',
       },
     });
