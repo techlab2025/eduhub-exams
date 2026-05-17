@@ -71,6 +71,7 @@ export default class EducationClassificationController extends BaseController<
   async update(params: Params, options?: ApiCallOptions, formKey?: string) {
     const FormStore = useFormsStore();
 
+    console.log(params, 'params');
     const result = await super.update(params, options);
     await super.fetchList();
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { computed, ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import Dialog from 'primevue/dialog';
   import RenameIcon from '@/assets/images/RenameImage.png';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
@@ -39,6 +39,9 @@
     );
     emit('update:name');
   };
+  onMounted(() => {
+    console.log(props.itemId, 'props.itemId');
+  });
 </script>
 
 <template>
