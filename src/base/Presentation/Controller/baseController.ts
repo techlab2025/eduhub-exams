@@ -633,9 +633,9 @@ export default abstract class BaseController<T, TList = T[]> {
    * Handle list response (override for custom dialogs/notifications).
    */
   protected handleListResponse(_result: DataState<TList>, _successMessage?: string): void {
-    if (_result.hasError) {
+    if (_result.hasError && !_result.error?.displayMessage.includes('success')) {
       this.handleErrorResponse(_result);
-    } 
+    }
     // else if (
     //   _result instanceof DataSuccess &&
     //   this.config.showSuccessDialog &&
