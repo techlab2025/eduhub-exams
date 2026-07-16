@@ -245,7 +245,7 @@
         }"
       >
         <div class="form-fields">
-          <div class="field-group col-span-2" :class="{ disabled: loading }">
+          <div class="field-group required-field col-span-2" :class="{ disabled: loading }">
             <label class="field-label" for="name">{{ $t(`question title`) }}</label>
             <div class="input-wrap">
               <input

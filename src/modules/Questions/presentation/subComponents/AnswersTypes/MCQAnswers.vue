@@ -153,19 +153,21 @@
     >
       <div class="timeline-content">
         <div class="timeline-form-content" :class="{ 'without-delete': Answers.length === 1 }">
-          <div class="field-group">
-            <label class="field-label" :for="`answer-${index}`">
-              {{ numberToTxt(index) }} {{ $t('answer') }}
-            </label>
-            <div class="input-wrap">
-              <input
-                :id="`answer-${index}`"
-                v-model="item.answer"
-                type="text"
-                :placeholder="$t('add_your_answer')"
-                class="field-input"
-                @input="UpdateData"
-              />
+          <div class="field-group ">
+            <div class="required-field">
+              <label class="field-label " :for="`answer-${index}`">
+                {{ numberToTxt(index) }} {{ $t('answer') }}
+              </label>
+              <div class="input-wrap">
+                <input
+                  :id="`answer-${index}`"
+                  v-model="item.answer"
+                  type="text"
+                  :placeholder="$t('add_your_answer')"
+                  class="field-input"
+                  @input="UpdateData"
+                />
+              </div>
             </div>
             <div class="files-input" :class="{ haveImage: item.image }">
               <HandleFilesUpload

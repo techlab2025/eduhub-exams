@@ -355,3 +355,27 @@ input::placeholder {
   font-weight: $BaseFontSemiBoldWeight !important;
   color: $Gray-5 !important;
 }
+
+.field-label,
+.required-field label {
+  position: relative;
+}
+.field-group.required-field .field-label::after {
+  content: '*';
+  position: absolute;
+  right: -15px;
+  color: red;
+}
+
+.required-field label::after {
+  content: '*';
+  position: absolute;
+  right: -15px;
+  color: red;
+}
+.input-label {
+  width: 100%;
+}
+.education-classification-form-fields .field-label {
+  width: fit-content;
+}

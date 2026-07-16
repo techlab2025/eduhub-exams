@@ -21,20 +21,25 @@
         return;
       }
 
-      await controller.create(params.value, undefined, formKey);
+      const result = await controller.create(params.value, undefined, formKey);
+      if(result?.data){
+        if (isRouting ) {
+          if (params.value?.parentId != null) {
+            router.push({ name: 'Questions' });
+          } else {
+            router.back();
+          }
+      } else {
+        window.location.reload();
+      }
+      }
+      
+
     } catch (error) {
       console.error('Error saving employee:', error);
     } finally {
       loading.value = false;
-      if (isRouting) {
-        if (params.value?.parentId != null) {
-          router.push({ name: 'Questions' });
-        } else {
-          router.back();
-        }
-      } else {
-        window.location.reload();
-      }
+   
     }
   };
 

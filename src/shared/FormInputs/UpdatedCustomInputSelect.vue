@@ -117,8 +117,6 @@
 
   const isMultiselect = computed(() => Number(type.value) === 2);
 
-  const componentType = computed(() => (isMultiselect.value ? MultiSelect : Select));
-
   const mergedOptions = computed(() => staticOptions?.value ?? dynamicOptions.value);
 
   const multiselectProps = computed(() =>
@@ -340,14 +338,13 @@
   </div>
 
   <slot v-if="!hascontent">
-    <component
-      :is="componentType"
+    <Select
+      v-if="!isMultiselect"
       v-model="normalizedValue"
       :options="mergedOptions"
       :placeholder="placeholder"
       class="input-select w-full"
       option-label="title"
-      v-bind="multiselectProps"
       filter
       :loading="loading"
       :empty-message="message"
@@ -364,7 +361,23 @@
           {{ getSelectedTitle(value) || placeholder }}
         </span>
       </template>
-    </component>
+    </Select>
+
+    <MultiSelect
+      v-else
+      v-model="normalizedValue"
+      :options="mergedOptions"
+      :placeholder="placeholder"
+      class="input-select w-full"
+      option-label="title"
+      v-bind="multiselectProps"
+      filter
+      :loading="loading"
+      :empty-message="message"
+      :pt="{
+        overlay: { class: 'custom-select-overlay' },
+      }"
+    />
 
     <input :id="id" type="text" class="hidden w-full" :value="normalizedValue" />
   </slot>
