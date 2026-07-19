@@ -52,7 +52,7 @@ const SaveData = () => {
     <div v-for="(branch, index) in branches" :key="index" class="branch-row">
       <!-- Singular -->
 
-      <div class="input-group" :class="{ disabled: loading }">
+      <div class="input-group required-field" :class="{ disabled: loading }">
         <MultiLangInput
 :field-key="`title_Singular`" :label="`${label} ${index + 1} (Singular)`"
           :languages="['en', 'ar']" :type="`title`" :model-value="branch.singular"
@@ -60,7 +60,7 @@ const SaveData = () => {
       </div>
 
       <!-- Plural -->
-      <div class="input-group" :class="{ disabled: loading }">
+      <div class="input-group required-field" :class="{ disabled: loading }">
         <MultiLangInput
 :field-key="`title_Plural`" :label="`${label} ${index + 1} (Plural)`" :languages="['en', 'ar']"
           :type="`title`" :model-value="branch.plural" @update:model-value="branch.plural = $event" />

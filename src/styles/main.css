@@ -9213,10 +9213,70 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.support-contact-page .support-view-card .contact-info-row .contant-edit {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: center;
   gap: 60px;
-  flex-wrap: wrap;
+}
+.support-contact-page .support-view-card .contact-info-row .row-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.support-contact-page .support-view-card .contact-info-row .row-actions > button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.support-contact-page .support-view-card .contact-info-row .action-btn {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: calc(var(--xl-size-2) + 2px);
+  height: calc(var(--xl-size-2) + 2px);
+  border-radius: var(--xs-size-2);
+  border: 1px solid var(--border-weak);
+  background: var(--white);
+  color: var(--gray-500);
+  transition: all 0.2s ease;
+}
+.support-contact-page .support-view-card .contact-info-row .action-btn:hover {
+  transform: translateY(-1px);
+}
+.support-contact-page .support-view-card .contact-info-row .action-btn.edit:hover {
+  border-color: var(--PrimaryColor);
+  color: var(--PrimaryColor);
+}
+.support-contact-page .support-view-card .contact-info-row .action-btn.show:hover {
+  border-color: var(--info-dark) !important;
+  color: var(--info-dark) !important;
+}
+.support-contact-page .support-view-card .contact-info-row .action-btn.delete:hover {
+  border-color: var(--Red);
+  color: var(--Red);
+}
+.support-contact-page .support-view-card .contact-info-row .btn-filled-green {
+  color: var(--PrimaryColor);
+  border: 1px solid var(--PrimaryColor);
+  padding: 0.5rem 0.6rem;
+  font-size: 14px;
+  font-weight: 700;
+}
+.support-contact-page .support-view-card .contact-info-row .btn-filled-green:hover {
+  border: 1px solid var(--PrimaryColor);
+  padding: 0.5rem 0.6rem;
 }
 .support-contact-page .support-view-card .contact-info-row .contact-item {
   display: flex;
@@ -15281,6 +15341,18 @@ body div {
   border: 1px solid var(--gray-300) !important;
 }
 
+.is-correct-section .p-radiobutton-box {
+  background: white !important;
+  border-radius: 5px !important;
+}
+
+.is-correct-section .p-radiobutton-checked .p-radiobutton-box .p-radiobutton-icon {
+  background: var(--PrimaryColor) !important;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
 .factor-item .p-radiobutton-checked .p-radiobutton-box {
   border: none !important;
 }
@@ -15468,4 +15540,32 @@ input::placeholder {
   font-size: var(--sm-size) !important;
   font-weight: 600 !important;
   color: var(--gray-5) !important;
+}
+
+.field-label,
+.required-field label {
+  position: relative;
+}
+
+.field-group.required-field .field-label::after {
+  content: "*";
+  position: absolute;
+  right: -15px;
+  color: red;
+}
+
+.required-field label::after {
+  content: "*";
+  position: absolute;
+  right: -15px;
+  color: red;
+}
+
+.input-label {
+  width: 100%;
+}
+
+.education-classification-form-fields .field-label {
+  width: -moz-fit-content;
+  width: fit-content;
 }/*# sourceMappingURL=main.css.map */

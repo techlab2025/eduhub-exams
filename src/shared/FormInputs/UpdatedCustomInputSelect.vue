@@ -15,6 +15,7 @@
 
   import type BaseController from '@/base/Presentation/Controller/baseController';
   import Dialog from 'primevue/dialog';
+  import wordSlice from '@/base/Presentation/Utils/word_slice';
   import ReloadIcon from '../icons/CustomSelect/ReloadIcon.vue';
 
   export type ComponentType = 'select' | 'multiselect';
@@ -116,13 +117,13 @@
 
   const isMultiselect = computed(() => Number(type.value) === 2);
 
-  const componentType = computed(() => (isMultiselect.value ? MultiSelect : Select));
-
   const mergedOptions = computed(() => staticOptions?.value ?? dynamicOptions.value);
 
   const multiselectProps = computed(() =>
     isMultiselect.value ? { display: 'chip', maxSelectedLabels: 6 } : {},
   );
+
+  const selectedTitleMaxLength = 50;
 
   // Value handling
 
@@ -131,8 +132,6 @@
 
     set: (newValue) => {
       localValue.value = isMultiselect.value ? ensureArray(newValue) : ensureSingle(newValue);
-
-      // console.log(localValue.value, 'localValue.value');
 
       emitUpdate();
     },
@@ -171,6 +170,21 @@
       return value as TitleInterface<number | string>;
     }
     return null;
+  }
+
+  function getSelectedTitle(value: unknown): string {
+    if (!value || typeof value !== 'object' || !('title' in value)) return '';
+
+    const title = value.title;
+    if (title === null || title === undefined || String(title).trim() === '') return '';
+
+    return wordSlice(String(title), selectedTitleMaxLength);
+  }
+
+  function getFullSelectedTitle(value: unknown): string {
+    if (!value || typeof value !== 'object' || !('title' in value)) return '';
+
+    return value.title === null || value.title === undefined ? '' : String(value.title);
   }
 
   function syncLocalValue(newValue: typeof props.modelValue): void {
@@ -324,8 +338,33 @@
   </div>
 
   <slot v-if="!hascontent">
-    <component
-      :is="componentType"
+    <Select
+      v-if="!isMultiselect"
+      v-model="normalizedValue"
+      :options="mergedOptions"
+      :placeholder="placeholder"
+      class="input-select w-full"
+      option-label="title"
+      filter
+      :loading="loading"
+      :empty-message="message"
+      :pt="{
+        overlay: { class: 'custom-select-overlay' },
+      }"
+    >
+      <template #value="{ value }">
+        <span
+          class="selected-value"
+          :class="{ 'selected-value--placeholder': !getSelectedTitle(value) }"
+          :title="getFullSelectedTitle(value)"
+        >
+          {{ getSelectedTitle(value) || placeholder }}
+        </span>
+      </template>
+    </Select>
+
+    <MultiSelect
+      v-else
       v-model="normalizedValue"
       :options="mergedOptions"
       :placeholder="placeholder"
@@ -364,10 +403,12 @@
   .dialog {
     background-color: white !important;
   }
+
   .flex {
     display: flex;
     gap: 10px;
   }
+
   .reload-icon {
     z-index: 9999;
     cursor: pointer;
@@ -387,8 +428,41 @@
 
   .input-select {
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
     background-color: transparent;
     border-radius: 50px;
+
+    :deep(.p-select-label),
+    :deep(.p-multiselect-label-container),
+    :deep(.p-multiselect-label) {
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    :deep(.p-select-label) {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    :deep(.p-multiselect-chip),
+    :deep(.p-chip-label) {
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected-value {
+      display: block;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
 
     &:focus {
       border: 1px solid #d9dbe9 !important;
@@ -403,7 +477,7 @@
     .p-select-option-label,
     .p-multiselect-option-label {
       white-space: normal;
-      word-break: break-word;
+      overflow-wrap: anywhere;
       line-height: 1.4;
     }
   }

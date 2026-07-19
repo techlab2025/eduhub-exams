@@ -22,13 +22,17 @@
         return;
       }
 
-      await controller.create(params.value, undefined, formKey);
-      await controller.fetchList();
+      const result = await controller.create(params.value, undefined, formKey);
+      if(result?.data){
+      
+        router.push({ name: 'Employees' });
+        await controller.fetchList();
+      }
+
     } catch (error) {
       console.error('Error saving employee:', error);
     } finally {
       loading.value = false;
-      router.push({ name: 'Employees' });
     }
   };
 
@@ -50,7 +54,6 @@
       console.error('Error saving employee:', error);
     } finally {
       loading.value = false;
-      router.push({ name: 'Employees' });
     }
   };
 </script>

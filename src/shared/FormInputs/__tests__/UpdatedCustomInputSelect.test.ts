@@ -11,7 +11,8 @@ const MultiSelectStub = {
 };
 const SelectStub = {
   name: 'Select',
-  template: '<div class="select-stub" />',
+  template:
+    '<div class="select-stub"><slot name="value" :value="modelValue" :placeholder="placeholder" /></div>',
   props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage'],
   emits: ['update:modelValue'],
 };
@@ -140,6 +141,29 @@ describe('UpdatedCustomInputSelect', () => {
     const wrapper = createWrapper({ staticOptions: opts });
     const select = wrapper.findComponent(SelectStub);
     expect(select.props('options')).toEqual(opts);
+  });
+
+  it('truncates a long selected label without changing the selected value', () => {
+    const selected = makeTitleInterface(1, 'A'.repeat(100));
+    const wrapper = createWrapper({ modelValue: selected });
+
+    expect(wrapper.find('.selected-value').text()).toBe(`${'A'.repeat(47)}...`);
+    expect(wrapper.findComponent(SelectStub).props('modelValue')).toEqual(selected);
+  });
+
+  it('renders the placeholder when no value is selected', () => {
+    const wrapper = createWrapper({ modelValue: null, placeholder: 'Choose an option' });
+
+    expect(wrapper.find('.selected-value').text()).toBe('Choose an option');
+  });
+
+  it('renders the placeholder when the selected value has an undefined title', () => {
+    const wrapper = createWrapper({
+      modelValue: { id: 1, title: undefined },
+      placeholder: 'Choose an option',
+    });
+
+    expect(wrapper.find('.selected-value').text()).toBe('Choose an option');
   });
 
   it('renders hidden input with correct id', () => {

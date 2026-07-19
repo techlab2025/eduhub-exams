@@ -161,7 +161,7 @@
     </div>
 
     <div class="form-fields">
-      <div class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group required-field" :class="{ disabled: props.loading }">
         <label class="field-label" for="name">{{ $t(`First Name`) }}</label>
         <div class="input-wrap">
           <input
@@ -174,7 +174,7 @@
           />
         </div>
       </div>
-      <div class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group required-field"  :class="{ disabled: props.loading }">
         <label class="field-label" for="name">{{ $t(`Last Name`) }}</label>
         <div class="input-wrap">
           <input
@@ -187,7 +187,7 @@
           />
         </div>
       </div>
-      <div class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group required-field" :class="{ disabled: props.loading }">
         <label class="field-label" for="password">{{ $t(`password`) }}</label>
         <div class="input-wrap">
           <input
@@ -201,7 +201,7 @@
         </div>
       </div>
 
-      <div class="field-group col-span-1" :class="{ disabled: props.loading }">
+      <div class="field-group required-field col-span-1" :class="{ disabled: props.loading }">
         <label class="field-label" for="email">{{ $t(`Email`) }}</label>
         <div class="input-wrap">
           <input
@@ -227,7 +227,7 @@
           />
         </div>
       </div>
-      <div class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group required-field" :class="{ disabled: props.loading }">
         <label class="field-label" for="phone">{{ $t(`Phone`) }}</label>
         <div class="input-wrap">
           <input
@@ -241,7 +241,7 @@
         </div>
       </div>
 
-      <div class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group " :class="{ disabled: props.loading }">
         <label class="field-label" for="phone">{{ $t(`Gender`) }}</label>
 
         <div class="gender-group">

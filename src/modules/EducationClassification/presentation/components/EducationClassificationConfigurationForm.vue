@@ -219,7 +219,7 @@
       <!-- ── Fields ────────────────────────────────────────── -->
       <div class="education-classification-form-fields">
         <!-- Email Field -->
-        <div class="field-group" :class="{ disabled: Configurationloading }">
+        <div class="field-group required-field" :class="{ disabled: Configurationloading }">
           <label class="field-label" for="title"> {{ $t('number_of_branchs') }} </label>
           <div class="input-wrap">
             <input
@@ -259,7 +259,7 @@
       <!-- ── Fields ────────────────────────────────────────── -->
       <div class="education-classification-form-fields">
         <!-- Email Field -->
-        <div class="field-group" :class="{ disabled: subjectConfigurationloading }">
+        <div class="field-group required-field" :class="{ disabled: subjectConfigurationloading }">
           <div class="input-wrap">
             <MultiLangInput
               :field-key="`title_Singular`"
@@ -271,7 +271,7 @@
             />
           </div>
         </div>
-        <div class="field-group" :class="{ disabled: subjectConfigurationloading }">
+        <div class="field-group required-field" :class="{ disabled: subjectConfigurationloading }">
           <div class="input-wrap">
             <MultiLangInput
               :field-key="`title_Plural`"

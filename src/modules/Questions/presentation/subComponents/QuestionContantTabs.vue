@@ -254,8 +254,8 @@
 
 <template>
   <div class="contant_tabs">
-    <div class="form-group">
-      <div class="input">
+    <div class="form-group ">
+      <div class="input required-field">
         <UpdatedCustomInputSelect
           id="doc-branch"
           v-model:dialog-visible="subjectDialog"
@@ -269,7 +269,7 @@
           @close="subjectDialog = false"
         />
       </div>
-      <div class="input">
+      <div class="input required-field">
         <UpdatedCustomInputSelect
           id="question-sequence"
           v-model="SelectedQuestionSequence"
@@ -280,7 +280,7 @@
         />
       </div>
       <!-- {{ SelectedTopic }} -->
-      <div class="input">
+      <div class="input required-field">
         <UpdatedCustomInputSelect
           id="topics"
           v-model="SelectedTopic"
@@ -291,7 +291,7 @@
           @update:model-value="updateData"
         />
       </div>
-      <div class="input">
+      <div class="input required-field">
         <UpdatedCustomInputSelect
           id="difficulty-level"
           v-model="SelectedDifficultyLevel"
@@ -302,7 +302,7 @@
         />
       </div>
     </div>
-    <div class="new-form-group">
+    <div class="new-form-group required-field">
       <UpdatedCustomInputSelect
         id="skills"
         v-model="SelectedSkill"

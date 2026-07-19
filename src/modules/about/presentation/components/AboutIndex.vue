@@ -75,13 +75,15 @@
               <h5>social media links</h5>
             </div>
             <div class="social-icons">
-              <router-link
+              
+              <a
                 v-for="(item, index) in about.socialMedia"
                 :key="index"
-                :to="item.link || ''"
+                :href="item.link || ''"
               >
+              
                 <img v-if="item.icon" class="social-icon" :src="item.icon" alt="icon" />
-              </router-link>
+            </a>
             </div>
           </div>
         </div>
