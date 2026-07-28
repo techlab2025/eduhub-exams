@@ -52,18 +52,19 @@
     updateData();
   };
   // fillter
+  const controller = EducationClassificationController.getInstance();
   const FilterDialogShow = ref<boolean>(false);
   const ApplayFilter = async () => {
     FilterDialogShow.value = false;
-    const controller = EducationClassificationController.getInstance();
     await controller.fetchList(
       new IndexEducationClassificationParams({
         date: date.value ? formatJoinDate(date.value) : '',
       }),
     );
   };
-  const CloseFiletrDialog = () => {
+  const CloseFiletrDialog = async () => {
     FilterDialogShow.value = false;
+    await controller.fetchList(new IndexEducationClassificationParams({}));
   };
 
   const SendRequest = () => {

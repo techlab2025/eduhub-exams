@@ -38,6 +38,7 @@ export default class IndexArticleParams extends IndexParams {
       ...(this.article_type ? { article_type: this.article_type } : {}),
       ...(this.difficulty ? { difficulty: this.difficulty } : {}),
       ...(this.question_type ? { question_type: this.question_type } : {}),
+      order_dir:1
     };
   }
 }

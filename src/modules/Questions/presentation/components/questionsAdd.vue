@@ -107,7 +107,7 @@
         class="btn btn-cancel"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
-        @click="$router.push({ name: 'Questions' })"
+        @click="route?.query?.article_id ? $router.push({ name: 'Articles' }) : $router.push({ name: 'Questions' })"
       >
         {{ $t(`cancel`) }}
       </button>

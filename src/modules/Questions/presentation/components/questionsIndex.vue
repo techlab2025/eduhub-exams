@@ -22,12 +22,17 @@
   import type questionsModel from '../../core/models/questions.model';
   import IndexQuestionsParams from '../../core/params/index.question.params';
   import { QuestionStatusRejectAbroveEnum } from '../../core/constant/question.status.reject.abrove.enum';
+  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import TitleInterface from '@/base/Data/Models/titleInterface';
+  import DatePicker from 'primevue/datepicker';
+  import { useI18n } from 'vue-i18n';
 
   // Controller instance
   const controller = questionsController.getInstance();
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
+  const { t } = useI18n();
 
   const FormStore = useFormsStore();
   const formRoute = computed(() => '/questions/add');
@@ -54,6 +59,14 @@
         withPage: 1,
         ...(route.query.subjectId ? { subjectId: Number(route.query.subjectId) } : {}),
         ...(route.query.branchId ? { branchId: Number(route.query.branchId) } : {}),
+        ...(selectedStatus.value?.id
+          ? { status: Number(selectedStatus.value.id) as QuestionStatusEnum }
+          : {}),
+        ...(selectedQuestionType.value?.id
+          ? { question_type: Number(selectedQuestionType.value.id) as QuestionTypeEnum }
+          : {}),
+        ...(fromDate.value ? { from_date: formatDate(fromDate.value) } : {}),
+        ...(toDate.value ? { to_date: formatDate(toDate.value) } : {}),
       }),
     );
   };
@@ -105,9 +118,17 @@
   const FilterDialogShow = ref<boolean>(false);
   const ApplayFilter = () => {
     FilterDialogShow.value = false;
+    router.push({ query: { ...route.query, page: 1 } });
+    fetchQuestions(1);
   };
-  const CloseFiletrDialog = () => {
+  const resetFilters = () => {
+    selectedStatus.value = undefined;
+    selectedQuestionType.value = undefined;
+    fromDate.value = null;
+    toDate.value = null;
     FilterDialogShow.value = false;
+    router.push({ query: { ...route.query, page: 1 } });
+    fetchQuestions(1);
   };
 
   const GetGneratedBy = (val: QuestionGeneratedByEnum) => {
@@ -157,6 +178,42 @@
         return 'Rejected';
     }
   };
+
+  const selectedStatus = ref<TitleInterface<string>>();
+  const selectedQuestionType = ref<TitleInterface<string>>();
+  const fromDate = ref<Date | null>(null);
+  const toDate = ref<Date | null>(null);
+
+  const statusOptions = computed<TitleInterface<string>[]>(() => [
+    new TitleInterface({ id: QuestionStatusEnum.aproved, title: t('question_filters.approved') }),
+    new TitleInterface({
+      id: QuestionStatusEnum.notreviewed,
+      title: t('question_filters.not_reviewed'),
+    }),
+    new TitleInterface({ id: QuestionStatusEnum.REJECTED, title: t('question_filters.rejected') }),
+    new TitleInterface({ id: QuestionStatusEnum.created, title: t('question_filters.created') }),
+    new TitleInterface({ id: QuestionStatusEnum.revision, title: t('question_filters.revision') }),
+    new TitleInterface({ id: QuestionStatusEnum.archive, title: t('question_filters.archive') }),
+  ]);
+
+  const questionTypeOptions = computed<TitleInterface<string>[]>(() => [
+    new TitleInterface({ id: QuestionTypeEnum.mcq, title: t('question_filters.mcq') }),
+    new TitleInterface({
+      id: QuestionTypeEnum.true_false,
+      title: t('question_filters.true_false'),
+    }),
+    new TitleInterface({ id: QuestionTypeEnum.complate, title: t('question_filters.complete') }),
+    new TitleInterface({ id: QuestionTypeEnum.matching, title: t('question_filters.matching') }),
+    new TitleInterface({ id: QuestionTypeEnum.paragraph, title: t('question_filters.paragraph') }),
+    new TitleInterface({ id: QuestionTypeEnum.ranking, title: t('question_filters.ranking') }),
+  ]);
+
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 </script>
 
 <template>
@@ -186,9 +243,74 @@
         </router-link>
         <FilterDialog v-model="FilterDialogShow">
           <template #content>
+            <div class="filter-body">
+              <div class="form-fields">
+                <div class="field-group">
+                  <label class="field-label" for="question-status">
+                    {{ $t('question_filters.status') }}
+                  </label>
+                  <div class="input-wrap">
+                    <UpdatedCustomInputSelect
+                      id="question-status"
+                      v-model="selectedStatus"
+                      :static-options="statusOptions"
+                      :placeholder="$t('question_filters.select_status')"
+                      :reload="false"
+                    />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="question-type">
+                    {{ $t('question_filters.type') }}
+                  </label>
+                  <div class="input-wrap">
+                    <UpdatedCustomInputSelect
+                      id="question-type"
+                      v-model="selectedQuestionType"
+                      :static-options="questionTypeOptions"
+                      :placeholder="$t('question_filters.select_type')"
+                      :reload="false"
+                    />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="questions-from-date">
+                    {{ $t('question_filters.from_date') }}
+                  </label>
+                  <div class="input-wrap">
+                    <DatePicker
+                      id="questions-from-date"
+                      v-model="fromDate"
+                      date-format="yy-mm-dd"
+                      :max-date="toDate ?? undefined"
+                      :placeholder="$t('question_filters.select_from_date')"
+                      show-icon
+                    />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="questions-to-date">
+                    {{ $t('question_filters.to_date') }}
+                  </label>
+                  <div class="input-wrap">
+                    <DatePicker
+                      id="questions-to-date"
+                      v-model="toDate"
+                      date-format="yy-mm-dd"
+                      :min-date="fromDate ?? undefined"
+                      :placeholder="$t('question_filters.select_to_date')"
+                      show-icon
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="filter-action">
-              <button class="btn btn-cancel" @click="CloseFiletrDialog">Reset</button>
-              <button class="btn btn-primary" @click="ApplayFilter">apply</button>
+              <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
+              <button class="btn btn-primary" @click="ApplayFilter">{{ $t('apply') }}</button>
             </div>
           </template>
         </FilterDialog>
@@ -321,3 +443,9 @@
     </DataStatusBuilder>
   </div>
 </template>
+
+<style scoped>
+  .form-fields {
+    padding: 0 !important;
+  }
+</style>

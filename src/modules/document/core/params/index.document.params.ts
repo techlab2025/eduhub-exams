@@ -1,4 +1,5 @@
 import IndexParams from '@/base/Core/Params/indexParams';
+import { formatJoinDate } from '@/base/Presentation/Utils/date_format';
 
 export default class IndexDocumentParams extends IndexParams {
   dateRemove: string | null | undefined;
@@ -19,7 +20,7 @@ export default class IndexDocumentParams extends IndexParams {
   toMap(): Record<string, string | number | number[] | null> {
     const data = super.toMap();
     if (this.dateRemove) {
-      data['date_remove'] = this.dateRemove;
+      data['date_remove'] = formatJoinDate(this.dateRemove);
     }
     if (this.documentTypeId) {
       data['document_type_id'] = this.documentTypeId;

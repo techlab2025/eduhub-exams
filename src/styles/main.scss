@@ -379,3 +379,11 @@ input::placeholder {
 .education-classification-form-fields .field-label {
   width: fit-content;
 }
+
+
+// Date picker overrides Start
+.p-inputtext{
+  border-radius: 20px 0 0 20px !important;
+  border: 1px solid var(--gray-300) !important;
+}
+// Date picker overrides End

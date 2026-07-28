@@ -496,5 +496,27 @@
   "select_subject": "Select subject",
   "show_question": "Show Question",
   "are_you_sure_you_want_to_remove_this_subject": "Are you sure you want to remove this subject?",
-  "Deleting_this_subject_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_subject_must_be_created_again_if_needed": "Deleting this subject will remove all related data including any configurations and tree structures. This action is irreversible and the subject must be created again if needed"
+  "Deleting_this_subject_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_subject_must_be_created_again_if_needed": "Deleting this subject will remove all related data including any configurations and tree structures. This action is irreversible and the subject must be created again if needed",
+  "question_filters": {
+    "status": "Status",
+    "type": "Type",
+    "from_date": "From Date",
+    "to_date": "To Date",
+    "select_status": "Select status",
+    "select_type": "Select type",
+    "select_from_date": "Select from date",
+    "select_to_date": "Select to date",
+    "approved": "Approved",
+    "not_reviewed": "Not Reviewed",
+    "rejected": "Rejected",
+    "created": "Created",
+    "revision": "Revision",
+    "archive": "Archive",
+    "mcq": "MCQ",
+    "true_false": "True/False",
+    "complete": "Complete",
+    "matching": "Matching",
+    "paragraph": "Paragraph",
+    "ranking": "Ranking"
+  }
 }

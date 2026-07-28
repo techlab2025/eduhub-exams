@@ -8,6 +8,7 @@ import { useFormsStore } from '@/stores/formsStore';
 import ArticleRepository from '../../data/repositories/Artical.repository';
 import type { questionsModel } from '@/modules/Questions';
 import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
 export default class ArticleController extends BaseController<ShowQuestionsModel, questionsModel[]> {
   private static instance: ArticleController;
@@ -61,6 +62,14 @@ export default class ArticleController extends BaseController<ShowQuestionsModel
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
+    }
+    return result;
+  }
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    console.log(result , "result");
+    if(result?.error?.title){
+      dialogManager.toastError(result?.error?.title);
     }
     return result;
   }
