@@ -3,9 +3,10 @@
   import { useRoute, useRouter } from 'vue-router';
   import questionsController from '../controllers/questions.controller';
   import questionsForm from './questionsForm.vue';
-  import LoadingIcon from '@/assets/images/loading.webp';
+  // import LoadingIcon from '@/assets/images/loading.webp';
   import type AddquestionsParams from '../../core/params/add.question.params';
   import { QuestionStatusEnum } from '../../core/constant/question.status.enum.ts';
+  import WithReviewDialog from '../subComponents/Dialogs/WithReviewDialog.vue';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
@@ -14,13 +15,21 @@
   const params = ref<AddquestionsParams | null>(null);
   const router = useRouter();
 
-  const saveQuestion = async (isRouting: boolean) => {
+  const SaveStatusEnum = {
+    Save: 1,
+    SaveAndNew: 2,
+  } as const;
+
+  const saveQuestion = async (isRouting: boolean, isWithReview: boolean) => {
     loading.value = true;
     try {
       if (!params.value) {
         console.error('No employee parameters to save');
         return;
       }
+      isWithReview
+        ? (params.value.status = QuestionStatusEnum.NOT_REVIEW)
+        : (params.value.status = QuestionStatusEnum.APPROVED);
 
       const result = await controller.create(params.value, undefined, formKey);
       if (result?.data) {
@@ -80,7 +89,7 @@
       @update-data="updateData"
     />
     <div class="actions">
-      <button
+      <!-- <button
         class="btn btn-primary save-emp"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
@@ -95,7 +104,19 @@
           height="30"
         />
         <span v-else> {{ $t(`Save`) }} </span>
-      </button>
+      </button> -->
+      <WithReviewDialog
+        class="save-emp"
+        :saveStatus="SaveStatusEnum.Save"
+        @with-review="saveQuestion(true, true)"
+        @without-review="saveQuestion(true, false)"
+      />
+      <WithReviewDialog
+        class="save-emp"
+        :saveStatus="SaveStatusEnum.SaveAndNew"
+        @with-review="saveQuestion(true, true)"
+        @without-review="saveQuestion(true, false)"
+      />
       <button
         class="btn btn-draft"
         :disabled="loading"
@@ -104,14 +125,15 @@
       >
         {{ $t(`Save As draft`) }}
       </button>
-      <button
+      <!-- <button
         class="btn btn-black"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
-        @click="saveQuestion(false)"
+        @click="saveQuestion(false, false)"
       >
         {{ $t(`Save & New`) }}
-      </button>
+      </button> -->
+
       <button
         class="btn btn-cancel"
         :disabled="loading"
@@ -159,7 +181,7 @@
   }
 
   .save-emp {
-    width: 60%;
+    width: 100%;
   }
 
   .disabled {

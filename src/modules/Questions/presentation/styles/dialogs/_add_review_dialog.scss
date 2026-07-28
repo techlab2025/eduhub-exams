@@ -1,0 +1,57 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins/flex' as *;
+
+.p-dialog {
+  font-family: 'Regular';
+
+  &.review-dialog {
+    background: $StandardWhite !important;
+    border-radius: 16px;
+    width: 100%;
+    // max-width: 380px;
+    overflow: hidden;
+    font-family: 'Medium';
+
+    .input-label label {
+      color: #5d5d5d !important;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .dialog-footer {
+      display: flex !important;
+      gap: 10px;
+      width: 100%;
+      padding-block: 10px;
+
+      button {
+        width: 50%;
+      }
+    }
+    h2,
+    p {
+      color: black;
+      text-align: center;
+    }
+    .dialog-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      img {
+        width: 160px;
+        height: 160px;
+      }
+      .btns {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 20px;
+        button {
+          width: 50% !important;
+        }
+      }
+    }
+  }
+}
