@@ -1,10 +1,11 @@
 export const QuestionStatusEnum = {
-  created: 1,
-  notreviewed: 2,
-  REJECTED: 3,
-  aproved: 4,
-  revision: 5,
-  archive: 6
+  CREATED : 1,
+  APPROVED : 2,
+  REJECTED : 3,
+  DRAFT : 4,
+  NOT_REVIEW : 5,
+  ARCHIVED : 6,
+  REVISION : 7 , 
 
 } as const;
 

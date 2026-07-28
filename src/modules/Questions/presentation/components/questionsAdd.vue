@@ -3,14 +3,15 @@
   import { useRoute, useRouter } from 'vue-router';
   import questionsController from '../controllers/questions.controller';
   import questionsForm from './questionsForm.vue';
-  import type AddEmployeeParams from '../../core/params/add.question.params';
   import LoadingIcon from '@/assets/images/loading.webp';
+  import type AddquestionsParams from '../../core/params/add.question.params';
+  import { QuestionStatusEnum } from '../../core/constant/question.status.enum.ts';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
   const formKey = route.fullPath;
   const loading = ref(false);
-  const params = ref<AddEmployeeParams | null>(null);
+  const params = ref<AddquestionsParams | null>(null);
   const router = useRouter();
 
   const saveQuestion = async (isRouting: boolean) => {
@@ -22,24 +23,21 @@
       }
 
       const result = await controller.create(params.value, undefined, formKey);
-      if(result?.data){
-        if (isRouting ) {
+      if (result?.data) {
+        if (isRouting) {
           if (params.value?.parentId != null) {
             router.push({ name: 'Questions' });
           } else {
             router.back();
           }
-      } else {
-        window.location.reload();
+        } else {
+          window.location.reload();
+        }
       }
-      }
-      
-
     } catch (error) {
       console.error('Error saving employee:', error);
     } finally {
       loading.value = false;
-   
     }
   };
 
@@ -51,6 +49,17 @@
         return;
       }
       localStorage.setItem(`question-draft`, JSON.stringify(params.value));
+
+      params.value.status = QuestionStatusEnum.DRAFT;
+      const result = await controller.create(params.value, undefined, formKey);
+      if (result?.data) {
+        if (params.value?.parentId != null) {
+          router.push({ name: 'Questions' });
+        } else {
+          router.back();
+        }
+      }
+
       router.push({ name: 'Questions' });
     } catch (error) {
       console.error('Error saving employee:', error);
@@ -58,7 +67,7 @@
       loading.value = false;
     }
   };
-  const updateData = (updatedParams: AddEmployeeParams) => {
+  const updateData = (updatedParams: AddquestionsParams) => {
     params.value = updatedParams;
   };
 </script>
@@ -107,7 +116,11 @@
         class="btn btn-cancel"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
-        @click="route?.query?.article_id ? $router.push({ name: 'Articles' }) : $router.push({ name: 'Questions' })"
+        @click="
+          route?.query?.article_id
+            ? $router.push({ name: 'Articles' })
+            : $router.push({ name: 'Questions' })
+        "
       >
         {{ $t(`cancel`) }}
       </button>
