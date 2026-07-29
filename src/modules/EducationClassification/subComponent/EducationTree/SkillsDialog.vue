@@ -236,6 +236,7 @@
 </template>
 
 <style scoped lang="scss">
+
   .error-message-inputs {
     color: red;
     font-family: 'medium';

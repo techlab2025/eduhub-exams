@@ -157,7 +157,10 @@
         border: none !important;
       }
     }
-
+    .selected-value--placeholder ,
+    .input-select .selected-value{
+      padding: 11px !important;
+    }
     .image-input {
       .upload-area {
         background-color: $StandardWhite !important;
