@@ -72,6 +72,7 @@
 @use 'GlobalStyles/import';
 // helpers components styles
 @use '../shared/HelpersComponents/FilterDialog/styles/filter_dialog';
+@use 'inputs-configurations' as inputs;
 /* =============================================================================
    GLOBAL OVERRIDES & BASE STYLES
    ============================================================================= */
@@ -318,13 +319,8 @@ body {
 
   .p-inputtext {
     background: white !important;
-    color: black !important;
     width: 100% !important;
   }
-}
-
-.p-inputtext {
-  font-family: 'Demi' !important;
 }
 
 .custom-select-dialog {
@@ -337,23 +333,6 @@ body {
 // }
 .list-body .list-item button {
   justify-content: space-between !important;
-}
-
-.input-label,
-.field-label,
-label {
-  font-family: 'Demi' !important;
-  font-size: $MdSize !important;
-  font-weight: $BaseFontSemiBoldWeight !important;
-  color: $Gray-5 !important;
-}
-
-.p-select-label.p-placeholder,
-input::placeholder {
-  font-family: 'Demi' !important;
-  font-size: $SmSize !important;
-  font-weight: $BaseFontSemiBoldWeight !important;
-  color: $Gray-5 !important;
 }
 
 .field-label,
@@ -386,7 +365,6 @@ input::placeholder {
 // Date picker overrides Start
 .p-inputtext {
   border-radius: 20px 0 0 20px !important;
-  border: 1px solid var(--gray-300) !important;
 }
 // Date picker overrides End
 .input-label {
@@ -397,45 +375,6 @@ input::placeholder {
   background: $StandardWhite !important;
 }
 
-.p-multiselect-label.p-placeholder {
-  font-family: 'Light' !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: #8a8a8a !important;
-  padding: 6px !important;
-}
-
-.selected-value--placeholder,
-input::placeholder,
-textarea::placeholder {
-  font-family: 'Light' !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: #8a8a8a !important;
-}
-
-.selected-value--placeholder:not(.questions-details-form-card *),
-.input-select .selected-value:not(.questions-details-form-card *) {
-  padding: 11px !important;
-}
-
-.p-multiselect-label[data-p='has-chip'] {
-  padding: 0 !important;
-}
-
-.field-label ,.input-label {
-  font-weight: 600 !important;
-  color: var(--gray-5) !important;
-  font-size: 14px !important;
-  font-family: 'Demi' !important;
-  text-transform: capitalize !important;
-}
-
-.field-input {
-  height: fit-content !important;
-  padding: 11px !important;
-}
-
-.p-select{
-  border : 1px solid var(--border-weak) !important;
-}
+// Keep the shared form-control normalization last so module styles cannot
+// accidentally create different typography, spacing, or borders.
+@include inputs.apply-input-configurations;

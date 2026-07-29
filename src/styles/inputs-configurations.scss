@@ -1,0 +1,99 @@
+// Shared form-control tokens. Change these values here to update forms project-wide.
+$input-font-family: 'Light' !default;
+$input-font-size: 14px !default;
+$input-font-weight: 600 !default;
+$input-text-color: var(--gray-5) !default;
+$input-selected-value-color: var(--PrimaryColor) !default;
+$input-selected-value-font-weight: 600 !default;
+$input-placeholder-color: var(--second-text) !default;
+$input-placeholder-font-weight: 500 !default;
+$input-padding: 11px !default;
+$input-border: 1px solid var(--border-weak) !default;
+
+$input-label-font-family: 'Demi' !default;
+$input-label-font-size: 14px !default;
+$input-label-font-weight: 600 !default;
+$input-label-color: var(--gray-5) !default;
+
+@mixin apply-input-configurations {
+  @layer inputs-configurations {
+    .field-label,
+    .input-label,
+    .input-label label {
+      color: $input-label-color !important;
+      font-family: $input-label-font-family !important;
+      font-size: $input-label-font-size !important;
+      font-weight: $input-label-font-weight !important;
+      text-transform: capitalize !important;
+    }
+
+    .field-input,
+    .p-inputtext,
+    .p-select-label,
+    .p-multiselect-label,
+    .input-select .selected-value {
+      color: $input-text-color !important;
+      font-family: $input-font-family !important;
+      font-size: $input-font-size !important;
+      font-weight: $input-font-weight !important;
+    }
+
+    .p-select.p-inputwrapper-filled .p-select-label:not(.p-placeholder),
+    .input-select .selected-value:not(.selected-value--placeholder) {
+      color: $input-selected-value-color !important;
+      font-weight: $input-selected-value-font-weight !important;
+    }
+
+    .field-input,
+    .p-inputtext,
+    .p-select-label:not(.questions-details-form-card *),
+    .p-multiselect-label:not(.questions-details-form-card *) {
+      padding: $input-padding !important;
+    }
+
+    .p-multiselect-label:has(.p-chip) {
+      margin-block: 3px !important;
+    }
+
+    .field-input {
+      height: fit-content !important;
+    }
+
+    .p-select,
+    .p-multiselect,
+    .field-input,
+    .p-inputtext {
+      border: $input-border !important;
+    }
+
+    .p-select,
+    .p-multiselect {
+      padding: 0 !important;
+    }
+
+    // Custom value templates put their padding on .selected-value instead of
+    // PrimeVue's outer label. The Questions form keeps its module-specific spacing.
+    .input-select .selected-value:not(.questions-details-form-card *) {
+      padding: $input-padding !important;
+    }
+
+    .input-select .p-select-label:not(.questions-details-form-card *) {
+      padding: 0 !important;
+    }
+
+    .p-select-label.p-placeholder,
+    .p-multiselect-label.p-placeholder,
+    .selected-value--placeholder,
+    input::placeholder,
+    textarea::placeholder {
+      color: $input-placeholder-color !important;
+      font-family: $input-font-family !important;
+      font-size: $input-font-size !important;
+      font-weight: $input-placeholder-font-weight !important;
+    }
+
+    .p-multiselect-label[data-p='has-chip'] {
+      padding: 0 !important;
+    }
+  }
+}
