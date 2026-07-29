@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref, computed } from 'vue';
+  import { onMounted, ref, computed, watch } from 'vue';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
@@ -21,13 +21,17 @@
   import { QuestionStatusEnum } from '../../core/constant/question.status.enum';
   import type questionsModel from '../../core/models/questions.model';
   import IndexQuestionsParams from '../../core/params/index.question.params';
-  import { QuestionStatusRejectAbroveEnum } from '../../core/constant/question.status.reject.abrove.enum';
+  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import TitleInterface from '@/base/Data/Models/titleInterface';
+  import DatePicker from 'primevue/datepicker';
+  import { useI18n } from 'vue-i18n';
 
   // Controller instance
   const controller = questionsController.getInstance();
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
+  const { t } = useI18n();
 
   const FormStore = useFormsStore();
   const formRoute = computed(() => '/questions/add');
@@ -44,6 +48,10 @@
   // Pagination state
   const perPage = ref(10);
   const word = ref('');
+  const selectedStatus = ref<TitleInterface<string>>();
+  const selectedQuestionType = ref<TitleInterface<string>>();
+  const fromDate = ref<Date | null>(null);
+  const toDate = ref<Date | null>(null);
 
   const fetchQuestions = async (page: number = 1, wordStr: string = '') => {
     await controller.fetchList(
@@ -54,6 +62,14 @@
         withPage: 1,
         ...(route.query.subjectId ? { subjectId: Number(route.query.subjectId) } : {}),
         ...(route.query.branchId ? { branchId: Number(route.query.branchId) } : {}),
+        ...(selectedStatus.value?.id
+          ? { status: Number(selectedStatus.value.id) as QuestionStatusEnum }
+          : {}),
+        ...(selectedQuestionType.value?.id
+          ? { question_type: Number(selectedQuestionType.value.id) as QuestionTypeEnum }
+          : {}),
+        ...(fromDate.value ? { from_date: formatDate(fromDate.value) } : {}),
+        ...(toDate.value ? { to_date: formatDate(toDate.value) } : {}),
       }),
     );
   };
@@ -89,6 +105,7 @@
     if (route.query.word) {
       word.value = String(route.query.word);
     }
+    syncStatusFromQuery();
     await fetchQuestions(route.query.page ? Number(route.query.page) : 1, word.value);
   });
 
@@ -105,9 +122,19 @@
   const FilterDialogShow = ref<boolean>(false);
   const ApplayFilter = () => {
     FilterDialogShow.value = false;
+    router.push({ query: { ...route.query, page: 1 } });
+    fetchQuestions(1);
   };
-  const CloseFiletrDialog = () => {
+  const resetFilters = () => {
+    selectedStatus.value = undefined;
+    selectedQuestionType.value = undefined;
+    fromDate.value = null;
+    toDate.value = null;
     FilterDialogShow.value = false;
+    const query = { ...route.query };
+    delete query.status;
+    router.push({ query: { ...query, page: 1 } });
+    fetchQuestions(1);
   };
 
   const GetGneratedBy = (val: QuestionGeneratedByEnum) => {
@@ -149,13 +176,69 @@
 
   const GetQuestionStatus = (val: QuestionStatusEnum) => {
     switch (val) {
-      case QuestionStatusRejectAbroveEnum.APPROVED:
-        return 'Approved';
-      case QuestionStatusRejectAbroveEnum.PENDING:
-        return 'Pending';
-      case QuestionStatusRejectAbroveEnum.REJECTED:
-        return 'Rejected';
+      case QuestionStatusEnum.APPROVED:
+        return t('question_filters.approved');
+      case QuestionStatusEnum.ARCHIVED:
+        return t('question_filters.archive');
+      case QuestionStatusEnum.CREATED:
+        return t('question_filters.created');
+      case QuestionStatusEnum.DRAFT:
+        return t('question_filters.draft');
+      case QuestionStatusEnum.NOT_REVIEW:
+        return t('question_filters.not_reviewed');
+      case QuestionStatusEnum.REJECTED:
+        return t('question_filters.rejected');
+      case QuestionStatusEnum.REVISION:
+        return t('question_filters.revision');
+      default:
+        return '--';
     }
+  };
+
+  const statusOptions = computed<TitleInterface<string>[]>(() => [
+    new TitleInterface({ id: QuestionStatusEnum.APPROVED, title: t('question_filters.approved') }),
+    new TitleInterface({
+      id: QuestionStatusEnum.NOT_REVIEW,
+      title: t('question_filters.not_reviewed'),
+    }),
+    new TitleInterface({ id: QuestionStatusEnum.REJECTED, title: t('question_filters.rejected') }),
+    new TitleInterface({ id: QuestionStatusEnum.CREATED, title: t('question_filters.created') }),
+    new TitleInterface({ id: QuestionStatusEnum.REVISION, title: t('question_filters.revision') }),
+    new TitleInterface({ id: QuestionStatusEnum.ARCHIVED, title: t('question_filters.archive') }),
+    new TitleInterface({ id: QuestionStatusEnum.DRAFT, title: t('question_filters.draft') }),
+  ]);
+
+  const syncStatusFromQuery = () => {
+    const queryStatus = Number(route.query.status);
+    selectedStatus.value = statusOptions.value.find((option) => Number(option.id) === queryStatus);
+  };
+
+  watch(
+    () => route.query.status,
+    async (status, previousStatus) => {
+      if (status === previousStatus) return;
+      syncStatusFromQuery();
+      await fetchQuestions(1, word.value);
+    },
+  );
+
+  const questionTypeOptions = computed<TitleInterface<string>[]>(() => [
+    new TitleInterface({ id: QuestionTypeEnum.mcq, title: t('question_filters.mcq') }),
+    new TitleInterface({
+      id: QuestionTypeEnum.true_false,
+      title: t('question_filters.true_false'),
+    }),
+    new TitleInterface({ id: QuestionTypeEnum.complate, title: t('question_filters.complete') }),
+    new TitleInterface({ id: QuestionTypeEnum.matching, title: t('question_filters.matching') }),
+    new TitleInterface({ id: QuestionTypeEnum.paragraph, title: t('question_filters.paragraph') }),
+    new TitleInterface({ id: QuestionTypeEnum.ranking, title: t('question_filters.ranking') }),
+  ]);
+
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 </script>
 
@@ -186,9 +269,74 @@
         </router-link>
         <FilterDialog v-model="FilterDialogShow">
           <template #content>
+            <div class="filter-body">
+              <div class="form-fields">
+                <div class="field-group">
+                  <label class="field-label" for="question-status">
+                    {{ $t('question_filters.status') }}
+                  </label>
+                  <div class="input-wrap">
+                    <UpdatedCustomInputSelect
+                      id="question-status"
+                      v-model="selectedStatus"
+                      :static-options="statusOptions"
+                      :placeholder="$t('question_filters.select_status')"
+                      :reload="false"
+                    />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="question-type">
+                    {{ $t('question_filters.type') }}
+                  </label>
+                  <div class="input-wrap">
+                    <UpdatedCustomInputSelect
+                      id="question-type"
+                      v-model="selectedQuestionType"
+                      :static-options="questionTypeOptions"
+                      :placeholder="$t('question_filters.select_type')"
+                      :reload="false"
+                    />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="questions-from-date">
+                    {{ $t('question_filters.from_date') }}
+                  </label>
+                  <div class="input-wrap">
+                    <DatePicker
+                      id="questions-from-date"
+                      v-model="fromDate"
+                      date-format="yy-mm-dd"
+                      :max-date="toDate ?? undefined"
+                      :placeholder="$t('question_filters.select_from_date')"
+                      show-icon
+                    />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="questions-to-date">
+                    {{ $t('question_filters.to_date') }}
+                  </label>
+                  <div class="input-wrap">
+                    <DatePicker
+                      id="questions-to-date"
+                      v-model="toDate"
+                      date-format="yy-mm-dd"
+                      :min-date="fromDate ?? undefined"
+                      :placeholder="$t('question_filters.select_to_date')"
+                      show-icon
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="filter-action">
-              <button class="btn btn-cancel" @click="CloseFiletrDialog">Reset</button>
-              <button class="btn btn-primary" @click="ApplayFilter">apply</button>
+              <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
+              <button class="btn btn-primary" @click="ApplayFilter">{{ $t('apply') }}</button>
             </div>
           </template>
         </FilterDialog>
@@ -205,6 +353,11 @@
             :striped="true"
             show-index
           >
+            <template #cell-title="{ item }">
+              <div class="question-type">
+                {{ item.title || '--' }}
+              </div>
+            </template>
             <template #cell-questionType="{ item }">
               <div class="question-type">
                 {{ GetQusetionType(item.questionType) }}
@@ -220,8 +373,12 @@
                 class="status"
                 :class="{
                   'status-approved': item.status === QuestionStatusEnum.APPROVED,
-                  'status-not-reviewed': item.status === QuestionStatusEnum.PENDING,
+                  'status-archived': item.status === QuestionStatusEnum.ARCHIVED,
+                  'status-created': item.status === QuestionStatusEnum.CREATED,
+                  'status-draft': item.status === QuestionStatusEnum.DRAFT,
+                  'status-not-reviewed': item.status === QuestionStatusEnum.NOT_REVIEW,
                   'status-rejected': item.status === QuestionStatusEnum.REJECTED,
+                  'status-revision': item.status === QuestionStatusEnum.REVISION,
                 }"
               >
                 {{ GetQuestionStatus(item.status) }}
@@ -321,3 +478,9 @@
     </DataStatusBuilder>
   </div>
 </template>
+
+<style scoped>
+  .form-fields {
+    padding: 0 !important;
+  }
+</style>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import IndexDocumentTypeParams from '@/modules/document/core/params/documntType/index.document.type.params';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import { computed, onMounted, ref, watch } from 'vue';
@@ -20,8 +19,8 @@
   import IndexEducationSubjectTopicParams from '@/modules/EducationClassification/core/params/EducationTopic/index.education.subject.topic.params';
   import RemoveItemIcon from '@/shared/icons/Question/RemoveItem.vue';
   import { useRoute } from 'vue-router';
+  import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
 
-  const indexDocumentTypeParams = new IndexDocumentTypeParams();
   const emit = defineEmits(['updateData']);
   const { ContentData, draftData } = defineProps<{
     ContentData: ShowQuestionsModel;
@@ -110,7 +109,8 @@
   const fullSubjectTreeController = FullSubjectTreeController.getInstance();
 
   onMounted(async () => {
-    await stageController.fetchList(indexDocumentTypeParams);
+    const stageParams = new IndexStageParams('' , 1 , 10,  0);
+    await stageController.fetchList(stageParams);
     allStages.value = (stageController.listData.value ?? []) as StageModel[];
   });
 
@@ -136,9 +136,7 @@
   };
 
   const subjectOptions = computed<TitleInterface<number>[]>(() => {
-    return (AllSubjectTree.value! || []).flatMap((stage: StageModel) => {
-      return flattenSubjectBranchTree(stage.children);
-    });
+    return flattenSubjectBranchTree(AllSubjectTree.value ?? []);
   });
 
   const topicsControoller = EducationTopicsController.getInstance();
@@ -254,7 +252,7 @@
 
 <template>
   <div class="contant_tabs">
-    <div class="form-group ">
+    <div class="form-group">
       <div class="input required-field">
         <UpdatedCustomInputSelect
           id="doc-branch"
@@ -332,15 +330,15 @@
 </template>
 <style scoped lang="scss">
   .skill-percentage {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) minmax(120px, 160px);
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
     margin-block: 10px;
+    width: 100%;
 
     & label {
-      width: 80%;
+      width: 100%;
       border: 1px solid #e6e6e6;
       padding: 12px 9px;
       border-radius: 50px;
@@ -351,7 +349,7 @@
     }
 
     & input {
-      width: 20%;
+      width: 100%;
       padding: 12px 9px;
       border: 1px solid #e6e6e6;
       background-color: white;
@@ -361,6 +359,14 @@
       &:focus {
         outline: none;
         border: 1px solid #e6e6e6;
+      }
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 24px minmax(0, 1fr);
+
+      & input {
+        grid-column: 1 / -1;
       }
     }
   }

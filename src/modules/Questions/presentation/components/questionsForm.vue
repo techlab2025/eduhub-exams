@@ -7,7 +7,7 @@
   import QuestionAnswersDataForm from './FormComponent/QuestionAnswersDataForm.vue';
   import EditquestionsParams from '../../core/params/edit.question.params';
   import FolderIcon from '@/shared/icons/Question/FolderIcon.vue';
-  import { CustomToast } from '../subComponents/CustomTosat.ts';
+  // import { CustomToast } from '../subComponents/CustomTosat.ts';
 
   const route = useRoute();
   const emit = defineEmits(['updateData']);
@@ -95,7 +95,7 @@
       isSolutionHint: data.isSolutionHint,
       solutionHint: data.solutionHint,
     });
-    console.log(AnswerData.value, 'AnswerData.value');
+    // console.log(AnswerData.value, 'AnswerData.value');
     updateData();
   };
 
@@ -107,20 +107,20 @@
     },
     { immediate: true },
   );
-  const QuestionDraftData = ref<AddquestionsParams>();
+  // const QuestionDraftData = ref<AddquestionsParams>();
 
-  const draftRef =
-    !route.params.id && localStorage.getItem('question-draft')
-      ? CustomToast<AddquestionsParams>('question-draft')
-      : null;
+  // const draftRef =
+  //   !route.params.id && localStorage.getItem('question-draft')
+  //     ? CustomToast<AddquestionsParams>('question-draft')
+  //     : null;
 
-  watch(draftRef!, (newVal) => {
-    if (newVal) {
-      QuestionDraftData.value = newVal;
-      BasicData.value = newVal;
-      AnswerData.value = newVal;
-    }
-  });
+  // watch(draftRef!, (newVal) => {
+  //   if (newVal) {
+  //     QuestionDraftData.value = newVal;
+  //     BasicData.value = newVal;
+  //     AnswerData.value = newVal;
+  //   }
+  // });
 </script>
 
 <template>
@@ -138,13 +138,10 @@
       </div>
     </header>
 
-    <BasicQuestionDataForm
-      :draft-data="QuestionDraftData"
-      :question-data="question"
-      @update-data="GetAllBasicData"
-    />
+    <!-- :draft-data="QuestionDraftData" -->
+    <BasicQuestionDataForm :question-data="question" @update-data="GetAllBasicData" />
+    <!-- :draft-data="QuestionDraftData" -->
     <QuestionAnswersDataForm
-      :draft-data="QuestionDraftData"
       :question-data="question!"
       :question-type="BasicData?.questionType!"
       @update-data="GetAllAnswers"

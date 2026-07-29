@@ -102,7 +102,7 @@
           </div>
           <div class="actions">
             <DropList
-              :action-list="actionList(value?.question_id!, deleteArticleQuestion)"
+              :action-list="actionList(value?.question_id || 0, deleteArticleQuestion)"
               :delete-dialog-title="
                 $t('are_you_sure_you_want_to_remove_this_education_classification')
               "

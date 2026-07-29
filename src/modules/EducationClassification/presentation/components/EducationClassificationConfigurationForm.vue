@@ -305,7 +305,7 @@
 
       <SingularPluralForm
         :number-of-branches="subjectNumberOfBranchs"
-        :label="$t('name_of_subjects')"
+        :label="$t('name_of_branch')"
         :initial-branches="subjectInitialBranches"
         :loading="subjectConfigurationloading"
         @update="GetSubjectBranchs"

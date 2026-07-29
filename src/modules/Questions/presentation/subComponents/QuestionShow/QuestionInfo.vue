@@ -2,7 +2,7 @@
   import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
   import type ShowQuestionsModel from '../../../core/models/show.questions.model';
   import { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
-
+import NoImage from '@/assets/images/question/NoImage.png';
   const { questionInfo } = defineProps<{ questionInfo: ShowQuestionsModel }>();
 
   const getQuestionType = (value: QuestionTypeEnum) => {
@@ -71,7 +71,8 @@
       </div>
 
       <div class="question-body-img">
-        <img :src="questionInfo?.questionImage?.[0]?.file" :alt="questionInfo?.questionTitle" />
+        
+        <img :src="questionInfo?.questionImage?.[0]?.file || NoImage" :alt="questionInfo?.questionTitle" />
       </div>
     </div>
   </div>

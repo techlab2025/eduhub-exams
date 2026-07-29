@@ -312,6 +312,7 @@
   "subjects_name_(Singular)": "Subjects Name (Singular)",
   "subjects_name_(Plural)": "Subjects Name (Plural)",
   "name_of_subjects": "Name Of Subjects",
+  "name_of_branch": "Name Of Branch",
   "Document_name": "Document Name",
   "Reference_Number": "Reference Number",
   "support_contacts": "Support Contacts",
@@ -496,5 +497,68 @@
   "select_subject": "Select subject",
   "show_question": "Show Question",
   "are_you_sure_you_want_to_remove_this_subject": "Are you sure you want to remove this subject?",
-  "Deleting_this_subject_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_subject_must_be_created_again_if_needed": "Deleting this subject will remove all related data including any configurations and tree structures. This action is irreversible and the subject must be created again if needed"
+  "Deleting_this_subject_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_subject_must_be_created_again_if_needed": "Deleting this subject will remove all related data including any configurations and tree structures. This action is irreversible and the subject must be created again if needed",
+  "question_filters": {
+    "status": "Status",
+    "type": "Type",
+    "from_date": "From Date",
+    "to_date": "To Date",
+    "select_status": "Select status",
+    "select_type": "Select type",
+    "select_from_date": "Select from date",
+    "select_to_date": "Select to date",
+    "approved": "Approved",
+    "not_reviewed": "Not Reviewed",
+    "rejected": "Rejected",
+    "created": "Created",
+    "draft": "Draft",
+    "revision": "Revision",
+    "archive": "Archive",
+    "mcq": "MCQ",
+    "true_false": "True/False",
+    "complete": "Complete",
+    "matching": "Matching",
+    "paragraph": "Paragraph",
+    "ranking": "Ranking"
+  },
+  "reject_question_dialog": {
+    "trigger": "Reject question",
+    "title": "Why was it rejected?",
+    "subtitle": "Explanation for why the submission was rejected.",
+    "reason": "Reason",
+    "placeholder": "Enter the reason for rejection",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "cancel_question_dialog": {
+    "title": "Are you sure you want to remove this question?",
+    "description": "This will permanently remove the question.",
+    "confirm": "Yes, delete it",
+    "cancel": "Cancel"
+  },
+  "save_review_dialog": {
+    "title": "Save the question or send it for review?",
+    "description": "Submit it for review by artificial intelligence or a specialist, or proceed without review.",
+    "without_review": "Save without review",
+    "with_review": "Save with review"
+  },
+  "revision_question_dialog": {
+    "trigger": "Revision",
+    "title": "Why was it sent for revision?",
+    "subtitle": "A brief explanation of the changes made.",
+    "reason": "Revision reason",
+    "placeholder": "Enter the reason for revision",
+    "warning": "The current approved version will be saved in question history before editing begins.",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "question_status_menu": {
+    "created": "Created",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "draft": "Draft",
+    "not_reviewed": "Not Reviewed",
+    "archived":"archived",
+    "revision":"revision"
+  }
 }

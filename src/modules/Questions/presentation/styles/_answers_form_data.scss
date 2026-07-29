@@ -2,19 +2,27 @@
 @use '../../../../styles/mixins/flex' as *;
 
 .answers-data-form {
+  width: 100%;
+
+  .accordion-content-root {
+    padding-top: 10px !important;
+  }
+
   .toggll-container {
     @include flex-row(nowrap, flex-start, center);
 
-    gap: $XsSize4;
+    gap: 6px;
 
     .title {
       color: $PrimaryColor;
-      font-size: $MdSize2;
+      font-size: 13px;
       font-weight: $BaseFontSemiBoldWeight;
     }
 
     svg {
+      height: 14px;
       transition: all 0.3s ease-in-out;
+      width: 14px;
 
       &.rotate-180 {
         transform: rotate(180deg);
@@ -30,5 +38,16 @@
 
   .p-accordionpanel:last-child > .p-accordionheader {
     padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .p-accordioncontent-content {
+    padding-inline: 0 !important;
+  }
+
+  .accordion-content-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 }

@@ -8,6 +8,7 @@ vi.mock('vue-router', () => ({
   useRoute: () => ({
     path: '/employees',
     params: {},
+    query: {},
   }),
   useRouter: () => ({
     push: vi.fn(),
@@ -27,7 +28,8 @@ describe('SidebarNavigation.vue', () => {
       plugins: [pinia],
       stubs: {
         'router-link': {
-          template: '<a><slot /></a>',
+          props: ['to'],
+          template: '<a :data-status="to?.query?.status"><slot /></a>',
         },
         SettingIcon: true,
         DocumentIcon: true,
@@ -53,7 +55,21 @@ describe('SidebarNavigation.vue', () => {
     // Check for some menu items
     expect(wrapper.text()).toContain('Employees');
     expect(wrapper.text()).toContain('Documents');
-    expect(wrapper.text()).toContain('Countries');
+    expect(wrapper.text()).toContain('Questions');
+  });
+
+  it('renders five question status links with status queries', () => {
+    const wrapper = mount(SidebarNavigation, mountOptions);
+    const statusLinks = wrapper.findAll('.submenu-item');
+
+    expect(statusLinks).toHaveLength(5);
+    expect(statusLinks.map((link) => link.attributes('data-status'))).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+    ]);
   });
 
   it('applies active class based on current route', () => {

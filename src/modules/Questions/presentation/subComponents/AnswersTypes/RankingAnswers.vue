@@ -40,8 +40,6 @@
         });
       }),
     );
-        console.log(Answers.value, 'Answers.xvalue');
-
   };
 
   onMounted(() => {
@@ -114,11 +112,12 @@
           </div>
 
           <div class="ranking-section">
+            <label class="field-label" :for="`rank-${index}`">{{ $t(`ranking`) }}</label>
             <input
               :id="`rank-${index}`"
               v-model="item.rank"
               type="number"
-              placeholder="ranking"
+              :placeholder="$t('ranking')"
               @input="UpdateData"
             />
           </div>

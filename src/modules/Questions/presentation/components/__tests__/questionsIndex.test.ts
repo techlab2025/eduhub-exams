@@ -1,16 +1,17 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import questionsIndex from '../questionsIndex.vue';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
+const fetchListMock = vi.hoisted(() => vi.fn());
 
 // Mock dependencies
 vi.mock('vue-router', () => ({
   useRoute: () => ({
     params: { country_code: 'eg' },
-    query: { page: '1', word: '' },
+    query: { page: '1', word: '', status: '2' },
     fullPath: '/eg/questions',
   }),
   useRouter: () => ({
@@ -29,7 +30,7 @@ vi.mock('../../controllers/questions.controller', () => ({
   default: {
     getInstance: () => ({
       listState: { value: {} },
-      fetchList: vi.fn(),
+      fetchList: fetchListMock,
       pagination: { value: {} },
     }),
   },
@@ -73,5 +74,13 @@ describe('questionsIndex.vue', () => {
     const wrapper = mount(questionsIndex, { global: globalConfig });
     const addButton = wrapper.find('.btn-add');
     expect(addButton.exists()).toBe(true);
+  });
+
+  it('uses the status query when fetching questions', async () => {
+    mount(questionsIndex, { global: globalConfig });
+    await flushPromises();
+
+    const params = fetchListMock.mock.calls.at(-1)?.[0];
+    expect(params.status).toBe(2);
   });
 });

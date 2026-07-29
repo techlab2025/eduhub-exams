@@ -15,9 +15,9 @@
   import DocumentTranslationParams from '../../core/params/translation.params';
   import DeleteTagIcon from '@/shared/icons/DocaumentType/DeleteTagIcon.vue';
   import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
-  import type StageModel from '@/modules/Stages/core/models/stage.model'; // import type BranchesModel from '@/modules/Stages/core/models/branches.model';
+  import type StageModel from '@/modules/Stages/core/models/stage.model';
+  import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import type DocumentShowModel from '../../core/models/document.show.model';
-  import flattenBranchTree from '@/modules/document/core/TreeSelectHelper';
   // import NewIcon from '@/shared/icons/CustomSelect/NewIcon.vue';
 
   const emit = defineEmits(['updateData']);
@@ -58,8 +58,25 @@
     FetchStages();
   });
 
+  const flattenFirstBranchSubjects = (branches: BranchesModel[]): TitleInterface<number>[] => {
+    return branches.flatMap((branch) => {
+      const firstSubject = branch.subjects?.[0];
+      const currentOption = firstSubject
+        ? [
+            new TitleInterface<number>({
+              id: firstSubject.id,
+              title: firstSubject.full_title ?? firstSubject.title,
+              subtitle: branch.id,
+            }),
+          ]
+        : [];
+
+      return [...currentOption, ...flattenFirstBranchSubjects(branch.children ?? [])];
+    });
+  };
+
   const branchOptions = computed<TitleInterface<number>[]>(() => {
-    return allStages.value.flatMap((stage: StageModel) => flattenBranchTree(stage.branches));
+    return allStages.value.flatMap((stage) => flattenFirstBranchSubjects(stage.branches));
   });
 
   const selectedBranchTitle = ref<TitleInterface<number>>();

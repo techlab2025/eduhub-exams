@@ -52,7 +52,6 @@
   const description = ref('');
   const file = ref();
 
-
   const handleFile = (f: any) => {
     file.value = f.filter((item: any) => item?.base64).map((item: any) => item.base64);
     updateData();
@@ -244,18 +243,23 @@
   }
 
   .question-clarification {
-    border: 1px solid $PrimaryColor;
-    border-radius: 50px;
-    padding: 10px !important;
-    margin-block: 20px !important;
-    transition: all 2s linear;
+    border: 1px solid var(--input-border-color);
+    border-radius: 24px;
+    padding: 18px 20px !important;
+    margin-block: 0 !important;
+    background-color: var(--standard-white);
+    transition: all 0.3s linear;
 
     &.active {
-      border-radius: 12px;
+      border-radius: 24px;
+    }
+
+    :deep(.accordion-content-root) {
+      padding-top: 18px !important;
     }
 
     .p-accordionheader {
-      padding: 5px 0 !important;
+      padding: 0 !important;
     }
 
     .p-accordioncontent-content {
@@ -269,6 +273,7 @@
       width: 100%;
       color: $PrimaryColor;
       padding: 0 !important;
+      min-height: 24px;
     }
 
     .form-group {
@@ -278,20 +283,21 @@
     .input-wrapper {
       @include flex-column(nowrap, flex-start, stretch);
 
-      gap: 5px;
+      gap: 8px;
       width: 100%;
       padding: 0 !important;
 
       .description-container {
         width: 100%;
         border: 1px solid #e6e6e6;
-        border-radius: 12px;
+        border-radius: 20px;
 
         .description-header {
           background-color: #e6e6e6;
           width: 100%;
-          border-radius: 12px 12px 0 0;
-          padding: 10px;
+          border-radius: 20px 20px 0 0;
+          min-height: 52px;
+          padding: 8px 16px;
           color: #000000;
 
           @include flex-row(nowrap, space-between, center);
@@ -299,7 +305,7 @@
 
         textarea {
           background-color: white !important;
-          padding: 10px;
+          padding: 16px;
           width: 100%;
           border: none;
 
@@ -317,7 +323,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      padding: 10px;
+      padding: 12px 16px;
     }
 
     .preview-item {
@@ -353,7 +359,7 @@
     .remove-btn {
       position: absolute;
       top: 4px;
-      right: 4px;
+      inset-inline-end: 4px;
       width: 20px;
       height: 20px;
       border-radius: 50%;
@@ -378,8 +384,8 @@
 
     .image-input {
       :deep(.upload-area) {
-        padding: 10px !important;
-        border-radius: 50px;
+        padding: 8px 20px !important;
+        border-radius: 20px;
         background-color: white;
       }
 
@@ -391,6 +397,20 @@
         .upload-attachment {
           color: $PrimaryColor;
         }
+      }
+    }
+  }
+
+  @media (max-width: 640px) {
+    .question-clarification {
+      padding: 16px !important;
+
+      .question-clarification-header {
+        align-items: flex-start;
+      }
+
+      .description-header {
+        gap: 8px;
       }
     }
   }

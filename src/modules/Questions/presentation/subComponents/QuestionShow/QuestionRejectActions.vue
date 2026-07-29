@@ -1,17 +1,16 @@
 <script setup lang="ts">
-  import EditIcon from '@/shared/icons/Privacy/EditIcon.vue';
-  // import ReloadIcon from '@/shared/icons/Question/reloadIcon.vue';
-  import { useRoute } from 'vue-router';
 
-  const route = useRoute();
+  const {note} = defineProps<{
+    note:string
+  }>()
 </script>
 
 <template>
   <div class="question-review-reject-wrapper">
     <div class="card-content">
       <div class="question-review-reject-header">
-        <h2> rejected</h2>
-        <!-- <p>The question is worded incorrectly “it needs to be rephrased”.</p> -->
+        <h2> reject Reason</h2>
+        <p>{{ note || 'no Reason For Reject ' }}</p>
       </div>
 
       <!-- <div class="question-review-reject-body">
@@ -26,10 +25,10 @@
       </div> -->
     </div>
     <div class="actions">
-      <router-link class="approve-btn btn btn-primary" :to="`/questions/edit/${route.params.id}`">
+       <!--  <router-link class="approve-btn btn btn-primary" :to="`/questions/edit/${route.params.id}`">
         <EditIcon />
         Edit question
-      </router-link>
+      </router-link>-->
       <!-- <button class="btn btn-edit">
         <ReloadIcon />
         send Question to review again

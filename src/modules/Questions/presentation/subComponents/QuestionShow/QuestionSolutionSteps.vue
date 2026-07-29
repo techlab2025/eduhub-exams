@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type SolutionStepsModel from '@/modules/Questions/core/models/subModels/solution.steps.model';
 import SolutionStepsIcon from '@/shared/icons/Question/SolutionSteps.vue';
+import NoImage from '@/assets/images/question/NoImage.png';
 
 const { solutionSteps } = defineProps<{ solutionSteps: SolutionStepsModel }>();
 </script>
@@ -19,7 +20,7 @@ const { solutionSteps } = defineProps<{ solutionSteps: SolutionStepsModel }>();
         </p>
 
         <div v-if="solutionSteps?.attachments[0]?.file" class="question-solution-steps-img">
-          <img :src="solutionSteps?.attachments[0]?.file" alt="" />
+          <img :src="solutionSteps?.attachments[0]?. file || NoImage" alt="" />
         </div>
       </div>
     </div>

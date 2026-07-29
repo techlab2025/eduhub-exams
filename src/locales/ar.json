@@ -123,5 +123,66 @@
   "subject": "المادة",
   "select_classification": "اختر التصنيف",
   "select_branch": "اختر الفرع",
-  "select_subject": "اختر المادة"
+  "select_subject": "اختر المادة",
+  "question_filters": {
+    "status": "الحالة",
+    "type": "النوع",
+    "from_date": "من تاريخ",
+    "to_date": "إلى تاريخ",
+    "select_status": "اختر الحالة",
+    "select_type": "اختر النوع",
+    "select_from_date": "اختر تاريخ البداية",
+    "select_to_date": "اختر تاريخ النهاية",
+    "approved": "مقبول",
+    "not_reviewed": "لم تتم مراجعته",
+    "rejected": "مرفوض",
+    "created": "تم الإنشاء",
+    "draft": "مسودة",
+    "revision": "قيد المراجعة",
+    "archive": "مؤرشف",
+    "mcq": "اختيار من متعدد",
+    "true_false": "صح أو خطأ",
+    "complete": "إكمال",
+    "matching": "مطابقة",
+    "paragraph": "فقرة",
+    "ranking": "ترتيب"
+  },
+  "reject_question_dialog": {
+    "trigger": "رفض السؤال",
+    "title": "لماذا تم رفضه؟",
+    "subtitle": "توضيح سبب رفض المحتوى المقدم.",
+    "reason": "السبب",
+    "placeholder": "أدخل سبب رفض السؤال",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء"
+  },
+  "cancel_question_dialog": {
+    "title": "هل أنت متأكد من حذف هذا السؤال؟",
+    "description": "سيؤدي هذا إلى حذف السؤال نهائيًا.",
+    "confirm": "نعم، احذفه",
+    "cancel": "إلغاء"
+  },
+  "save_review_dialog": {
+    "title": "حفظ السؤال أم إرساله للمراجعة؟",
+    "description": "أرسل السؤال للمراجعة بواسطة الذكاء الاصطناعي أو أحد المختصين، أو تابع الحفظ دون مراجعة.",
+    "without_review": "حفظ دون مراجعة",
+    "with_review": "حفظ مع المراجعة"
+  },
+  "revision_question_dialog": {
+    "trigger": "مراجعة",
+    "title": "لماذا أُرسل للمراجعة؟",
+    "subtitle": "توضيح مختصر للتغييرات المطلوبة.",
+    "reason": "سبب المراجعة",
+    "placeholder": "أدخل سبب المراجعة",
+    "warning": "سيتم حفظ النسخة الحالية المعتمدة في سجل السؤال قبل بدء التعديل.",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء"
+  },
+  "question_status_menu": {
+    "created": "تم الإنشاء",
+    "approved": "مقبول",
+    "rejected": "مرفوض",
+    "draft": "مسودة",
+    "not_reviewed": "لم تتم مراجعته"
+  }
 }

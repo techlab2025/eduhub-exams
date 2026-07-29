@@ -340,7 +340,11 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Create new item.
    */
-  async create(params: Params, options?: ApiCallOptions): Promise<DataState<T> | undefined> {
+  async create(
+    params: Params,
+    options?: ApiCallOptions,
+    applayValidation: boolean = true,
+  ): Promise<DataState<T> | undefined> {
     this._lastOperation = { type: 'create', params, options };
 
     // console.log("[Controller] Creating item with params:", params);
@@ -351,11 +355,13 @@ export default abstract class BaseController<T, TList = T[]> {
       this.showLoadingDialog('Creating...');
     }
 
-    params.validate();
-    if (!params.validate().isValid) {
-      params.validateOrThrow();
-      this.hideLoadingDialog();
-      return;
+    if (applayValidation) {
+      params.validate();
+      if (!params.validate().isValid) {
+        params.validateOrThrow();
+        this.hideLoadingDialog();
+        return;
+      }
     }
     try {
       document.querySelector('#app')?.classList.add('loading');

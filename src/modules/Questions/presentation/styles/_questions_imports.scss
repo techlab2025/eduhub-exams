@@ -10,3 +10,6 @@
 @use 'basic_data_form';
 @use 'AnswerTypes/answer_types_imports';
 @use '_answers_form_data';
+
+// dialogs
+@use './dialogs/_add_review_dialog';

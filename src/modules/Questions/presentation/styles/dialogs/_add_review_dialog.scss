@@ -1,0 +1,116 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins/flex' as *;
+
+.p-dialog {
+  font-family: 'Regular';
+
+  &.question-action-dialog {
+    background: $StandardWhite !important;
+    border: 1px solid var(--input-border-color);
+    border-radius: 24px;
+    box-shadow: var(--shadow-xl);
+    max-width: calc(100vw - 32px);
+    overflow: hidden;
+    font-family: 'Medium';
+    width: 600px;
+
+    .dialog-header {
+      padding: 16px 20px 0;
+    }
+
+    .dialog-body {
+      padding: 0 30px 30px;
+    }
+
+    .dialog-content {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      width: 100%;
+
+      .dialog-illustration {
+        display: block;
+        height: 144px;
+        object-fit: contain;
+        width: 176px;
+      }
+
+      .dialog-message {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 520px;
+        text-align: center;
+      }
+
+      h2 {
+        color: var(--title-card-color);
+        font-size: 22px;
+        font-weight: $BaseFontSemiBoldWeight;
+        line-height: 1.4;
+        margin: 0;
+      }
+
+      p {
+        color: var(--title-header-color);
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .btns {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 6px;
+        width: 100%;
+
+        .btn {
+          border-radius: 999px;
+          justify-content: center;
+          min-height: 52px;
+          width: 100% !important;
+        }
+      }
+    }
+
+    &.cancel-question-dialog .btns {
+      grid-template-columns: minmax(0, 3fr) minmax(150px, 2fr);
+    }
+
+    @media (max-width: 520px) {
+      border-radius: 20px;
+
+      .dialog-header {
+        padding: 12px 16px 0;
+      }
+
+      .dialog-body {
+        padding: 0 18px 22px;
+      }
+
+      .dialog-content {
+        gap: 16px;
+
+        .dialog-illustration {
+          height: 112px;
+          width: 144px;
+        }
+
+        h2 {
+          font-size: 19px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+
+        .btns,
+        &.cancel-question-dialog .btns {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}

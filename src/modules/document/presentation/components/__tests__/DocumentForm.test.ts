@@ -1,7 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import DocumentForm from '../DocumentForm.vue';
+
+const stageControllerMock = vi.hoisted(() => ({
+  listData: { value: [] as unknown[] },
+  fetchList: vi.fn(),
+}));
+
+vi.mock('@/modules/Stages/presentation/controllers/stage.controller', () => ({
+  default: {
+    getInstance: () => stageControllerMock,
+  },
+}));
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
@@ -46,6 +57,7 @@ describe('DocumentForm', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    stageControllerMock.listData.value = [];
   });
 
   it('renders without crashing', () => {
@@ -90,5 +102,59 @@ describe('DocumentForm', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('uses the first subject id and full title for nested branch options', async () => {
+    stageControllerMock.listData.value = [
+      {
+        id: 130,
+        branches: [
+          {
+            id: 362,
+            subjects: [],
+            children: [
+              {
+                id: 393,
+                subjects: [
+                  {
+                    id: 286,
+                    title: '1',
+                    full_title: 'zxczxczxc -> 2 -> 1 -> 1',
+                  },
+                ],
+                children: [],
+              },
+              {
+                id: 394,
+                subjects: [],
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mount(DocumentForm, {
+      global: {
+        stubs: {
+          UpdatedCustomInputSelect: true,
+          MultiLangInput: true,
+          HandleFilesUpload: true,
+        },
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.findComponent('#doc-branch').props('staticOptions')).toEqual([
+      expect.objectContaining({
+        id: 286,
+        title: 'zxczxczxc -> 2 -> 1 -> 1',
+        subtitle: 393,
+      }),
+    ]);
   });
 });

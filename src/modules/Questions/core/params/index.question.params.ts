@@ -12,6 +12,8 @@ export default class IndexQuestionsParams extends IndexParams {
   public difficulty?: QuestionDifficultyEnum;
   public subjectId?: number;
   public branchId?: number;
+  public from_date?: string;
+  public to_date?: string;
 
   constructor(data: {
     word: string;
@@ -24,6 +26,8 @@ export default class IndexQuestionsParams extends IndexParams {
     difficulty?: QuestionDifficultyEnum;
     subjectId?: number;
     branchId?: number;
+    from_date?: string;
+    to_date?: string;
   }) {
     super(data.word, data.pageNumber, data.perPage, data.withPage);
     this.status = data.status;
@@ -32,18 +36,22 @@ export default class IndexQuestionsParams extends IndexParams {
     this.difficulty = data.difficulty;
     this.subjectId = data.subjectId;
     this.branchId = data.branchId;
+    this.from_date = data.from_date;
+    this.to_date = data.to_date;
   }
 
-  toMap(): Record<string, any> {
+  toMap(): Record<string, string | number> {
     return {
       ...super.toMap(),
-      ...(this.status ? { status: this.status } : {}),
+      ...(this.status ? { review_status: this.status } : {}),
       ...(this.generated_by ? { generated_by: this.generated_by } : {}),
       ...(this.question_type ? { question_type: this.question_type } : {}),
       ...(this.difficulty ? { difficulty: this.difficulty } : {}),
       order_dir: OrderEnum.reverse,
       ...(this.subjectId ? { e_c_subject_id: this.subjectId } : {}),
       ...(this.branchId ? { e_c_branch_id: this.branchId } : {}),
+      ...(this.from_date ? { from_date: this.from_date } : {}),
+      ...(this.to_date ? { to_date: this.to_date } : {}),
     };
   }
 }

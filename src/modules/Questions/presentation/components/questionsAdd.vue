@@ -3,43 +3,51 @@
   import { useRoute, useRouter } from 'vue-router';
   import questionsController from '../controllers/questions.controller';
   import questionsForm from './questionsForm.vue';
-  import type AddEmployeeParams from '../../core/params/add.question.params';
-  import LoadingIcon from '@/assets/images/loading.webp';
+  // import LoadingIcon from '@/assets/images/loading.webp';
+  import type AddquestionsParams from '../../core/params/add.question.params';
+  import { QuestionStatusEnum } from '../../core/constant/question.status.enum.ts';
+  import WithReviewDialog from '../subComponents/Dialogs/WithReviewDialog.vue';
+import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.vue';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
   const formKey = route.fullPath;
   const loading = ref(false);
-  const params = ref<AddEmployeeParams | null>(null);
+  const params = ref<AddquestionsParams | null>(null);
   const router = useRouter();
 
-  const saveQuestion = async (isRouting: boolean) => {
+  const SaveStatusEnum = {
+    Save: 1,
+    SaveAndNew: 2,
+  } as const;
+
+  const saveQuestion = async (isRouting: boolean, isWithReview: boolean) => {
     loading.value = true;
     try {
       if (!params.value) {
         console.error('No employee parameters to save');
         return;
       }
+      isWithReview
+        ? (params.value.status = QuestionStatusEnum.NOT_REVIEW)
+        : (params.value.status = QuestionStatusEnum.APPROVED);
 
       const result = await controller.create(params.value, undefined, formKey);
-      if(result?.data){
-        if (isRouting ) {
+      if (result?.data) {
+        if (isRouting) {
           if (params.value?.parentId != null) {
             router.push({ name: 'Questions' });
           } else {
             router.back();
           }
-      } else {
-        window.location.reload();
+        } else {
+          window.location.reload();
+        }
       }
-      }
-      
-
     } catch (error) {
       console.error('Error saving employee:', error);
     } finally {
       loading.value = false;
-   
     }
   };
 
@@ -51,6 +59,17 @@
         return;
       }
       localStorage.setItem(`question-draft`, JSON.stringify(params.value));
+
+      params.value.status = QuestionStatusEnum.DRAFT;
+      const result = await controller.create(params.value, undefined, formKey);
+      if (result?.data) {
+        if (params.value?.parentId != null) {
+          router.push({ name: 'Questions' });
+        } else {
+          router.back();
+        }
+      }
+
       router.push({ name: 'Questions' });
     } catch (error) {
       console.error('Error saving employee:', error);
@@ -58,7 +77,7 @@
       loading.value = false;
     }
   };
-  const updateData = (updatedParams: AddEmployeeParams) => {
+  const updateData = (updatedParams: AddquestionsParams) => {
     params.value = updatedParams;
   };
 </script>
@@ -71,7 +90,7 @@
       @update-data="updateData"
     />
     <div class="actions">
-      <button
+      <!-- <button
         class="btn btn-primary save-emp"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
@@ -86,7 +105,19 @@
           height="30"
         />
         <span v-else> {{ $t(`Save`) }} </span>
-      </button>
+      </button> -->
+      <WithReviewDialog
+        class="save-emp"
+        :saveStatus="SaveStatusEnum.Save"
+        @with-review="saveQuestion(true, true)"
+        @without-review="saveQuestion(true, false)"
+      />
+      <WithReviewDialog
+        class="save-emp"
+        :saveStatus="SaveStatusEnum.SaveAndNew"
+        @with-review="saveQuestion(true, true)"
+        @without-review="saveQuestion(true, false)"
+      />
       <button
         class="btn btn-draft"
         :disabled="loading"
@@ -95,22 +126,30 @@
       >
         {{ $t(`Save As draft`) }}
       </button>
-      <button
+      <!-- <button
         class="btn btn-black"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
-        @click="saveQuestion(false)"
+        @click="saveQuestion(false, false)"
       >
         {{ $t(`Save & New`) }}
-      </button>
-      <button
+      </button> -->
+
+      <!-- <button
         class="btn btn-cancel"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
-        @click="$router.push({ name: 'Questions' })"
+        @click="
+          route?.query?.article_id
+            ? $router.push({ name: 'Articles' })
+            : $router.push({ name: 'Questions' })
+        "
       >
         {{ $t(`cancel`) }}
-      </button>
+      </button> -->
+      <CancelQuestionDialog @cancel=" route?.query?.article_id
+            ? $router.push({ name: 'Articles' })
+            : $router.push({ name: 'Questions' })" />
     </div>
 
     <!-- Error Display -->
@@ -146,7 +185,7 @@
   }
 
   .save-emp {
-    width: 60%;
+    width: 100%;
   }
 
   .disabled {

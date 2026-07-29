@@ -54,7 +54,8 @@ export function useRouteSearch() {
   });
 
   function navigate(route: SearchableRoute) {
-    router.push(route.path);
+    // console.log(route.name , "route.path");
+    router.push({ name: route.name });
     reset();
   }
 
