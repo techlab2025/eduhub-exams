@@ -62,6 +62,10 @@
     }
 
     .image-input {
+      :deep(.upload-area) {
+        padding: 24px 16px !important;
+      }
+
       .upload-label {
         width: fit-content;
         text-align: start;
@@ -84,5 +88,9 @@
       font-weight: 600 !important;
       text-transform: capitalize !important;
     }
+  }
+
+  :deep(.accordion-content-root) {
+    padding-top: $XsSize3 !important;
   }
 }

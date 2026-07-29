@@ -96,11 +96,12 @@
       <div class="timeline-content">
         <div class="timeline-form-content">
           <div class="matching-section">
-            <label :for="`answer-${index}`">{{ $t(`answer`) }}</label>
+            <label class="field-label" :for="`answer-${index}`">{{ $t(`answer`) }}</label>
             <input
               :id="`answer-${index}`"
               v-model="item.answer"
               type="text"
+              class="field-input"
               :placeholder="$t('add_your_answer')"
               @input="UpdateData"
             />
@@ -110,12 +111,13 @@
           </div>
 
           <div class="matching-section">
-            <label :for="`matching-${index}`">matching answer</label>
+            <label class="field-label" :for="`matching-${index}`">{{ $t(`matching`) }}</label>
             <input
               :id="`matching-${index}`"
               v-model="item.match"
               type="text"
-              placeholder="matching"
+              class="field-input"
+              :placeholder="$t('matching')"
               @input="UpdateData"
             />
           </div>

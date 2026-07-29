@@ -244,18 +244,19 @@
   }
 
   .question-clarification {
-    border: 1px solid $PrimaryColor;
-    border-radius: 50px;
-    padding: 10px !important;
+    border: 1px solid var(--input-border-color);
+    border-radius: 30px;
+    padding: 20px !important;
     margin-block: 20px !important;
-    transition: all 2s linear;
+    background-color: var(--standard-white);
+    transition: all 0.3s linear;
 
     &.active {
-      border-radius: 12px;
+      border-radius: 24px;
     }
 
     .p-accordionheader {
-      padding: 5px 0 !important;
+      padding: 0 !important;
     }
 
     .p-accordioncontent-content {
@@ -269,6 +270,7 @@
       width: 100%;
       color: $PrimaryColor;
       padding: 0 !important;
+      min-height: 24px;
     }
 
     .form-group {
@@ -285,13 +287,13 @@
       .description-container {
         width: 100%;
         border: 1px solid #e6e6e6;
-        border-radius: 12px;
+        border-radius: 30px;
 
         .description-header {
           background-color: #e6e6e6;
           width: 100%;
-          border-radius: 12px 12px 0 0;
-          padding: 10px;
+          border-radius: 30px 30px 0 0;
+          padding: 10px 20px;
           color: #000000;
 
           @include flex-row(nowrap, space-between, center);
@@ -378,8 +380,8 @@
 
     .image-input {
       :deep(.upload-area) {
-        padding: 10px !important;
-        border-radius: 50px;
+        padding: 8px 20px !important;
+        border-radius: 20px;
         background-color: white;
       }
 

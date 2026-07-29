@@ -3,24 +3,24 @@
 @use '../../../../../styles/mixins/grid.scss' as *;
 
 .mcq-answers-time-line-container {
-  .timeline-form-content {
-    margin-block: 10px !important;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: $XsSize2;
 
   .timeline-form-content {
     display: grid;
-    grid-template-columns: 75% 20% 5%;
-    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) 200px 32px;
+    gap: $MdSize;
     align-items: end;
-    margin-block: 10px;
+    margin-block: 10px !important;
 
     &.without-delete {
-      grid-template-columns: 80% 20%;
+      grid-template-columns: minmax(0, 1fr) 200px;
     }
 
     @media (max-width: 767px) {
       grid-template-columns: 1fr;
-      gap: 0;
+      gap: $XsSize3;
     }
 
     .timeline-content {
@@ -38,19 +38,18 @@
         font-weight: $BaseFontSemiBoldWeight;
         text-transform: capitalize !important;
         font-family: 'Demi';
-        // margin-bottom: 5px;
       }
 
       .field-input {
         border-radius: 50px;
         background-color: white;
-        padding: 10px;
+        min-height: 56px;
+        padding: 10px 64px 10px 16px;
       }
 
       .files-input {
         position: absolute;
-        bottom: 34%;
-        transform: translateY(50%);
+        bottom: 8px;
         right: 10px;
         border-radius: 50px;
 
@@ -66,7 +65,7 @@
 
         .upload-area {
           background-color: $StandardWhite !important;
-          padding: 5px !important;
+          padding: 8px !important;
           border-radius: 50%;
           border: 1px solid $PrimaryColor !important;
         }
@@ -75,29 +74,6 @@
           width: 40px !important;
           height: 40px !important;
           border-radius: 50%;
-        }
-
-        .add-imaegs-data {
-          @include flex-column(nowrap, center, center);
-
-          gap: $XsSize5;
-
-          .first-text {
-            color: $Gray-5;
-            font-size: $XsSize;
-            font-weight: $BaseFontSemiBoldWeight;
-
-            span {
-              color: $PrimaryColor;
-              padding-inline: $XsSize5;
-            }
-          }
-
-          .second-text {
-            color: $SecondText;
-            font-size: $XsSize;
-            font-weight: $BaseFontWeight;
-          }
         }
       }
     }
@@ -110,14 +86,13 @@
     gap: 10px;
     border: 1px solid #e6e6e6;
     border-radius: 50px;
-    padding: 10px !important;
+    min-height: 56px;
+    padding: 10px 16px !important;
     cursor: pointer;
-     color: #121212;
-      font-size: 16px;
-      font-weight: 500;
-      font-family: 'Medium';
-    // height: 50px;
-    // margin-top: 23px;
+    color: #121212;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Medium';
 
     label {
       color: #121212;
@@ -130,28 +105,8 @@
       }
     }
 
-    .p-checkbox-box { 
+    .p-checkbox-box {
       border-radius: 5px !important;
-    }
-  }
-
-  .add-icon {
-    @include flex-row(nowrap, flex-start, center);
-
-    margin-block: 10px;
-    cursor: pointer;
-
-    span {
-      padding-inline: 5px;
-      color: $PrimaryColor;
-      font-size: 16px;
-      font-weight: 500;
-      font-family: 'Medium';
-    }
-
-    svg {
-      width: 19px;
-      height: 19px;
     }
   }
 
@@ -159,10 +114,7 @@
     width: 30px;
     height: 30px;
     margin-top: auto;
-    margin-bottom: 5px;
-    // border: 1px solid red;
-    // border-radius: 50%;
-    // transform: translateY(10px);
+    margin-bottom: 12px;
     cursor: pointer;
 
     .delete-btn {

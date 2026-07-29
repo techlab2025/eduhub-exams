@@ -2,6 +2,10 @@
 @use '../../../../styles/mixins/flex' as *;
 
 .answers-data-form {
+  :deep(.accordion-content-root) {
+    padding-top: $XsSize3 !important;
+  }
+
   .toggll-container {
     @include flex-row(nowrap, flex-start, center);
 
@@ -30,5 +34,9 @@
 
   .p-accordionpanel:last-child > .p-accordionheader {
     padding-left: 0 !important;
+  }
+
+  :deep(.p-accordioncontent-content) {
+    padding-inline: 0 !important;
   }
 }

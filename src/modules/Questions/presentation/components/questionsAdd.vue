@@ -7,6 +7,7 @@
   import type AddquestionsParams from '../../core/params/add.question.params';
   import { QuestionStatusEnum } from '../../core/constant/question.status.enum.ts';
   import WithReviewDialog from '../subComponents/Dialogs/WithReviewDialog.vue';
+import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.vue';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
@@ -134,7 +135,7 @@
         {{ $t(`Save & New`) }}
       </button> -->
 
-      <button
+      <!-- <button
         class="btn btn-cancel"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
@@ -145,7 +146,10 @@
         "
       >
         {{ $t(`cancel`) }}
-      </button>
+      </button> -->
+      <CancelQuestionDialog @cancel=" route?.query?.article_id
+            ? $router.push({ name: 'Articles' })
+            : $router.push({ name: 'Questions' })" />
     </div>
 
     <!-- Error Display -->
