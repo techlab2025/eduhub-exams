@@ -12,7 +12,11 @@
     grid-template-columns: minmax(0, 1fr) 200px 32px;
     gap: $MdSize;
     align-items: end;
-    margin-block: 10px !important;
+    background-color: var(--background-color-soft-light);
+    border: 1px solid var(--input-border-color);
+    border-radius: $XlSize;
+    margin-block: 0 !important;
+    padding: $MdSize;
 
     &.without-delete {
       grid-template-columns: minmax(0, 1fr) 200px;
@@ -21,6 +25,7 @@
     @media (max-width: 767px) {
       grid-template-columns: 1fr;
       gap: $XsSize3;
+      padding: $SmSize;
     }
 
     .timeline-content {
@@ -50,7 +55,7 @@
       .files-input {
         position: absolute;
         bottom: 8px;
-        right: 10px;
+        inset-inline-end: 10px;
         border-radius: 50px;
 
         &.haveImage {
@@ -114,8 +119,13 @@
     width: 30px;
     height: 30px;
     margin-top: auto;
-    margin-bottom: 12px;
+    margin-bottom: 13px;
     cursor: pointer;
+
+    @media (max-width: 767px) {
+      justify-self: end;
+      margin-bottom: 0;
+    }
 
     .delete-btn {
       align-self: center;

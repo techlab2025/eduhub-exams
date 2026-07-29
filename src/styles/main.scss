@@ -388,5 +388,12 @@ input::placeholder {
 }
 // Date picker overrides End
   .input-label{
-    width: 100%;
+    width: 100% !important;
   }
+
+
+
+.p-dialog {
+    background: $StandardWhite !important;
+
+}

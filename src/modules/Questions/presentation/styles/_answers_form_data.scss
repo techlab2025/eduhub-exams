@@ -2,8 +2,10 @@
 @use '../../../../styles/mixins/flex' as *;
 
 .answers-data-form {
-  :deep(.accordion-content-root) {
-    padding-top: $XsSize3 !important;
+  width: 100%;
+
+  .accordion-content-root {
+    padding-top: $MdSize !important;
   }
 
   .toggll-container {
@@ -34,9 +36,16 @@
 
   .p-accordionpanel:last-child > .p-accordionheader {
     padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
-  :deep(.p-accordioncontent-content) {
+  .p-accordioncontent-content {
     padding-inline: 0 !important;
+  }
+
+  .accordion-content-inner {
+    display: flex;
+    flex-direction: column;
+    gap: $MdSize;
   }
 }

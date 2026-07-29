@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SolutionHintIcon from '@/shared/icons/Question/SolutionHint.vue';
 import type SolutionHintModel from '@/modules/Questions/core/models/subModels/solution.hint.model';
+    import NoImage from '@/assets/images/question/NoImage.png';
 
 const { solutionHint } = defineProps<{ solutionHint: SolutionHintModel }>();
 </script>
@@ -19,7 +20,7 @@ const { solutionHint } = defineProps<{ solutionHint: SolutionHintModel }>();
         </p>
 
         <div v-if="solutionHint?.attachments[0]?.file" class="question-solution-hint-img">
-          <img :src="solutionHint?.attachments[0]?.file" alt="" />
+          <img :src="solutionHint?.attachments[0]?.file|| NoImage" alt="" />
         </div>
       </div>
     </div>

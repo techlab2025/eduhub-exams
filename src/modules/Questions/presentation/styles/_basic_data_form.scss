@@ -4,6 +4,7 @@
 
 .basic-data-form {
   font-family: 'Demi';
+  width: 100%;
 
   .toggll-container {
     @include flex-row(nowrap, flex-start, center);
@@ -33,6 +34,7 @@
 
   .p-accordionpanel:last-child > .p-accordionheader {
     padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   .form-fields {
@@ -90,7 +92,7 @@
     }
   }
 
-  :deep(.accordion-content-root) {
-    padding-top: $XsSize3 !important;
+  .accordion-content-root {
+    padding-top: $MdSize !important;
   }
 }

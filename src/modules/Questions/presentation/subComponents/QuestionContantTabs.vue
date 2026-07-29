@@ -254,7 +254,7 @@
 
 <template>
   <div class="contant_tabs">
-    <div class="form-group ">
+    <div class="form-group">
       <div class="input required-field">
         <UpdatedCustomInputSelect
           id="doc-branch"
@@ -332,15 +332,15 @@
 </template>
 <style scoped lang="scss">
   .skill-percentage {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) minmax(120px, 160px);
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
     margin-block: 10px;
+    width: 100%;
 
     & label {
-      width: 80%;
+      width: 100%;
       border: 1px solid #e6e6e6;
       padding: 12px 9px;
       border-radius: 50px;
@@ -351,7 +351,7 @@
     }
 
     & input {
-      width: 20%;
+      width: 100%;
       padding: 12px 9px;
       border: 1px solid #e6e6e6;
       background-color: white;
@@ -361,6 +361,14 @@
       &:focus {
         outline: none;
         border: 1px solid #e6e6e6;
+      }
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 24px minmax(0, 1fr);
+
+      & input {
+        grid-column: 1 / -1;
       }
     }
   }

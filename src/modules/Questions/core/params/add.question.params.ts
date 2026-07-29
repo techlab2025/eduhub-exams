@@ -224,7 +224,7 @@ export default class AddquestionsParams implements Params {
       // Draft
       ...(this.status !== undefined &&
         this.status !== null && {
-          status: this.status,
+          review_status: this.status,
         }),
     };
   }

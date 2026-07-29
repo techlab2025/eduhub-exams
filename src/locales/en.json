@@ -511,6 +511,7 @@
     "not_reviewed": "Not Reviewed",
     "rejected": "Rejected",
     "created": "Created",
+    "draft": "Draft",
     "revision": "Revision",
     "archive": "Archive",
     "mcq": "MCQ",
@@ -519,5 +520,26 @@
     "matching": "Matching",
     "paragraph": "Paragraph",
     "ranking": "Ranking"
+  },
+  "reject_question_dialog": {
+    "trigger": "Reject question",
+    "title": "Why was it rejected?",
+    "subtitle": "Explanation for why the submission was rejected.",
+    "reason": "Reason",
+    "placeholder": "Enter the reason for rejection",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "cancel_question_dialog": {
+    "title": "Are you sure you want to remove this question?",
+    "description": "This will permanently remove the question.",
+    "confirm": "Yes, delete it",
+    "cancel": "Cancel"
+  },
+  "save_review_dialog": {
+    "title": "Save the question or send it for review?",
+    "description": "Submit it for review by artificial intelligence or a specialist, or proceed without review.",
+    "without_review": "Save without review",
+    "with_review": "Save with review"
   }
 }

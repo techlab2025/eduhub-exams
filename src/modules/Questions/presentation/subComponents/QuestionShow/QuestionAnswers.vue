@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type AnswerModel from '@/modules/Questions/core/models/subModels/answer.model';
-
+  import NoImage from '@/assets/images/question/NoImage.png';
   const { answers } = defineProps<{ answers: AnswerModel[] }>();
   const numberToTxt = (index: number) => {
     const txt = [
@@ -33,7 +33,11 @@
           <h2 class="answer">{{ answer?.answer }}</h2>
         </div>
         <div class="answer-image">
-          <img v-if="answer?.image" :src="answer?.image?.[0]?.file" :alt="answer?.answer" />
+          <img
+            v-if="answer?.image"
+            :src="answer?.image?.[0]?.file || NoImage"
+            :alt="answer?.answer"
+          />
         </div>
       </div>
     </div>

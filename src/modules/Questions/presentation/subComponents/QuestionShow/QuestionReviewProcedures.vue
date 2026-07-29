@@ -1,12 +1,11 @@
 <script setup lang="ts">
   import AgreeIcon from '@/shared/icons/Question/AgreeIcon.vue';
-  // import CautionIcon from '@/shared/icons/Question/CautionIcon.vue';
-  import RejectIcon from '@/shared/icons/Question/RejectIcon.vue';
   import questionsController from '../../controllers/questions.controller';
   import ToggleQuestionStatusParams from '@/modules/Questions/core/params/question.toggle.status.params';
   import { useRoute, useRouter } from 'vue-router';
   import { QuestionStatusRejectAbroveEnum } from '@/modules/Questions/core/constant/question.status.reject.abrove.enum';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+import RejectQuestion from '../Dialogs/RejectQuestion.vue';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
@@ -20,10 +19,11 @@
     router.push({ name: 'Questions' });
     dialogManager.toastSuccess('Question approved successfully');
   };
-  const rejectQuestion = async () => {
+  const rejectQuestion = async (note?:string) => {
     const quiestionStatusParams = new ToggleQuestionStatusParams({
       id: Number(route.params.id),
       status: QuestionStatusRejectAbroveEnum.REJECTED,
+      note:note
     });
     await controller.updateReviewStatus(quiestionStatusParams);
     router.push({ name: 'Questions' });
@@ -53,10 +53,11 @@
           <AgreeIcon />
           Agree to the question
         </button>
-        <button class="reject-btn btn btn-cancel" @click="rejectQuestion">
+        <!-- <button class="reject-btn btn btn-cancel" @click="rejectQuestion">
           <RejectIcon />
           reject question
-        </button>
+        </button> -->
+      <RejectQuestion @reject="rejectQuestion" />
       </div>
     </div>
   </div>

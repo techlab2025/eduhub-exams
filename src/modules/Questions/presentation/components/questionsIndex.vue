@@ -21,7 +21,6 @@
   import { QuestionStatusEnum } from '../../core/constant/question.status.enum';
   import type questionsModel from '../../core/models/questions.model';
   import IndexQuestionsParams from '../../core/params/index.question.params';
-  import { QuestionStatusRejectAbroveEnum } from '../../core/constant/question.status.reject.abrove.enum';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import DatePicker from 'primevue/datepicker';
@@ -170,12 +169,22 @@
 
   const GetQuestionStatus = (val: QuestionStatusEnum) => {
     switch (val) {
-      case QuestionStatusRejectAbroveEnum.APPROVED:
-        return 'Approved';
-      case QuestionStatusRejectAbroveEnum.PENDING:
-        return 'Pending';
-      case QuestionStatusRejectAbroveEnum.REJECTED:
-        return 'Rejected';
+      case QuestionStatusEnum.APPROVED:
+        return t('question_filters.approved');
+      case QuestionStatusEnum.ARCHIVED:
+        return t('question_filters.archive');
+      case QuestionStatusEnum.CREATED:
+        return t('question_filters.created');
+      case QuestionStatusEnum.DRAFT:
+        return t('question_filters.draft');
+      case QuestionStatusEnum.NOT_REVIEW:
+        return t('question_filters.not_reviewed');
+      case QuestionStatusEnum.REJECTED:
+        return t('question_filters.rejected');
+      case QuestionStatusEnum.REVISION:
+        return t('question_filters.revision');
+      default:
+        return '--';
     }
   };
 
@@ -185,15 +194,16 @@
   const toDate = ref<Date | null>(null);
 
   const statusOptions = computed<TitleInterface<string>[]>(() => [
-    new TitleInterface({ id: QuestionStatusEnum.aproved, title: t('question_filters.approved') }),
+    new TitleInterface({ id: QuestionStatusEnum.APPROVED, title: t('question_filters.approved') }),
     new TitleInterface({
-      id: QuestionStatusEnum.notreviewed,
+      id: QuestionStatusEnum.NOT_REVIEW,
       title: t('question_filters.not_reviewed'),
     }),
     new TitleInterface({ id: QuestionStatusEnum.REJECTED, title: t('question_filters.rejected') }),
-    new TitleInterface({ id: QuestionStatusEnum.created, title: t('question_filters.created') }),
-    new TitleInterface({ id: QuestionStatusEnum.revision, title: t('question_filters.revision') }),
-    new TitleInterface({ id: QuestionStatusEnum.archive, title: t('question_filters.archive') }),
+    new TitleInterface({ id: QuestionStatusEnum.CREATED, title: t('question_filters.created') }),
+    new TitleInterface({ id: QuestionStatusEnum.REVISION, title: t('question_filters.revision') }),
+    new TitleInterface({ id: QuestionStatusEnum.ARCHIVED, title: t('question_filters.archive') }),
+    new TitleInterface({ id: QuestionStatusEnum.DRAFT, title: t('question_filters.draft') }),
   ]);
 
   const questionTypeOptions = computed<TitleInterface<string>[]>(() => [
@@ -327,6 +337,11 @@
             :striped="true"
             show-index
           >
+            <template #cell-title="{ item }">
+              <div class="question-type">
+                {{ item.title || '--' }}
+              </div>
+            </template>
             <template #cell-questionType="{ item }">
               <div class="question-type">
                 {{ GetQusetionType(item.questionType) }}
@@ -342,8 +357,12 @@
                 class="status"
                 :class="{
                   'status-approved': item.status === QuestionStatusEnum.APPROVED,
-                  'status-not-reviewed': item.status === QuestionStatusEnum.PENDING,
+                  'status-archived': item.status === QuestionStatusEnum.ARCHIVED,
+                  'status-created': item.status === QuestionStatusEnum.CREATED,
+                  'status-draft': item.status === QuestionStatusEnum.DRAFT,
+                  'status-not-reviewed': item.status === QuestionStatusEnum.NOT_REVIEW,
                   'status-rejected': item.status === QuestionStatusEnum.REJECTED,
+                  'status-revision': item.status === QuestionStatusEnum.REVISION,
                 }"
               >
                 {{ GetQuestionStatus(item.status) }}

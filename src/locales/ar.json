@@ -137,6 +137,7 @@
     "not_reviewed": "لم تتم مراجعته",
     "rejected": "مرفوض",
     "created": "تم الإنشاء",
+    "draft": "مسودة",
     "revision": "قيد المراجعة",
     "archive": "مؤرشف",
     "mcq": "اختيار من متعدد",
@@ -145,5 +146,26 @@
     "matching": "مطابقة",
     "paragraph": "فقرة",
     "ranking": "ترتيب"
+  },
+  "reject_question_dialog": {
+    "trigger": "رفض السؤال",
+    "title": "لماذا تم رفضه؟",
+    "subtitle": "توضيح سبب رفض المحتوى المقدم.",
+    "reason": "السبب",
+    "placeholder": "أدخل سبب رفض السؤال",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء"
+  },
+  "cancel_question_dialog": {
+    "title": "هل أنت متأكد من حذف هذا السؤال؟",
+    "description": "سيؤدي هذا إلى حذف السؤال نهائيًا.",
+    "confirm": "نعم، احذفه",
+    "cancel": "إلغاء"
+  },
+  "save_review_dialog": {
+    "title": "حفظ السؤال أم إرساله للمراجعة؟",
+    "description": "أرسل السؤال للمراجعة بواسطة الذكاء الاصطناعي أو أحد المختصين، أو تابع الحفظ دون مراجعة.",
+    "without_review": "حفظ دون مراجعة",
+    "with_review": "حفظ مع المراجعة"
   }
 }

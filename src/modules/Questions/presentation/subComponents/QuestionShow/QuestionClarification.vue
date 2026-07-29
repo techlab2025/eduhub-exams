@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import QuestionClarificationModel from '@/modules/Questions/core/models/subModels/question.clarification.model';
   import ClerificationIcon from '@/shared/icons/Question/ClerificationIcon.vue';
+    import NoImage from '@/assets/images/question/NoImage.png';
+
   const { clarification } = defineProps({
     clarification: {
       type: QuestionClarificationModel,
@@ -39,7 +41,7 @@
 
         <!-- Image -->
         <div v-if="clarification?.attachments![0]?.file" class="question-clarification-img">
-          <img :src="clarification?.attachments[0]?.file" alt="question clarification" />
+          <img :src="clarification?.attachments[0]?.file ||  NoImage" alt="question clarification" />
         </div>
       </div>
     </div>

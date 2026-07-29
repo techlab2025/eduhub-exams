@@ -8,18 +8,18 @@
   &.document-tab {
     display: grid;
     gap: $MdSize;
-    margin-bottom: $XsSize;
+    margin-bottom: 0;
     width: 100%;
 
     .form-group {
       background-color: var(--background-color-soft-light);
-      border-radius: 25px;
-      padding: 16px;
+      border-radius: $XlSize;
+      padding: $MdSize;
     }
   }
 
   .new-form-group {
-    margin-bottom: $XsSize;
+    margin-bottom: 0;
     width: 100%;
 
     .input-select {
@@ -37,7 +37,7 @@
       display: grid;
       gap: $XsSize3;
       grid-template-columns: 24px minmax(0, 1fr) 140px;
-      margin-block: $XsSize3;
+      margin-top: $XsSize3;
       padding: 12px 16px;
 
       label {
@@ -72,7 +72,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: $MdSize;
-    margin-bottom: $XsSize;
+    margin-bottom: $MdSize;
     width: 100%;
 
     .field-input {
