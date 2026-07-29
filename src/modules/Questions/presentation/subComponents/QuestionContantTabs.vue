@@ -34,8 +34,6 @@
   const SelectedSkill = ref<TitleInterface<number>[] | null>(null);
   const selectedBranchTitle = ref<TitleInterface<number>>();
 
-  const subjectDialog = ref(false);
-
   const DifficultLevels = ref<TitleInterface<number>[]>([
     {
       id: QuestionDifficultyEnum.easy,
@@ -109,7 +107,7 @@
   const fullSubjectTreeController = FullSubjectTreeController.getInstance();
 
   onMounted(async () => {
-    const stageParams = new IndexStageParams('' , 1 , 10,  0);
+    const stageParams = new IndexStageParams('', 1, 10, 0);
     await stageController.fetchList(stageParams);
     allStages.value = (stageController.listData.value ?? []) as StageModel[];
   });
@@ -119,18 +117,21 @@
   });
 
   const AllSubjectTree = ref<StageModel[]>([]);
-  const handleBranchChange = async (selected: TitleInterface<number> | undefined) => {
-    selectedBranchTitle.value = selected;
-    const fullSubjectTreeParams = new FullSubjectTreeParams({
-      id: selectedBranchTitle.value?.id as number,
-    });
+  const handleBranchChange = async (selected: TitleInterface<number> | null | undefined) => {
+    selectedBranchTitle.value = selected ?? undefined;
+    SelectedQuestionSequence.value = null;
+    SelectedTopic.value = [];
+    AllSubjectTree.value = [];
+    topicsOptions.value = [];
+
     if (selectedBranchTitle.value?.id) {
+      const requestedBranchId = selectedBranchTitle.value.id;
+      const fullSubjectTreeParams = new FullSubjectTreeParams({
+        id: requestedBranchId,
+      });
       const result = await fullSubjectTreeController.fetchList(fullSubjectTreeParams);
-      AllSubjectTree.value = result.data!;
-    }
-    // handelSubjectUpdate();
-    if (!selectedBranchTitle.value?.id) {
-      SelectedTopic.value = [];
+      if (selectedBranchTitle.value?.id !== requestedBranchId) return;
+      AllSubjectTree.value = result.data ?? [];
     }
     updateData();
   };
@@ -140,14 +141,7 @@
   });
 
   const topicsControoller = EducationTopicsController.getInstance();
-  const topicsOptions = computed<TitleInterface<number>[]>(() => {
-    return topicsControoller.listData.value?.map((item) => {
-      return new TitleInterface<number>({
-        id: item.id!,
-        title: item.title!,
-      });
-    }) as TitleInterface<number>[];
-  });
+  const topicsOptions = ref<TitleInterface<number>[]>([]);
 
   const skillsOptions = computed<TitleInterface<number>[]>(() => {
     return skillsController.listData.value?.map((item) => {
@@ -158,10 +152,28 @@
     }) as TitleInterface<number>[];
   });
 
-  const handelSubjectUpdate = async (selected?: TitleInterface<number> | undefined) => {
-    SelectedQuestionSequence.value = selected!;
-    await topicsControoller.fetchList(
-      new IndexEducationSubjectTopicParams({ SubjectId: selected?.id as number }),
+  const handelSubjectUpdate = async (selected?: TitleInterface<number> | null) => {
+    SelectedQuestionSequence.value = selected ?? null;
+    SelectedTopic.value = [];
+    topicsOptions.value = [];
+
+    if (!selected?.id) {
+      updateData();
+      return;
+    }
+
+    const requestedSequenceId = selected.id;
+    const result = await topicsControoller.fetchList(
+      new IndexEducationSubjectTopicParams({ SubjectId: selected.id }),
+    );
+    if (SelectedQuestionSequence.value?.id !== requestedSequenceId) return;
+
+    topicsOptions.value = (result.data ?? []).map(
+      (item) =>
+        new TitleInterface<number>({
+          id: item.id!,
+          title: item.title!,
+        }),
     );
     updateData();
   };
@@ -266,15 +278,7 @@
           :is-dialog="true"
           @update:model-value="handleBranchChange($event)"
         >
-      
-          <!-- <template #LabelHeader>
-                <span class="add-dialog" @click=" newDialo= true">{{ $t('new') }}</span>
-              </template>
-              <template #Dialog>
-                <div>asd</div>
-              </template> -->
-      </UpdatedCustomInputSelect>
-      
+        </UpdatedCustomInputSelect>
       </div>
       <div class="input required-field">
         <UpdatedCustomInputSelect
@@ -309,7 +313,7 @@
         />
       </div>
     </div>
-    <div class="new-form-group required-field">
+    <div class="new-form-group ">
       <UpdatedCustomInputSelect
         id="skills"
         v-model="SelectedSkill"
@@ -319,6 +323,7 @@
         :controller="skillsController"
         placeholder="Subject Type"
         @update:model-value="updateData"
+        :required="true"
       />
 
       <div v-for="(skill, index) in SelectedSkill" :key="index" class="skill-percentage">

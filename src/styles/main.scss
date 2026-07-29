@@ -397,3 +397,24 @@ input::placeholder {
     background: $StandardWhite !important;
 
 }
+.p-multiselect-label.p-placeholder
+{
+  font-family: "Light" !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #8A8A8A !important;
+    padding: 6px !important;
+}
+
+
+
+.selected-value--placeholder{
+    font-family: "Light" !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: #8A8A8A !important;
+}
+.p-multiselect-label[data-p="has-chip"]{
+  padding: 0 !important;
+}
+

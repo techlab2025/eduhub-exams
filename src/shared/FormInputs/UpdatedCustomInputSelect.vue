@@ -325,7 +325,7 @@
         </div>
 
         <label :class="{ required: required }" class="input-label">
-          <span v-if="required" class="text-red-500">*</span>
+          <span v-if="required" class="text-red-500 color-red">*</span>
 
           {{ $t(label ?? '') }}
         </label>
@@ -480,5 +480,8 @@
       overflow-wrap: anywhere;
       line-height: 1.4;
     }
+  }
+  .color-red{
+    color:red !important;
   }
 </style>

@@ -7,6 +7,7 @@ import ShowQuestionsModel from '../../../core/models/show.questions.model';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 const fetchFullSubjectTree = vi.hoisted(() => vi.fn());
+const fetchTopics = vi.hoisted(() => vi.fn());
 
 vi.mock('vue-router', () => ({
   useRoute: () => ({
@@ -29,7 +30,7 @@ vi.mock(
     default: {
       getInstance: () => ({
         listData: { value: [] },
-        fetchList: vi.fn(),
+        fetchList: fetchTopics,
       }),
     },
   }),
@@ -84,6 +85,9 @@ describe('QuestionContantTabs.vue', () => {
         },
       ],
     });
+    fetchTopics.mockResolvedValue({
+      data: [{ id: 20, title: 'Topic 1' }],
+    });
   });
 
   it('renders correctly', () => {
@@ -132,5 +136,62 @@ describe('QuestionContantTabs.vue', () => {
       expect.objectContaining({ id: 284, title: 'mostafa 1 -> mostafa 2' }),
       expect.objectContaining({ id: 285, title: 'mostafa 1 -> mostafa 3' }),
     ]);
+  });
+
+  it('clears dependent selections when a parent selection changes or is removed', async () => {
+    const wrapper = mount(QuestionContantTabs, {
+      props: {
+        ContentData: new ShowQuestionsModel({
+          id: 1,
+          questionTitle: 'Test Question',
+          difficulty: 1,
+          topics: [],
+          skills: [],
+          subjectTree: { id: 1, title: 'Branch' },
+          sequenceTree: { id: 2, title: 'Sequence' },
+        }),
+      },
+      global: globalConfig,
+    });
+
+    const branchSelect = wrapper.findComponent('#doc-branch');
+    const sequenceSelect = wrapper.findComponent('#question-sequence');
+    const topicsSelect = wrapper.findComponent('#topics');
+
+    sequenceSelect.vm.$emit('update:modelValue', { id: 284, title: 'Sequence 1' });
+    await flushPromises();
+    expect(topicsSelect.props('staticOptions')).toEqual([
+      expect.objectContaining({ id: 20, title: 'Topic 1' }),
+    ]);
+    topicsSelect.vm.$emit('update:modelValue', [{ id: 20, title: 'Topic 1' }]);
+
+    branchSelect.vm.$emit('update:modelValue', { id: 11, title: 'Another subject' });
+    await flushPromises();
+
+    expect(sequenceSelect.props('modelValue')).toBeNull();
+    expect(topicsSelect.props('modelValue')).toEqual([]);
+    expect(topicsSelect.props('staticOptions')).toEqual([]);
+
+    topicsSelect.vm.$emit('update:modelValue', [{ id: 21, title: 'Topic 2' }]);
+    sequenceSelect.vm.$emit('update:modelValue', { id: 285, title: 'Sequence 2' });
+    await flushPromises();
+    expect(topicsSelect.props('modelValue')).toEqual([]);
+
+    topicsSelect.vm.$emit('update:modelValue', [{ id: 22, title: 'Topic 3' }]);
+    const topicFetchCalls = fetchTopics.mock.calls.length;
+    sequenceSelect.vm.$emit('update:modelValue', null);
+    await flushPromises();
+    expect(fetchTopics).toHaveBeenCalledTimes(topicFetchCalls);
+    expect(topicsSelect.props('modelValue')).toEqual([]);
+    expect(topicsSelect.props('staticOptions')).toEqual([]);
+
+    const subjectFetchCalls = fetchFullSubjectTree.mock.calls.length;
+    branchSelect.vm.$emit('update:modelValue', null);
+    await flushPromises();
+    expect(fetchFullSubjectTree).toHaveBeenCalledTimes(subjectFetchCalls);
+    expect(sequenceSelect.props('modelValue')).toBeNull();
+    expect(topicsSelect.props('modelValue')).toEqual([]);
+    expect(sequenceSelect.props('staticOptions')).toEqual([]);
+    expect(topicsSelect.props('staticOptions')).toEqual([]);
   });
 });
