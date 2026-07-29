@@ -16,13 +16,22 @@ const { solutionSteps } = defineProps<{ solutionSteps: SolutionStepsModel }>();
 
       <div class="question-solution-steps-body">
         <p class="description">
-          {{ solutionSteps?.step }}
+          {{ solutionSteps?.step || 'no steps added'}}
         </p>
 
         <div v-if="solutionSteps?.attachments[0]?.file" class="question-solution-steps-img">
           <img :src="solutionSteps?.attachments[0]?. file || NoImage" alt="" />
         </div>
+         <div v-else class="question-solution-hint-img">
+          <img :src="solutionHint?.attachments[0]?.file || NoImage" alt="" />
+        </div>
       </div>
     </div>
   </div>
 </template>
+<style scoped>
+.description{
+  margin-block:10px ;
+}
+
+</style>

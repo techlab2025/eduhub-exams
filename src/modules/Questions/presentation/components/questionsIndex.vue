@@ -42,7 +42,7 @@
     { key: 'title', label: 'Question', width: '30%' },
     { key: 'questionType', label: 'Type', width: '15%' },
     { key: 'difficulty', label: 'Difficulty', width: '15%' },
-    { key: 'status', label: 'Status', width: '15%' },
+    { key: 'status', label: 'Status', width: '20%' },
   ];
 
   // Pagination state
@@ -393,6 +393,7 @@
             <template #actions="{ item }">
               <div class="row-actions">
                 <router-link
+                  v-if="item.status !== QuestionStatusEnum.APPROVED"
                   class="action-btn edit"
                   :to="`/questions/edit/${item.id}`"
                   title="Edit"
@@ -432,7 +433,10 @@
                   </svg>
                 </router-link>
 
-                <DeleteDialog @delete="deleteQuestion(item.id!)">
+                <DeleteDialog
+                  v-if="item.status !== QuestionStatusEnum.APPROVED"
+                  @delete="deleteQuestion(item.id!)"
+                >
                   <template #Dialog>
                     <button class="action-btn delete" title="Delete">
                       <svg

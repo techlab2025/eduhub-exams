@@ -6,8 +6,9 @@
   // import LoadingIcon from '@/assets/images/loading.webp';
   import type AddquestionsParams from '../../core/params/add.question.params';
   import { QuestionStatusEnum } from '../../core/constant/question.status.enum.ts';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import WithReviewDialog from '../subComponents/Dialogs/WithReviewDialog.vue';
-import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.vue';
+  import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.vue';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
@@ -33,16 +34,16 @@ import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.
         : (params.value.status = QuestionStatusEnum.APPROVED);
 
       const result = await controller.create(params.value, undefined, formKey);
-      if (result?.data) {
-        if (isRouting) {
-          if (params.value?.parentId != null) {
-            router.push({ name: 'Questions' });
-          } else {
-            router.back();
-          }
+      if (!(result instanceof DataSuccess)) return;
+
+      if (isRouting) {
+        if (params.value?.parentId != null) {
+          router.push({ name: 'Questions' });
         } else {
-          window.location.reload();
+          router.back();
         }
+      } else {
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error saving employee:', error);
@@ -62,15 +63,13 @@ import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.
 
       params.value.status = QuestionStatusEnum.DRAFT;
       const result = await controller.create(params.value, undefined, formKey);
-      if (result?.data) {
-        if (params.value?.parentId != null) {
-          router.push({ name: 'Questions' });
-        } else {
-          router.back();
-        }
-      }
+      if (!(result instanceof DataSuccess)) return;
 
-      router.push({ name: 'Questions' });
+      if (params.value?.parentId != null) {
+        router.push({ name: 'Questions' });
+      } else {
+        router.back();
+      }
     } catch (error) {
       console.error('Error saving employee:', error);
     } finally {
@@ -108,15 +107,15 @@ import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.
       </button> -->
       <WithReviewDialog
         class="save-emp"
-        :saveStatus="SaveStatusEnum.Save"
+        :save-status="SaveStatusEnum.Save"
         @with-review="saveQuestion(true, true)"
         @without-review="saveQuestion(true, false)"
       />
       <WithReviewDialog
         class="save-emp"
-        :saveStatus="SaveStatusEnum.SaveAndNew"
-        @with-review="saveQuestion(true, true)"
-        @without-review="saveQuestion(true, false)"
+        :save-status="SaveStatusEnum.SaveAndNew"
+        @with-review="saveQuestion(false, true)"
+        @without-review="saveQuestion(false, false)"
       />
       <button
         class="btn btn-draft"
@@ -147,9 +146,13 @@ import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.
       >
         {{ $t(`cancel`) }}
       </button> -->
-      <CancelQuestionDialog @cancel=" route?.query?.article_id
+      <CancelQuestionDialog
+        @cancel="
+          route?.query?.article_id
             ? $router.push({ name: 'Articles' })
-            : $router.push({ name: 'Questions' })" />
+            : $router.push({ name: 'Questions' })
+        "
+      />
     </div>
 
     <!-- Error Display -->

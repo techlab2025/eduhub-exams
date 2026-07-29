@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
+import { QuestionStatusEnum } from '../../../core/constant/question.status.enum';
 import questionsIndex from '../questionsIndex.vue';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
@@ -53,6 +54,25 @@ const globalConfig = {
   },
 };
 
+const mountWithTableItem = (status: QuestionStatusEnum) =>
+  mount(questionsIndex, {
+    global: {
+      ...globalConfig,
+      stubs: {
+        ...globalConfig.stubs,
+        DataStatusBuilder: {
+          template: '<div><slot name="success" :data="[]" /></div>',
+        },
+        AppTable: {
+          template: `<div><slot name="actions" :item="{ id: 10, status: ${status} }" /></div>`,
+        },
+        DeleteDialog: {
+          template: '<div class="delete-dialog"><slot name="Dialog" /></div>',
+        },
+      },
+    },
+  });
+
 describe('questionsIndex.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -82,5 +102,21 @@ describe('questionsIndex.vue', () => {
 
     const params = fetchListMock.mock.calls.at(-1)?.[0];
     expect(params.status).toBe(2);
+  });
+
+  it('shows only the view action for an approved question', () => {
+    const wrapper = mountWithTableItem(QuestionStatusEnum.APPROVED);
+
+    expect(wrapper.find('.action-btn.show').exists()).toBe(true);
+    expect(wrapper.find('.action-btn.edit').exists()).toBe(false);
+    expect(wrapper.find('.action-btn.delete').exists()).toBe(false);
+  });
+
+  it('shows edit, view, and delete actions for a non-approved question', () => {
+    const wrapper = mountWithTableItem(QuestionStatusEnum.CREATED);
+
+    expect(wrapper.find('.action-btn.show').exists()).toBe(true);
+    expect(wrapper.find('.action-btn.edit').exists()).toBe(true);
+    expect(wrapper.find('.action-btn.delete').exists()).toBe(true);
   });
 });
