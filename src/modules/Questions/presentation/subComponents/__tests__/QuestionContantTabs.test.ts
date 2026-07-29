@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import QuestionContantTabs from '../QuestionContantTabs.vue';
 import ShowQuestionsModel from '../../../core/models/show.questions.model';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
+const fetchFullSubjectTree = vi.hoisted(() => vi.fn());
 
 vi.mock('vue-router', () => ({
   useRoute: () => ({
@@ -17,7 +18,7 @@ vi.mock('vue-router', () => ({
 vi.mock('../../../presentation/controllers/FullSubjectTree/full.subject.tree.controller', () => ({
   default: {
     getInstance: () => ({
-      fetchList: vi.fn(() => Promise.resolve({ data: [] })),
+      fetchList: fetchFullSubjectTree,
     }),
   },
 }));
@@ -65,6 +66,24 @@ describe('QuestionContantTabs.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    fetchFullSubjectTree.mockResolvedValue({
+      data: [
+        {
+          id: 284,
+          e_c_subject_id: 284,
+          title: 'mostafa 2',
+          full_title: 'mostafa 1 -> mostafa 2',
+          children: [],
+        },
+        {
+          id: 285,
+          e_c_subject_id: 285,
+          title: 'mostafa 3',
+          full_title: 'mostafa 1 -> mostafa 3',
+          children: [],
+        },
+      ],
+    });
   });
 
   it('renders correctly', () => {
@@ -85,5 +104,33 @@ describe('QuestionContantTabs.vue', () => {
       global: globalConfig,
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('shows returned root subjects in the question sequence options', async () => {
+    const wrapper = mount(QuestionContantTabs, {
+      props: {
+        ContentData: new ShowQuestionsModel({
+          id: 1,
+          questionTitle: 'Test Question',
+          difficulty: 1,
+          topics: [],
+          skills: [],
+          subjectTree: { id: 1, title: 'Branch' },
+          sequenceTree: { id: 2, title: 'Sequence' },
+        }),
+      },
+      global: globalConfig,
+    });
+
+    wrapper.findComponent('#doc-branch').vm.$emit('update:modelValue', {
+      id: 10,
+      title: 'mostafa 1',
+    });
+    await flushPromises();
+
+    expect(wrapper.findComponent('#question-sequence').props('staticOptions')).toEqual([
+      expect.objectContaining({ id: 284, title: 'mostafa 1 -> mostafa 2' }),
+      expect.objectContaining({ id: 285, title: 'mostafa 1 -> mostafa 3' }),
+    ]);
   });
 });

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import IndexDocumentTypeParams from '@/modules/document/core/params/documntType/index.document.type.params';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import { computed, onMounted, ref, watch } from 'vue';
@@ -20,9 +19,8 @@
   import IndexEducationSubjectTopicParams from '@/modules/EducationClassification/core/params/EducationTopic/index.education.subject.topic.params';
   import RemoveItemIcon from '@/shared/icons/Question/RemoveItem.vue';
   import { useRoute } from 'vue-router';
-import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
+  import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
 
-  const indexDocumentTypeParams = new IndexDocumentTypeParams();
   const emit = defineEmits(['updateData']);
   const { ContentData, draftData } = defineProps<{
     ContentData: ShowQuestionsModel;
@@ -138,9 +136,7 @@ import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
   };
 
   const subjectOptions = computed<TitleInterface<number>[]>(() => {
-    return (AllSubjectTree.value! || []).flatMap((stage: StageModel) => {
-      return flattenSubjectBranchTree(stage.children);
-    });
+    return flattenSubjectBranchTree(AllSubjectTree.value ?? []);
   });
 
   const topicsControoller = EducationTopicsController.getInstance();

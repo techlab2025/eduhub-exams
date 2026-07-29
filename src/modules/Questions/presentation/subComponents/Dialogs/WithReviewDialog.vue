@@ -50,3 +50,10 @@
     </div>
   </Dialog>
 </template>
+
+
+<style scoped>
+.btn-primary{
+  width: 60%;
+}
+</style>
