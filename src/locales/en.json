@@ -551,5 +551,14 @@
     "warning": "The current approved version will be saved in question history before editing begins.",
     "confirm": "Confirm",
     "cancel": "Cancel"
+  },
+  "question_status_menu": {
+    "created": "Created",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "draft": "Draft",
+    "not_reviewed": "Not Reviewed",
+    "archived":"archived",
+    "revision":"revision"
   }
 }

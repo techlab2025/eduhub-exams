@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref, computed } from 'vue';
+  import { onMounted, ref, computed, watch } from 'vue';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
@@ -48,6 +48,10 @@
   // Pagination state
   const perPage = ref(10);
   const word = ref('');
+  const selectedStatus = ref<TitleInterface<string>>();
+  const selectedQuestionType = ref<TitleInterface<string>>();
+  const fromDate = ref<Date | null>(null);
+  const toDate = ref<Date | null>(null);
 
   const fetchQuestions = async (page: number = 1, wordStr: string = '') => {
     await controller.fetchList(
@@ -101,6 +105,7 @@
     if (route.query.word) {
       word.value = String(route.query.word);
     }
+    syncStatusFromQuery();
     await fetchQuestions(route.query.page ? Number(route.query.page) : 1, word.value);
   });
 
@@ -126,7 +131,9 @@
     fromDate.value = null;
     toDate.value = null;
     FilterDialogShow.value = false;
-    router.push({ query: { ...route.query, page: 1 } });
+    const query = { ...route.query };
+    delete query.status;
+    router.push({ query: { ...query, page: 1 } });
     fetchQuestions(1);
   };
 
@@ -188,11 +195,6 @@
     }
   };
 
-  const selectedStatus = ref<TitleInterface<string>>();
-  const selectedQuestionType = ref<TitleInterface<string>>();
-  const fromDate = ref<Date | null>(null);
-  const toDate = ref<Date | null>(null);
-
   const statusOptions = computed<TitleInterface<string>[]>(() => [
     new TitleInterface({ id: QuestionStatusEnum.APPROVED, title: t('question_filters.approved') }),
     new TitleInterface({
@@ -205,6 +207,20 @@
     new TitleInterface({ id: QuestionStatusEnum.ARCHIVED, title: t('question_filters.archive') }),
     new TitleInterface({ id: QuestionStatusEnum.DRAFT, title: t('question_filters.draft') }),
   ]);
+
+  const syncStatusFromQuery = () => {
+    const queryStatus = Number(route.query.status);
+    selectedStatus.value = statusOptions.value.find((option) => Number(option.id) === queryStatus);
+  };
+
+  watch(
+    () => route.query.status,
+    async (status, previousStatus) => {
+      if (status === previousStatus) return;
+      syncStatusFromQuery();
+      await fetchQuestions(1, word.value);
+    },
+  );
 
   const questionTypeOptions = computed<TitleInterface<string>[]>(() => [
     new TitleInterface({ id: QuestionTypeEnum.mcq, title: t('question_filters.mcq') }),

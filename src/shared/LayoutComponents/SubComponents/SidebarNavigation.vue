@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useRoute, useRouter } from 'vue-router';
+  import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
   import { computed, ref, type Component } from 'vue';
   import SettingIcon from '@/shared/icons/SidebarIcons/SettingIcon.vue';
   import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
@@ -20,15 +20,18 @@
   import AccordionContent from 'primevue/accordioncontent';
   import Question from '@/shared/icons/question.vue';
   import ArticleIcon from '@/shared/icons/ArticleIcon.vue';
+  import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
 
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
   interface MenuItem {
-    link: string;
+    link: RouteLocationRaw;
     name: string;
     icon?: Component;
     badge?: string;
     hasArrow?: boolean;
+    status?: QuestionStatusEnum;
+    children?: MenuItem[];
   }
   interface MenuSection {
     group: string;
@@ -79,6 +82,38 @@
           link: '/questions',
           name: 'Questions',
           icon: Question,
+          children: [
+            {
+              link: { path: '/questions', query: { status: QuestionStatusEnum.ARCHIVED } },
+              name: 'question_status_menu.archived',
+              status: QuestionStatusEnum.ARCHIVED,
+            },
+            {
+              link: { path: '/questions', query: { status: QuestionStatusEnum.APPROVED } },
+              name: 'question_status_menu.approved',
+              status: QuestionStatusEnum.APPROVED,
+            },
+            {
+              link: { path: '/questions', query: { status: QuestionStatusEnum.REJECTED } },
+              name: 'question_status_menu.rejected',
+              status: QuestionStatusEnum.REJECTED,
+            },
+            {
+              link: { path: '/questions', query: { status: QuestionStatusEnum.DRAFT } },
+              name: 'question_status_menu.draft',
+              status: QuestionStatusEnum.DRAFT,
+            },
+            {
+              link: { path: '/questions', query: { status: QuestionStatusEnum.NOT_REVIEW } },
+              name: 'question_status_menu.not_reviewed',
+              status: QuestionStatusEnum.NOT_REVIEW,
+            },
+                   {
+              link: { path: '/questions', query: { status: QuestionStatusEnum.REVISION } },
+              name: 'question_status_menu.revision',
+              status: QuestionStatusEnum.REVISION,
+            },
+          ],
         },
         {
           link: '/articles',
@@ -141,6 +176,22 @@
   const toggleDropMenu = () => {
     isDropMenuOpen.value = !isDropMenuOpen.value;
   };
+
+  const getMenuPath = (item: MenuItem) => {
+    if (typeof item.link === 'string') return item.link;
+    if ('path' in item.link) return item.link.path;
+    return router.resolve(item.link).path;
+  };
+
+  const isMenuItemActive = (item: MenuItem) => {
+    if (route.path.toLowerCase() !== String(getMenuPath(item)).toLowerCase()) return false;
+
+    if (item.status !== undefined) {
+      return Number(route.query.status) === item.status;
+    }
+
+    return !item.children || route.query.status === undefined;
+  };
 </script>
 <template>
   <aside class="sidebar">
@@ -157,24 +208,38 @@
             {{ group.group }}
           </p>
 
-          <router-link
-            v-for="(item, i) in group.items"
-            :key="i"
-            :to="item.link"
-            class="menu-item"
-            :class="{ active: route.path === item.link }"
-            @click="emit('clickItem')"
-          >
-            <component :is="item.icon" class="icon" />
+          <div v-for="(item, i) in group.items" :key="i" class="menu-entry">
+            <router-link
+              :to="item.link"
+              class="menu-item"
+              :class="{ active: isMenuItemActive(item) }"
+              @click="emit('clickItem')"
+            >
+              <component :is="item.icon" class="icon" />
 
-            <span class="label">{{ item.name }}</span>
+              <span class="label">{{ $t(item.name) }}</span>
 
-            <span v-if="item?.badge" class="badge">
-              {{ item?.badge }}
-            </span>
+              <span v-if="item?.badge" class="badge">
+                {{ item?.badge }}
+              </span>
 
-            <span v-if="item?.hasArrow" class="arrow">›</span>
-          </router-link>
+              <span v-if="item?.hasArrow" class="arrow">›</span>
+            </router-link>
+
+            <div v-if="item.children" class="submenu">
+              <router-link
+                v-for="child in item.children"
+                :key="child.status"
+                :to="child.link"
+                class="submenu-item"
+                :class="{ active: isMenuItemActive(child) }"
+                @click="emit('clickItem')"
+              >
+                <span class="submenu-dot"></span>
+                <span>{{ $t(child.name) }}</span>
+              </router-link>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -246,5 +311,45 @@
 
   :deep(.p-accordioncontent-content) {
     padding: 0 !important;
+  }
+
+  .menu-entry {
+    width: 100%;
+  }
+
+  .submenu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-block: 4px 8px;
+    padding-inline-start: 34px;
+  }
+
+  .submenu-item {
+    align-items: center;
+    border-radius: 8px;
+    color: var(--sidebar-menu-text-color);
+    display: flex;
+    font-size: 13px;
+    gap: 9px;
+    min-height: 34px;
+    padding: 7px 10px;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+
+    &:hover,
+    &.active {
+      background-color: var(--PrimaryColor-alpha-15);
+      color: var(--standard-white);
+    }
+  }
+
+  .submenu-dot {
+    background-color: currentColor;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    height: 5px;
+    width: 5px;
   }
 </style>

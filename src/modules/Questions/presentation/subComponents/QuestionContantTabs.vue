@@ -20,6 +20,7 @@
   import IndexEducationSubjectTopicParams from '@/modules/EducationClassification/core/params/EducationTopic/index.education.subject.topic.params';
   import RemoveItemIcon from '@/shared/icons/Question/RemoveItem.vue';
   import { useRoute } from 'vue-router';
+import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
 
   const indexDocumentTypeParams = new IndexDocumentTypeParams();
   const emit = defineEmits(['updateData']);
@@ -110,7 +111,8 @@
   const fullSubjectTreeController = FullSubjectTreeController.getInstance();
 
   onMounted(async () => {
-    await stageController.fetchList(indexDocumentTypeParams);
+    const stageParams = new IndexStageParams('' , 1 , 10,  0);
+    await stageController.fetchList(stageParams);
     allStages.value = (stageController.listData.value ?? []) as StageModel[];
   });
 

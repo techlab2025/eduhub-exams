@@ -43,7 +43,7 @@ export default class IndexQuestionsParams extends IndexParams {
   toMap(): Record<string, string | number> {
     return {
       ...super.toMap(),
-      ...(this.status ? { status: this.status } : {}),
+      ...(this.status ? { review_status: this.status } : {}),
       ...(this.generated_by ? { generated_by: this.generated_by } : {}),
       ...(this.question_type ? { question_type: this.question_type } : {}),
       ...(this.difficulty ? { difficulty: this.difficulty } : {}),
