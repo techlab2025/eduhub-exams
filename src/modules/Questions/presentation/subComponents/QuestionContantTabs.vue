@@ -267,12 +267,12 @@
           @update:model-value="handleBranchChange($event)"
         >
       
-          <template #LabelHeader>
+          <!-- <template #LabelHeader>
                 <span class="add-dialog" @click=" newDialo= true">{{ $t('new') }}</span>
               </template>
               <template #Dialog>
                 <div>asd</div>
-              </template>
+              </template> -->
       </UpdatedCustomInputSelect>
       
       </div>
