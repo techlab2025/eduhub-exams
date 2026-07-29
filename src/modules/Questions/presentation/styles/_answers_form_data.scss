@@ -5,22 +5,24 @@
   width: 100%;
 
   .accordion-content-root {
-    padding-top: $MdSize !important;
+    padding-top: 10px !important;
   }
 
   .toggll-container {
     @include flex-row(nowrap, flex-start, center);
 
-    gap: $XsSize4;
+    gap: 6px;
 
     .title {
       color: $PrimaryColor;
-      font-size: $MdSize2;
+      font-size: 13px;
       font-weight: $BaseFontSemiBoldWeight;
     }
 
     svg {
+      height: 14px;
       transition: all 0.3s ease-in-out;
+      width: 14px;
 
       &.rotate-180 {
         transform: rotate(180deg);
@@ -46,6 +48,6 @@
   .accordion-content-inner {
     display: flex;
     flex-direction: column;
-    gap: $MdSize;
+    gap: 12px;
   }
 }

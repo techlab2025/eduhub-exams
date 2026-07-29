@@ -5,14 +5,13 @@
 .questions-details-form-card {
   display: flex;
   flex-direction: column;
-  gap: $XlSize;
+  gap: 14px;
   margin-inline: auto;
   // max-width: 1180px;
   width: 100%;
 
   .form-header {
-    margin-bottom: 0;
-    padding-left: 0 !important;
+    display: none;
 
     .header-text {
       h3 {
@@ -38,11 +37,11 @@
 
   .form-fields {
     padding: 0 !important;
-    row-gap: $XlSize;
+    row-gap: 16px;
 
     @include grid(
       2,
-      $XlSize,
+      14px,
       (
         600: 1,
       )
@@ -51,7 +50,7 @@
     .field-group {
       @include flex-column(nowrap, flex-start, flex-start);
 
-      gap: $XsSize3;
+      gap: 6px;
 
       &.disabled {
         cursor: not-allowed;
@@ -94,18 +93,18 @@
         .upload-area {
           background-color: $StandardWhite !important;
           border: 1px dashed var(--gray-300) !important;
-          border-radius: 30px !important;
-          min-height: 126px;
+          border-radius: 18px !important;
+          min-height: 76px;
         }
 
         .add-imaegs-data {
           @include flex-column(nowrap, center, center);
 
-          gap: $XsSize5;
+          gap: 3px;
 
           .first-text {
             color: $Gray-5;
-            font-size: $XsSize;
+            font-size: 11px;
             font-weight: $BaseFontSemiBoldWeight;
 
             span {
@@ -116,21 +115,21 @@
 
           .second-text {
             color: $SecondText;
-            font-size: $XsSize;
+            font-size: 10px;
             font-weight: $BaseFontWeight;
           }
         }
       }
 
       .input-label {
-        font-size: $MdSize !important;
+        font-size: 12px !important;
       }
 
       .field-label {
         width: fit-content;
         text-align: start;
         color: $InputLabelText;
-        font-size: $MdSize !important;
+        font-size: 12px !important;
         font-weight: $BaseFontSemiBoldWeight !important;
         text-transform: capitalize !important;
       }
@@ -139,12 +138,12 @@
         width: 100%;
 
         .field-input {
-          min-height: 56px;
+          min-height: 38px;
           width: 100%;
-          padding: 13px $MdSize;
+          padding: 8px 14px;
           border: 1px solid $InputBorder !important;
-          border-radius: $XlSize4 !important;
-          font-size: $SmSize;
+          border-radius: 18px !important;
+          font-size: 12px;
           color: $Gray-6;
           background: $White !important;
           outline: none;
@@ -162,8 +161,8 @@
 
   .all_tabs {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: $MdSize;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
     margin-bottom: 0;
     width: 100% !important;
 
@@ -175,9 +174,9 @@
       color: var(--table-data-color);
       cursor: pointer;
       display: flex;
-      gap: $XsSize4;
-      min-height: 58px;
-      padding: $SmSize $MdSize;
+      gap: 7px;
+      min-height: 40px;
+      padding: 7px 12px;
       transition:
         border-color 0.2s ease,
         background-color 0.2s ease,
@@ -194,6 +193,7 @@
 
       label {
         cursor: pointer;
+        font-size: 11px !important;
         line-height: 1.4;
       }
     }
@@ -211,6 +211,8 @@
 
     .p-radiobutton-box {
       background: none !important;
+      height: 14px;
+      width: 14px;
     }
 
     .p-radiobutton-checked .p-radiobutton-icon {
@@ -226,12 +228,12 @@
     @include flex-row(nowrap, flex-start, center);
 
     gap: $XsSize4;
-    margin-top: $XsSize2;
+    margin-top: 4px;
 
     .add-text,
     span {
       color: $PrimaryColor;
-      font-size: $MdSize;
+      font-size: 12px;
       font-weight: $BaseFontMediumWeight;
       font-family: 'Medium';
     }
@@ -242,5 +244,29 @@
     background: transparent;
     padding: 0;
     cursor: pointer;
+  }
+
+  .p-select,
+  .p-multiselect {
+    border-radius: 18px !important;
+    min-height: 38px;
+  }
+
+  .p-select-label,
+  .p-multiselect-label {
+    font-size: 11px !important;
+    padding: 8px 12px !important;
+  }
+
+  @media (max-width: 1000px) {
+    .all_tabs {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .all_tabs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 }

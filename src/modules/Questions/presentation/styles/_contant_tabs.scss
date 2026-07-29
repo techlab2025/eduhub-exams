@@ -7,14 +7,14 @@
 
   &.document-tab {
     display: grid;
-    gap: $MdSize;
+    gap: 10px;
     margin-bottom: 0;
     width: 100%;
 
     .form-group {
       background-color: var(--background-color-soft-light);
-      border-radius: $XlSize;
-      padding: $MdSize;
+      border-radius: 18px;
+      padding: 12px;
     }
   }
 
@@ -33,19 +33,19 @@
     .skill-percentage {
       align-items: center;
       background-color: var(--background-color-soft-light);
-      border-radius: 25px;
+      border-radius: 18px;
       display: grid;
       gap: $XsSize3;
       grid-template-columns: 24px minmax(0, 1fr) 140px;
       margin-top: $XsSize3;
-      padding: 12px 16px;
+      padding: 8px 12px;
 
       label {
         background-color: var(--standard-white);
         border: 1px solid var(--input-border-color);
         border-radius: 999px;
         color: var(--standard-black);
-        padding: 12px 16px;
+        padding: 8px 12px;
       }
 
       .remove-skill-item {
@@ -57,8 +57,8 @@
         border: 1px solid var(--input-border-color);
         border-radius: 999px;
         color: var(--standard-black);
-        min-height: 48px;
-        padding: 12px 16px;
+        min-height: 38px;
+        padding: 8px 12px;
 
         &:focus {
           border-color: var(--PrimaryColor);
@@ -71,8 +71,8 @@
   .form-group {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: $MdSize;
-    margin-bottom: $MdSize;
+    gap: 12px;
+    margin-bottom: 12px;
     width: 100%;
 
     .field-input {
@@ -83,7 +83,7 @@
       .input-label {
         color: var(--title-header-color);
         font-weight: $BaseFontSemiBoldWeight;
-        font-size: $SmSize;
+        font-size: 12px;
         font-family: 'Demi' !important;
       }
 

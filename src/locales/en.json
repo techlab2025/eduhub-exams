@@ -541,5 +541,15 @@
     "description": "Submit it for review by artificial intelligence or a specialist, or proceed without review.",
     "without_review": "Save without review",
     "with_review": "Save with review"
+  },
+  "revision_question_dialog": {
+    "trigger": "Revision",
+    "title": "Why was it sent for revision?",
+    "subtitle": "A brief explanation of the changes made.",
+    "reason": "Revision reason",
+    "placeholder": "Enter the reason for revision",
+    "warning": "The current approved version will be saved in question history before editing begins.",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   }
 }
