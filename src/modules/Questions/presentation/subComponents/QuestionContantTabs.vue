@@ -248,6 +248,7 @@
     SelectedSkill.value?.splice(index, 1);
     updateData();
   };
+  const newDialo = ref();
 </script>
 
 <template>
@@ -256,7 +257,7 @@
       <div class="input required-field">
         <UpdatedCustomInputSelect
           id="doc-branch"
-          v-model:dialog-visible="subjectDialog"
+          v-model:dialog-visible="newDialo"
           :label="`Subject`"
           :static-options="branchOptions"
           :model-value="selectedBranchTitle"
@@ -264,8 +265,16 @@
           :reload="true"
           :is-dialog="true"
           @update:model-value="handleBranchChange($event)"
-          @close="subjectDialog = false"
-        />
+        >
+      
+          <template #LabelHeader>
+                <span class="add-dialog" @click=" newDialo= true">{{ $t('new') }}</span>
+              </template>
+              <template #Dialog>
+                <div>asd</div>
+              </template>
+      </UpdatedCustomInputSelect>
+      
       </div>
       <div class="input required-field">
         <UpdatedCustomInputSelect

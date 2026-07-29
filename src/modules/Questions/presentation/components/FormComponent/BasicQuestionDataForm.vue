@@ -260,8 +260,9 @@
           </div>
 
           <div class="field-group col-span-2" :class="{ disabled: loading }">
+            <!-- :label="`upload image`" -->
             <HandleFilesUpload
-              :label="`upload image`"
+              :label="``"
               accept="image/*"
               :multiple="false"
               :index="1"
@@ -272,6 +273,12 @@
               preview-class-name="border-image-preview"
               @change="handleImageChange"
             >
+              <template #label>
+                <div class="input-label">
+                  <span class="optional">optional</span>
+                  <span>upload image</span>
+                </div>
+              </template>
               <template #content>
                 <div class="add-imaegs-data">
                   <UplaodImageInput />
@@ -310,6 +317,11 @@
 </template>
 
 <style scoped>
+  .optional {
+    color: #8a8a8a;
+    font-size: 14px;
+    font-weight: 700;
+  }
   .accordion-enter-active,
   .accordion-leave-active {
     display: grid;
@@ -340,4 +352,5 @@
     padding: 16px !important;
     border-radius: 8px !important;
   }
+
 </style>

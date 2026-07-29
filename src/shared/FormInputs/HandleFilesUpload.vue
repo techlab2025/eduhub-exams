@@ -255,7 +255,9 @@
 
 <template>
   <div class="file-upload-wrapper">
-    <label class="upload-label">{{ label }}</label>
+    <label class="upload-label" v-if="label.length > 0 ">{{ label }}</label>
+    <slot class="upload-label" v-else name="label"></slot>
+
 
     <label
       v-if="!haveContent"
@@ -349,6 +351,7 @@
     gap: 6px;
     padding: 20px;
     border: 1.5px dashed var(--gray-300);
+
     border-radius: 10px;
     cursor: pointer;
     transition:

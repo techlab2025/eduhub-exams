@@ -75,7 +75,7 @@
           @include flex-row(nowrap, flex-start, center);
 
           gap: $XsSize4;
-          padding: 14px !important;
+          // padding: 14px !important;
 
           .p-radiobutton-box {
             background: none !important;
@@ -161,7 +161,7 @@
 
   .all_tabs {
     display: grid !important;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 10px;
     margin-bottom: 0;
     width: 100% !important;
