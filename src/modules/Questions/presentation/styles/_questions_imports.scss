@@ -13,3 +13,6 @@
 
 // dialogs
 @use './dialogs/_add_review_dialog';
+
+// Keep the form refresh last so it can unify legacy child-component styles.
+@use 'question_form_modern';

@@ -221,7 +221,7 @@
   .question-solution-steps {
     border: 1px solid var(--input-border-color);
     border-radius: 24px;
-    padding: 18px 20px !important;
+    padding: 3px 10px !important;
     margin-block: 0 !important;
     background-color: var(--standard-white);
 
