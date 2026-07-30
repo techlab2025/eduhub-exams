@@ -15,7 +15,7 @@
 
   const getStatusText = (review_status: QuestionStatusEnum) => {
     switch (review_status) {
-      case QuestionStatusEnum.PENDING:
+      case QuestionStatusEnum.NOT_REVIEW:
         return 'Under Review';
       case QuestionStatusEnum.APPROVED:
         return 'Approved';
@@ -28,7 +28,7 @@
 
   const getStatusDescription = (review_status: QuestionStatusEnum) => {
     switch (review_status) {
-      case QuestionStatusEnum.PENDING:
+      case QuestionStatusEnum.NOT_REVIEW:
         return 'complete all details of the question and the available procedures to can publish it';
       case QuestionStatusEnum.REJECTED:
         return 'View all details of the question and reason of rejected';
@@ -57,7 +57,7 @@
     await controller.updateReviewStatus(quiestionStatusParams);
     // dialogManager.toastSuccess('Question rejected successfully');
   };
-    const ArchiveQuestion = async () => {
+  const ArchiveQuestion = async () => {
     const quiestionStatusParams = new ToggleQuestionStatusParams({
       id: Number(route.params.id),
       status: QuestionStatusEnum.ARCHIVED,
@@ -135,8 +135,7 @@
             stroke-linejoin="round"
           />
         </svg>
-       <span>archive</span>
-
+        <span>archive</span>
       </button>
     </div>
   </div>

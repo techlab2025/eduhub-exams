@@ -161,7 +161,7 @@
     switch (val) {
       case QuestionStatusEnum.APPROVED:
         return 'Approved';
-      case QuestionStatusEnum.PENDING:
+      case QuestionStatusEnum.NOT_REVIEW:
         return 'Not Reviewed';
       case QuestionStatusEnum.REJECTED:
         return 'Rejected';
@@ -264,9 +264,9 @@
                 class="status"
                 :class="{
                   'status-approved': item.status === QuestionStatusEnum.APPROVED,
-                  'status-not-reviewed': item.status === QuestionStatusEnum.PENDING,
+                  'status-not-reviewed': item.status === QuestionStatusEnum.NOT_REVIEW,
                   'status-rejected': item.status === QuestionStatusEnum.REJECTED,
-                  'status-under-review': item.status === QuestionStatusEnum.PENDING,
+                  'status-under-review': item.status === QuestionStatusEnum.NOT_REVIEW,
                 }"
               >
                 {{ GetQuestionStatus(item.status!) }}

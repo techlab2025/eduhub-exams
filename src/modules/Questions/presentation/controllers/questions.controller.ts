@@ -50,7 +50,6 @@ export default class questionsController extends BaseController<
   async create(params: AddquestionsParams, options?: ApiCallOptions, formKey?: string) {
     const FormStore = useFormsStore();
 
-    console.log(params, 'params');
     if (params.status != QuestionStatusEnum.DRAFT) {
       if (
         (params.questionType === QuestionTypeEnum.mcq &&
@@ -69,8 +68,10 @@ export default class questionsController extends BaseController<
         dialogManager.toastWarning('rank should be an integer');
         return;
       }
-      console.log(params, 'params.answers');
-      if (params.questionType === QuestionTypeEnum.true_false && params.answers?.length! > 2) {
+      if (
+        params.questionType === QuestionTypeEnum.true_false &&
+        (params.answers?.length ?? 0) > 2
+      ) {
         dialogManager.toastWarning('answers count should be 2');
         return;
       }
@@ -94,7 +95,7 @@ export default class questionsController extends BaseController<
       }
     }
 
-    const result = await super.create(params, { ...options, useJson: true }, false);
+    const result = await super.create(params, { ...options, useJson: true }, undefined, false);
     if (result instanceof DataSuccess) {
       if (formKey) {
         FormStore.clearFormData(formKey);
@@ -124,8 +125,10 @@ export default class questionsController extends BaseController<
         dialogManager.toastWarning('rank should be an integer');
         return;
       }
-      console.log(params, 'params.answers');
-      if (params.questionType === QuestionTypeEnum.true_false && params.answers?.length! > 2) {
+      if (
+        params.questionType === QuestionTypeEnum.true_false &&
+        (params.answers?.length ?? 0) > 2
+      ) {
         dialogManager.toastWarning('answers count should be 2');
         return;
       }

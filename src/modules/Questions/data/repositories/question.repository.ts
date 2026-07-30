@@ -50,7 +50,7 @@ export default class questionsRepository extends BaseRepository<
         difficulty: QuestionDifficultyEnum.medium,
         questionType: QuestionTypeEnum.complate,
         generatedBy: QuestionGeneratedByEnum.ai,
-        status: QuestionStatusEnum.PENDING,
+        status: QuestionStatusEnum.NOT_REVIEW,
       },
       {
         ...questionsModel.example,
@@ -59,7 +59,7 @@ export default class questionsRepository extends BaseRepository<
         difficulty: QuestionDifficultyEnum.hard,
         questionType: QuestionTypeEnum.true_false,
         generatedBy: QuestionGeneratedByEnum.manual,
-        status: QuestionStatusEnum.PENDING,
+        status: QuestionStatusEnum.NOT_REVIEW,
       },
     ];
   }

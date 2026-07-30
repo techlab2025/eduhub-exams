@@ -11,8 +11,8 @@
     const status = questionData.review_status;
 
     return {
-      waiting: status == QuestionStatusEnum.PENDING,
-      drafting: status == QuestionStatusEnum.PENDING,
+      waiting: status == QuestionStatusEnum.NOT_REVIEW,
+      drafting: status == QuestionStatusEnum.NOT_REVIEW,
       rejected: status == QuestionStatusEnum.REJECTED,
       approved: status == QuestionStatusEnum.APPROVED,
     };
@@ -20,7 +20,7 @@
 
   const getStatusLabel = (review_status: QuestionStatusEnum) => {
     switch (review_status) {
-      case QuestionStatusEnum.PENDING:
+      case QuestionStatusEnum.NOT_REVIEW:
         return 'Under Review';
       case QuestionStatusEnum.REJECTED:
         return 'Rejected';

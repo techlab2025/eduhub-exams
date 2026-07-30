@@ -343,7 +343,8 @@ export default abstract class BaseController<T, TList = T[]> {
   async create(
     params: Params,
     options?: ApiCallOptions,
-    applayValidation: boolean = true,
+    _formKey?: string,
+    applyValidation: boolean = true,
   ): Promise<DataState<T> | undefined> {
     this._lastOperation = { type: 'create', params, options };
 
@@ -355,7 +356,7 @@ export default abstract class BaseController<T, TList = T[]> {
       this.showLoadingDialog('Creating...');
     }
 
-    if (applayValidation) {
+    if (applyValidation) {
       params.validate();
       if (!params.validate().isValid) {
         params.validateOrThrow();

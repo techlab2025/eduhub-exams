@@ -11,7 +11,6 @@
   import TrueFalse from '@/shared/icons/TrueFalse.vue';
   import MatcingingIcon from '@/shared/icons/MatcingingIcon.vue';
   import { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
-  import router from '@/router';
   import ShowArticlesParams from '@/modules/Articles/core/params/show.Articles.params';
   import { useRoute } from 'vue-router';
   import MatchingIcon from '@/shared/icons/questions/MatchingIcon.vue';
@@ -54,23 +53,17 @@
   };
 
   // droplist
-  const actionList = (
-    question_id: number,
-    deleteArticleQuestion: (question_id: number) => void,
-  ) => [
+  const actionList = (questionId: number, deleteArticleQuestion: (questionId: number) => void) => [
     {
       text: t('Edit'),
       icon: EditIcon,
-      action: () => {
-        router.push(`/questions/edit/${question_id}`);
-      },
+      link: `/questions/edit/${questionId}`,
     },
     {
       text: t('delete'),
       icon: DeletIcon,
       action: () => {
-        console.log('delete action called');
-        deleteArticleQuestion(question_id);
+        deleteArticleQuestion(questionId);
       },
     },
   ];
@@ -102,7 +95,7 @@
           </div>
           <div class="actions">
             <DropList
-              :action-list="actionList(value?.question_id || 0, deleteArticleQuestion)"
+              :action-list="actionList(value.question_id ?? value.id ?? 0, deleteArticleQuestion)"
               :delete-dialog-title="
                 $t('are_you_sure_you_want_to_remove_this_education_classification')
               "

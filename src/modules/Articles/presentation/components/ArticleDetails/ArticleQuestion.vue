@@ -45,7 +45,7 @@
       title: t('approved'),
     }),
     new TitleInterface({
-      id: QuestionStatusEnum.PENDING,
+      id: QuestionStatusEnum.NOT_REVIEW,
       title: t('under_review'),
     }),
     new TitleInterface({
@@ -165,6 +165,7 @@
             :label="``"
             :static-options="difficultyOptions"
             :placeholder="$t('select_difficulty')"
+            :reload="false"
           />
         </div>
         <div class="input-select">
@@ -174,6 +175,7 @@
             :label="``"
             :static-options="typeOptions"
             :placeholder="$t('select_type')"
+            :reload="false"
           />
         </div>
         <div class="input-select">
@@ -183,6 +185,7 @@
             :label="``"
             :static-options="statusOptions"
             :placeholder="$t('select_status')"
+            :reload="false"
           />
         </div>
       </div>

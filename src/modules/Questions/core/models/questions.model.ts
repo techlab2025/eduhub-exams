@@ -62,7 +62,7 @@ export default class questionsModel {
     generatedBy: QuestionGeneratedByEnum.manual,
     questionType: QuestionTypeEnum.mcq,
     difficulty: QuestionDifficultyEnum.easy,
-    status: QuestionStatusEnum.PENDING,
+    status: QuestionStatusEnum.NOT_REVIEW,
     subjects: {
       id: 1,
       title: 'Mathematics',
