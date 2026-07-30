@@ -10,6 +10,7 @@ import type QuestionClarificationParams from './subParams/question.clarification
 import type TopicsParams from './subParams/topics.params';
 import type { AnswerEvaluationTypeEnum } from '../constant/answer.evaluation.type.enum';
 import type AttachmentsParams from './subParams/attachments.params';
+import type { QuestionStatusEnum } from '../constant/question.status.enum';
 
 /**
  * Parameters for adding a new employee
@@ -35,6 +36,7 @@ export default class EditquestionsParams implements Params {
   public answerEvaluation?: AnswerEvaluationTypeEnum;
   public similarPrecentage?: string;
   public parentId?: number | null;
+  public status?: QuestionStatusEnum | null;
 
   public static readonly validation = new ClassValidation().setRules({
     title: { required: true },
@@ -69,6 +71,7 @@ export default class EditquestionsParams implements Params {
     answerEvaluation?: AnswerEvaluationTypeEnum;
     similarPrecentage?: string;
     parentId?: number | null;
+    status?: QuestionStatusEnum | null;
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -90,9 +93,10 @@ export default class EditquestionsParams implements Params {
     this.answerEvaluation = data.answerEvaluation;
     this.similarPrecentage = data.similarPrecentage;
     this.parentId = data.parentId;
+    this.status = data.status;
   }
 
-  toMap(): { [p: string]: any } {
+  toMap(): Record<string, unknown> {
     const attachments =
       this.image?.map((f) => f.toMap()).filter((f) => f.file && f.file.length > 0) ?? [];
     return {
@@ -118,8 +122,13 @@ export default class EditquestionsParams implements Params {
       answer_hint: this.isSolutionHint ? this.solutionHint?.toMap() : null,
       correct_status: this.answerEvaluation,
       parent_id: this.parentId ?? null,
-      identicality_percentage:
-        this.similarPrecentage?.length! > 0 ? Number(this.similarPrecentage) : null,
+      ...(this.status !== undefined &&
+        this.status !== null && {
+          review_status: this.status,
+        }),
+      identicality_percentage: this.similarPrecentage?.length
+        ? Number(this.similarPrecentage)
+        : null,
     };
   }
 

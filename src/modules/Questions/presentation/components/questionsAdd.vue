@@ -114,22 +114,6 @@
       @update-data="updateData"
     />
     <div class="actions">
-      <!-- <button
-        class="btn btn-primary save-emp"
-        :disabled="loading"
-        :class="loading ? 'disabled' : ''"
-        @click="saveQuestion(true)"
-      >
-        <img
-          v-if="loading"
-          :src="LoadingIcon"
-          class="loader-skills"
-          alt="loading"
-          width="30"
-          height="30"
-        />
-        <span v-else> {{ $t(`Save`) }} </span>
-      </button> -->
       <WithReviewDialog
         class="save-emp"
         :save-status="SaveStatusEnum.Save"
@@ -152,27 +136,6 @@
       >
         {{ $t(`Save As draft`) }}
       </button>
-      <!-- <button
-        class="btn btn-black"
-        :disabled="loading"
-        :class="loading ? 'disabled' : ''"
-        @click="saveQuestion(false, false)"
-      >
-        {{ $t(`Save & New`) }}
-      </button> -->
-
-      <!-- <button
-        class="btn btn-cancel"
-        :disabled="loading"
-        :class="loading ? 'disabled' : ''"
-        @click="
-          route?.query?.article_id
-            ? $router.push({ name: 'Articles' })
-            : $router.push({ name: 'Questions' })
-        "
-      >
-        {{ $t(`cancel`) }}
-      </button> -->
       <button v-if="props.embedded" class="btn btn-cancel" type="button" @click="emit('close')">
         {{ $t('cancel') }}
       </button>
@@ -195,11 +158,11 @@
 
 <style scoped lang="scss">
   .btn-cancel {
+    width: 20%;
+    border: 1px solid var(--background-btn-hard-color);
+    border-radius: 50px;
     background-color: var(--background-btn-outline-color);
     color: var(--danger-color);
-    border: 1px solid rgba(245, 194, 192, 1);
-    border-radius: 50px;
-    width: 20%;
 
     @media (max-width: 768px) {
       width: 50%;
@@ -207,11 +170,11 @@
   }
 
   .btn-draft {
-    background-color: var(--PrimaryColor-alpha-10);
-    color: var(--PrimaryColor);
+    width: 20%;
     border: 1px solid var(--PrimaryColor-alpha-10);
     border-radius: 50px;
-    width: 20%;
+    background-color: var(--PrimaryColor-alpha-10);
+    color: var(--PrimaryColor);
 
     @media (max-width: 768px) {
       width: 50%;
@@ -232,18 +195,6 @@
     display: flex;
     gap: 10px;
     justify-content: flex-end;
-
-    .btn-black {
-      background-color: var(--border-color);
-      color: var(--black-soft);
-      border-radius: 50px;
-      width: 20%;
-      border: none;
-
-      @media (max-width: 768px) {
-        width: 50%;
-      }
-    }
   }
 
   .error-toast {

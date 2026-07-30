@@ -17,9 +17,12 @@
 </script>
 
 <template>
-  <button type="button" class="btn"
-  :class="saveStatus == SaveStatusEnum.Save ?`btn-primary`:`btn-secondary` "
-  @click="visable = true">
+  <button
+    type="button"
+    class="btn"
+    :class="saveStatus == SaveStatusEnum.Save ? `btn-primary` : `btn-secondary`"
+    @click="visable = true"
+  >
     {{ saveStatus == SaveStatusEnum.Save ? $t('save') : $t(`Save & New`) }}
   </button>
   <Dialog
@@ -52,15 +55,12 @@
     </div>
   </Dialog>
 </template>
-
-
 <style scoped>
-.btn-primary
-{
-  width: 60%;
-}
-.btn-secondary{
-  width: 30%;
+  .btn-primary {
+    width: 60%;
+  }
 
-}
+  .btn-secondary {
+    width: 30%;
+  }
 </style>

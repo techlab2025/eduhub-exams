@@ -3,7 +3,6 @@ import type { ControllerConfig } from '@/base/Presentation/Controller/baseContro
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import type questionsModel from '../../core/models/questions.model';
 import questionsRepository from '../../data/repositories/question.repository';
@@ -13,6 +12,7 @@ import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 import { QuestionTypeEnum } from '../../core/constant/question.type.enum';
 import { AnswerEvaluationTypeEnum } from '../../core/constant/answer.evaluation.type.enum';
 import { QuestionStatusEnum } from '../../core/constant/question.status.enum';
+import type EditquestionsParams from '../../core/params/edit.question.params';
 
 export default class questionsController extends BaseController<
   ShowQuestionsModel,
@@ -104,7 +104,11 @@ export default class questionsController extends BaseController<
     return result;
   }
 
-  async update(params: AddquestionsParams, options?: ApiCallOptions, formKey?: string) {
+  async update(
+    params: AddquestionsParams | EditquestionsParams,
+    options?: ApiCallOptions,
+    formKey?: string,
+  ) {
     const FormStore = useFormsStore();
 
     if (params.status != QuestionStatusEnum.DRAFT) {
@@ -154,7 +158,6 @@ export default class questionsController extends BaseController<
 
     const result = await super.update(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: 'Questions' });
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
