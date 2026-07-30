@@ -65,7 +65,7 @@ export default class CountryController extends BaseController<CountryModel, Coun
   }
 
   async fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<CountryModel[]>> {
-    return super.fetchList(params, { ...options, useStaticData: true });
+    return super.fetchList(params, { ...options, useStaticData: false });
   }
 
   // async update(params: Params, options?: ApiCallOptions, formKey?: string) {

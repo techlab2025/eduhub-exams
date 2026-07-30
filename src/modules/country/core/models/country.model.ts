@@ -24,7 +24,7 @@ export default class CountryModel extends TitleInterface<number> {
       id: json.id,
       title: json.title,
       code: json.code,
-      flag: json.flag,
+      flag: json.image,
     });
   }
 
