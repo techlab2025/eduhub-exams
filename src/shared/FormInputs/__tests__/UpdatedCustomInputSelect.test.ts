@@ -155,6 +155,7 @@ describe('UpdatedCustomInputSelect', () => {
     const wrapper = createWrapper({ modelValue: null, placeholder: 'Choose an option' });
 
     expect(wrapper.find('.selected-value').text()).toBe('Choose an option');
+    expect(wrapper.find('.selected-value').classes()).toContain('selected-value--placeholder');
   });
 
   it('renders the placeholder when the selected value has an undefined title', () => {

@@ -313,7 +313,7 @@
       :class="{ disabled: props.loading }"
       :value="isSolutionSteps ? 1 : 0"
       :pt="{
-        root: `article-solution-steps ${isSolutionSteps ? 'active' : ''}`,
+        root: `article-solution-steps article-section-card article-section-basic ${isSolutionSteps ? 'active' : ''}`,
       }"
       @update:value="isSolutionSteps = !isSolutionSteps"
     >
@@ -410,7 +410,7 @@
       :class="{ disabled: props.loading }"
       :value="isSolutionHint ? 1 : 0"
       :pt="{
-        root: `article-solution-steps ${isSolutionHint ? 'active' : ''}`,
+        root: `article-solution-steps article-section-card article-section-source ${isSolutionHint ? 'active' : ''}`,
       }"
       @update:value="isSolutionHint = !isSolutionHint"
     >
@@ -471,7 +471,7 @@
       :class="{ disabled: props.loading }"
       :value="isExplain ? 1 : 0"
       :pt="{
-        root: `article-solution-steps-explain ${isExplain ? 'active' : ''}`,
+        root: `article-solution-steps-explain article-section-card article-section-explanation ${isExplain ? 'active' : ''}`,
       }"
       @update:value="isExplain = !isExplain"
     >

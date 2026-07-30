@@ -49,6 +49,9 @@
 
     reload?: boolean;
 
+    /** @deprecated Use `reload` instead. */
+    relaod?: boolean;
+
     optional?: boolean;
 
     hascontent?: boolean;
@@ -78,6 +81,8 @@
 
     reload: true,
 
+    relaod: undefined,
+
     staticOptions: null,
 
     optional: false,
@@ -99,9 +104,9 @@
     id,
 
     required,
-
-    reload: enableReload,
   } = toRefs(props);
+
+  const enableReload = computed(() => props.relaod ?? props.reload);
 
   // Reactive state
 
@@ -392,6 +397,7 @@
       modal
       :dismissable-mask="true"
       :style="{ width: '60rem' }"
+      @hide="emit('close', false)"
     >
       <slot name="Dialog"></slot>
     </Dialog>
@@ -481,7 +487,8 @@
       line-height: 1.4;
     }
   }
-  .color-red{
-    color:red !important;
+
+  .color-red {
+    color: var(--danger-color) !important;
   }
 </style>

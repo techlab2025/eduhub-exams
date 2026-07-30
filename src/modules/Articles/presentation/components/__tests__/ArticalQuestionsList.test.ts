@@ -104,9 +104,11 @@ describe('ArticalQuestionsList', () => {
     await flushPromises();
 
     expect(wrapper.find('.article-question-stub').exists()).toBe(true);
+    expect(wrapper.get('.question-management-toolbar').text()).toContain('Questions');
+    expect(wrapper.get('.question-count').text()).toBe('1');
     expect(wrapper.get('.finish-button').attributes('disabled')).toBeUndefined();
 
-    await wrapper.get('.question-list-add-action .add-question-button').trigger('click');
+    await wrapper.get('.question-management-toolbar .add-question-button').trigger('click');
     const questionsAdd = wrapper.findComponent({ name: 'QuestionsAdd' });
     expect(questionsAdd.exists()).toBe(true);
 

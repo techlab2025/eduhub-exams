@@ -378,10 +378,3 @@ body {
 // Keep the shared form-control normalization last so module styles cannot
 // accidentally create different typography, spacing, or borders.
 @include inputs.apply-input-configurations;
-
-.selected-value--placeholder[data-p='placeholder'] {
-  color: inputs.$input-placeholder-color !important;
-  font-family: inputs.$input-font-family !important;
-  font-size: inputs.$input-font-size !important;
-  font-weight: inputs.$input-placeholder-font-weight !important;
-}

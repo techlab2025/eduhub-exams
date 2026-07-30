@@ -97,4 +97,14 @@ $input-label-color: var(--gray-5) !default;
       padding: 0 !important;
     }
   }
+
+  // UpdatedCustomInputSelect renders its placeholder inside a custom value
+  // span. Keep this rule unlayered so feature styles cannot override it.
+  .p-select.input-select .p-select-label .selected-value.selected-value--placeholder {
+    color: $input-placeholder-color !important;
+    font-family: $input-font-family !important;
+    font-size: $input-font-size !important;
+    font-weight: $input-placeholder-font-weight !important;
+    opacity: 1;
+  }
 }

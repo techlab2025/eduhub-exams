@@ -14674,6 +14674,462 @@ body::-webkit-scrollbar-thumb:hover {
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
+.article-details-form-card.article-form-layout {
+  margin: 0 auto !important;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.article-details-form-card.article-form-layout > .form-header {
+  position: relative;
+  overflow: hidden;
+  min-height: 88px;
+  margin: 0 !important;
+  padding: 20px 24px !important;
+  border: 1px solid var(--PrimaryColor-alpha-15);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(120deg, var(--PrimaryColor-alpha-12), var(--BgWhite));
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+.article-details-form-card.article-form-layout > .form-header::before {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: var(--primary-green);
+  content: "";
+}
+.article-details-form-card.article-form-layout > .form-header::after {
+  position: absolute;
+  inset-inline-end: -45px;
+  top: -75px;
+  width: 190px;
+  height: 190px;
+  border: 30px solid var(--PrimaryColor-alpha-10);
+  border-radius: var(--radius-full);
+  content: "";
+  pointer-events: none;
+}
+.article-details-form-card.article-form-layout > .form-header .form-title,
+.article-details-form-card.article-form-layout > .form-header .header-text {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+.article-details-form-card.article-form-layout > .form-header .header-text h3 {
+  margin: 0;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 22px;
+  font-weight: 700;
+}
+.article-details-form-card.article-form-layout > .form-header .header-text h3 svg {
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--primary-green);
+  color: var(--BgWhite);
+  box-shadow: var(--shadow-md);
+  transform: rotate(-3deg);
+}
+.article-details-form-card.article-form-layout .article-form-steps {
+  position: relative;
+  gap: 8px;
+  margin: 0;
+  padding: 5px;
+  border: 1px solid var(--gray-200);
+  border-radius: 18px;
+  background: var(--gray-50);
+  box-shadow: var(--shadow-sm);
+}
+.article-details-form-card.article-form-layout .article-form-step {
+  min-height: 62px;
+  padding-block: 10px;
+  padding-inline: 58px 20px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--gray-500);
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.article-details-form-card.article-form-layout .article-form-step::marker {
+  content: none;
+}
+.article-details-form-card.article-form-layout .article-form-step span {
+  color: inherit;
+  font-size: 13px;
+  font-weight: 700;
+}
+.article-details-form-card.article-form-layout .article-form-step small {
+  margin-top: 2px;
+  color: inherit;
+  font-size: 11px;
+  opacity: 0.75;
+}
+.article-details-form-card.article-form-layout .article-form-step::before {
+  position: absolute;
+  inset-inline-start: 15px;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--gray-300);
+  border-radius: 10px;
+  background: var(--BgWhite);
+  color: var(--gray-500);
+  display: grid;
+  place-items: center;
+  content: "2";
+  font-size: 11px;
+  font-weight: 700;
+  transform: translateY(-50%);
+}
+.article-details-form-card.article-form-layout .article-form-step.active {
+  border: 0;
+  background: linear-gradient(135deg, var(--primary-green), var(--PrimaryColor-alpha-80));
+  color: var(--BgWhite);
+  box-shadow: var(--shadow-md);
+}
+.article-details-form-card.article-form-layout .article-form-step.active::before {
+  inset-inline-start: 15px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--white-alpha-40);
+  border-radius: 10px;
+  background: var(--white-alpha-20);
+  color: var(--BgWhite);
+  content: "1";
+  transform: translateY(-50%);
+}
+.article-details-form-card.article-form-layout .article-form-step.active::after {
+  display: none;
+}
+.article-details-form-card.article-form-layout .article-section-card {
+  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--gray-200) !important;
+  border-radius: var(--radius-xl) !important;
+  background: var(--BgWhite);
+  box-shadow: var(--shadow-md);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.article-details-form-card.article-form-layout .article-section-card:focus-within, .article-details-form-card.article-form-layout .article-section-card.active {
+  border-color: var(--PrimaryColor-alpha-40) !important;
+  box-shadow: var(--shadow-lg);
+}
+.article-details-form-card.article-form-layout .article-section-card > .p-accordionpanel {
+  border: 0 !important;
+}
+.article-details-form-card.article-form-layout .article-section-card .p-accordionheader {
+  min-height: 72px;
+  padding: 15px 20px !important;
+  border: 0 !important;
+  background: linear-gradient(110deg, var(--PrimaryColor-alpha-8), var(--BgWhite)) !important;
+  color: var(--gray-800) !important;
+}
+.article-details-form-card.article-form-layout .article-section-card .p-accordioncontent-content {
+  margin: 0 !important;
+  padding: 22px !important;
+  border: 0 !important;
+  background: var(--BgWhite) !important;
+}
+.article-details-form-card.article-form-layout .article-section-card .article-solution-steps-header {
+  gap: 12px;
+  margin: 0;
+}
+.article-details-form-card.article-form-layout .article-section-card .article-solution-steps-header .toggll-container {
+  gap: 12px;
+  color: var(--gray-800);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.article-details-form-card.article-form-layout .article-section-card .article-solution-steps-header .toggll-container::before {
+  min-width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--primary-green);
+  color: var(--BgWhite);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+.article-details-form-card.article-form-layout .article-section-card .article-solution-steps-header .toggll-container svg {
+  width: 16px;
+  height: 16px;
+  color: var(--primary-green);
+}
+.article-details-form-card.article-form-layout .article-section-card .article-solution-steps-header .dashed-border {
+  position: static;
+  flex: 1;
+  width: auto;
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, var(--gray-200), transparent);
+}
+.article-details-form-card.article-form-layout .article-section-card.article-section-basic .toggll-container::before {
+  content: "01";
+}
+.article-details-form-card.article-form-layout .article-section-card.article-section-source .toggll-container::before {
+  content: "02";
+}
+.article-details-form-card.article-form-layout .input-wrapper,
+.article-details-form-card.article-form-layout .field-group,
+.article-details-form-card.article-form-layout .input {
+  gap: 8px;
+  margin: 0;
+}
+.article-details-form-card.article-form-layout .input-wrapper {
+  margin-bottom: 18px;
+}
+.article-details-form-card.article-form-layout .input-wrapper > label {
+  color: var(--gray-700) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.article-details-form-card.article-form-layout .input-wrapper .description-container {
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  background: var(--BgWhite);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.article-details-form-card.article-form-layout .input-wrapper .description-container:focus-within {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 4px var(--PrimaryColor-alpha-10);
+}
+.article-details-form-card.article-form-layout .input-wrapper .description-container .description-header {
+  min-height: 46px;
+  padding: 8px 14px;
+  border-radius: 0;
+  background: var(--gray-50);
+  color: var(--gray-600);
+  font-size: 12px;
+  font-weight: 700;
+}
+.article-details-form-card.article-form-layout .input-wrapper .description-container textarea {
+  min-height: 132px;
+  padding: 15px;
+  border: 0;
+  background: var(--BgWhite) !important;
+  color: var(--gray-800);
+  font-size: 13px;
+  line-height: 1.65;
+  resize: vertical;
+}
+.article-details-form-card.article-form-layout .input-wrapper .description-container textarea::-moz-placeholder {
+  color: var(--gray-400);
+  font-size: 12px;
+  font-weight: 400;
+}
+.article-details-form-card.article-form-layout .input-wrapper .description-container textarea::placeholder {
+  color: var(--gray-400);
+  font-size: 12px;
+  font-weight: 400;
+}
+.article-details-form-card.article-form-layout .input-wrapper .description-container textarea:focus {
+  outline: 0;
+  box-shadow: none;
+}
+.article-details-form-card.article-form-layout .document-tab .form-group {
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--gray-200);
+  border-radius: 18px;
+  background: var(--gray-50);
+}
+.article-details-form-card.article-form-layout .document-tab .field-group,
+.article-details-form-card.article-form-layout .document-tab .input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.article-details-form-card.article-form-layout .document-tab .field-label,
+.article-details-form-card.article-form-layout .document-tab .input-label,
+.article-details-form-card.article-form-layout .document-tab .input-label label {
+  color: var(--gray-700) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-transform: capitalize;
+}
+.article-details-form-card.article-form-layout .document-tab .field-input,
+.article-details-form-card.article-form-layout .document-tab .p-select,
+.article-details-form-card.article-form-layout .document-tab .p-multiselect {
+  min-height: 48px;
+  border: 1px solid var(--gray-200) !important;
+  border-radius: 14px !important;
+  background: var(--BgWhite) !important;
+  color: var(--gray-800);
+  box-shadow: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.article-details-form-card.article-form-layout .document-tab .field-input:hover,
+.article-details-form-card.article-form-layout .document-tab .p-select:hover,
+.article-details-form-card.article-form-layout .document-tab .p-multiselect:hover {
+  border-color: var(--gray-300) !important;
+}
+.article-details-form-card.article-form-layout .document-tab .field-input {
+  padding: 11px 14px;
+  font-size: 13px;
+}
+.article-details-form-card.article-form-layout .document-tab .field-input::-moz-placeholder {
+  color: var(--gray-400);
+  font-size: 12px;
+  font-weight: 400;
+}
+.article-details-form-card.article-form-layout .document-tab .field-input::placeholder {
+  color: var(--gray-400);
+  font-size: 12px;
+  font-weight: 400;
+}
+.article-details-form-card.article-form-layout .document-tab .field-input:focus {
+  border-color: var(--primary-green) !important;
+  background: var(--BgWhite) !important;
+  box-shadow: 0 0 0 4px var(--PrimaryColor-alpha-10);
+}
+.article-details-form-card.article-form-layout .document-tab .p-select.p-focus,
+.article-details-form-card.article-form-layout .document-tab .p-multiselect.p-focus {
+  border-color: var(--primary-green) !important;
+  box-shadow: 0 0 0 4px var(--PrimaryColor-alpha-10);
+}
+.article-details-form-card.article-form-layout .document-tab .p-select-label,
+.article-details-form-card.article-form-layout .document-tab .p-multiselect-label {
+  padding: 11px 14px !important;
+  font-size: 12px !important;
+}
+.article-details-form-card.article-form-layout .required-field-message {
+  width: -moz-fit-content;
+  width: fit-content;
+  margin: 2px 0 0;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--danger-light);
+  color: var(--danger-color);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.article-details-form-card.article-form-layout .required-marker {
+  margin-inline-start: 4px;
+  color: var(--danger-color);
+}
+.article-details-form-card.article-form-layout .article-section-explanation .p-accordionheader {
+  min-height: 64px;
+}
+.article-details-form-card.article-form-layout .article-section-explanation .article-solution-steps-header-explain {
+  min-height: 34px;
+  color: var(--gray-700);
+  font-size: 13px;
+  font-weight: 600;
+}
+.article-details-form-card.article-form-layout .article-section-explanation .article-solution-steps-header-explain::before {
+  min-width: 34px;
+  height: 34px;
+  margin-inline-end: 10px;
+  border-radius: 11px;
+  background: var(--PrimaryColor-alpha-12);
+  color: var(--primary-green);
+  display: grid;
+  place-items: center;
+  content: "03";
+  font-size: 10px;
+  font-weight: 700;
+}
+.article-details-form-card.article-form-layout .article-section-explanation .image-input .upload-area {
+  padding: 7px 12px !important;
+  border: 1px solid var(--PrimaryColor-alpha-20) !important;
+  border-radius: 10px !important;
+  background: var(--BgWhite) !important;
+}
+.article-details-form-card.article-form-layout .article-section-explanation .upload-attachment-container {
+  gap: 8px;
+}
+.article-details-form-card.article-form-layout .article-section-explanation .upload-attachment-container .upload-attachment {
+  color: var(--primary-green);
+  font-size: 12px;
+  font-weight: 600;
+}
+.article-details-form-card.article-form-layout .article-section-explanation .preview-container {
+  border-color: var(--gray-200);
+}
+.article-details-form-card.article-form-layout .article-section-explanation .preview-container .preview-item {
+  width: 92px;
+  height: 92px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.article-details-form-card.article-form-layout .disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.58;
+  filter: saturate(0.7);
+}
+@media (max-width: 768px) {
+  .article-details-form-card.article-form-layout {
+    gap: 14px;
+  }
+  .article-details-form-card.article-form-layout > .form-header {
+    min-height: 74px;
+    padding: 16px !important;
+    border-radius: 18px;
+  }
+  .article-details-form-card.article-form-layout > .form-header .header-text h3 {
+    font-size: 18px;
+  }
+  .article-details-form-card.article-form-layout > .form-header .header-text h3 svg {
+    width: 38px;
+    height: 38px;
+  }
+  .article-details-form-card.article-form-layout .article-form-steps {
+    grid-template-columns: 1fr;
+    border-radius: 16px;
+  }
+  .article-details-form-card.article-form-layout .article-form-step {
+    min-height: 56px;
+  }
+  .article-details-form-card.article-form-layout .article-section-card {
+    border-radius: 18px !important;
+  }
+  .article-details-form-card.article-form-layout .article-section-card .p-accordionheader {
+    min-height: 64px;
+    padding: 13px 14px !important;
+  }
+  .article-details-form-card.article-form-layout .article-section-card .p-accordioncontent-content {
+    padding: 14px !important;
+  }
+  .article-details-form-card.article-form-layout .article-section-card .article-solution-steps-header .toggll-container {
+    gap: 8px;
+    font-size: 13px;
+  }
+  .article-details-form-card.article-form-layout .article-section-card .article-solution-steps-header .toggll-container::before {
+    min-width: 32px;
+    height: 32px;
+    border-radius: 10px;
+  }
+  .article-details-form-card.article-form-layout .document-tab .form-group,
+  .article-details-form-card.article-form-layout .document-tab .form-group-grid {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+  .article-details-form-card.article-form-layout .input-wrapper .description-container textarea {
+    min-height: 112px;
+  }
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
 .subject-page {
   display: flex;
   flex-direction: column;
@@ -16556,9 +17012,10 @@ body div {
     padding: 0 !important;
   }
 }
-.selected-value--placeholder[data-p=placeholder] {
+.p-select.input-select .p-select-label .selected-value.selected-value--placeholder {
   color: var(--second-text) !important;
   font-family: "Light" !important;
   font-size: 14px !important;
   font-weight: 500 !important;
+  opacity: 1;
 }/*# sourceMappingURL=main.min.css.map */

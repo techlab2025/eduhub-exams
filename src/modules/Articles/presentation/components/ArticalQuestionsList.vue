@@ -75,9 +75,52 @@
       </div>
     </div>
 
-    <div v-if="!hasFetched" class="questions-loading">{{ $t('article_questions_loading') }}</div>
+    <div v-if="!hasFetched" class="questions-loading" role="status" aria-live="polite">
+      <span class="questions-loading-spinner" aria-hidden="true"></span>
+      <div>
+        <strong>{{ $t('article_questions_loading') }}</strong>
+        <small>{{ $t('question_management_step') }}</small>
+      </div>
+    </div>
 
-    <ArticleQuestion v-else-if="hasQuestions" :artical="article!" />
+    <template v-else-if="hasQuestions">
+      <section class="question-management-toolbar">
+        <div class="question-management-summary">
+          <span class="question-management-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M7 3.5h7l4 4V18a2.5 2.5 0 0 1-2.5 2.5h-8A2.5 2.5 0 0 1 5 18V6a2.5 2.5 0 0 1 2-2.45Z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M14 3.5v4h4M8.5 11h6M8.5 14.5h4"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
+          <div>
+            <span>{{ $t('question_management_step') }}</span>
+            <h2>{{ $t('article_questions_title') }}</h2>
+          </div>
+        </div>
+
+        <div class="question-management-controls">
+          <span class="question-count" :aria-label="$t('article_questions_title')">
+            {{ questionCount }}
+          </span>
+          <button class="add-question-button" type="button" @click="showAddQuestionDialog = true">
+            <span aria-hidden="true">+</span>
+            {{ $t('article_questions_add_button') }}
+          </button>
+        </div>
+      </section>
+
+      <ArticleQuestion :artical="article!" />
+    </template>
 
     <section v-else class="empty-questions-card">
       <header class="empty-questions-header">
@@ -122,13 +165,6 @@
         </button>
       </div>
     </section>
-
-    <div v-if="hasFetched && hasQuestions" class="question-list-add-action">
-      <button class="add-question-button" type="button" @click="showAddQuestionDialog = true">
-        <span aria-hidden="true">+</span>
-        {{ $t('article_questions_add_button') }}
-      </button>
-    </div>
 
     <div v-if="hasFetched" class="article-question-actions">
       <button class="finish-button" type="button" :disabled="!hasQuestions" @click="finish">
@@ -203,6 +239,7 @@
 
 <style scoped lang="scss">
   @use '../../../../styles/variables' as *;
+  @use '../styles/article_questions_step_modern' as modern;
 
   .article-questions-step {
     width: 100%;
@@ -463,7 +500,6 @@
 
   .question-dialog-heading {
     min-width: 0;
-    font-family: 'Demi';
 
     h2 {
       margin: 2px 0 4px;
@@ -591,4 +627,6 @@
       padding: 12px;
     }
   }
+
+  @include modern.article-questions-step;
 </style>
