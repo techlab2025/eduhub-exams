@@ -2,6 +2,26 @@
 @use '../../../../../styles/mixins/flex' as *;
 @use '../../../../../styles/mixins/grid' as *;
 
+@mixin status-theme($background, $border, $text) {
+  border: $BaseBorderWidth solid $border;
+  background: $background;
+
+  &::before {
+    background: $border;
+  }
+
+  .status-item {
+    &:nth-child(1),
+    &:nth-child(3) {
+      border-color: $border;
+    }
+
+    &:first-child h3 {
+      color: $text;
+    }
+  }
+}
+
 .question-status-card {
   padding: $MdSize2;
   border-radius: $XlSize;
@@ -30,8 +50,8 @@
 
     &:nth-child(1),
     &:nth-child(3) {
-      border-right: $BaseBorderWidth solid;
-      padding-right: $XsSize;
+      padding-inline-end: $XsSize;
+      border-inline-end: $BaseBorderWidth solid;
     }
 
     label {
@@ -45,99 +65,26 @@
     }
   }
 
-  /* =========================
-     Waiting Review
-  ========================= */
-
-  &.waiting {
-    background: var(--bg-waiting);
-    border: $BaseBorderWidth solid var(--border-waiting);
-
-    &::before {
-      background: var(--border-waiting);
-    }
-
-    .status-item {
-      &:nth-child(1),
-      &:nth-child(3) {
-        border-color: var(--border-waiting);
-      }
-
-      &:first-child h3 {
-        color: var(--StandardBlue);
-      }
-    }
+  &.status-created,
+  &.status-under-review {
+    @include status-theme(var(--bg-waiting), var(--border-waiting), var(--StandardBlue));
   }
 
-  /* =========================
-     Drafting
-  ========================= */
-
-  &.drafting {
-    background: var(--bg-drafting);
-    border: $BaseBorderWidth solid var(--border-drafting);
-
-    &::before {
-      background: var(--border-drafting);
-    }
-
-    .status-item {
-      &:nth-child(1),
-      &:nth-child(3) {
-        border-color: var(--border-drafting);
-      }
-
-      &:first-child h3 {
-        color: var(--color-dark-gray);
-      }
-    }
+  &.status-draft,
+  &.status-archived,
+  &.status-unknown {
+    @include status-theme(var(--bg-drafting), var(--border-drafting), var(--color-dark-gray));
   }
 
-  /* =========================
-     Rejected
-  ========================= */
-
-  &.rejected {
-    background: var(--bg-rejected);
-    border: $BaseBorderWidth solid var(--border-rejected);
-
-    &::before {
-      background: var(--border-rejected);
-    }
-
-    .status-item {
-      &:nth-child(1),
-      &:nth-child(3) {
-        border-color: var(--border-rejected);
-      }
-
-      &:first-child h3 {
-        color: var(--danger-alt);
-      }
-    }
+  &.status-rejected {
+    @include status-theme(var(--bg-rejected), var(--border-rejected), var(--danger-alt));
   }
 
-  /* =========================
-     Approved
-  ========================= */
+  &.status-approved {
+    @include status-theme(var(--bg-approved), var(--border-approved), var(--success-alt));
+  }
 
-  &.approved {
-    background: var(--bg-approved);
-    border: $BaseBorderWidth solid var(--border-approved);
-
-    &::before {
-      background: var(--border-approved);
-    }
-
-    .status-item {
-      &:nth-child(1),
-      &:nth-child(3) {
-        border-color: var(--border-approved);
-      }
-
-      &:first-child h3 {
-        color: var(--success-alt);
-      }
-    }
+  &.status-revision {
+    @include status-theme(var(--warning-light), var(--warning), var(--warning-dark));
   }
 }

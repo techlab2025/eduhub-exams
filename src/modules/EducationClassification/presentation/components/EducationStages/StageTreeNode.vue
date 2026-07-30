@@ -198,7 +198,7 @@
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
       </svg>
 
-      <span v-if="node.depth > 0" class="level-label">{{ $t('branch') }} {{ node.depth }}</span>
+      <span v-if="node.depth > 0" class="level-label">{{ $t('stage') }} {{ node.depth }}</span>
 
       <span class="node-name" :class="{ 'rtl-text': isArabic(node.stage.stage_title) }">
         {{ node.stage.stage_title }}

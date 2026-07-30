@@ -173,7 +173,9 @@ export default class questionsController extends BaseController<
 
   async updateReviewStatus(params: Params) {
     const result = await this.repository.updateReviewStatus(params);
-    dialogManager.toastSuccess('Review status updated successfully');
+    if (result instanceof DataSuccess) {
+      dialogManager.toastSuccess('Review status updated successfully');
+    }
 
     return result;
   }

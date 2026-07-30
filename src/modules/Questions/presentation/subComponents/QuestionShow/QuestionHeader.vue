@@ -8,34 +8,53 @@
   import DeletequestionsParams from '@/modules/Questions/core/params/delete.question.params';
   import RevisionQuestion from '../Dialogs/RevisionQuestion.vue';
   import ToggleQuestionStatusParams from '@/modules/Questions/core/params/question.toggle.status.params.ts';
+  import { useI18n } from 'vue-i18n';
+
   const { questionData } = defineProps<{ questionData: ShowQuestionsModel }>();
   const router = useRouter();
+  const { t } = useI18n();
 
   const id = router.currentRoute.value.params.id;
 
-  const getStatusText = (review_status: QuestionStatusEnum) => {
-    switch (review_status) {
+  const getStatusText = (reviewStatus: QuestionStatusEnum) => {
+    switch (reviewStatus) {
+      case QuestionStatusEnum.CREATED:
+        return t('question_status_details.titles.created');
       case QuestionStatusEnum.NOT_REVIEW:
-        return 'Under Review';
+        return t('question_status_details.titles.under_review');
       case QuestionStatusEnum.APPROVED:
-        return 'Approved';
+        return t('question_status_details.titles.approved');
       case QuestionStatusEnum.REJECTED:
-        return 'Rejected';
+        return t('question_status_details.titles.rejected');
+      case QuestionStatusEnum.DRAFT:
+        return t('question_status_details.titles.draft');
+      case QuestionStatusEnum.ARCHIVED:
+        return t('question_status_details.titles.archived');
+      case QuestionStatusEnum.REVISION:
+        return t('question_status_details.titles.revision');
       default:
-        return 'Unknown';
+        return t('question_status_details.titles.unknown');
     }
   };
 
-  const getStatusDescription = (review_status: QuestionStatusEnum) => {
-    switch (review_status) {
+  const getStatusDescription = (reviewStatus: QuestionStatusEnum) => {
+    switch (reviewStatus) {
+      case QuestionStatusEnum.CREATED:
+        return t('question_status_details.descriptions.created');
       case QuestionStatusEnum.NOT_REVIEW:
-        return 'complete all details of the question and the available procedures to can publish it';
+        return t('question_status_details.descriptions.under_review');
       case QuestionStatusEnum.REJECTED:
-        return 'View all details of the question and reason of rejected';
+        return t('question_status_details.descriptions.rejected');
       case QuestionStatusEnum.APPROVED:
-        return '';
+        return t('question_status_details.descriptions.approved');
+      case QuestionStatusEnum.DRAFT:
+        return t('question_status_details.descriptions.draft');
+      case QuestionStatusEnum.ARCHIVED:
+        return t('question_status_details.descriptions.archived');
+      case QuestionStatusEnum.REVISION:
+        return t('question_status_details.descriptions.revision');
       default:
-        return 'Unknown';
+        return t('question_status_details.descriptions.unknown');
     }
   };
 
@@ -54,7 +73,10 @@
       status: QuestionStatusEnum.REVISION,
       note: note,
     });
-    await controller.updateReviewStatus(quiestionStatusParams);
+    const result = await controller.updateReviewStatus(quiestionStatusParams);
+      if(result.data){
+      router.push('/questions')
+    }
     // dialogManager.toastSuccess('Question rejected successfully');
   };
   const ArchiveQuestion = async () => {
@@ -62,7 +84,21 @@
       id: Number(route.params.id),
       status: QuestionStatusEnum.ARCHIVED,
     });
-    await controller.updateReviewStatus(quiestionStatusParams);
+    const result = await controller.updateReviewStatus(quiestionStatusParams);
+      if(result.data){
+      router.push('/questions')
+    }
+    // dialogManager.toastSuccess('Question rejected successfully');
+  };
+   const UnArchiveQuestion = async () => {
+    const quiestionStatusParams = new ToggleQuestionStatusParams({
+      id: Number(route.params.id),
+      status: QuestionStatusEnum.REVISION,
+    });
+    const result = await controller.updateReviewStatus(quiestionStatusParams);
+    if(result.data){
+      router.push('/questions')
+    }
     // dialogManager.toastSuccess('Question rejected successfully');
   };
 </script>
@@ -73,7 +109,7 @@
     <div class="info">
       <img :src="FaqImg" alt="question image" />
       <div class="name">
-        <h3>{{ getStatusText(questionData?.review_status!) }} Question</h3>
+        <h3>{{ getStatusText(questionData?.review_status!) }} {{ t('question') }}</h3>
         <p>{{ getStatusDescription(questionData?.review_status!) }}</p>
         <div
           v-if="questionData?.review_status === QuestionStatusEnum.APPROVED"
@@ -91,12 +127,16 @@
         </div>
       </div>
     </div>
-    <div class="question-actions" v-if="questionData.review_status != QuestionStatusEnum.APPROVED">
+    <div v-if="questionData.review_status != QuestionStatusEnum.APPROVED" class="question-actions">
       <button
         class="btn btn-primary"
         @click="router.push({ name: 'Edit question', params: { id } })"
       >
         <EditIcon /> {{ $t('edit') }}
+      </button>
+
+      <button  v-if="questionData.review_status == QuestionStatusEnum.ARCHIVED" class="btn btn-primary" @click="UnArchiveQuestion">
+        {{ $t('unarchive') }}
       </button>
 
       <button class="action-btn delete" title="Delete" @click="DeleteQuestion">
@@ -116,7 +156,7 @@
         </svg>
       </button>
     </div>
-    <div class="question-actions" v-if="questionData.review_status == QuestionStatusEnum.APPROVED">
+    <div v-if="questionData.review_status == QuestionStatusEnum.APPROVED" class="question-actions">
       <RevisionQuestion @revision="RvisionQuestion" />
 
       <button class="btn btn-primary" @click="ArchiveQuestion">

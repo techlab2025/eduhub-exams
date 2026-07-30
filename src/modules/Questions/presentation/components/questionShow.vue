@@ -38,25 +38,25 @@
       />
 
       <QuestionClarification
-        v-if="showState?.data?.questionClarification"
-        :clarification="showState?.data?.questionClarification"
+        v-if="showState?.data?.questionClarification?.source?.length! > 0 ||showState?.data?.questionClarification?.attachments?.length! > 0"
+        :clarification="showState?.data?.questionClarification!"
       />
 
       <div class="solution-container">
         <QuestionSolutionHint
-          v-if="showState?.data?.solutionHint"
-          :solution-hint="showState?.data?.solutionHint"
+          v-if="showState?.data?.solutionHint?.hint.length! > 0 ||showState?.data?.solutionHint?.attachments.length! > 0"
+          :solution-hint="showState?.data?.solutionHint!"
         />
 
         <QuestionSolutionSteps
-          v-if="showState?.data?.solutionSteps"
+          v-if="showState?.data?.solutionSteps?.step.length! > 0 ||showState?.data?.solutionSteps?.attachments.length! > 0"
           :solution-steps="showState?.data?.solutionSteps!"
         />
       </div>
 
       <!-- v-if="showState.data?.review_status == QuestionStatusEnum.NOT_REVIEW"  -->
-      <QuestionReviewProcedures :question-data="showState?.data" v-if="showState.data?.review_status == QuestionStatusEnum.NOT_REVIEW"/>
-      <QuestionRejectActions v-if="showState.data?.review_status === QuestionStatusEnum.REJECTED" :note="showState.data.note || ''" />
+      <QuestionReviewProcedures :question-data="showState?.data" v-if="showState.data?.review_status == QuestionStatusEnum.NOT_REVIEW "/>
+      <QuestionRejectActions v-if="showState.data?.review_status === QuestionStatusEnum.REJECTED || showState.data?.review_status == QuestionStatusEnum.REVISION" :status="showState.data?.review_status" :note="showState.data.note || ''" />
     </div>
 
     <div class="side-content">

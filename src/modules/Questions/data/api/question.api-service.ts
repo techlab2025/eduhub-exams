@@ -29,6 +29,8 @@ export default class QuestionApiService extends BaseApiService {
   }
 
   updateReviewStatus(params: Params): Promise<ApiResponse> {
-    return this.customPost(this.questionEndpoints.updateReviewStatus || '', params);
+    return this.customPost(this.questionEndpoints.updateReviewStatus || '', params, {
+      enableRetry: false,
+    });
   }
 }

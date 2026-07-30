@@ -1,15 +1,38 @@
 <script setup lang="ts">
+  import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
 
-  const {note} = defineProps<{
-    note:string
-  }>()
+  const { note, status } = defineProps<{
+    note: string;
+    status: QuestionStatusEnum;
+  }>();
+
+  const GetStattus = (status: QuestionStatusEnum) => {
+    switch (status) {
+      case QuestionStatusEnum.APPROVED:
+        return 'approve';
+      case QuestionStatusEnum.REJECTED:
+        return 'reject';
+
+      case QuestionStatusEnum.REVISION:
+        return 'revision';
+
+      case QuestionStatusEnum.DRAFT:
+        return 'draft';
+
+      case QuestionStatusEnum.NOT_REVIEW:
+        return 'not reviewd';
+
+      case QuestionStatusEnum.APPROVED:
+        return 'approve';
+    }
+  };
 </script>
 
 <template>
   <div class="question-review-reject-wrapper">
     <div class="card-content">
       <div class="question-review-reject-header">
-        <h2> reject Reason</h2>
+        <h2>{{ `${GetStattus(status)} Reason` }}</h2>
         <p>{{ note || 'no Reason For Reject ' }}</p>
       </div>
 
@@ -25,7 +48,7 @@
       </div> -->
     </div>
     <div class="actions">
-       <!--  <router-link class="approve-btn btn btn-primary" :to="`/questions/edit/${route.params.id}`">
+      <!--  <router-link class="approve-btn btn btn-primary" :to="`/questions/edit/${route.params.id}`">
         <EditIcon />
         Edit question
       </router-link>-->

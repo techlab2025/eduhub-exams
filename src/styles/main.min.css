@@ -11158,9 +11158,10 @@ body::-webkit-scrollbar-thumb:hover {
   color: var(--second-text);
 }
 .question-info-wrapper .question-show-body .question-body-text h2 {
-  font-size: var(--md-size);
-  font-family: "Bold";
-  color: var(--standard-black);
+  font-size: 20px;
+  font-family: "Demi";
+  color: #121212;
+  font-weight: 600;
 }
 .question-info-wrapper .question-show-body .question-body-img {
   display: flex;
@@ -11699,8 +11700,8 @@ body::-webkit-scrollbar-thumb:hover {
   gap: var(--xs-size-5);
 }
 .question-status-card .status-item:nth-child(1), .question-status-card .status-item:nth-child(3) {
-  border-right: 1px solid;
-  padding-right: var(--xs-size);
+  padding-inline-end: var(--xs-size);
+  border-inline-end: 1px solid;
 }
 .question-status-card .status-item label {
   font-size: var(--xs-size);
@@ -11710,77 +11711,70 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: var(--md-size);
   color: var(--standard-black);
 }
-.question-status-card {
-  /* =========================
-     Waiting Review
-  ========================= */
-}
-.question-status-card.waiting {
-  background: var(--bg-waiting);
+.question-status-card.status-created, .question-status-card.status-under-review {
   border: 1px solid var(--border-waiting);
+  background: var(--bg-waiting);
 }
-.question-status-card.waiting::before {
+.question-status-card.status-created::before, .question-status-card.status-under-review::before {
   background: var(--border-waiting);
 }
-.question-status-card.waiting .status-item:nth-child(1), .question-status-card.waiting .status-item:nth-child(3) {
+.question-status-card.status-created .status-item:nth-child(1), .question-status-card.status-created .status-item:nth-child(3), .question-status-card.status-under-review .status-item:nth-child(1), .question-status-card.status-under-review .status-item:nth-child(3) {
   border-color: var(--border-waiting);
 }
-.question-status-card.waiting .status-item:first-child h3 {
+.question-status-card.status-created .status-item:first-child h3, .question-status-card.status-under-review .status-item:first-child h3 {
   color: var(--StandardBlue);
 }
-.question-status-card {
-  /* =========================
-     Drafting
-  ========================= */
-}
-.question-status-card.drafting {
-  background: var(--bg-drafting);
+.question-status-card.status-draft, .question-status-card.status-archived, .question-status-card.status-unknown {
   border: 1px solid var(--border-drafting);
+  background: var(--bg-drafting);
 }
-.question-status-card.drafting::before {
+.question-status-card.status-draft::before, .question-status-card.status-archived::before, .question-status-card.status-unknown::before {
   background: var(--border-drafting);
 }
-.question-status-card.drafting .status-item:nth-child(1), .question-status-card.drafting .status-item:nth-child(3) {
+.question-status-card.status-draft .status-item:nth-child(1), .question-status-card.status-draft .status-item:nth-child(3), .question-status-card.status-archived .status-item:nth-child(1), .question-status-card.status-archived .status-item:nth-child(3), .question-status-card.status-unknown .status-item:nth-child(1), .question-status-card.status-unknown .status-item:nth-child(3) {
   border-color: var(--border-drafting);
 }
-.question-status-card.drafting .status-item:first-child h3 {
+.question-status-card.status-draft .status-item:first-child h3, .question-status-card.status-archived .status-item:first-child h3, .question-status-card.status-unknown .status-item:first-child h3 {
   color: var(--color-dark-gray);
 }
-.question-status-card {
-  /* =========================
-     Rejected
-  ========================= */
-}
-.question-status-card.rejected {
-  background: var(--bg-rejected);
+.question-status-card.status-rejected {
   border: 1px solid var(--border-rejected);
+  background: var(--bg-rejected);
 }
-.question-status-card.rejected::before {
+.question-status-card.status-rejected::before {
   background: var(--border-rejected);
 }
-.question-status-card.rejected .status-item:nth-child(1), .question-status-card.rejected .status-item:nth-child(3) {
+.question-status-card.status-rejected .status-item:nth-child(1), .question-status-card.status-rejected .status-item:nth-child(3) {
   border-color: var(--border-rejected);
 }
-.question-status-card.rejected .status-item:first-child h3 {
+.question-status-card.status-rejected .status-item:first-child h3 {
   color: var(--danger-alt);
 }
-.question-status-card {
-  /* =========================
-     Approved
-  ========================= */
-}
-.question-status-card.approved {
-  background: var(--bg-approved);
+.question-status-card.status-approved {
   border: 1px solid var(--border-approved);
+  background: var(--bg-approved);
 }
-.question-status-card.approved::before {
+.question-status-card.status-approved::before {
   background: var(--border-approved);
 }
-.question-status-card.approved .status-item:nth-child(1), .question-status-card.approved .status-item:nth-child(3) {
+.question-status-card.status-approved .status-item:nth-child(1), .question-status-card.status-approved .status-item:nth-child(3) {
   border-color: var(--border-approved);
 }
-.question-status-card.approved .status-item:first-child h3 {
+.question-status-card.status-approved .status-item:first-child h3 {
   color: var(--success-alt);
+}
+.question-status-card.status-revision {
+  border: 1px solid var(--warning);
+  background: var(--warning-light);
+}
+.question-status-card.status-revision::before {
+  background: var(--warning);
+}
+.question-status-card.status-revision .status-item:nth-child(1), .question-status-card.status-revision .status-item:nth-child(3) {
+  border-color: var(--warning);
+}
+.question-status-card.status-revision .status-item:first-child h3 {
+  color: var(--warning-dark);
 }
 
 /* =============================================================================
