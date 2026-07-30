@@ -14,11 +14,14 @@
   const formKey = route.fullPath;
 
   const params = ref<EditQuestionParams | null>(null);
+  const questionFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
 
   /**
    * Update employee
    */
   const saveQuestion = async () => {
+    const isFormValid = await questionFormRef.value?.validate?.();
+    if (isFormValid === false) return;
     if (!params.value) {
       console.error('No employee parameters to save');
       return;
@@ -44,6 +47,7 @@
 <template>
   <div class="employee-edit-page">
     <QuestionsForm
+      ref="questionFormRef"
       :question="controller.itemData.value!"
       :form-key="formKey"
       @update-data="updateData"

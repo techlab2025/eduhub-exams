@@ -10,12 +10,28 @@
   import WithReviewDialog from '../subComponents/Dialogs/WithReviewDialog.vue';
   import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.vue';
 
+  const props = withDefaults(
+    defineProps<{
+      articleId?: number;
+      embedded?: boolean;
+    }>(),
+    {
+      articleId: undefined,
+      embedded: false,
+    },
+  );
+  const emit = defineEmits<{
+    saved: [];
+    close: [];
+  }>();
+
   const controller = questionsController.getInstance();
   const route = useRoute();
   const formKey = route.fullPath;
   const loading = ref(false);
   const params = ref<AddquestionsParams | null>(null);
   const router = useRouter();
+  const questionFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
 
   const SaveStatusEnum = {
     Save: 1,
@@ -23,6 +39,8 @@
   } as const;
 
   const saveQuestion = async (isRouting: boolean, isWithReview: boolean) => {
+    const isFormValid = await questionFormRef.value?.validate?.();
+    if (isFormValid === false) return;
     loading.value = true;
     try {
       if (!params.value) {
@@ -36,9 +54,14 @@
       const result = await controller.create(params.value, undefined, formKey);
       if (!(result instanceof DataSuccess)) return;
 
+      if (props.embedded) {
+        emit('saved');
+        return;
+      }
+
       if (isRouting) {
         if (params.value?.parentId != null) {
-          router.push({ name: 'Questions' });
+          router.push({ name: 'Article questions', params: { id: params.value.parentId } });
         } else {
           router.back();
         }
@@ -66,7 +89,7 @@
       if (!(result instanceof DataSuccess)) return;
 
       if (params.value?.parentId != null) {
-        router.push({ name: 'Questions' });
+        router.push({ name: 'Article questions', params: { id: params.value.parentId } });
       } else {
         router.back();
       }
@@ -84,8 +107,10 @@
 <template>
   <div class="questions-add-page">
     <questionsForm
+      ref="questionFormRef"
       :class="loading ? 'disabled' : ''"
       :form-key="formKey"
+      :article-id="props.articleId"
       @update-data="updateData"
     />
     <div class="actions">
@@ -112,12 +137,14 @@
         @without-review="saveQuestion(true, false)"
       />
       <WithReviewDialog
+        v-if="!props.embedded"
         class="save-emp"
         :save-status="SaveStatusEnum.SaveAndNew"
         @with-review="saveQuestion(false, true)"
         @without-review="saveQuestion(false, false)"
       />
       <button
+        v-if="!props.embedded"
         class="btn btn-draft"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
@@ -146,7 +173,11 @@
       >
         {{ $t(`cancel`) }}
       </button> -->
+      <button v-if="props.embedded" class="btn btn-cancel" type="button" @click="emit('close')">
+        {{ $t('cancel') }}
+      </button>
       <CancelQuestionDialog
+        v-else
         @cancel="
           route?.query?.article_id
             ? $router.push({ name: 'Articles' })
@@ -201,6 +232,7 @@
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+
     .btn-black {
       background-color: var(--border-color);
       color: var(--black-soft);

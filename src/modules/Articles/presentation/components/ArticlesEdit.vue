@@ -16,6 +16,7 @@
   const formKey = route.fullPath;
 
   const params = ref<EditArticlesParams | null>(null);
+  const articleFormRef = ref<InstanceType<typeof ArticleForm> | null>(null);
 
   /**
    * Update article
@@ -23,7 +24,8 @@
   const loading = ref(false);
 
   const saveArticle = async () => {
-    console.log(params.value, 'params');
+    if (!(await articleFormRef.value?.validateRequiredFields())) return;
+
     if (!params.value) {
       console.error('No article parameters to save');
       return;
@@ -48,7 +50,6 @@
       documents: updatedParams.documents,
       explanation: updatedParams.explanation,
     });
-    console.log(params.value, 'params.vallu');
   };
 
   onMounted(async () => {
@@ -59,6 +60,7 @@
 <template>
   <div class="article-edit-page">
     <ArticleForm
+      ref="articleFormRef"
       :loading="loading"
       :article="controller.itemData.value!"
       :form-key="formKey"

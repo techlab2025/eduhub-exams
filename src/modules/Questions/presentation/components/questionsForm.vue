@@ -1,19 +1,108 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { nextTick, ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
+  import { useI18n } from 'vue-i18n';
   import type ShowQuestionsModel from '../../core/models/show.questions.model';
   import AddquestionsParams from '../../core/params/add.question.params';
   import BasicQuestionDataForm from './FormComponent/BasicQuestionDataForm.vue';
   import QuestionAnswersDataForm from './FormComponent/QuestionAnswersDataForm.vue';
   import EditquestionsParams from '../../core/params/edit.question.params';
   import FolderIcon from '@/shared/icons/Question/FolderIcon.vue';
+  import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+  import { QuestionTypeEnum } from '../../core/constant/question.type.enum';
+  import { AnswerEvaluationTypeEnum } from '../../core/constant/answer.evaluation.type.enum';
   // import { CustomToast } from '../subComponents/CustomTosat.ts';
 
   const route = useRoute();
+  const { t } = useI18n();
   const emit = defineEmits(['updateData']);
-  const { question } = defineProps<{
+  const { question, articleId } = defineProps<{
     question?: ShowQuestionsModel;
+    articleId?: number;
   }>();
+
+  type QuestionValidationErrors = Partial<
+    Record<
+      'title' | 'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills' | 'answers',
+      string
+    >
+  >;
+
+  const validationErrors = ref<QuestionValidationErrors>({});
+
+  const getValidationErrors = (): QuestionValidationErrors => {
+    const errors: QuestionValidationErrors = {};
+    const basicData = BasicData.value;
+    const answers = AnswerData.value?.answers;
+    const questionType = basicData?.questionType;
+
+    if (!basicData?.title?.trim()) errors.title = t('question_title_required');
+    if (!basicData?.subjectId) errors.subject = t('question_subject_required');
+    if (!basicData?.questionSequenceId) errors.sequence = t('question_sequence_required');
+    if (!basicData?.topics?.length) errors.topics = t('question_topics_required');
+    if (!basicData?.difficultyLevel) errors.difficulty = t('question_difficulty_required');
+    if (!basicData?.skills?.length) errors.skills = t('question_skills_required');
+    if (!answers?.length || answers.some((answer) => !answer.title?.trim())) {
+      errors.answers = t('question_answers_required');
+    } else if (
+      questionType === QuestionTypeEnum.matching &&
+      answers.some((answer) => !answer.matchAnswer?.trim())
+    ) {
+      errors.answers = t('question_matching_answers_required');
+    } else if (
+      questionType === QuestionTypeEnum.ranking &&
+      answers.some((answer) => Number(answer.rank) <= 0 || !Number.isInteger(Number(answer.rank)))
+    ) {
+      errors.answers = t('question_answer_ranks_required');
+    } else if (
+      (questionType === QuestionTypeEnum.mcq || questionType === QuestionTypeEnum.true_false) &&
+      !answers.some((answer) => answer.isCorrect)
+    ) {
+      errors.answers = t('question_correct_answer_required');
+    } else if (questionType === QuestionTypeEnum.true_false && answers.length !== 2) {
+      errors.answers = t('question_true_false_answers_count');
+    } else if (
+      answers.length < 2 &&
+      answers[0]?.answerEvaluation !== AnswerEvaluationTypeEnum.need_correct
+    ) {
+      errors.answers = t('question_minimum_answers_required');
+    } else if (questionType === QuestionTypeEnum.complate && !answers[0]?.answerEvaluation) {
+      errors.answers = t('question_answer_evaluation_required');
+    } else if (
+      questionType === QuestionTypeEnum.complate &&
+      answers[0]?.answerEvaluation === AnswerEvaluationTypeEnum.similar &&
+      (!answers[0].similarPrecentage ||
+        Number(answers[0].similarPrecentage) <= 1 ||
+        Number(answers[0].similarPrecentage) > 100)
+    ) {
+      errors.answers = t('question_similarity_percentage_invalid');
+    }
+
+    return errors;
+  };
+
+  const refreshVisibleValidation = () => {
+    if (Object.keys(validationErrors.value).length) {
+      validationErrors.value = getValidationErrors();
+    }
+  };
+
+  const validate = async (): Promise<boolean> => {
+    validationErrors.value = getValidationErrors();
+    if (!Object.keys(validationErrors.value).length) return true;
+
+    dialogManager.toastWarning(t('question_required_fields_warning'), {
+      title: t('invalid_input_warning_title'),
+    });
+    await nextTick();
+    document.querySelector<HTMLElement>('[data-question-error]')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+    return false;
+  };
+
+  defineExpose({ validate });
 
   const updateData = () => {
     let params: EditquestionsParams | AddquestionsParams;
@@ -79,8 +168,9 @@
       topics: data.topics,
       questionSequenceId: data.questionSequenceId,
       questionSource: data.questionSource,
-      parentId: route.query.article_id ? Number(route.query.article_id) : null,
+      parentId: articleId ?? (route.query.article_id ? Number(route.query.article_id) : null),
     });
+    refreshVisibleValidation();
     updateData();
   };
 
@@ -95,6 +185,7 @@
       isSolutionHint: data.isSolutionHint,
       solutionHint: data.solutionHint,
     });
+    refreshVisibleValidation();
     // console.log(AnswerData.value, 'AnswerData.value');
     updateData();
   };
@@ -139,11 +230,16 @@
     </header>
 
     <!-- :draft-data="QuestionDraftData" -->
-    <BasicQuestionDataForm :question-data="question" @update-data="GetAllBasicData" />
+    <BasicQuestionDataForm
+      :question-data="question"
+      :validation-errors="validationErrors"
+      @update-data="GetAllBasicData"
+    />
     <!-- :draft-data="QuestionDraftData" -->
     <QuestionAnswersDataForm
       :question-data="question!"
       :question-type="BasicData?.questionType!"
+      :validation-error="validationErrors.answers"
       @update-data="GetAllAnswers"
     />
   </div>

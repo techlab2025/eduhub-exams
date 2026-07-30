@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import IconAccept from '@/shared/icons/IconAccept.vue';
   import { useRoute } from 'vue-router';
   import type AddEmployeeParams from '../../core/params/add.Artical.params';
   import ArticleController from '../controllers/Article.controller';
@@ -13,32 +12,17 @@
   const formKey = route.fullPath;
 
   const params = ref<AddEmployeeParams | null>(null);
+  const articleFormRef = ref<InstanceType<typeof ArticleForm> | null>(null);
 
   /**
    * Save new article
    */
 
   const loading = ref(false);
-  // save as draft
-  const saveAsDraft = async () => {
-    loading.value = true;
-    try {
-      if (!params.value) {
-        console.error('No article parameters to save');
-        return;
-      }
-
-      localStorage.setItem(`article-draft`, JSON.stringify(params.value));
-      router.push({ name: 'Articles' });
-    } catch (error) {
-      console.error('Error saving article:', error);
-    } finally {
-      loading.value = false;
-    }
-  };
-
   const saveArticle = async () => {
     try {
+      if (!(await articleFormRef.value?.validateRequiredFields())) return;
+
       if (!params.value) {
         console.error('No article parameters to save');
         return;
@@ -56,14 +40,19 @@
     params.value = updatedParams;
   };
   const cancel = () => {
-    router.push('/Articles')
+    router.push('/Articles');
   };
 </script>
 
 <template>
   <div class="artical-add-page">
     <!-- <ArticleForm :form-key="formKey" :loading="loading" @update-data="updateData" /> -->
-    <ArticleForm :form-key="formKey" :loading="loading" @update-data="updateData" />
+    <ArticleForm
+      ref="articleFormRef"
+      :form-key="formKey"
+      :loading="loading"
+      @update-data="updateData"
+    />
 
     <div class="actions" :class="{ disabled: loading }">
       <!-- <AppButton  title="Save Article" size="sm" icon="right" type="submit" class="save-emp"  :class="{ disabled: loading }" @click="saveArticle">
@@ -90,17 +79,17 @@
           width="30"
           height="30"
         />
-        <span v-else> {{ $t('Save Article') }} <IconAccept /> </span>
+        <span v-else> {{ $t('next') }} </span>
       </button>
       <!-- <button class="btn btn-draft">{{ $t(`Save As draft`) }}</button> -->
-      <button
+      <!-- <button
         class="btn btn-draft"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
         @click="saveAsDraft"
       >
         {{ $t(`Save As draft`) }}
-      </button>
+      </button> -->
       <button class="btn btn-cancel" @click="cancel">{{ $t(`cancel`) }}</button>
     </div>
 
@@ -169,7 +158,7 @@
   }
 
   .save-btn {
-    width: 60%;
+    width: 80%;
     background-color: var(--primary-green);
     color: white;
 

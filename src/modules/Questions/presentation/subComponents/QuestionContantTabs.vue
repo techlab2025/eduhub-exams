@@ -22,9 +22,12 @@
   import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
 
   const emit = defineEmits(['updateData']);
-  const { ContentData, draftData } = defineProps<{
+  const { ContentData, draftData, validationErrors } = defineProps<{
     ContentData: ShowQuestionsModel;
     draftData?: AddquestionsParams;
+    validationErrors?: Partial<
+      Record<'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
+    >;
   }>();
 
   // const SelectedSubject = ref<TitleInterface<number> | null>(null);
@@ -279,6 +282,9 @@
           @update:model-value="handleBranchChange($event)"
         >
         </UpdatedCustomInputSelect>
+        <small v-if="validationErrors?.subject" class="question-field-error" data-question-error>
+          {{ validationErrors.subject }}
+        </small>
       </div>
       <div class="input required-field">
         <UpdatedCustomInputSelect
@@ -289,6 +295,9 @@
           placeholder="Question sequence"
           @update:model-value="handelSubjectUpdate"
         />
+        <small v-if="validationErrors?.sequence" class="question-field-error" data-question-error>
+          {{ validationErrors.sequence }}
+        </small>
       </div>
       <!-- {{ SelectedTopic }} -->
       <div class="input required-field">
@@ -301,6 +310,9 @@
           placeholder="Topics"
           @update:model-value="updateData"
         />
+        <small v-if="validationErrors?.topics" class="question-field-error" data-question-error>
+          {{ validationErrors.topics }}
+        </small>
       </div>
       <div class="input required-field">
         <UpdatedCustomInputSelect
@@ -311,9 +323,12 @@
           placeholder="Difficulty level"
           @update:model-value="updateData"
         />
+        <small v-if="validationErrors?.difficulty" class="question-field-error" data-question-error>
+          {{ validationErrors.difficulty }}
+        </small>
       </div>
     </div>
-    <div class="new-form-group ">
+    <div class="new-form-group">
       <UpdatedCustomInputSelect
         id="skills"
         v-model="SelectedSkill"
@@ -321,10 +336,13 @@
         :type="2"
         :params="indexSkillsParams"
         :controller="skillsController"
+        :required="true"
         placeholder="Subject Type"
         @update:model-value="updateData"
-        :required="true"
       />
+      <small v-if="validationErrors?.skills" class="question-field-error" data-question-error>
+        {{ validationErrors.skills }}
+      </small>
 
       <div v-for="(skill, index) in SelectedSkill" :key="index" class="skill-percentage">
         <RemoveItemIcon class="remove-skill-item" @click="handleRemoveSkill(index)" />
@@ -383,5 +401,13 @@
         grid-column: 1 / -1;
       }
     }
+  }
+
+  .question-field-error {
+    display: block;
+    margin-top: 4px;
+    color: var(--danger-color);
+    font-size: 12px;
+    font-weight: 400;
   }
 </style>

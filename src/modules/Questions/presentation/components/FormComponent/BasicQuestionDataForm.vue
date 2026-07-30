@@ -27,10 +27,13 @@
   const emit = defineEmits(['updateData']);
   const route = useRoute();
 
-  const { loading, questionData, draftData } = defineProps<{
+  const { loading, questionData, draftData, validationErrors } = defineProps<{
     loading?: boolean;
     questionData?: ShowQuestionsModel;
     draftData?: AddquestionsParams;
+    validationErrors?: Partial<
+      Record<'title' | 'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
+    >;
   }>();
 
   const selectedDifficultyLevel = ref<number | null>(null);
@@ -246,7 +249,16 @@
       >
         <div class="form-fields">
           <div class="field-group required-field col-span-2" :class="{ disabled: loading }">
-            <label class="field-label" for="name">{{ $t(`question title`) }}</label>
+            <div class="field-label-row">
+              <label class="field-label" for="title">{{ $t(`question title`) }}</label>
+              <small
+                v-if="validationErrors?.title"
+                class="question-field-error"
+                data-question-error
+              >
+                {{ validationErrors.title }}
+              </small>
+            </div>
             <div class="input-wrap">
               <input
                 id="title"
@@ -302,6 +314,7 @@
             :draft-data="draftData"
             :ContentData="ContentData!"
             class="field-group col-span-2"
+            :validation-errors="validationErrors"
             @update-data="getQuestionCOntent"
           />
           <QuestionSource
@@ -318,10 +331,23 @@
 
 <style scoped>
   .optional {
-    color: #8a8a8a;
+    color: var(--gray-text);
     font-size: 14px;
     font-weight: 700;
   }
+
+  .field-label-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .question-field-error {
+    color: var(--danger-color);
+    font-size: 12px;
+    font-weight: 400;
+  }
+
   .accordion-enter-active,
   .accordion-leave-active {
     display: grid;
@@ -352,5 +378,4 @@
     padding: 16px !important;
     border-radius: 8px !important;
   }
-
 </style>

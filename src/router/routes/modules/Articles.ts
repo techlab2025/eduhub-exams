@@ -33,6 +33,17 @@ export const ArticlesRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: 'articles/questions/:id',
+    name: 'Article questions',
+    component: () => import('@/views/Articles/ArticleQuestionsList.vue'),
+    props: true,
+    meta: {
+      breadcrumb: 'Question Management',
+      icon: EmployeeIcon,
+      parent: 'Articles',
+    },
+  },
+  {
     path: 'articles/show/:id',
     name: 'Show article',
     component: () => import('@/views/Articles/ShowArticles.vue'),

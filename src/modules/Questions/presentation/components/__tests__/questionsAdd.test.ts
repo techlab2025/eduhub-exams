@@ -117,7 +117,26 @@ describe('questionsAdd.vue', () => {
     await wrapper.get('[data-save-status="1"] .without-review').trigger('click');
     await flushPromises();
 
-    expect(routerPushMock).toHaveBeenCalledWith({ name: 'Questions' });
+    expect(routerPushMock).toHaveBeenCalledWith({
+      name: 'Article questions',
+      params: { id: 1 },
+    });
+  });
+
+  it('emits saved without routing when embedded in the article dialog', async () => {
+    createMock.mockResolvedValueOnce(new DataSuccess({ data: {} }));
+    const wrapper = mount(questionsAdd, {
+      props: { embedded: true, articleId: 42 },
+      global: globalConfig,
+    });
+    wrapper.findComponent({ name: 'questionsForm' }).vm.$emit('update-data', { parentId: 42 });
+
+    await wrapper.get('[data-save-status="1"] .without-review').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.emitted('saved')).toHaveLength(1);
+    expect(routerPushMock).not.toHaveBeenCalled();
+    expect(routerBackMock).not.toHaveBeenCalled();
   });
 
   it('does not navigate when saving a draft returns no result', async () => {

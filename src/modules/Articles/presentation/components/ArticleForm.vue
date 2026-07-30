@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref, watch } from 'vue';
+  import { computed, nextTick, onMounted, ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
+  import { useI18n } from 'vue-i18n';
   import EditArticlesParams from '../../core/params/edit.Articles.params';
   import AddArticlesParams from '../../core/params/add.Artical.params';
   import HandleFilesUpload from '@/shared/FormInputs/HandleFilesUpload.vue';
@@ -21,11 +22,13 @@
   import FullSubjectTreeController from '@/modules/Questions/presentation/controllers/FullSubjectTree/full.subject.tree.controller';
   import { CustomToast } from './CustomToast';
   import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
+  import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
   // import GetFullNameOfbranch from '@/shared/GeneralMethods/CreateBranchSubjectTree';
 
   const SelectedQuestionSequence = ref<TitleInterface<number> | null>(null);
 
   const route = useRoute();
+  const { t } = useI18n();
   const emit = defineEmits(['updateData']);
   const props = defineProps<{
     loading?: boolean;
@@ -48,6 +51,89 @@
   const descriptionArticle = ref('');
   const QuestionDescription = ref('');
 
+  type RequiredFieldKey = 'description' | 'question' | 'subject' | 'document' | 'documentText';
+
+  type RequiredFieldRule = {
+    key: RequiredFieldKey;
+    message: string;
+    isInvalid: () => boolean;
+  };
+
+  const requiredFieldErrors = ref<Partial<Record<RequiredFieldKey, string>>>({});
+
+  const requiredFields = computed<RequiredFieldRule[]>(() => [
+    {
+      key: 'question',
+      message: question.value.trim()
+        ? t('article_validation_title_min_length')
+        : t('article_validation_title_required'),
+      isInvalid: () => question.value.trim().length < 5,
+    },
+    {
+      key: 'description',
+      message: t('article_validation_description_required'),
+      isInvalid: () => !QuestionDescription.value.trim(),
+    },
+    {
+      key: 'subject',
+      message: t('article_validation_subject_required'),
+      isInvalid: () => !SelectedQuestionSequence.value?.id,
+    },
+    {
+      key: 'document',
+      message: t('article_validation_document_required'),
+      isInvalid: () => !SelectedDocument.value?.id,
+    },
+    {
+      key: 'documentText',
+      message: t('article_validation_document_text_required'),
+      isInvalid: () => !articleSource.value.trim(),
+    },
+  ]);
+
+  const getFieldError = (key: RequiredFieldKey) => requiredFieldErrors.value[key] ?? '';
+
+  const clearFieldError = (key: RequiredFieldKey) => {
+    if (!requiredFieldErrors.value[key]) return;
+
+    const errors = { ...requiredFieldErrors.value };
+    delete errors[key];
+    requiredFieldErrors.value = errors;
+  };
+
+  const scrollToRequiredField = async (key: RequiredFieldKey) => {
+    await nextTick();
+    document.querySelector<HTMLElement>(`[data-required-field="${key}"]`)?.scrollIntoView?.({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
+
+  const validateRequiredFields = async () => {
+    const invalidFields = requiredFields.value.filter((field) => field.isInvalid());
+
+    requiredFieldErrors.value = invalidFields.reduce<Partial<Record<RequiredFieldKey, string>>>(
+      (errors, field) => {
+        errors[field.key] = field.message;
+        return errors;
+      },
+      {},
+    );
+
+    const firstInvalidField = invalidFields[0];
+    if (!firstInvalidField) return true;
+
+    dialogManager.toastWarning(t('article_validation_warning'), {
+      title: t('invalid_input_warning_title'),
+    });
+    await scrollToRequiredField(firstInvalidField.key);
+    return false;
+  };
+
+  defineExpose({
+    validateRequiredFields,
+  });
+
   const fullSubjectTreeController = FullSubjectTreeController.getInstance();
   const AllSubjectTree = ref<StageModel[]>([]);
 
@@ -60,6 +146,12 @@
     SelectedQuestionSequence.value = selected!;
     updateData();
   };
+
+  watch(question, () => clearFieldError('question'));
+  watch(QuestionDescription, () => clearFieldError('description'));
+  watch(SelectedQuestionSequence, () => clearFieldError('subject'));
+  watch(SelectedDocument, () => clearFieldError('document'));
+  watch(articleSource, () => clearFieldError('documentText'));
   const FetchBranches = async () => {
     const result = await fullSubjectTreeController.fetchList();
     AllSubjectTree.value = result.data!;
@@ -197,7 +289,7 @@
 </script>
 
 <template>
-  <div class="article-details-form-card">
+  <div class="article-details-form-card article-form-layout">
     <header class="form-header">
       <div class="form-title">
         <div class="header-text">
@@ -207,6 +299,16 @@
         </div>
       </div>
     </header>
+    <div class="article-form-steps" :aria-label="$t('article_form_progress')">
+      <div class="article-form-step active" aria-current="step">
+        <span>{{ $t('article_details_step') }}</span>
+        <small>{{ $t('step_one') }}</small>
+      </div>
+      <div class="article-form-step">
+        <span>{{ $t('question_management_step') }}</span>
+        <small>{{ $t('step_two') }}</small>
+      </div>
+    </div>
     <Accordion
       :class="{ disabled: props.loading }"
       :value="isSolutionSteps ? 1 : 0"
@@ -229,8 +331,10 @@
           </template>
         </AccordionHeader>
         <AccordionContent>
-          <div class="input-wrapper">
-            <label for="descreption">{{ $t('artical ') }}</label>
+          <div class="input-wrapper" data-required-field="description">
+            <label for="descreption">
+              {{ $t('artical ') }}<span class="required-marker" aria-hidden="true">*</span>
+            </label>
             <div class="description-container">
               <div class="description-header">
                 <span>B / U</span>
@@ -252,14 +356,20 @@
                 @input="updateData"
               ></textarea>
             </div>
+            <p v-if="getFieldError('description')" class="required-field-message">
+              {{ getFieldError('description') }}
+            </p>
           </div>
           <div class="document-tab">
             <div class="form-group">
-              <div class="field-group">
-                <label class="field-label" for="name">{{ $t('title of artical') }}</label>
+              <div class="field-group" data-required-field="question">
+                <label class="field-label" for="article-title">
+                  {{ $t('title of artical')
+                  }}<span class="required-marker" aria-hidden="true">*</span>
+                </label>
                 <div class="input-wrap">
                   <input
-                    id="article-source"
+                    id="article-title"
                     v-model="question"
                     type="text"
                     :placeholder="$t('enter title of artical ')"
@@ -267,8 +377,14 @@
                     @input="updateData"
                   />
                 </div>
+                <p v-if="getFieldError('question')" class="required-field-message">
+                  {{ getFieldError('question') }}
+                </p>
               </div>
-              <div class="field-group control-full-with">
+              <div
+                class="field-group control-full-with required-field"
+                data-required-field="subject"
+              >
                 <div class="input-wrapp">
                   <UpdatedCustomInputSelect
                     id="question-sequence"
@@ -280,6 +396,9 @@
                     @reload="FetchBranches"
                   />
                 </div>
+                <p v-if="getFieldError('subject')" class="required-field-message">
+                  {{ getFieldError('subject') }}
+                </p>
               </div>
             </div>
           </div>
@@ -311,7 +430,7 @@
         <AccordionContent>
           <div class="document-tab">
             <div class="form-group form-group-grid">
-              <div class="input">
+              <div class="input required-field" data-required-field="document">
                 <UpdatedCustomInputSelect
                   id="doc-subject"
                   v-model="SelectedDocument"
@@ -321,9 +440,14 @@
                   placeholder="select Documents"
                   @update:model-value="updateData"
                 />
+                <p v-if="getFieldError('document')" class="required-field-message">
+                  {{ getFieldError('document') }}
+                </p>
               </div>
-              <div class="field-group">
-                <label class="field-label" for="name">{{ $t('source') }}</label>
+              <div class="field-group" data-required-field="documentText">
+                <label class="field-label" for="article-source">
+                  {{ $t('source') }}<span class="required-marker" aria-hidden="true">*</span>
+                </label>
                 <div class="input-wrap">
                   <input
                     id="article-source"
@@ -334,6 +458,9 @@
                     @input="updateData"
                   />
                 </div>
+                <p v-if="getFieldError('documentText')" class="required-field-message">
+                  {{ getFieldError('documentText') }}
+                </p>
               </div>
             </div>
           </div>
@@ -423,6 +550,18 @@
 
   .control-full-with {
     width: 100%;
+  }
+
+  .required-field-message {
+    margin-top: 0.35rem;
+    color: var(--danger-color);
+    font-size: 0.82rem;
+    font-weight: 400;
+  }
+
+  .required-marker {
+    margin-inline-start: 0.2rem;
+    color: var(--danger-color);
   }
 
   .image-input {

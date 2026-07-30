@@ -125,12 +125,13 @@
     gap: 5px;
     width: 100%;
     padding: 0 !important;
+    margin-block: 10px;
 
     .description-container {
       width: 100%;
       border: 1px solid #e6e6e6;
       border-radius: 12px;
-      margin-bottom: $XlSize;
+      // margin-bottom: $XlSize;
 
       .description-header {
         background-color: #e6e6e6;

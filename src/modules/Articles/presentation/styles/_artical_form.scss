@@ -1,172 +1,247 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins/flex' as *;
-@use '../../../../styles/mixins/grid' as *;
 
-.artical-details-form-card {
+.article-details-form-card.article-form-layout {
+  width: 100%;
+  margin-block: 0 !important;
+
   .form-header {
-    padding-left: 0 !important;
-  }
-
-  .form-fields {
     padding: 0 !important;
-  }
+    margin-bottom: $MdSize;
 
-  .form-fields {
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-
-    @include grid(
-      2,
-      $XlSize,
-      (
-        600: 1,
-      )
-    );
-
-    .field-group {
-      @include flex-column(nowrap, flex-start, flex-start);
-
-      gap: 6px;
-
-      &.disabled {
-        cursor: not-allowed;
-        pointer-events: none;
-        opacity: 0.7;
-      }
-
-      &.col-span-2 {
-        grid-column: span 2;
-      }
-
-      .gender-group {
-        @include flex-row(nowrap, flex-start, center);
-
-        gap: $XlSize3;
-
-        .input-field {
-          @include flex-row(nowrap, flex-start, center);
-
-          gap: $XsSize4;
-          padding: 14px !important;
-
-          .p-radiobutton-box {
-            background: none !important;
-          }
-
-          .p-radiobutton-checked .p-radiobutton-icon {
-            background-color: $PrimaryColor !important;
-          }
-        }
-      }
-
-      .image-input {
-        width: 100%;
-
-        .upload-area {
-          background-color: $StandardWhite !important;
-        }
-
-        .add-imaegs-data {
-          @include flex-column(nowrap, center, center);
-
-          gap: $XsSize5;
-
-          .first-text {
-            color: $Gray-5;
-            font-size: $XsSize;
-            font-weight: $BaseFontSemiBoldWeight;
-
-            span {
-              color: $PrimaryColor;
-              padding-inline: $XsSize5;
-            }
-          }
-
-          .second-text {
-            color: $SecondText;
-            font-size: $XsSize;
-            font-weight: $BaseFontWeight;
-          }
-        }
-      }
-
-      .field-label {
-        font-size: $MdSize;
-        color: $InputLabelText !important;
-        text-transform: none;
-        font-weight: $BaseFontSemiBoldWeight !important;
-      }
-
-      .input-wrap {
-        width: 100%;
-
-        .field-input {
-          width: 100%;
-          padding: $XsSize $MdSize;
-          border: 1px solid $InputBorder !important;
-          border-radius: $XlSize4 !important;
-          font-size: $SmSize;
-          color: $Gray-6;
-          background: $White !important;
-          outline: none;
-          transition: all 0.25s ease;
-
-          &:focus {
-            border-color: var(--PrimaryColor);
-            background: var(--bg-main);
-            box-shadow: 0 0 0 3px var(--PrimaryColor-light);
-          }
-        }
-      }
-    }
-  }
-
-  .all_tabs {
-    @include flex-row(nowrap, space-between, center);
-
-    flex-direction: row !important;
-    gap: $MdSize;
-    margin-bottom: $XlSize2;
-    width: 100% !important;
-
-    .tab-item {
-      background-color: var(--bg-main);
-      color: var(--table-data-color);
-      border: 1px solid var(--input-border-color);
-      padding: $XlSize2;
-      width: 100%;
-      border-radius: $XlSize4;
+    .header-text h3 {
       display: flex;
+      align-items: center;
       gap: $XsSize4;
-      cursor: pointer;
+      color: var(--title-color);
+      font-size: $XlSize;
+      font-weight: $BaseFontSemiBoldWeight;
+    }
+  }
 
-      input[type='radio'] {
-        accent-color: white;
-      }
+  .article-form-steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: $XsSize4;
+    margin-bottom: $XlSize2;
+  }
+
+  .article-form-step {
+    position: relative;
+    min-height: 58px;
+    padding: $XsSize $XlSize2;
+    border: 1px solid var(--primary-green);
+    border-radius: $XsSize4;
+    background: var(--BgWhite);
+    color: var(--primary-green);
+
+    @include flex-column(nowrap, center, flex-start);
+
+    span {
+      font-size: $SmSize;
+      font-weight: $BaseFontSemiBoldWeight;
     }
 
-    .tab-item.active {
-      background-color: var(--PrimaryColor-alpha-10);
+    small {
+      margin-top: 2px;
+      color: var(--SecondText);
+      font-size: $XsSize;
+    }
+
+    &.active {
+      border-color: var(--primary-green);
+      background: var(--primary-green);
+      color: var(--BgWhite);
+
+      small {
+        color: inherit;
+      }
+
+      &::before,
+      &::after {
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border-block: 30px solid transparent;
+        border-inline-end: 0;
+        content: '';
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+
+      &::before {
+        inset-inline-end: -17px;
+        border-inline-start: 17px solid var(--BgWhite);
+      }
+
+      &::after {
+        inset-inline-end: -14px;
+        border-block-width: 27px;
+        border-inline-start: 15px solid var(--primary-green);
+      }
+    }
+  }
+
+  .article-solution-steps {
+    border: 0 !important;
+    margin-block: $XlSize2 !important;
+
+    .p-accordionpanel {
+      border: 0 !important;
+    }
+
+    .p-accordionheader {
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      color: var(--primary-green) !important;
+    }
+
+    .p-accordioncontent-content {
+      padding: $MdSize 0 0 !important;
+      border: 0 !important;
+    }
+  }
+
+  .article-solution-steps-header {
+    display: flex;
+    align-items: center;
+    gap: $XsSize4;
+    margin: 0;
+
+    .toggll-container {
+      flex: 0 0 auto;
       color: var(--primary-green);
-      border: 1px solid var(--primary-green);
-      padding: $XlSize2;
-      width: 100%;
-      border-radius: $XlSize4;
-      cursor: pointer;
+      font-size: $SmSize;
+      font-weight: $BaseFontSemiBoldWeight;
+    }
 
-      input[type='radio'] {
-        background-color: green;
-        accent-color: green;
+    .dashed-border {
+      position: static;
+      flex: 1;
+      width: auto;
+      height: 1px;
+      border-bottom: 1px dashed var(--input-border-color);
+    }
+  }
+
+  .input-wrapper,
+  .field-group,
+  .input {
+    width: 100%;
+    margin: 0;
+  }
+
+  .input-wrapper,
+  .field-group {
+    gap: $XsSize4;
+  }
+
+  .input-wrapper label,
+  .field-label,
+  .input-label {
+    color: var(--title-header-color) !important;
+    font-size: $SmSize !important;
+    font-weight: $BaseFontSemiBoldWeight !important;
+  }
+
+  .input-wrapper {
+    margin-bottom: $XlSize2;
+
+    .description-container {
+      overflow: hidden;
+      border: 1px solid var(--input-border-color);
+      border-radius: $XlSize2;
+
+      .description-header {
+        min-height: 40px;
+        padding: $XsSize $MdSize;
+        border-radius: $XlSize2 $XlSize2 0 0;
+        background: #e6e6e6;
+        color: var(--title-header-color);
+      }
+
+      textarea {
+        min-height: 120px;
+        padding: $MdSize;
+        resize: vertical;
+        background: var(--BgWhite) !important;
+        color: var(--title-header-color);
       }
     }
+  }
 
-    .p-radiobutton-box {
-      background: none !important;
+  .document-tab {
+    .form-group {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: $XlSize2;
+      padding: 0;
+      margin: 0;
     }
 
-    .p-radiobutton-checked .p-radiobutton-icon {
-      background-color: $PrimaryColor !important;
+    .form-group-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .field-input,
+    .p-select,
+    .p-multiselect {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--input-border-color) !important;
+      border-radius: $XlSize4 !important;
+      background: var(--BgWhite) !important;
+    }
+
+    .field-input {
+      padding-inline: $MdSize;
+
+      &:focus {
+        border-color: var(--primary-green) !important;
+        box-shadow: 0 0 0 3px var(--PrimaryColor-alpha-10);
+        outline: none;
+      }
+    }
+  }
+
+  .article-solution-steps-explain {
+    margin-block: $XlSize2 !important;
+    padding: $XsSize $MdSize !important;
+    border: 1px solid var(--input-border-color);
+    border-radius: $XlSize4;
+
+    .p-accordionheader {
+      padding: 0 !important;
+    }
+  }
+
+  .article-solution-steps-header-explain {
+    min-height: 32px;
+    color: var(--primary-green);
+    font-size: $SmSize;
+  }
+
+  @media (max-width: 768px) {
+    .article-form-steps,
+    .document-tab .form-group-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .article-form-step.active {
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  span.selected-value--placeholder {
+    color: var(--second-text) !important;
+    font-family: 'Light' !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
   }
 }

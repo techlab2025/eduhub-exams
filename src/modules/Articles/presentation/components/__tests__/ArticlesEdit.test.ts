@@ -41,7 +41,7 @@ vi.mock('../controllers/Article.controller', () => ({
 const globalConfig = {
   plugins: [createPinia()],
   stubs: {
-    ArticleNewForm: true,
+    ArticleForm: true,
     AppButton: true,
     IconAccept: true,
   },
@@ -63,7 +63,7 @@ describe('ArticlesEdit.vue', () => {
 
   it('contains the "Update Article" button', () => {
     const wrapper = mount(ArticlesEdit, { global: globalConfig });
-    const updateButton = wrapper.findComponent({ name: 'AppButton' });
+    const updateButton = wrapper.find('.save-btn');
     expect(updateButton.exists()).toBe(true);
   });
 });

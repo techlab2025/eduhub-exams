@@ -4,6 +4,16 @@ import { createPinia, setActivePinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import ArticleForm from '../ArticleForm.vue';
 
+const { toastWarningMock } = vi.hoisted(() => ({
+  toastWarningMock: vi.fn(),
+}));
+
+vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
+  dialogManager: {
+    toastWarning: toastWarningMock,
+  },
+}));
+
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 
 // Mock vue-router
@@ -66,5 +76,38 @@ describe('ArticleForm', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('shows inline errors and a warning toast when required fields are missing', async () => {
+    const wrapper = mount(ArticleForm, {
+      global: {
+        plugins: [i18n],
+        stubs: {
+          Accordion: { template: '<div><slot /></div>' },
+          AccordionPanel: { template: '<div><slot /></div>' },
+          AccordionHeader: { template: '<div><slot /></div>' },
+          AccordionContent: { template: '<div><slot /></div>' },
+          Checkbox: true,
+          HandleFilesUpload: true,
+          UpdatedCustomInputSelect: true,
+          FolderCrudIcon: true,
+          UploadFileIcon: true,
+          AccordionToggleIcon: true,
+        },
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
+    });
+
+    const isValid = await (
+      wrapper.vm as unknown as { validateRequiredFields: () => Promise<boolean> }
+    ).validateRequiredFields();
+
+    expect(isValid).toBe(false);
+    expect(wrapper.findAll('.required-field-message')).toHaveLength(5);
+    expect(toastWarningMock).toHaveBeenCalledWith('article_validation_warning', {
+      title: 'invalid_input_warning_title',
+    });
   });
 });

@@ -24,10 +24,11 @@
 
   const emit = defineEmits(['updateData']);
   const route = useRoute();
-  const { questionType, questionData, draftData } = defineProps<{
+  const { questionType, questionData, draftData, validationError } = defineProps<{
     questionType: QuestionTypeEnum;
     questionData: ShowQuestionsModel;
     draftData?: AddquestionsParams;
+    validationError?: string;
   }>();
   const updateData = () => {
     let params: any;
@@ -209,6 +210,9 @@
           transition: accordionTransition,
         }"
       >
+        <small v-if="validationError" class="question-field-error" data-question-error>
+          {{ validationError }}
+        </small>
         <AnswersTimeLine
           :draft-data="draftData?.answers"
           :question-data="safeAnswers.answers"
@@ -245,6 +249,14 @@
   .accordion-leave-active {
     display: grid;
     transition: grid-template-rows 0.3s ease;
+  }
+
+  .question-field-error {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--danger-color);
+    font-size: 12px;
+    font-weight: 400;
   }
 
   .accordion-enter-from,

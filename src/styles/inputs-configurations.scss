@@ -19,7 +19,8 @@ $input-label-color: var(--gray-5) !default;
   @layer inputs-configurations {
     .field-label,
     .input-label,
-    .input-label label {
+    .input-label label,
+    .input-wrapper label {
       color: $input-label-color !important;
       font-family: $input-label-font-family !important;
       font-size: $input-label-font-size !important;

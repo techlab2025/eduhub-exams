@@ -10,7 +10,10 @@ import type { questionsModel } from '@/modules/Questions';
 import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
 import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
-export default class ArticleController extends BaseController<ShowQuestionsModel, questionsModel[]> {
+export default class ArticleController extends BaseController<
+  ShowQuestionsModel,
+  questionsModel[]
+> {
   private static instance: ArticleController;
 
   protected get repository() {
@@ -44,8 +47,13 @@ export default class ArticleController extends BaseController<ShowQuestionsModel
     const FormStore = useFormsStore();
 
     const result = await super.create(params, { ...options, useJson: true });
-    if (result instanceof DataSuccess) { 
-      router.push({ name: 'Articles' });
+    if (result instanceof DataSuccess) {
+      const articleId = result.data?.question_id ?? result.data?.id;
+      if (articleId) {
+        router.push({ name: 'Article questions', params: { id: articleId } });
+      } else {
+        router.push({ name: 'Articles' });
+      }
       if (formKey) {
         FormStore.clearFormData(formKey);
       }
@@ -67,8 +75,7 @@ export default class ArticleController extends BaseController<ShowQuestionsModel
   }
   async delete(params: Params, options?: ApiCallOptions) {
     const result = await super.delete(params, options);
-    console.log(result , "result");
-    if(result?.error?.title){
+    if (result?.error?.title) {
       dialogManager.toastError(result?.error?.title);
     }
     return result;

@@ -14,6 +14,7 @@
   import ShowArticlesParams from '@/modules/Articles/core/params/show.Articles.params';
   import { useRoute } from 'vue-router';
   import MatchingIcon from '@/shared/icons/questions/MatchingIcon.vue';
+  import NoImage from "@/assets/images/question/NoImage.png"
 
   const { allquestion } = defineProps<{
     allquestion: ShowQuestionsModel[];
@@ -139,7 +140,7 @@
                   <p class="answer_text">{{ answer.answer }}</p>
                 </div>
                 <div class="imge">
-                  <img v-if="answer.image" :src="answer.image[0]?.file" />
+                  <img v-if="answer.image" :src="answer.image[0]?.file || NoImage" />
                 </div>
               </div>
             </div>

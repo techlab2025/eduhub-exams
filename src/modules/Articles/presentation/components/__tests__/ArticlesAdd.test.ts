@@ -54,7 +54,7 @@ const globalConfig = {
   },
 };
 
-describe('ArticlesAdd.vue', () => { 
+describe('ArticlesAdd.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
@@ -67,14 +67,14 @@ describe('ArticlesAdd.vue', () => {
 
   it('contains the "Save Article" button', () => {
     const wrapper = mount(ArticlesAdd, { global: globalConfig });
-    const saveButton = wrapper.find('.save-emp');
+    const saveButton = wrapper.find('.save-btn');
     expect(saveButton.exists()).toBe(true);
   });
 
-  it('contains the "Save As draft" button', () => {
+  it('does not show the draft action in the two-step layout', () => {
     const wrapper = mount(ArticlesAdd, { global: globalConfig });
     const draftButton = wrapper.find('.btn-draft');
-    expect(draftButton.exists()).toBe(true);
+    expect(draftButton.exists()).toBe(false);
   });
 
   it('contains the "cancel" button', () => {
