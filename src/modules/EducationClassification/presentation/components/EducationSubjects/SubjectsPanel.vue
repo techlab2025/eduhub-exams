@@ -35,12 +35,15 @@
   const branchDialogName = ref('');
   const stageExpanded = ref(true);
 
-  const subjectMaxDepth = computed(() => subjectConfig.value?.[0]?.numberOfBranches ?? Infinity);
+  const subjectMaxDepth = computed(() => {
+    const configuredBranchCount = subjectConfig.value?.[0]?.numberOfBranches;
+    return configuredBranchCount == null ? Infinity : configuredBranchCount + 1;
+  });
   const refreshSubjectId = ref<number | null>(null);
 
   function getSubjectBranchName(depth: number): string {
     const branches = subjectConfig.value?.[0]?.branches ?? [];
-    const branch = branches.find((b: any) => b.levelNumber === depth + 1);
+    const branch = branches.find((b) => b.levelNumber === depth + 1);
     if (!branch) return `Level ${depth + 1}`;
     const lang = locale.value === 'ar' ? 'ar' : 'en';
     return branch.singularTitle[lang] ?? branch.singularTitle['en'] ?? `Level ${depth + 1}`;
@@ -251,7 +254,7 @@
               v-for="node in rootNodes"
               :key="node.subject.subject_id"
               :node="node"
-              :max-depth="(subjectConfig as any)?.[0]?.numberOfBranches"
+              :max-depth="subjectMaxDepth"
               :selected-subject-id="selectedNode?.subject.subject_id ?? null"
               :parent-id="null"
               @fetch-children="fetchChildren"

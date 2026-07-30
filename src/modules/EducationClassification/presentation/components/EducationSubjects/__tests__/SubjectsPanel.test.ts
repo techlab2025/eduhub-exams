@@ -3,9 +3,14 @@ import { mount, flushPromises } from '@vue/test-utils';
 import SubjectsPanel from '../SubjectsPanel.vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type EducationSubjectModel from '@/modules/EducationClassification/core/models/EducationSubject/education.subject.model';
+import type EducationSubjectConfigurationModel from '@/modules/EducationClassification/core/models/EducationConfiguration/education.subject.configuration.model';
 
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ locale: { value: 'en' } }),
+}));
+
+vi.mock('vue-router', () => ({
+  useRoute: () => ({ params: { id: '1' } }),
 }));
 
 const mockConfigController = {
@@ -31,7 +36,7 @@ vi.mock('../SubjectTreeNode.vue', () => ({
   default: {
     name: 'SubjectTreeNode',
     template: '<div class="subject-tree-node"></div>',
-    props: ['node', 'selectedSubjectId'],
+    props: ['node', 'selectedSubjectId', 'maxDepth'],
   },
 }));
 
@@ -57,7 +62,17 @@ describe('SubjectsPanel', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockConfigController.fetchList.mockResolvedValue(new DataSuccess({ data: null }));
+    mockConfigController.fetchList.mockResolvedValue(
+      new DataSuccess<EducationSubjectConfigurationModel[]>({
+        data: [
+          {
+            numberOfBranches: 1,
+            branches: [],
+            SingluarTitle: { en: 'Subject' },
+          } as unknown as EducationSubjectConfigurationModel,
+        ],
+      }),
+    );
     mockItemController.fetchList.mockResolvedValue(
       new DataSuccess<EducationSubjectModel[]>({ data: [] }),
     );
@@ -67,7 +82,10 @@ describe('SubjectsPanel', () => {
   const mountComponent = (props = defaultProps) =>
     mount(SubjectsPanel, {
       props,
-      global: { stubs: { 'router-link': true } },
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: { 'router-link': true },
+      },
     });
 
   it('renders the subjects panel', async () => {
@@ -97,14 +115,14 @@ describe('SubjectsPanel', () => {
   it('opens AddEducationSubjectDialog when the add icon in header is clicked', async () => {
     const wrapper = mountComponent();
     await flushPromises();
-    await wrapper.find('.stage-container span:last-child').trigger('click');
+    await wrapper.get('.stage-root-row .icon-btn').trigger('click');
     expect(wrapper.find('.add-subject-dialog').exists()).toBe(true);
   });
 
   it('closes AddEducationSubjectDialog on update:visible false emit', async () => {
     const wrapper = mountComponent();
     await flushPromises();
-    await wrapper.find('.stage-container span:last-child').trigger('click');
+    await wrapper.get('.stage-root-row .icon-btn').trigger('click');
     expect(wrapper.find('.add-subject-dialog').exists()).toBe(true);
 
     const dialog = wrapper.getComponent({ name: 'AddEducationSubjectDialog' });
@@ -138,5 +156,27 @@ describe('SubjectsPanel', () => {
     await flushPromises();
     expect(wrapper.find('.subjects-bottom-bar').exists()).toBe(true);
     expect(wrapper.find('.btn-full').exists()).toBe(true);
+  });
+
+  it('adds the root subject level to the configured branch count', async () => {
+    const mockSubject = {
+      subject_id: 1,
+      subject_title: 'Math',
+      has_children: false,
+    } as EducationSubjectModel;
+    const mockConfig = {
+      numberOfBranches: 1,
+    } as EducationSubjectConfigurationModel;
+    mockConfigController.fetchList.mockResolvedValue(
+      new DataSuccess<EducationSubjectConfigurationModel[]>({ data: [mockConfig] }),
+    );
+    mockItemController.fetchList.mockResolvedValue(
+      new DataSuccess<EducationSubjectModel[]>({ data: [mockSubject] }),
+    );
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    expect(wrapper.getComponent({ name: 'SubjectTreeNode' }).props('maxDepth')).toBe(2);
   });
 });
