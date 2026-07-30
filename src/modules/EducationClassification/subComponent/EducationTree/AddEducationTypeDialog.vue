@@ -56,9 +56,9 @@
         <img :src="EducationTypeIcon" alt="EducationTypeIcon" width="300">
       </div>
       <div>
-        <h3 class="dialog-title">{{ $t('add_education_type') }}</h3>
+        <h3 class="dialog-title">{{ $t('add_stage') }}</h3>
         <p class="dialog-subtitle">
-          {{ $t('enter_the_name_of_the_education_type_you_want_to_add') }}
+          {{ $t('enter_the_name_of_the_stage_you_want_to_add') }}
         </p>
       </div>
     </template>

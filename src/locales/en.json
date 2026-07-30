@@ -630,5 +630,8 @@
   "questions_linked_to_this_passage": "Questions Linked To This Passage",
   "select_type": "Select type",
   "select_status": "Select status",
-  "created_at": "created at"
+  "created_at": "created at",
+  "add_stage":"add Stage",
+  "enter_the_name_of_the_stage_you_want_to_add":"Enter The Name Of The Stage You Want To Add"
+
 }
