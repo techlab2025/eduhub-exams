@@ -86,3 +86,9 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  #question-source {
+    background-color: white !important;
+  }
+</style>
