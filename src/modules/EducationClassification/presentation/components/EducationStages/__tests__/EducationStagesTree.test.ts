@@ -49,6 +49,7 @@ vi.mock(
     default: {
       name: 'AddEducationTypeDialog',
       template: '<div class="add-type-dialog"></div>',
+      props: ['stageName'],
     },
   }),
 );
@@ -57,6 +58,7 @@ vi.mock('@/modules/EducationClassification/subComponent/EducationTree/AddBranchD
   default: {
     name: 'AddBranchDialog',
     template: '<div class="add-branch-dialog"></div>',
+    props: ['branchName'],
   },
 }));
 
@@ -161,6 +163,27 @@ describe('EducationStagesTree', () => {
       2: 'Newest',
       3: 'Newer',
     });
+  });
+
+  it('uses the configured root stage name in the add dialog', async () => {
+    mockConfigController.fetchList.mockResolvedValue(
+      new DataSuccess({
+        data: [
+          {
+            numberOfBranches: 1,
+            branches: [{ levelNumber: 1, singularTitle: { en: 'School' } }],
+          },
+        ],
+      }),
+    );
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await wrapper.find('.btn-primary').trigger('click');
+
+    expect(wrapper.getComponent({ name: 'AddEducationTypeDialog' }).props('stageName')).toBe(
+      'School',
+    );
   });
 
   it('shows right-placeholder when no node is selected', async () => {

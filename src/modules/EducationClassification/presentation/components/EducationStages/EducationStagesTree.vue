@@ -53,9 +53,7 @@
     return Object.fromEntries(
       (educationConfig.value?.[0]?.branches ?? []).map((branch) => [
         branch.levelNumber,
-        branch.singularTitle[lang] ??
-          branch.singularTitle.en ??
-          `Branch ${branch.levelNumber}`,
+        branch.singularTitle[lang] ?? branch.singularTitle.en ?? `Branch ${branch.levelNumber}`,
       ]),
     );
   });
@@ -422,6 +420,7 @@
                 <RenameClassificationDialog
                   v-model:visable="ShoweEditDialog"
                   :item-id="child.stage.stage_id"
+                  :level-name="getBranchName(child.depth)"
                   :parent-id="selectedNode.stage.stage_id"
                   @update:name="fetchEducationStagesTree"
                 />
@@ -536,7 +535,7 @@
   <AddEducationTypeDialog
     v-if="showAddTypeDialog"
     v-model:visible="showAddTypeDialog"
-    :header="`Add New ${getBranchName(0)}`"
+    :stage-name="getBranchName(0)"
     @confirm="handleAddType"
   />
 
@@ -552,4 +551,9 @@
   <!-- </DataStatusBuilder> -->
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+  :global(.p-dialog.dialog-pricing .p-inputnumber-input) {
+    background: var(--standard-white) !important;
+    color: var(--standard-black) !important;
+  }
+</style>

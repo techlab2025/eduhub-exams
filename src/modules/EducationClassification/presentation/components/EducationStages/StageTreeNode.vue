@@ -234,6 +234,7 @@
         <RenameClassificationDialog
           v-model:visable="ShoweEditDialog"
           :item-id="node.stage.stage_id"
+          :level-name="levelLabels[node.depth + 1]"
           :parent-id="parentId ?? 0"
           @update:name="$emit('delete-branch', parentId)"
         />

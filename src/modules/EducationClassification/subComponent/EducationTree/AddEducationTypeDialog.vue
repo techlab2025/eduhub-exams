@@ -4,7 +4,15 @@
   import Dialog from 'primevue/dialog';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
 
-  const props = defineProps<{ visible: boolean }>();
+  const props = withDefaults(
+    defineProps<{
+      visible: boolean;
+      stageName?: string;
+    }>(),
+    {
+      stageName: '',
+    },
+  );
   const emit = defineEmits<{
     (e: 'update:visible', val: boolean): void;
     (e: 'confirm', name: Record<string, string>): void;
@@ -53,12 +61,14 @@
     <template #header>
       <div class="dialog-icon">
         <!-- <EducationTypeIcon /> -->
-        <img :src="EducationTypeIcon" alt="EducationTypeIcon" width="300">
+        <img :src="EducationTypeIcon" alt="EducationTypeIcon" width="300" />
       </div>
       <div>
-        <h3 class="dialog-title">{{ $t('add_stage') }}</h3>
+        <h3 class="dialog-title">
+          {{ $t('add_named_level', { name: stageName || $t('stage') }) }}
+        </h3>
         <p class="dialog-subtitle">
-          {{ $t('enter_the_name_of_the_stage_you_want_to_add') }}
+          {{ $t('enter_named_level', { name: stageName || $t('stage') }) }}
         </p>
       </div>
     </template>
@@ -77,9 +87,10 @@
     <MultiLangInput
       ref="inputRef"
       :field-key="`title`"
-      :label="$t(`title`)"
+      :label="$t('named_level', { name: stageName || $t('stage') })"
       :languages="['en', 'ar']"
       :model-value="inputValue"
+      :placeholder="$t('enter_named_level', { name: stageName || $t('stage') })"
       :type="`title`"
       @update:model-value="inputValue = $event"
       @keydown.enter="handleConfirm"
@@ -94,3 +105,16 @@
     </div>
   </Dialog>
 </template>
+
+<style scoped lang="scss">
+  :global(.p-dialog.add-education-type-dialog .multi-lang-input .field-input) {
+    background: var(--standard-white) !important;
+    border-color: var(--gray-200-std) !important;
+    color: var(--standard-black) !important;
+  }
+
+  :global(.p-dialog.add-education-type-dialog .multi-lang-input .field-input:focus) {
+    background: var(--standard-white) !important;
+    border-color: var(--success-green-std) !important;
+  }
+</style>

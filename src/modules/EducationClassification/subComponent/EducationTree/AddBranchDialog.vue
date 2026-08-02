@@ -4,12 +4,18 @@
   import Dialog from 'primevue/dialog';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
 
-  const props = defineProps<{
-    visible: boolean;
-    level: number;
-    branchName: string;
-    branchId?: number;
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      visible: boolean;
+      level: number;
+      branchName?: string;
+      branchId?: number;
+    }>(),
+    {
+      branchName: '',
+      branchId: undefined,
+    },
+  );
 
   const emit = defineEmits<{
     (e: 'update:visible', val: boolean): void;
@@ -65,8 +71,12 @@
         <NewBranchIcon />
       </div>
       <div class="dialog-header-text">
-        <h3 class="dialog-title">{{ $t('add_a_new') + $t(branchName) }}</h3>
-        <p class="dialog-subtitle">{{ $t('enter_your_preferred_branch_name_within_the_tree') }}</p>
+        <h3 class="dialog-title">
+          {{ $t('add_named_level', { name: branchName || $t('branch') }) }}
+        </h3>
+        <p class="dialog-subtitle">
+          {{ $t('enter_named_level', { name: branchName || $t('branch') }) }}
+        </p>
       </div>
     </template>
 
@@ -85,9 +95,10 @@
     <MultiLangInput
       ref="inputRef"
       :field-key="`title`"
-      :label="$t(`title`)"
+      :label="$t('named_level', { name: branchName || $t('branch') })"
       :languages="['en', 'ar']"
       :model-value="inputValue"
+      :placeholder="$t('enter_named_level', { name: branchName || $t('branch') })"
       :type="`title`"
       @update:model-value="inputValue = $event"
       @keydown.enter="handleConfirm"
@@ -104,6 +115,17 @@
 </template>
 
 <style scoped>
+  :global(.p-dialog.add-branch-dialog .multi-lang-input .field-input) {
+    background: var(--standard-white) !important;
+    border-color: var(--gray-200-std) !important;
+    color: var(--standard-black) !important;
+  }
+
+  :global(.p-dialog.add-branch-dialog .multi-lang-input .field-input:focus) {
+    background: var(--standard-white) !important;
+    border-color: var(--success-green-std) !important;
+  }
+
   .field-input {
     background-color: var(--bg-main);
     border-radius: 30px;

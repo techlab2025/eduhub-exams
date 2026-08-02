@@ -7,6 +7,7 @@ describe('AddBranchDialog', () => {
     visible: true,
     level: 1,
     branchId: 123,
+    branchName: 'Grade',
   };
 
   it('renders when visible', async () => {
@@ -26,7 +27,7 @@ describe('AddBranchDialog', () => {
       },
     });
     expect(wrapper.find('.dialog-stub').exists()).toBe(true);
-    expect(wrapper.text()).toContain('add_a_new_branch');
+    expect(wrapper.text()).toContain('add_named_level');
   });
 
   it('emits update:visible false when Cancel button is clicked', async () => {

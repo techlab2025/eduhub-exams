@@ -3,6 +3,20 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import RenameClassificationDialog from '../RenameClassificationDialog.vue';
 
+const mockStageController = {
+  update: vi.fn().mockResolvedValue(undefined),
+  fetchList: vi.fn().mockResolvedValue(undefined),
+};
+
+vi.mock('vue-router', () => ({
+  useRoute: () => ({ params: { id: '1' } }),
+}));
+
+vi.mock(
+  '@/modules/EducationClassification/presentation/controllers/EducationStages/education.stages.controller',
+  () => ({ default: { getInstance: () => mockStageController } }),
+);
+
 vi.mock('primevue/dialog', () => ({
   default: {
     name: 'Dialog',
@@ -44,6 +58,12 @@ describe('RenameClassificationDialog', () => {
   it('renders a text input for the title', () => {
     const wrapper = mountDialog({ visable: true });
     expect(wrapper.find('input[type="text"]').exists()).toBe(true);
+  });
+
+  it('uses the configured level name in the dialog title', () => {
+    const wrapper = mountDialog({ visable: true, levelName: 'Grade' });
+
+    expect(wrapper.find('.header-title').text()).toBe('rename_named_level');
   });
 
   it('emits update:visable with false when cancel is clicked', async () => {

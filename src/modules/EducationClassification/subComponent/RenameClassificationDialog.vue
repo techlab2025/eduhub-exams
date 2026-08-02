@@ -13,6 +13,7 @@
     visable: boolean;
     itemId: number;
     parentId: number;
+    levelName?: string;
   }>();
   const controller = EducationStageController.getInstance();
 
@@ -67,13 +68,11 @@
       <div class="header-container">
         <img :src="RenameIcon" class="icon-dialog" alt="rename-image" />
         <div class="header-text-content">
-          <h4 class="header-title">{{ $t('rename_title_of_education_classifications') }}</h4>
+          <h4 class="header-title">
+            {{ $t('rename_named_level', { name: levelName || $t('stage') }) }}
+          </h4>
           <p class="header-message">
-            {{
-              $t(
-                'Enter_a_new_name_for_this_education_classifications_This_change_will_not_affect_its_content_or_structure',
-              )
-            }}
+            {{ $t('enter_new_named_level', { name: levelName || $t('stage') }) }}
           </p>
         </div>
       </div>
@@ -89,9 +88,10 @@
         /> -->
         <MultiLangInput
           :field-key="`title`"
-          :label="$t(`education classification`)"
+          :label="$t('named_level', { name: levelName || $t('stage') })"
           :languages="['en', 'ar']"
           :model-value="title"
+          :placeholder="$t('enter_new_named_level', { name: levelName || $t('stage') })"
           :type="`title`"
           @update:model-value="title = $event"
         />
@@ -103,3 +103,16 @@
     </div>
   </Dialog>
 </template>
+
+<style scoped>
+  :global(.p-dialog.rename-dialog .multi-lang-input .field-input) {
+    background: var(--standard-white) !important;
+    border-color: var(--gray-200-std) !important;
+    color: var(--standard-black) !important;
+  }
+
+  :global(.p-dialog.rename-dialog .multi-lang-input .field-input:focus) {
+    background: var(--standard-white) !important;
+    border-color: var(--success-green-std) !important;
+  }
+</style>

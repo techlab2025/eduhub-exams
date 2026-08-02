@@ -633,6 +633,11 @@
   "created_at": "created at",
   "add_stage": "add Stage",
   "enter_the_name_of_the_stage_you_want_to_add": "Enter The Name Of The Stage You Want To Add",
+  "add_named_level": "Add New {name}",
+  "enter_named_level": "Enter the name of the {name} you want to add",
+  "named_level": "{name} Name",
+  "rename_named_level": "Rename {name}",
+  "enter_new_named_level": "Enter a new name for this {name}",
   "unarchive_question_dialog": {
     "title": "Are you sure you want to unarchive this question?",
     "description": "This will make the question available for publishing.",

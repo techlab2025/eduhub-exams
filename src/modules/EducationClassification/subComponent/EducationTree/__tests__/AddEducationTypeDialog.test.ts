@@ -5,6 +5,7 @@ import AddEducationTypeDialog from '../AddEducationTypeDialog.vue';
 describe('AddEducationTypeDialog', () => {
   const defaultProps = {
     visible: true,
+    stageName: 'School',
   };
 
   it('renders when visible', async () => {
@@ -24,7 +25,7 @@ describe('AddEducationTypeDialog', () => {
       },
     });
     expect(wrapper.find('.dialog-stub').exists()).toBe(true);
-    expect(wrapper.text()).toContain('add_education_type');
+    expect(wrapper.text()).toContain('add_named_level');
   });
 
   it('emits update:visible false when Cancel button is clicked', async () => {
