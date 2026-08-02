@@ -138,6 +138,37 @@ describe('QuestionContantTabs.vue', () => {
     ]);
   });
 
+  it('keeps response topics selected after loading edit-mode topic options', async () => {
+    fetchTopics.mockResolvedValueOnce({
+      data: [{ id: 42, title: 'Topic 1' }],
+    });
+
+    const wrapper = mount(QuestionContantTabs, {
+      props: {
+        ContentData: new ShowQuestionsModel({
+          id: 1,
+          questionTitle: 'Test Question',
+          difficulty: 1,
+          topics: [{ id: 42, title: 'Topic 1' }],
+          skills: [],
+          subjectTree: { id: 1, title: 'Branch' },
+          sequenceTree: { id: 2, title: 'Sequence' },
+        }),
+      },
+      global: globalConfig,
+    });
+
+    await flushPromises();
+
+    const topicsSelect = wrapper.findComponent('#topics');
+    expect(topicsSelect.props('staticOptions')).toEqual([
+      expect.objectContaining({ id: 42, title: 'Topic 1' }),
+    ]);
+    expect(topicsSelect.props('modelValue')).toEqual([
+      expect.objectContaining({ id: 42, title: 'Topic 1' }),
+    ]);
+  });
+
   it('clears dependent selections when a parent selection changes or is removed', async () => {
     const wrapper = mount(QuestionContantTabs, {
       props: {

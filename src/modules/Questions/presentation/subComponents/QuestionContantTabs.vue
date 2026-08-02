@@ -71,36 +71,6 @@
     );
   };
 
-  watch(
-    () => ContentData,
-    (newData) => {
-      SelectedDifficultyLevel.value = new TitleInterface<number>({
-        id: newData.difficulty!,
-        title: DifficultLevels.value.find((item) => item.id === newData.difficulty)
-          ?.title as string,
-      });
-      console.log(newData.topics, 'newData.topics');
-      SelectedTopic.value = newData.topics!.map(
-        (item) =>
-          new TitleInterface<number>({
-            id: item.id!,
-            title: item.title!,
-          }),
-      );
-      SelectedSkill.value = newData.skills!.map(
-        (item) =>
-          new TitleInterface<number>({
-            id: item.id!,
-            title: item.skill!,
-            subtitle: item.precentage!,
-          }),
-      );
-
-      handleBranchChange(newData.subjectTree!);
-      handelSubjectUpdate(newData.sequenceTree!);
-    },
-  );
-
   const skillsController = SkillsController.getInstance();
   const indexSkillsParams = new IndexSkillsParams();
 
@@ -120,7 +90,10 @@
   });
 
   const AllSubjectTree = ref<StageModel[]>([]);
-  const handleBranchChange = async (selected: TitleInterface<number> | null | undefined) => {
+  const handleBranchChange = async (
+    selected: TitleInterface<number> | null | undefined,
+    shouldEmit = true,
+  ) => {
     selectedBranchTitle.value = selected ?? undefined;
     SelectedQuestionSequence.value = null;
     SelectedTopic.value = [];
@@ -136,7 +109,7 @@
       if (selectedBranchTitle.value?.id !== requestedBranchId) return;
       AllSubjectTree.value = result.data ?? [];
     }
-    updateData();
+    if (shouldEmit) updateData();
   };
 
   const subjectOptions = computed<TitleInterface<number>[]>(() => {
@@ -155,13 +128,16 @@
     }) as TitleInterface<number>[];
   });
 
-  const handelSubjectUpdate = async (selected?: TitleInterface<number> | null) => {
+  const handelSubjectUpdate = async (
+    selected?: TitleInterface<number> | null,
+    shouldEmit = true,
+  ) => {
     SelectedQuestionSequence.value = selected ?? null;
     SelectedTopic.value = [];
     topicsOptions.value = [];
 
     if (!selected?.id) {
-      updateData();
+      if (shouldEmit) updateData();
       return;
     }
 
@@ -178,8 +154,52 @@
           title: item.title!,
         }),
     );
-    updateData();
+    if (shouldEmit) updateData();
   };
+
+  watch(
+    () => ContentData,
+    async (newData) => {
+      if (!newData) return;
+
+      SelectedDifficultyLevel.value = new TitleInterface<number>({
+        id: newData.difficulty ?? QuestionDifficultyEnum.easy,
+        title: DifficultLevels.value.find((item) => item.id === newData.difficulty)?.title,
+      });
+      SelectedSkill.value = (newData.skills ?? []).flatMap((item) =>
+        item.id == null
+          ? []
+          : [
+              new TitleInterface<number>({
+                id: item.id,
+                title: item.skill ?? '',
+                subtitle: item.precentage,
+              }),
+            ],
+      );
+
+      const responseTopics = (newData.topics ?? []).flatMap((item) =>
+        item.id == null
+          ? []
+          : [
+              new TitleInterface<number>({
+                id: item.id,
+                title: item.title ?? '',
+              }),
+            ],
+      );
+
+      await handleBranchChange(newData.subjectTree, false);
+      await handelSubjectUpdate(newData.sequenceTree, false);
+      if (ContentData !== newData) return;
+
+      SelectedTopic.value = responseTopics.map(
+        (topic) => topicsOptions.value.find((option) => option.id === topic.id) ?? topic,
+      );
+      updateData();
+    },
+    { immediate: true },
+  );
 
   const route = useRoute();
   watch(
