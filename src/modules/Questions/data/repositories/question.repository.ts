@@ -87,10 +87,10 @@ export default class questionsRepository extends BaseRepository<
     }, []);
   }
 
-  updateReviewStatus(params: Params): Promise<DataState<ShowQuestionsModel>> {
+  updateReviewStatus(params: Params): Promise<DataState<boolean>> {
     return this.executeCustom(
       () => this.apiService.updateReviewStatus(params),
-      (data) => this.parseItem(data),
+      () => true,
     );
   }
 }

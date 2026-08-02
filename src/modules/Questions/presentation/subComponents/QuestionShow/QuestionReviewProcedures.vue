@@ -5,7 +5,8 @@
   import { useRoute, useRouter } from 'vue-router';
   import { QuestionStatusRejectAbroveEnum } from '@/modules/Questions/core/constant/question.status.reject.abrove.enum';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
-import RejectQuestion from '../Dialogs/RejectQuestion.vue';
+  import RejectQuestion from '../Dialogs/RejectQuestion.vue';
+  import ApproveDialog from '../Dialogs/ApproveDialog.vue';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
@@ -19,11 +20,11 @@ import RejectQuestion from '../Dialogs/RejectQuestion.vue';
     router.push({ name: 'Questions' });
     dialogManager.toastSuccess('Question approved successfully');
   };
-  const rejectQuestion = async (note?:string) => {
+  const rejectQuestion = async (note?: string) => {
     const quiestionStatusParams = new ToggleQuestionStatusParams({
       id: Number(route.params.id),
       status: QuestionStatusRejectAbroveEnum.REJECTED,
-      note:note
+      note: note,
     });
     await controller.updateReviewStatus(quiestionStatusParams);
     router.push({ name: 'Questions' });
@@ -49,15 +50,16 @@ import RejectQuestion from '../Dialogs/RejectQuestion.vue';
         </div>
       </div> -->
       <div class="actions">
-        <button class="approve-btn btn btn-primary" @click="aproveQuestion">
+        <!-- <button class="approve-btn btn btn-primary" @click="aproveQuestion">
           <AgreeIcon />
           Agree to the question
-        </button>
+        </button> -->
+        <ApproveDialog @approve="aproveQuestion" />
         <!-- <button class="reject-btn btn btn-cancel" @click="rejectQuestion">
           <RejectIcon />
           reject question
         </button> -->
-      <RejectQuestion @reject="rejectQuestion" />
+        <RejectQuestion @reject="rejectQuestion" />
       </div>
     </div>
   </div>

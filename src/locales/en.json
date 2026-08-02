@@ -631,7 +631,25 @@
   "select_type": "Select type",
   "select_status": "Select status",
   "created_at": "created at",
-  "add_stage":"add Stage",
-  "enter_the_name_of_the_stage_you_want_to_add":"Enter The Name Of The Stage You Want To Add"
-
+  "add_stage": "add Stage",
+  "enter_the_name_of_the_stage_you_want_to_add": "Enter The Name Of The Stage You Want To Add",
+  "unarchive_question_dialog": {
+    "title": "Are you sure you want to unarchive this question?",
+    "description": "This will make the question available for publishing.",
+    "confirm": "Unarchive",
+    "cancel": "Cancel"
+  },
+  "archive_question_dialog": {
+    "title": "Are you sure you want to archive this question?",
+    "description": "This will make the question unavailable for publishing.",
+    "confirm": "Archive",
+    "cancel": "Cancel"
+  },
+  "approve_question_dialog": {
+    "title": "Are you sure you want to approve this question?",
+    "description": "This will make the question available for publishing.",
+    "confirm": "Approve",
+    "cancel": "Cancel"
+  },
+  "approve_question": "Approve Question"
 }

@@ -9,6 +9,9 @@
   import RevisionQuestion from '../Dialogs/RevisionQuestion.vue';
   import ToggleQuestionStatusParams from '@/modules/Questions/core/params/question.toggle.status.params.ts';
   import { useI18n } from 'vue-i18n';
+  import UnArchiveDialog from '../Dialogs/unArchiveDialog.vue';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import ArchiveDialog from '../Dialogs/ArchiveDialog.vue';
 
   const { questionData } = defineProps<{ questionData: ShowQuestionsModel }>();
   const router = useRouter();
@@ -74,8 +77,8 @@
       note: note,
     });
     const result = await controller.updateReviewStatus(quiestionStatusParams);
-      if(result.data){
-      router.push('/questions')
+    if (result instanceof DataSuccess) {
+      router.push('/questions');
     }
     // dialogManager.toastSuccess('Question rejected successfully');
   };
@@ -85,19 +88,19 @@
       status: QuestionStatusEnum.ARCHIVED,
     });
     const result = await controller.updateReviewStatus(quiestionStatusParams);
-      if(result.data){
-      router.push('/questions')
+    if (result instanceof DataSuccess) {
+      router.push('/questions');
     }
     // dialogManager.toastSuccess('Question rejected successfully');
   };
-   const UnArchiveQuestion = async () => {
+  const UnArchiveQuestion = async () => {
     const quiestionStatusParams = new ToggleQuestionStatusParams({
       id: Number(route.params.id),
       status: QuestionStatusEnum.REVISION,
     });
     const result = await controller.updateReviewStatus(quiestionStatusParams);
-    if(result.data){
-      router.push('/questions')
+    if (result instanceof DataSuccess) {
+      router.push('/questions');
     }
     // dialogManager.toastSuccess('Question rejected successfully');
   };
@@ -135,9 +138,13 @@
         <EditIcon /> {{ $t('edit') }}
       </button>
 
-      <button  v-if="questionData.review_status == QuestionStatusEnum.ARCHIVED" class="btn btn-primary" @click="UnArchiveQuestion">
+      <!-- <button >
         {{ $t('unarchive') }}
-      </button>
+      </button> -->
+      <UnArchiveDialog
+        v-if="questionData.review_status == QuestionStatusEnum.ARCHIVED"
+        @unarchive="UnArchiveQuestion"
+      />
 
       <button class="action-btn delete" title="Delete" @click="DeleteQuestion">
         <svg
@@ -159,7 +166,7 @@
     <div v-if="questionData.review_status == QuestionStatusEnum.APPROVED" class="question-actions">
       <RevisionQuestion @revision="RvisionQuestion" />
 
-      <button class="btn btn-primary" @click="ArchiveQuestion">
+      <!-- <button class="btn btn-primary" @click="ArchiveQuestion">
         <svg
           width="16"
           height="17"
@@ -176,7 +183,8 @@
           />
         </svg>
         <span>archive</span>
-      </button>
+      </button> -->
+      <ArchiveDialog @archive="ArchiveQuestion" />
     </div>
   </div>
 </template>
