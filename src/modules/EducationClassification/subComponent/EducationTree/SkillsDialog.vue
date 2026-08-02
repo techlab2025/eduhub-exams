@@ -236,6 +236,10 @@
 </template>
 
 <style scoped lang="scss">
+  :deep(.p-select-label) {
+    padding: 0px 7px !important;
+    border-radius: 50px !important;
+  }
 
   .error-message-inputs {
     color: red;

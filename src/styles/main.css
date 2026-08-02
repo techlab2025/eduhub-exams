@@ -6584,8 +6584,7 @@ body::-webkit-scrollbar-thumb:hover {
 .p-dialog.pricing-dialog .dialog-footer button {
   width: 50%;
 }
-.p-dialog.pricing-dialog .selected-value--placeholder,
-.p-dialog.pricing-dialog .input-select .selected-value {
+.p-dialog.pricing-dialog .selected-value--placeholder {
   padding: 11px !important;
 }
 .p-dialog {
