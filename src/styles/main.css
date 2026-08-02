@@ -15015,6 +15015,9 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: 13px;
   font-weight: 600;
 }
+.article-details-form-card.article-form-layout .article-section-explanation .article-solution-steps-header-explain div:first-child {
+  margin-right: auto;
+}
 .article-details-form-card.article-form-layout .article-section-explanation .article-solution-steps-header-explain::before {
   min-width: 34px;
   height: 34px;
@@ -16936,4 +16939,12 @@ input::placeholder {
   font-weight: 300 !important;
   line-height: 1.5;
   opacity: 1;
+}
+
+label,
+.input-label {
+  color: var(--gray-700) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0;
 }/*# sourceMappingURL=main.css.map */

@@ -383,3 +383,11 @@ input {
     opacity: 1;
   }
 }
+
+label,
+.input-label {
+  color: var(--gray-700) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0;
+}

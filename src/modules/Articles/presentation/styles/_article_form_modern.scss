@@ -3,7 +3,7 @@
 .article-details-form-card.article-form-layout {
   // width: min(100%, 1180px);
   margin: 0 auto !important;
-  
+
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -410,6 +410,10 @@
       color: var(--gray-700);
       font-size: 13px;
       font-weight: 600;
+
+      div:first-child {
+        margin-right: auto;
+      }
 
       &::before {
         min-width: 34px;
