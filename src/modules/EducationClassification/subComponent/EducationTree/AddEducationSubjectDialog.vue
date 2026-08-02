@@ -4,7 +4,15 @@
   import NewBranchIcon from '@/shared/icons/NewBranchIcon.vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
 
-  const props = defineProps<{ visible: boolean }>();
+  const props = withDefaults(
+    defineProps<{
+      visible: boolean;
+      subjectName?: string;
+    }>(),
+    {
+      subjectName: '',
+    },
+  );
   const emit = defineEmits<{
     (e: 'update:visible', val: boolean): void;
     (e: 'confirm', name: Record<string, string>): void;
@@ -26,9 +34,15 @@
     }
   });
 
+  const isInputEmpty = computed(() =>
+    Object.values(inputValue.value).every((value) => !value || value.trim() === ''),
+  );
+
   function handleConfirm() {
-    const name = inputValue.value;
-    if (!name) return;
+    if (isInputEmpty.value) return;
+    const name = Object.fromEntries(
+      Object.entries(inputValue.value).map(([locale, value]) => [locale, value.trim()]),
+    );
     emit('confirm', name);
     inputValue.value = {};
   }
@@ -50,8 +64,12 @@
         <NewBranchIcon />
       </div>
       <div>
-        <h3 class="dialog-title">{{ $t('add_a_new_subject') }}</h3>
-        <p class="dialog-subtitle">{{ $t('confirm_the_name_of_the_new_subject') }}</p>
+        <h3 class="dialog-title">
+          {{ $t('add_named_level', { name: subjectName || $t('subject') }) }}
+        </h3>
+        <p class="dialog-subtitle">
+          {{ $t('enter_named_level', { name: subjectName || $t('subject') }) }}
+        </p>
       </div>
     </template>
 
@@ -70,9 +88,10 @@
     <MultiLangInput
       ref="inputRef"
       :field-key="`title`"
-      :label="$t(`title`)"
+      :label="$t('named_level', { name: subjectName || $t('subject') })"
       :languages="['en', 'ar']"
       :model-value="inputValue"
+      :placeholder="$t('enter_named_level', { name: subjectName || $t('subject') })"
       :type="`title`"
       @update:model-value="inputValue = $event"
       @keydown.enter="handleConfirm"
@@ -80,10 +99,23 @@
     />
 
     <div class="dialog-footer">
-      <button class="btn btn-primary" :disabled="!inputValue" @click="handleConfirm">
+      <button class="btn btn-primary" :disabled="isInputEmpty" @click="handleConfirm">
         {{ $t('add') }}
       </button>
       <button class="btn btn-secondary" @click="dialogVisible = false">{{ $t('cancel') }}</button>
     </div>
   </Dialog>
 </template>
+
+<style scoped>
+  :global(.p-dialog.add-education-type-dialog .multi-lang-input .field-input) {
+    background: var(--standard-white) !important;
+    border-color: var(--gray-200-std) !important;
+    color: var(--standard-black) !important;
+  }
+
+  :global(.p-dialog.add-education-type-dialog .multi-lang-input .field-input:focus) {
+    background: var(--standard-white) !important;
+    border-color: var(--success-green-std) !important;
+  }
+</style>

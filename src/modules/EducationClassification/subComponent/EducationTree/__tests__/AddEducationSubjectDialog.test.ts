@@ -17,7 +17,7 @@ const dialogStub = {
 };
 
 describe('AddEducationSubjectDialog', () => {
-  const defaultProps = { visible: true };
+  const defaultProps = { visible: true, subjectName: 'Course' };
 
   it('renders when visible is true', () => {
     const wrapper = mount(AddEducationSubjectDialog, {
@@ -30,6 +30,7 @@ describe('AddEducationSubjectDialog', () => {
       },
     });
     expect(wrapper.find('.dialog-stub').exists()).toBe(true);
+    expect(wrapper.find('.dialog-title').text()).toBe('add_named_level');
   });
 
   it('does not render when visible is false', () => {
@@ -101,7 +102,7 @@ describe('AddEducationSubjectDialog', () => {
     await wrapper.find('button.btn-primary').trigger('click');
 
     expect(wrapper.emitted('confirm')).toBeTruthy();
-    expect(wrapper.emitted('confirm')?.[0]?.[0]).toBe('Science');
+    expect(wrapper.emitted('confirm')?.[0]?.[0]).toEqual({ en: 'Science' });
   });
 
   it('clears the input after a successful confirm', async () => {
@@ -166,6 +167,6 @@ describe('AddEducationSubjectDialog', () => {
     await wrapper.find('input').trigger('keydown.enter');
 
     expect(wrapper.emitted('confirm')).toBeTruthy();
-    expect(wrapper.emitted('confirm')?.[0]?.[0]).toBe('History');
+    expect(wrapper.emitted('confirm')?.[0]?.[0]).toEqual({ en: 'History' });
   });
 });

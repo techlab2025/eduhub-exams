@@ -293,7 +293,7 @@
   <AddEducationSubjectDialog
     v-if="showAddRootDialog"
     v-model:visible="showAddRootDialog"
-    :header="`Add New ${getSubjectRootName()}`"
+    :subject-name="getSubjectRootName()"
     @confirm="handleAddRoot"
   />
 

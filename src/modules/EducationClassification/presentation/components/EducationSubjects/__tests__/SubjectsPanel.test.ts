@@ -53,6 +53,7 @@ vi.mock(
     default: {
       name: 'AddEducationSubjectDialog',
       template: '<div class="add-subject-dialog"></div>',
+      props: ['subjectName'],
     },
   }),
 );
@@ -117,6 +118,16 @@ describe('SubjectsPanel', () => {
     await flushPromises();
     await wrapper.get('.stage-root-row .icon-btn').trigger('click');
     expect(wrapper.find('.add-subject-dialog').exists()).toBe(true);
+  });
+
+  it('passes the configured subject name to the add dialog', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await wrapper.get('.stage-root-row .icon-btn').trigger('click');
+
+    expect(wrapper.getComponent({ name: 'AddEducationSubjectDialog' }).props('subjectName')).toBe(
+      'Subject',
+    );
   });
 
   it('closes AddEducationSubjectDialog on update:visible false emit', async () => {
