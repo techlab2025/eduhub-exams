@@ -474,9 +474,7 @@
       border: 1px solid #d9dbe9 !important;
     }
   }
-</style>
 
-<style lang="scss">
   .custom-select-overlay {
     max-width: min(90vw, 500px) !important;
 

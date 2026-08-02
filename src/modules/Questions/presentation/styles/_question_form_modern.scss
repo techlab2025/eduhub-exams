@@ -5,8 +5,9 @@
   // width: min(100%, 1180px);
   margin-inline: auto;
   gap: 20px;
-  .p-accordion{
-    padding:0 !important;
+
+  .p-accordion {
+    padding: 0 !important;
   }
 
   > .form-header {
@@ -260,6 +261,16 @@
     line-height: 1.4;
   }
 
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--gray-400) !important;
+    font-family: var(--font-family);
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.5;
+    opacity: 1;
+  }
+
   .all_tabs {
     gap: 10px;
 
@@ -353,29 +364,6 @@
       }
     }
 
-    .p-select,
-    .p-multiselect {
-      min-height: 48px;
-      border-color: var(--gray-200);
-      border-radius: 14px !important;
-      background: var(--BgWhite);
-      box-shadow: none;
-
-      &:hover {
-        border-color: var(--gray-300);
-      }
-
-      &.p-focus {
-        border-color: var(--primary-green);
-        box-shadow: 0 0 0 4px var(--PrimaryColor-alpha-10);
-      }
-    }
-
-    .p-select-label,
-    .p-multiselect-label {
-      padding: 11px 14px !important;
-      font-size: 12px !important;
-    }
   }
 
   .answers-data-form .accordion-content-inner {

@@ -72,7 +72,6 @@
 @use 'GlobalStyles/import';
 // helpers components styles
 @use '../shared/HelpersComponents/FilterDialog/styles/filter_dialog';
-@use 'inputs-configurations' as inputs;
 /* =============================================================================
    GLOBAL OVERRIDES & BASE STYLES
    ============================================================================= */
@@ -374,7 +373,3 @@ body {
 .p-dialog {
   background: $StandardWhite !important;
 }
-
-// Keep the shared form-control normalization last so module styles cannot
-// accidentally create different typography, spacing, or borders.
-@include inputs.apply-input-configurations;

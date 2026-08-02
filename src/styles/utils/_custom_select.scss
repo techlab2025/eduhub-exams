@@ -7,18 +7,63 @@
   font-weight: $BaseFontSemiBoldWeight;
 }
 
-.p-select {
-  border-color: var(--gray-300) !important;
+.p-select,
+.p-multiselect {
+  width: 100%;
+  min-height: 48px;
+  margin-top: var(--xs-size-3);
+  padding: 0 !important;
+  border: 1px solid var(--gray-200) !important;
+  border-radius: 14px !important;
+  background-color: var(--BgWhite);
   font-family: var(--font-family);
   font-size: var(--sm-size);
   font-weight: $BaseFontSemiBoldWeight;
-  // padding: 12px 9px !important;
-  margin-top: var(--xs-size-3);
+  box-shadow: none;
 
-  &:focus {
+  &:hover {
+    border-color: var(--gray-300) !important;
+  }
+
+  &:focus,
+  &:focus-within,
+  &.p-focus {
     border-color: var(--PrimaryColor) !important;
     box-shadow: 0 0 0 3px var(--PrimaryColor-light);
   }
+}
+
+.p-select-label,
+.p-multiselect-label {
+  width: 100% !important;
+  min-width: 0;
+  margin: 0;
+  padding: 11px 14px !important;
+  border-radius: 14px !important;
+  color: var(--gray-800) !important;
+  font-family: var(--font-family) !important;
+  font-size: 14px !important;
+  font-weight: $BaseFontMediumWeight !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.p-select-label.p-placeholder,
+.p-multiselect-label.p-placeholder,
+.p-select.input-select
+  .p-select-label
+  .selected-value.selected-value--placeholder {
+  color: var(--gray-400) !important;
+  font-family: var(--font-family) !important;
+  font-size: 14px !important;
+  font-weight: $BaseFontMediumWeight !important;
+  line-height: 1.5;
+  opacity: 1;
+}
+
+.p-multiselect-label[data-p='has-chip'] {
+  padding-block: 3px !important;
 }
 
 .p-select-overlay {
@@ -93,33 +138,6 @@
   }
 }
 
-.p-multiselect {
-  font-family: var(--font-family);
-  font-size: var(--sm-size);
-  font-weight: $BaseFontSemiBoldWeight;
-  border-color: var(--gray-200) !important;
-  padding: 4px;
-  margin-top: var(--xs-size-3);
-
-  &:focus {
-    border-color: var(--PrimaryColor) !important;
-    box-shadow: 0 0 0 3px var(--PrimaryColor-light);
-  }
-}
-
-.p-multiselect-label {
-  color: var(--gray-800) !important;
-  margin-inline: 5px;
-  border-radius: var(--radius-full);
-  width: fit-content;
-
-  &.p-placeholder {
-    color: var(--gray-400) !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-  }
-}
-
 .p-checkbox-box {
   background-color: var(--BgWhite) !important;
   border: 1px solid var(--gray-400) !important;
@@ -181,21 +199,6 @@
 
   svg path {
     fill: var(--PrimaryColor) !important;
-  }
-}
-
-.p-select-label {
-  font-size: var(--sm-size) !important;
-  font-weight: $BaseFontMediumWeight !important;
-  border-radius: var(--radius-full) !important;
-  width: fit-content !important;
-  color: var(--PrimaryColor) !important;
-  padding: 0 !important;
-
-  &.p-placeholder {
-    font-weight: 300 !important;
-    font-size: 14px !important;
-    color: var(--gray-400) !important;
   }
 }
 

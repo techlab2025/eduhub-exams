@@ -246,18 +246,6 @@
     cursor: pointer;
   }
 
-  .p-select,
-  .p-multiselect {
-    border-radius: 18px !important;
-    min-height: 38px;
-  }
-
-  .p-select-label,
-  .p-multiselect-label {
-    font-size: 11px !important;
-    padding: 8px 12px !important;
-  }
-
   @media (max-width: 1000px) {
     .all_tabs {
       grid-template-columns: repeat(3, minmax(0, 1fr));
