@@ -38,7 +38,7 @@ describe('ArticleController', () => {
 
     expect(router.push).toHaveBeenCalledWith({
       name: 'Article questions',
-      params: { id: 42 },
+      params: { artical_id: 42 },
     });
     expect(clearFormDataMock).toHaveBeenCalledWith('article-form');
   });

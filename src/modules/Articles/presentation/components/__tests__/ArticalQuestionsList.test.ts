@@ -31,7 +31,7 @@ vi.mock('@/modules/Questions/presentation/components/questionsAdd.vue', () => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ params: { id: '42' } }),
+  useRoute: () => ({ params: { artical_id: '42' } }),
   useRouter: () => ({ push: routerPushMock }),
 }));
 

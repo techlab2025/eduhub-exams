@@ -29,7 +29,7 @@
 
     if (isRouting) {
       if (parentId != null) {
-        router.push({ name: 'Article questions', params: { id: parentId } });
+        router.push({ name: 'Article questions', params: { artical_id: parentId } });
       } else {
         router.back();
       }
@@ -92,7 +92,7 @@
       params.value?.parentId ??
       (route.query.article_id ? Number(route.query.article_id) : undefined);
     if (parentId != null) {
-      router.push({ name: 'Article questions', params: { id: parentId } });
+      router.push({ name: 'Article questions', params: { artical_id: parentId } });
     } else {
       router.push({ name: 'Questions' });
     }

@@ -12,6 +12,8 @@
   position: relative;
   font-family: 'Medium';
 
+  
+
   .ref-number-group {
     justify-content: end;
   }
@@ -157,8 +159,8 @@
         border: none !important;
       }
     }
-    .selected-value--placeholder ,
-    .input-select .selected-value{
+    .selected-value--placeholder,
+    .input-select .selected-value {
       padding: 11px !important;
     }
     .image-input {

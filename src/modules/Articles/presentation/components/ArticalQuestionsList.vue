@@ -22,7 +22,7 @@
   const router = useRouter();
   const hasFetched = ref(false);
   const showAddQuestionDialog = ref(false);
-  const articleId = computed(() => Number(route.params.id));
+  const articleId = computed(() => Number(route.params.artical_id));
   const article = computed(() => controller.itemState.value.data);
   const questions = computed(() => article.value?.questions ?? []);
   const questionCount = computed(
@@ -119,7 +119,7 @@
         </div>
       </section>
 
-      <ArticleQuestion :artical="article!" />
+      <ArticleQuestion :artical="article!" :show-header="false" />
     </template>
 
     <section v-else class="empty-questions-card">

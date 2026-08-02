@@ -14,6 +14,10 @@
   // import { CustomToast } from '../subComponents/CustomTosat.ts';
 
   const route = useRoute();
+  const routeArticleId = () => {
+    const id = route.query.article_id ?? route.query.artical_id;
+    return id ? Number(id) : null;
+  };
   const { t } = useI18n();
   const emit = defineEmits(['updateData']);
   const { question, articleId } = defineProps<{
@@ -168,7 +172,7 @@
       topics: data.topics,
       questionSequenceId: data.questionSequenceId,
       questionSource: data.questionSource,
-      parentId: articleId ?? (route.query.article_id ? Number(route.query.article_id) : null),
+      parentId: articleId ?? routeArticleId(),
     });
     refreshVisibleValidation();
     updateData();

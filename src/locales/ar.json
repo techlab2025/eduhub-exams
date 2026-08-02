@@ -139,6 +139,7 @@
   "article_questions_empty_title": "ابدأ بإضافة سؤالك الأول",
   "article_questions_empty_description": "لا يحتوي هذا المقال على أسئلة بعد. أضف سؤالاً للتحقق من فهم المتعلمين وجعل المقال أكثر تفاعلاً.",
   "article_questions_title": "الأسئلة",
+  "questions_linked_to_this_passage": "الأسئلة المرتبطة بهذا المقطع",
   "article_questions_add_button": "إضافة سؤال جديد",
   "article_questions_back": "رجوع",
   "article_questions_loading": "جارٍ تحميل أسئلة المقال...",

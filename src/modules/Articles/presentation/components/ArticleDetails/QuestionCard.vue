@@ -20,7 +20,7 @@
     allquestion: ShowQuestionsModel[];
   }>();
   const route = useRoute();
-  const articleId = Number(route.params.id);
+  const articleId = Number(route.params.artical_id ?? route.params.id);
   const controller = ArticleController.getInstance();
   const { t } = useI18n();
   const getDifficultyClass = (difficulty: QuestionDifficultyEnum) => {

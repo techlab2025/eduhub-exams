@@ -50,7 +50,7 @@ export default class ArticleController extends BaseController<
     if (result instanceof DataSuccess) {
       const articleId = result.data?.question_id ?? result.data?.id;
       if (articleId) {
-        router.push({ name: 'Article questions', params: { id: articleId } });
+        router.push({ name: 'Article questions', params: { artical_id: articleId } });
       } else {
         router.push({ name: 'Articles' });
       }

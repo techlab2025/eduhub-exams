@@ -61,7 +61,10 @@
 
       if (isRouting) {
         if (params.value?.parentId != null) {
-          router.push({ name: 'Article questions', params: { id: params.value.parentId } });
+          router.push({
+            name: 'Article questions',
+            params: { artical_id: params.value.parentId },
+          });
         } else {
           router.back();
         }
@@ -89,7 +92,10 @@
       if (!(result instanceof DataSuccess)) return;
 
       if (params.value?.parentId != null) {
-        router.push({ name: 'Article questions', params: { id: params.value.parentId } });
+        router.push({
+          name: 'Article questions',
+          params: { artical_id: params.value.parentId },
+        });
       } else {
         router.back();
       }
@@ -142,7 +148,7 @@
       <CancelQuestionDialog
         v-else
         @cancel="
-          route?.query?.article_id
+          route?.query?.article_id || route?.query?.artical_id
             ? $router.push({ name: 'Articles' })
             : $router.push({ name: 'Questions' })
         "

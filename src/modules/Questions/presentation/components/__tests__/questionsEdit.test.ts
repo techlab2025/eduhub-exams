@@ -100,7 +100,7 @@ describe('questionsEdit', () => {
     expect(updateMock.mock.calls[0]?.[0].status).toBe(QuestionStatusEnum.APPROVED);
     expect(routerPushMock).toHaveBeenCalledWith({
       name: 'Article questions',
-      params: { id: 42 },
+      params: { artical_id: 42 },
     });
   });
 
@@ -135,7 +135,7 @@ describe('questionsEdit', () => {
 
     expect(routerPushMock).toHaveBeenCalledWith({
       name: 'Article questions',
-      params: { id: 42 },
+      params: { artical_id: 42 },
     });
   });
 });

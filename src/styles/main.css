@@ -16946,4 +16946,8 @@ label,
   font-size: 13px !important;
   font-weight: 600 !important;
   letter-spacing: 0;
+}
+
+.document-form-card .p-select-label.p-placeholder {
+  padding: 0 !important;
 }/*# sourceMappingURL=main.css.map */

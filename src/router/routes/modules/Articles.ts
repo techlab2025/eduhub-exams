@@ -33,7 +33,7 @@ export const ArticlesRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: 'articles/questions/:id',
+    path: 'articles/questions/:artical_id',
     name: 'Article questions',
     component: () => import('@/views/Articles/ArticleQuestionsList.vue'),
     props: true,

@@ -119,7 +119,7 @@ describe('questionsAdd.vue', () => {
 
     expect(routerPushMock).toHaveBeenCalledWith({
       name: 'Article questions',
-      params: { id: 1 },
+      params: { artical_id: 1 },
     });
   });
 
