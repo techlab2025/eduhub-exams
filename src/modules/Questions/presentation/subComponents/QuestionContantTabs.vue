@@ -203,6 +203,27 @@
 
   const route = useRoute();
   watch(
+    [() => ContentData, skillsOptions],
+    ([content, options]) => {
+      if (!route.params.id || !content?.skills?.length || !options?.length) return;
+
+      SelectedSkill.value = content.skills.flatMap((skill) => {
+        if (skill.id == null) return [];
+
+        const option = options.find((item) => item.id === skill.id);
+        return [
+          new TitleInterface<number>({
+            id: skill.id,
+            title: option?.title ?? skill.skill,
+            subtitle: skill.precentage,
+          }),
+        ];
+      });
+    },
+    { immediate: true },
+  );
+
+  watch(
     () => draftData,
     () => {
       if (route.params.id) return;

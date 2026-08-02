@@ -46,6 +46,8 @@ describe('StageTreeNode', () => {
       props: {
         node: mockNode,
         selectedStageId: null,
+        MaxDepth: 3,
+        parentId: null,
         ...props,
       },
       global: {
@@ -151,5 +153,16 @@ describe('StageTreeNode', () => {
     const wrapper = mountComponent({ node: leafNodeAtMax });
     // Check for the rect element which is in the leaf icon
     expect(wrapper.find('rect').exists()).toBe(true);
+  });
+
+  it('renders the configured singular title for the node level', () => {
+    const wrapper = mountComponent({
+      node: { ...mockNode, depth: 1 },
+      MaxDepth: 3,
+      levelLabels: { 2: 'Newest' },
+      parentId: null,
+    });
+
+    expect(wrapper.get('.level-label').text()).toBe('Newest');
   });
 });

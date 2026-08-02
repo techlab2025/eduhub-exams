@@ -19,12 +19,18 @@
     depth: number;
   }
 
-  const props = defineProps<{
-    node: StageNode;
-    selectedStageId: number | null;
-    MaxDepth: number;
-    parentId: number | null;
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      node: StageNode;
+      selectedStageId: number | null;
+      MaxDepth: number;
+      levelLabels?: Record<number, string>;
+      parentId: number | null;
+    }>(),
+    {
+      levelLabels: () => ({}),
+    },
+  );
 
   const emit = defineEmits<{
     (e: 'fetch-children', parentId: number, callback: (children: StageNode[]) => void): void;
@@ -198,7 +204,9 @@
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
       </svg>
 
-      <span v-if="node.depth > 0" class="level-label">{{ $t('stage') }} {{ node.depth }}</span>
+      <span v-if="node.depth > 0" class="level-label">
+        {{ levelLabels[node.depth + 1] ?? `${$t('stage')} ${node.depth}` }}
+      </span>
 
       <span class="node-name" :class="{ 'rtl-text': isArabic(node.stage.stage_title) }">
         {{ node.stage.stage_title }}
@@ -238,6 +246,7 @@
           :key="child.stage.stage_id"
           :node="child"
           :MaxDepth="MaxDepth"
+          :level-labels="levelLabels"
           :selected-stage-id="selectedStageId"
           :parent-id="node.stage.stage_id"
           @fetch-children="onChildFetch"

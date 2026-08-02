@@ -22,12 +22,18 @@
     depth: number;
   }
 
-  const props = defineProps<{
-    node: SubjectNode;
-    selectedSubjectId: number | null;
-    maxDepth: number;
-    parentId: number | null;
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      node: SubjectNode;
+      selectedSubjectId: number | null;
+      maxDepth: number;
+      levelLabels?: Record<number, string>;
+      parentId: number | null;
+    }>(),
+    {
+      levelLabels: () => ({}),
+    },
+  );
 
   const emit = defineEmits<{
     (e: 'fetch-children', parentId: number, callback: (children: SubjectNode[]) => void): void;
@@ -220,7 +226,9 @@
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
       </svg>
 
-      <span v-if="node.depth > 0" class="level-label">{{ $t('branch') }} {{ node.depth }}</span>
+      <span v-if="node.depth > 0" class="level-label">
+        {{ levelLabels[node.depth] ?? `${$t('branch')} ${node.depth}` }}
+      </span>
 
       <span class="node-name" :class="{ 'rtl-text': isArabic(node.subject.subject_title) }">
         {{ node.subject.subject_title }}
@@ -264,6 +272,7 @@
           :key="child.subject.subject_id"
           :node="child"
           :max-depth="maxDepth"
+          :level-labels="levelLabels"
           :selected-subject-id="selectedSubjectId"
           :parent-id="node.subject.subject_id"
           @fetch-children="onChildFetch"

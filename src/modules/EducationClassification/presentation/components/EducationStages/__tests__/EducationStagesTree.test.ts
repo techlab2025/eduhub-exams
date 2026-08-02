@@ -39,7 +39,7 @@ vi.mock('../StageTreeNode.vue', () => ({
   default: {
     name: 'StageTreeNode',
     template: '<div class="stage-tree-node"></div>',
-    props: ['node', 'selectedStageId'],
+    props: ['node', 'selectedStageId', 'levelLabels'],
   },
 }));
 
@@ -132,6 +132,35 @@ describe('EducationStagesTree', () => {
     await flushPromises();
     expect(wrapper.find('.stage-tree-node').exists()).toBe(true);
     expect(wrapper.find('.empty-state').exists()).toBe(false);
+  });
+
+  it('passes localized configuration branch names to stage nodes', async () => {
+    mockConfigController.fetchList.mockResolvedValue(
+      new DataSuccess({
+        data: [
+          {
+            numberOfBranches: 3,
+            branches: [
+              { levelNumber: 1, singularTitle: { en: 'New' } },
+              { levelNumber: 2, singularTitle: { en: 'Newest' } },
+              { levelNumber: 3, singularTitle: { en: 'Newer' } },
+            ],
+          },
+        ],
+      }),
+    );
+    mockStageController.fetchList.mockResolvedValue(
+      new DataSuccess({ data: [EducationStageModel.example] }),
+    );
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    expect(wrapper.getComponent({ name: 'StageTreeNode' }).props('levelLabels')).toEqual({
+      1: 'New',
+      2: 'Newest',
+      3: 'Newer',
+    });
   });
 
   it('shows right-placeholder when no node is selected', async () => {

@@ -41,12 +41,21 @@
   });
   const refreshSubjectId = ref<number | null>(null);
 
-  function getSubjectBranchName(depth: number): string {
-    const branches = subjectConfig.value?.[0]?.branches ?? [];
-    const branch = branches.find((b) => b.levelNumber === depth + 1);
-    if (!branch) return `Level ${depth + 1}`;
+  const subjectBranchLevelLabels = computed<Record<number, string>>(() => {
     const lang = locale.value === 'ar' ? 'ar' : 'en';
-    return branch.singularTitle[lang] ?? branch.singularTitle['en'] ?? `Level ${depth + 1}`;
+    return Object.fromEntries(
+      (subjectConfig.value?.[0]?.branches ?? []).map((branch) => [
+        branch.levelNumber,
+        branch.singularTitle[lang] ??
+          branch.singularTitle.en ??
+          `Level ${branch.levelNumber}`,
+      ]),
+    );
+  });
+
+  function getSubjectBranchName(depth: number): string {
+    const levelNumber = depth + 1;
+    return subjectBranchLevelLabels.value[levelNumber] ?? `Level ${levelNumber}`;
   }
 
   function getSubjectRootName(): string {
@@ -255,6 +264,7 @@
               :key="node.subject.subject_id"
               :node="node"
               :max-depth="subjectMaxDepth"
+              :level-labels="subjectBranchLevelLabels"
               :selected-subject-id="selectedNode?.subject.subject_id ?? null"
               :parent-id="null"
               @fetch-children="fetchChildren"

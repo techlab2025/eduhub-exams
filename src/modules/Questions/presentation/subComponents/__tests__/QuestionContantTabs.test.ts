@@ -8,6 +8,9 @@ import ShowQuestionsModel from '../../../core/models/show.questions.model';
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 const fetchFullSubjectTree = vi.hoisted(() => vi.fn());
 const fetchTopics = vi.hoisted(() => vi.fn());
+const skillsListData = vi.hoisted(() => ({
+  current: null as { value: unknown[] } | null,
+}));
 
 vi.mock('vue-router', () => ({
   useRoute: () => ({
@@ -36,13 +39,17 @@ vi.mock(
   }),
 );
 
-vi.mock('@/modules/Skills/presentation/controllers/skills.controller', () => ({
-  default: {
-    getInstance: () => ({
-      listData: { value: [] },
-    }),
-  },
-}));
+vi.mock('@/modules/Skills/presentation/controllers/skills.controller', async () => {
+  const { ref } = await import('vue');
+  const listData = ref<unknown[]>([]);
+  skillsListData.current = listData;
+
+  return {
+    default: {
+      getInstance: () => ({ listData }),
+    },
+  };
+});
 
 vi.mock('@/modules/Stages/presentation/controllers/stage.controller', () => ({
   default: {
@@ -67,6 +74,7 @@ describe('QuestionContantTabs.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    if (skillsListData.current) skillsListData.current.value = [];
     fetchFullSubjectTree.mockResolvedValue({
       data: [
         {
@@ -166,6 +174,36 @@ describe('QuestionContantTabs.vue', () => {
     ]);
     expect(topicsSelect.props('modelValue')).toEqual([
       expect.objectContaining({ id: 42, title: 'Topic 1' }),
+    ]);
+  });
+
+  it('keeps response skills selected after loading edit-mode skill options', async () => {
+    const wrapper = mount(QuestionContantTabs, {
+      props: {
+        ContentData: new ShowQuestionsModel({
+          id: 1,
+          questionTitle: 'Test Question',
+          difficulty: 1,
+          topics: [],
+          skills: [{ id: 7, skill: 'Stale skill title', precentage: 35 }],
+          subjectTree: { id: 1, title: 'Branch' },
+          sequenceTree: { id: 2, title: 'Sequence' },
+        }),
+      },
+      global: globalConfig,
+    });
+
+    const skillOptionsState = skillsListData.current;
+    if (!skillOptionsState) throw new Error('Skills controller mock was not initialized');
+    skillOptionsState.value = [{ id: 7, title: 'Loaded skill title' }];
+    await flushPromises();
+
+    expect(wrapper.findComponent('#skills').props('modelValue')).toEqual([
+      expect.objectContaining({
+        id: 7,
+        title: 'Loaded skill title',
+        subtitle: 35,
+      }),
     ]);
   });
 

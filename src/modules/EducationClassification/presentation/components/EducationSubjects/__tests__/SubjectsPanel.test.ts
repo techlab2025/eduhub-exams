@@ -36,7 +36,7 @@ vi.mock('../SubjectTreeNode.vue', () => ({
   default: {
     name: 'SubjectTreeNode',
     template: '<div class="subject-tree-node"></div>',
-    props: ['node', 'selectedSubjectId', 'maxDepth'],
+    props: ['node', 'selectedSubjectId', 'maxDepth', 'levelLabels'],
   },
 }));
 
@@ -178,5 +178,37 @@ describe('SubjectsPanel', () => {
     await flushPromises();
 
     expect(wrapper.getComponent({ name: 'SubjectTreeNode' }).props('maxDepth')).toBe(2);
+  });
+
+  it('passes localized configuration branch names to subject nodes', async () => {
+    mockConfigController.fetchList.mockResolvedValue(
+      new DataSuccess<EducationSubjectConfigurationModel[]>({
+        data: [
+          {
+            numberOfBranches: 1,
+            branches: [{ levelNumber: 1, singularTitle: { en: 'Unit' } }],
+            SingluarTitle: { en: 'Subject' },
+          } as unknown as EducationSubjectConfigurationModel,
+        ],
+      }),
+    );
+    mockItemController.fetchList.mockResolvedValue(
+      new DataSuccess<EducationSubjectModel[]>({
+        data: [
+          {
+            subject_id: 1,
+            subject_title: 'Math',
+            has_children: false,
+          } as EducationSubjectModel,
+        ],
+      }),
+    );
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    expect(wrapper.getComponent({ name: 'SubjectTreeNode' }).props('levelLabels')).toEqual({
+      1: 'Unit',
+    });
   });
 });

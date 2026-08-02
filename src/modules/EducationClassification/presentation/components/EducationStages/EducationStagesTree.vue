@@ -48,12 +48,21 @@
 
   const maxDepth = computed(() => educationConfig.value?.[0]?.numberOfBranches);
 
-  function getBranchName(parentDepth: number): string {
-    const branches = educationConfig.value?.[0]?.branches ?? [];
-    const branch = branches.find((b) => b.levelNumber === parentDepth + 1);
-    if (!branch) return `Branch ${parentDepth + 1}`;
+  const branchLevelLabels = computed<Record<number, string>>(() => {
     const lang = locale.value === 'ar' ? 'ar' : 'en';
-    return branch.singularTitle[lang] ?? branch.singularTitle['en'] ?? `Branch ${parentDepth + 1}`;
+    return Object.fromEntries(
+      (educationConfig.value?.[0]?.branches ?? []).map((branch) => [
+        branch.levelNumber,
+        branch.singularTitle[lang] ??
+          branch.singularTitle.en ??
+          `Branch ${branch.levelNumber}`,
+      ]),
+    );
+  });
+
+  function getBranchName(parentDepth: number): string {
+    const levelNumber = parentDepth + 1;
+    return branchLevelLabels.value[levelNumber] ?? `Branch ${levelNumber}`;
   }
 
   function makeNode(stage: EducationStageModel, depth: number): StageNode {
@@ -288,6 +297,7 @@
           :key="node.stage.stage_id"
           :node="node"
           :MaxDepth="MaxNumberOfBranches"
+          :level-labels="branchLevelLabels"
           :parent-id="null"
           :selected-stage-id="selectedNode?.stage.stage_id ?? null"
           @fetch-children="fetchChildren"
@@ -380,7 +390,7 @@
                 />
               </svg>
               <span class="child-name">{{ child.stage.stage_title }}</span>
-              <span class="level-label">{{ getBranchName(child.depth - 1) }}</span>
+              <span class="level-label">{{ getBranchName(child.depth) }}</span>
               <span class="spacer" />
               <button
                 v-if="child.depth + 1 < (maxDepth ?? 0)"
