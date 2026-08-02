@@ -4,9 +4,9 @@ describe('EducationSubjectConfigurationModel', () => {
   describe('constructor', () => {
     it('should create a valid model', () => {
       const model = new EducationSubjectConfigurationModel({
-        educationClassificatioId: 1,
+        educationClassification: EducationSubjectConfigurationModel.example.educationClassification,
         numberOfBranches: 2,
-        SingularTitle: { en: 'Subject', ar: 'مادة' },
+        SingluarTitle: { en: 'Subject', ar: 'مادة' },
         pluralTitle: { en: 'Subjects', ar: 'مواد' },
         branches: [
           new EducationSubjectConfigurationModel.example.branches[0].constructor({
@@ -18,9 +18,9 @@ describe('EducationSubjectConfigurationModel', () => {
         ],
       });
 
-      expect(model.educationClassificatioId).toBe(1);
+      expect(model.educationClassification.id).toBe(1);
       expect(model.numberOfBranches).toBe(2);
-      expect(model.SingularTitle.en).toBe('Subject');
+      expect(model.SingluarTitle.en).toBe('Subject');
       expect(model.branches).toHaveLength(1);
     });
   });
@@ -28,38 +28,33 @@ describe('EducationSubjectConfigurationModel', () => {
   describe('fromJson', () => {
     it('should parse API JSON correctly', () => {
       const json = {
-        education_classification_id: 2,
+        education_classification: { id: 2, title: 'Configuration' },
         number_of_branches: 2,
-        translation: {
-          SingularTitle: { en: 'Subject', ar: 'مادة' },
-          PluralTitle: { en: 'Subjects', ar: 'مواد' },
-        },
+        singular_title: 'Subject',
+        plural_title: 'Subjects',
         branches: [
           {
-            level_number: 1,
-            translation: {
-              SingularTitle: { en: 'Part', ar: 'جزء' },
-              PluralTitle: { en: 'Parts', ar: 'اجزاء' },
-            },
+            singular_title: [{ locale: 'en', singular_title: 'Part' }],
+            plural_title: [{ locale: 'en', plural_title: 'Parts' }],
           },
           {
-            level_number: 2,
-            translation: {
-              SingularTitle: { en: 'Unit', ar: 'وحدة' },
-              PluralTitle: { en: 'Units', ar: 'وحدات' },
-            },
+            singular_title: [{ locale: 'en', singular_title: 'Unit' }],
+            plural_title: [{ locale: 'en', plural_title: 'Units' }],
           },
         ],
       };
 
       const model = EducationSubjectConfigurationModel.fromJson(json);
 
-      expect(model.educationClassificatioId).toBe(2);
+      expect(model.educationClassification.id).toBe(2);
       expect(model.numberOfBranches).toBe(2);
-      expect(model.SingularTitle).toEqual({ en: 'Subject', ar: 'مادة' });
-      expect(model.pluralTitle).toEqual({ en: 'Subjects', ar: 'مواد' });
+      expect(model.SingluarTitle).toEqual({ en: 'Subject' });
+      expect(model.pluralTitle).toEqual({ en: 'Subjects' });
       expect(model.branches).toHaveLength(2);
       expect(model.branches[0].levelNumber).toBe(1);
+      expect(model.branches[0].singularTitle).toEqual({ en: 'Part' });
+      expect(model.branches[1].levelNumber).toBe(2);
+      expect(model.branches[1].singularTitle).toEqual({ en: 'Unit' });
     });
 
     it('should default translation to empty objects when missing', () => {
@@ -70,7 +65,7 @@ describe('EducationSubjectConfigurationModel', () => {
 
       const model = EducationSubjectConfigurationModel.fromJson(json);
 
-      expect(model.SingularTitle).toEqual({});
+      expect(model.SingluarTitle).toEqual({});
       expect(model.pluralTitle).toEqual({});
       expect(model.branches).toEqual([]);
     });
@@ -89,16 +84,16 @@ describe('EducationSubjectConfigurationModel', () => {
       expect(ex).toBeInstanceOf(EducationSubjectConfigurationModel);
       expect(ex.numberOfBranches).toBe(2);
       expect(ex.branches).toHaveLength(2);
-      expect(ex.SingularTitle.en).toBe('title 1 ');
+      expect(ex.SingluarTitle.en).toBe('title 1 ');
     });
   });
 
   describe('immutability', () => {
     it('should be frozen', () => {
       const model = new EducationSubjectConfigurationModel({
-        educationClassificatioId: 1,
+        educationClassification: EducationSubjectConfigurationModel.example.educationClassification,
         numberOfBranches: 0,
-        SingularTitle: { en: 'X', ar: 'X' },
+        SingluarTitle: { en: 'X', ar: 'X' },
         pluralTitle: { en: 'Xs', ar: 'Xs' },
         branches: [],
       });

@@ -43,14 +43,15 @@
 
   const subjectBranchLevelLabels = computed<Record<number, string>>(() => {
     const lang = locale.value === 'ar' ? 'ar' : 'en';
-    return Object.fromEntries(
-      (subjectConfig.value?.[0]?.branches ?? []).map((branch) => [
-        branch.levelNumber,
-        branch.singularTitle[lang] ??
-          branch.singularTitle.en ??
-          `Level ${branch.levelNumber}`,
-      ]),
-    );
+    return {
+      0: getSubjectRootName(),
+      ...Object.fromEntries(
+        (subjectConfig.value?.[0]?.branches ?? []).map((branch) => [
+          branch.levelNumber,
+          branch.singularTitle[lang] ?? branch.singularTitle.en ?? `Level ${branch.levelNumber}`,
+        ]),
+      ),
+    };
   });
 
   function getSubjectBranchName(depth: number): string {
@@ -63,7 +64,12 @@
     const config = subjectConfig.value;
     if (!config || config.length === 0) return 'Subject';
     const firstConfig = config[0];
-    return firstConfig?.SingluarTitle?.[lang] ?? firstConfig?.SingluarTitle?.['en'] ?? 'Subject';
+    return (
+      firstConfig?.SingluarTitle?.[lang] ??
+      firstConfig?.SingluarTitle?.en ??
+      Object.values(firstConfig?.SingluarTitle ?? {}).find(Boolean) ??
+      'Subject'
+    );
   }
 
   function makeNode(subject: EducationSubjectModel, depth: number): SubjectNode {

@@ -81,6 +81,12 @@ describe('StageTreeNode', () => {
     expect(wrapper.find('.node-name').text()).toBe(mockNode.stage.stage_title);
   });
 
+  it('renders the configured singular title for the root stage', () => {
+    const wrapper = mountComponent({ levelLabels: { 1: 'New' } });
+
+    expect(wrapper.get('.level-label').text()).toBe('New');
+  });
+
   it('calls onSelect and handleToggle when row is clicked', async () => {
     const wrapper = mountComponent();
     await wrapper.find('.node-row').trigger('click');

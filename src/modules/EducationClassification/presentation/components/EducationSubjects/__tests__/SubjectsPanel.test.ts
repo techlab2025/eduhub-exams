@@ -208,6 +208,7 @@ describe('SubjectsPanel', () => {
     await flushPromises();
 
     expect(wrapper.getComponent({ name: 'SubjectTreeNode' }).props('levelLabels')).toEqual({
+      0: 'Subject',
       1: 'Unit',
     });
   });

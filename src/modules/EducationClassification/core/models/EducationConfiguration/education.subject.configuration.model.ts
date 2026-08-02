@@ -30,21 +30,28 @@ export default class EducationSubjectConfigurationModel {
     }
 
     return new EducationSubjectConfigurationModel({
-      pluralTitle: EducationSubjectConfigurationModel.normalizeLocaleField(json.plural_title, 'plural_title'),
-      SingluarTitle: EducationSubjectConfigurationModel.normalizeLocaleField(json.singular_title, 'singular_title'),
+      pluralTitle: EducationSubjectConfigurationModel.normalizeLocaleField(
+        json.plural_title,
+        'plural_title',
+      ),
+      SingluarTitle: EducationSubjectConfigurationModel.normalizeLocaleField(
+        json.singular_title,
+        'singular_title',
+      ),
       educationClassification: json.education_classification,
       numberOfBranches: json.number_of_branches,
       branches:
-        (json.branches as Record<string, unknown>[])?.map((branch: Record<string, unknown>) =>
-          ConfigurationBranchesModel.fromJson(branch),
+        (json.branches as Record<string, unknown>[])?.map(
+          (branch: Record<string, unknown>, index: number) =>
+            ConfigurationBranchesModel.fromJson({
+              ...branch,
+              level_number: branch.level_number ?? branch.levelNumber ?? index + 1,
+            }),
         ) || [],
     });
   }
 
-  private static normalizeLocaleField(
-    raw: unknown,
-    valueKey: string,
-  ): Record<string, string> {
+  private static normalizeLocaleField(raw: unknown, valueKey: string): Record<string, string> {
     if (Array.isArray(raw)) {
       return (raw as Array<Record<string, string>>).reduce(
         (acc, item) => {
@@ -54,6 +61,7 @@ export default class EducationSubjectConfigurationModel {
         {} as Record<string, string>,
       );
     }
+    if (typeof raw === 'string') return { en: raw };
     if (raw && typeof raw === 'object') return raw as Record<string, string>;
     return {};
   }

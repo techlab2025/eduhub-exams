@@ -226,8 +226,11 @@
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
       </svg>
 
-      <span v-if="node.depth > 0" class="level-label">
-        {{ levelLabels[node.depth] ?? `${$t('branch')} ${node.depth}` }}
+      <span class="level-label">
+        {{
+          levelLabels[node.depth] ??
+          (node.depth === 0 ? $t('subject') : `${$t('branch')} ${node.depth}`)
+        }}
       </span>
 
       <span class="node-name" :class="{ 'rtl-text': isArabic(node.subject.subject_title) }">
@@ -243,7 +246,7 @@
         </svg>
       </button>
 
-      <button class="icon-btn" @click.stop> 
+      <button class="icon-btn" @click.stop>
         <DropList
           :action-list="actionList(node.subject.subject_id)"
           :delete-dialog-title="$t('are_you_sure_you_want_to_remove_this_education_classification')"
@@ -283,7 +286,7 @@
       </div>
     </transition>
     <PricingDialog
-      v-model:visible="showPricingDialog" 
+      v-model:visible="showPricingDialog"
       :level="node.depth + 1"
       :branch-name="node.subject.subject_title"
       :branch-id="node.subject.subject_id"
