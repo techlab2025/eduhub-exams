@@ -44,6 +44,7 @@ vi.mock('@/modules/EducationClassification/subComponent/EducationTree/AddBranchD
   default: {
     name: 'AddBranchDialog',
     template: '<div class="add-branch-dialog"></div>',
+    props: ['branchName', 'level'],
   },
 }));
 
@@ -222,5 +223,39 @@ describe('SubjectsPanel', () => {
       0: 'Subject',
       1: 'Unit',
     });
+  });
+
+  it('uses the same configured level name when a subject node opens the branch dialog', async () => {
+    mockConfigController.fetchList.mockResolvedValue(
+      new DataSuccess<EducationSubjectConfigurationModel[]>({
+        data: [
+          {
+            numberOfBranches: 1,
+            branches: [{ levelNumber: 1, singularTitle: { en: 'Unit' } }],
+            SingluarTitle: { en: 'Subject' },
+          } as unknown as EducationSubjectConfigurationModel,
+        ],
+      }),
+    );
+    mockItemController.fetchList.mockResolvedValue(
+      new DataSuccess<EducationSubjectModel[]>({
+        data: [
+          {
+            subject_id: 1,
+            subject_title: 'Math',
+            has_children: false,
+          } as EducationSubjectModel,
+        ],
+      }),
+    );
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    wrapper.getComponent({ name: 'SubjectTreeNode' }).vm.$emit('add-child', 1, 1);
+    await wrapper.vm.$nextTick();
+
+    const dialog = wrapper.getComponent({ name: 'AddBranchDialog' });
+    expect(dialog.props('level')).toBe(1);
+    expect(dialog.props('branchName')).toBe('Unit');
   });
 });

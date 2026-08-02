@@ -117,7 +117,7 @@
   function openAddChildDialog(stageId: number, level: number) {
     branchDialogParentId.value = stageId;
     branchDialogLevel.value = level;
-    branchDialogName.value = getBranchName(level - 1);
+    branchDialogName.value = branchLevelLabels.value[level] ?? `Branch ${level}`;
     showAddBranchDialog.value = true;
   }
 
@@ -393,7 +393,7 @@
               <button
                 v-if="child.depth + 1 < (maxDepth ?? 0)"
                 class="icon-btn"
-                @click="openAddChildDialog(child.stage.stage_id, child.depth + 3)"
+                @click="openAddChildDialog(child.stage.stage_id, child.depth + 2)"
               >
                 <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
                   <circle cx="10" cy="10" r="8" stroke="#4caf50" stroke-width="1.4" />

@@ -91,7 +91,7 @@
   }
 
   function handleAddChild() {
-    emit('add-child', props.node.subject.subject_id, props.node.depth + 2);
+    emit('add-child', props.node.subject.subject_id, props.node.depth + 1);
   }
 
   function onChildFetch(parentId: number, callback: (children: SubjectNode[]) => void) {

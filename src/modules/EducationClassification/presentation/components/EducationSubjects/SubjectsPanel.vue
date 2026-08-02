@@ -54,11 +54,6 @@
     };
   });
 
-  function getSubjectBranchName(depth: number): string {
-    const levelNumber = depth + 1;
-    return subjectBranchLevelLabels.value[levelNumber] ?? `Level ${levelNumber}`;
-  }
-
   function getSubjectRootName(): string {
     const lang = locale.value === 'ar' ? 'ar' : 'en';
     const config = subjectConfig.value;
@@ -122,7 +117,7 @@
   function openAddChildDialog(subjectId: number, level: number) {
     branchDialogParentId.value = subjectId;
     branchDialogLevel.value = level;
-    branchDialogName.value = getSubjectBranchName(level - 1);
+    branchDialogName.value = subjectBranchLevelLabels.value[level] ?? `Level ${level}`;
     showAddBranchDialog.value = true;
   }
 
