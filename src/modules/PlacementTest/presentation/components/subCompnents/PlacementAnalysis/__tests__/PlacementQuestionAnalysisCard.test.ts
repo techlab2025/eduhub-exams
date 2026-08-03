@@ -5,6 +5,7 @@ import en from '@/locales/en.json';
 import { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
 import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
 import ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
+import AnswerModel from '@/modules/Questions/core/models/subModels/answer.model';
 import PlacementQuestionAnalysisCard from '../PlacementQuestionAnalysisCard.vue';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en } });
@@ -14,11 +15,14 @@ describe('PlacementQuestionAnalysisCard', () => {
     const question = new ShowQuestionsModel({
       id: 1,
       questionTitle: 'Question title',
-      question_description: 'Question details',
       questionType: QuestionTypeEnum.mcq,
       difficulty: QuestionDifficultyEnum.hard,
       correctStatus: 0,
       note: 'High',
+      answers: [new AnswerModel({ id: 1, answer: 'Heart', is_right_answer: true })],
+      questionLogHistory: [
+        { time: '5:15 PM', status: 'Submit', createdBy: 'First Answer (Heart)' },
+      ],
     });
 
     const wrapper = mount(PlacementQuestionAnalysisCard, {
@@ -31,6 +35,9 @@ describe('PlacementQuestionAnalysisCard', () => {
     expect(wrapper.text()).toContain('1min : 20s');
     expect(wrapper.text()).toContain('High');
     await wrapper.get('button').trigger('click');
-    expect(wrapper.text()).toContain('Question details');
+    expect(wrapper.text()).toContain('Heart');
+    expect(wrapper.text()).toContain('Correct Answer');
+    expect(wrapper.text()).toContain('History Log');
+    expect(wrapper.text()).toContain('First Answer (Heart)');
   });
 });

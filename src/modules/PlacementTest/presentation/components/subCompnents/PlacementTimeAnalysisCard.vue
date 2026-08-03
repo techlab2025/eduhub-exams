@@ -130,8 +130,10 @@ import Iconalert from '@/shared/icons/Iconalert.vue';
       }
 
       strong {
-        color: var(--gray-700);
-        font-size: var(--xs-size);
+        color: var(--table-data-color);
+        font-size: var(--md-size);
+        font-family: 'demi';
+        font-weight: 600;
       }
     }
 
@@ -169,8 +171,10 @@ import Iconalert from '@/shared/icons/Iconalert.vue';
 
     &__label,
     &__passed span {
-      color: var(--gray-600);
-      font-size: var(--xs-size-2);
+      color: var(--title-header-color);
+      font-size: var(--sm-size);
+      font-family: 'medium';
+      font-weight: 500;
     }
 
     &__passed {
@@ -179,10 +183,10 @@ import Iconalert from '@/shared/icons/Iconalert.vue';
       justify-content: space-between;
       min-height: 72px;
       margin-top: 14px;
-      padding: 12px 14px;
+      padding: 20px 14px;
       background: var(--warning-light);
-      border: 1px solid var(--warning);
-      border-radius: var(--radius-md);
+      border: 1px solid rgba(242, 213, 156, 1);
+      border-radius: var(--md-size);
 
       > div {
         display: flex;
@@ -191,8 +195,10 @@ import Iconalert from '@/shared/icons/Iconalert.vue';
       }
 
       strong {
-        color: var(--warning-dark);
-        font-size: var(--xs-size);
+        color: var(--btn-gold);
+        font-size: var(--md-size);
+        font-family: 'demi';
+        font-weight: 600;
       }
 
       > svg {

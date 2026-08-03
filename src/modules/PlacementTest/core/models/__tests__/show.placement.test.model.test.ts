@@ -35,8 +35,11 @@ describe('ShowPlcaementTestModel', () => {
     expect(example.SkillsAnalysis).toHaveLength(6);
     expect(example.MostImportantSkillsAnalysis).toHaveLength(3);
     expect(example.NeedDevelopSkillsAnalysis).toHaveLength(3);
-    expect(example.quesions).toHaveLength(3);
+    expect(example.quesions).toHaveLength(4);
     expect(example.quesions?.[0]?.topics).toHaveLength(5);
     expect(example.quesions?.[0]?.topics?.map((topic) => topic.subtitle)).toEqual([1, 3, 2, 3, 1]);
+    expect(example.quesions?.[0]?.answers).toHaveLength(4);
+    expect(example.quesions?.[0]?.questionLogHistory).toHaveLength(4);
+    expect(example.quesions?.[3]?.questions).toHaveLength(3);
   });
 });

@@ -89,11 +89,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 8px; 
       min-height: 48px;
-      color: var(--gray-600);
-      font-family: var(--font-family);
-      font-size: var(--sm-size);
+      color: var(--table-header-color);
+      font-family: 'demi';
+      font-size: var(--md-size);
       font-weight: 600;
       cursor: pointer;
       background: var(--gray-200);

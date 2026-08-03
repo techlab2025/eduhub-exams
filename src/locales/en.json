@@ -717,6 +717,11 @@
     "hesitation": "Hesitation",
     "article_question": "Article Question",
     "article_id": "Id",
-    "number_questions": "Number Of Questions"
+    "number_questions": "Number Of Questions",
+    "answer_number": "Answer {number}",
+    "correct_answer_label": "Correct Answer",
+    "history_log": "History Log",
+    "no_answer_data": "No answers available",
+    "no_history_data": "No history available"
   }
 }

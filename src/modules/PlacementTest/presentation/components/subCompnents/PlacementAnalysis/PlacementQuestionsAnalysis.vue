@@ -95,9 +95,10 @@
       min-height: 64px;
       margin: 0 0 22px;
       padding: 0 16px;
-      color: var(--gray-800);
-      font-family: var(--font-family);
-      font-size: var(--md-size);
+      color: var(--color-gray-soft-1);
+      font-family: 'demi';
+      font-size: var(--md-size-2);
+      font-weight: 600;
       background: var(--gray-200);
       border-radius: var(--radius-md);
 

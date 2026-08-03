@@ -20,7 +20,7 @@
 <template>
   <section class="placement-exam-card" aria-labelledby="placement-exam-title">
     <div class="placement-exam-card__content">
-      <span class="placement-exam-card__id"> {{ t('placement_test.id') }}: Ex-{{ placementTest.id }} </span>
+      <span class="placement-exam-card__id"><span> {{ t('placement_test.id') }}</span>: {{ placementTest.id }} </span>
 
       <div class="placement-exam-card__details">
         <h2 id="placement-exam-title">{{ t('placement_test.exam') }}</h2>
@@ -61,10 +61,18 @@
       min-width: 0;
     }
 
+   
     &__id {
-      color: var(--gray-500);
-      font-size: var(--xs-size);
+      color: black;
+      font-size: var(--sm-size);
+      font-weight: 600;
+      font-family: 'Demi';
+        span{
+     
+       color: var(--title-header-color);
     }
+    }
+   
 
     &__details {
       display: flex;
@@ -76,9 +84,9 @@
     h2 {
       margin: 0;
       color: var(--gray-900);
-      font-family: var(--font-family);
+      font-family: 'demi';
       font-size: var(--sm-size);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     &__separator {
@@ -87,12 +95,15 @@
     }
 
     &__detail {
-      color: var(--gray-700);
-      font-size: var(--xs-size);
+      color: var(--table-data-color);
+      font-size: var(--sm-size);
+      font-family: 'demi';
 
       &--primary {
         color: var(--PrimaryColor);
-        font-weight: 600;
+        font-weight: 700;
+        font-family: 'Bold';
+        font-size: var(--sm-size);
       }
     }
 

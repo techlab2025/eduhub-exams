@@ -122,6 +122,7 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 12px;
     }
 
@@ -132,19 +133,20 @@
     }
 
     h2 {
-      max-width: 170px;
+      // max-width: 170px;
       margin: 0;
-      color: var(--gray-900);
-      font-family: var(--font-family);
+      color: var(--title-card-color);
+      font-family: 'Demi';
       font-size: var(--sm-size);
-      font-weight: 700;
+      font-weight: 600;
       line-height: 1.5;
     }
 
     &__rate {
       padding: 7px 14px;
       color: var(--success);
-      font-size: var(--xs-size);
+      font-size: var(--md-size);
+      font-family: 'Demi';
       font-weight: 600;
       background: var(--success-light);
       border-radius: var(--radius-full);
@@ -229,8 +231,8 @@
       border-radius: var(--radius-sm);
 
       span {
-        color: var(--gray-600);
-        font-size: var(--xs-size-2);
+        color: var(--table-data-color);
+        font-size: var(--sm-size);
 
         &::before {
           display: inline-block;

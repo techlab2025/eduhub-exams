@@ -316,6 +316,11 @@
     "hesitation": "التردد",
     "article_question": "سؤال المقال",
     "article_id": "المعرّف",
-    "number_questions": "عدد الأسئلة"
+    "number_questions": "عدد الأسئلة",
+    "answer_number": "الإجابة {number}",
+    "correct_answer_label": "الإجابة الصحيحة",
+    "history_log": "سجل النشاط",
+    "no_answer_data": "لا توجد إجابات",
+    "no_history_data": "لا يوجد سجل نشاط"
   }
 }

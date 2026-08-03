@@ -4,6 +4,7 @@
   import { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
   import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
   import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
+  import PlacementQuestionAnswerDetails from './PlacementQuestionAnswerDetails.vue';
 
   defineProps<{
     question: ShowQuestionsModel;
@@ -58,13 +59,6 @@
         <span>{{ getDifficulty(question.difficulty) }}</span>
       </div>
       <strong>{{ question.questionTitle ?? question.question ?? '—' }}</strong>
-
-      <div v-if="expanded" class="question-analysis-card__details">
-        <p v-if="question.question_description">{{ question.question_description }}</p>
-        <span v-if="question.answers?.length">
-          {{ t('placement_test.answers_count', { count: question.answers.length }) }}
-        </span>
-      </div>
     </div>
 
     <div class="question-analysis-card__metric">
@@ -88,6 +82,12 @@
         <path d="m7 10 5 5 5-5" />
       </svg>
     </button>
+
+    <PlacementQuestionAnswerDetails
+      v-if="expanded"
+      class="question-analysis-card__details"
+      :question="question"
+    />
   </article>
 </template>
 
@@ -168,14 +168,8 @@
     }
 
     &__details {
-      margin-top: 12px;
-      padding-top: 10px;
-      color: var(--gray-600);
-      border-top: 1px solid var(--border-weak);
-
-      p {
-        margin: 4px 0;
-      }
+      grid-column: 1 / -1;
+      margin-top: 2px;
     }
 
     &__metric {
