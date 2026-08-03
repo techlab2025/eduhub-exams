@@ -1,16 +1,10 @@
-import TitleInterface from "@/base/Data/Models/titleInterface";
-
+import TitleInterface from '@/base/Data/Models/titleInterface';
 
 export default class PlacementSkillAnalysisModel {
   public readonly skill?: TitleInterface<number>;
   public readonly precentage?: number;
 
-
-  constructor(data: {
-    skill?:  TitleInterface<number>;
-    precentage?: number;
-
-  }) {
+  constructor(data: { skill?: TitleInterface<number>; precentage?: number }) {
     this.skill = data.skill;
     this.precentage = data.precentage;
   }
@@ -23,12 +17,11 @@ export default class PlacementSkillAnalysisModel {
     return new PlacementSkillAnalysisModel({
       skill: json.skill,
       precentage: json.precentage,
-
     });
   }
 
   static example: PlacementSkillAnalysisModel = new PlacementSkillAnalysisModel({
-    skill: TitleInterface.example,
-    precentage: 120,
+    skill: new TitleInterface({ id: 1, title: 'Understanding' }),
+    precentage: 90,
   });
 }
