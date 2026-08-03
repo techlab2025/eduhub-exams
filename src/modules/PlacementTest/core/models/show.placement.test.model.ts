@@ -8,6 +8,9 @@ import PlacemntDifficultyLevelModel from './subModels/placment.difificulty.level
 import PlacementSkillAnalysisModel from './subModels/placment.skill.analysis.model';
 import ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
 import PlacemntAllocationModel from './subModels/placementallocation.model';
+import TitleInterface from '@/base/Data/Models/titleInterface';
+import { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
+import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
 
 export default class ShowPlcaementTestModel {
   public readonly id?: number;
@@ -120,12 +123,137 @@ export default class ShowPlcaementTestModel {
     EducationClassificationBranch: EducationClassificationBranchModel.example,
     resultAnalysis: ResultAnalysisModel.example,
     timeAnalysis: TimeAnalysisModel.example,
-    questionAnswerAnalysis: [QuestionAnswerAnalysisModel.example],
+    questionAnswerAnalysis: [
+      new QuestionAnswerAnalysisModel({
+        question: new TitleInterface({ id: 1, title: 'Anatomy question one' }),
+        questionAnswerDuration: 80,
+      }),
+      new QuestionAnswerAnalysisModel({
+        question: new TitleInterface({ id: 2, title: 'Anatomy question two' }),
+        questionAnswerDuration: 65,
+      }),
+      new QuestionAnswerAnalysisModel({
+        question: new TitleInterface({ id: 3, title: 'Anatomy question three' }),
+        questionAnswerDuration: 95,
+      }),
+    ],
     questionsAnsweredDifficultyLevel: [PlacemntDifficultyLevelModel.example],
-    SkillsAnalysis: [PlacementSkillAnalysisModel.example],
-    MostImportantSkillsAnalysis: [PlacementSkillAnalysisModel.example],
-    NeedDevelopSkillsAnalysis: [PlacementSkillAnalysisModel.example],
-    quesions: [ShowQuestionsModel.example],
+    SkillsAnalysis: [
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 1, title: 'Understanding' }),
+        precentage: 90,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 2, title: 'Application' }),
+        precentage: 10,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 3, title: 'Proficient' }),
+        precentage: 40,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 4, title: 'Struggling' }),
+        precentage: 20,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 5, title: 'Assessment' }),
+        precentage: 80,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 6, title: 'Creativity' }),
+        precentage: 30,
+      }),
+    ],
+    MostImportantSkillsAnalysis: [
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 1, title: 'Understanding' }),
+        precentage: 90,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 5, title: 'Assessment' }),
+        precentage: 80,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 3, title: 'Proficient' }),
+        precentage: 40,
+      }),
+    ],
+    NeedDevelopSkillsAnalysis: [
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 2, title: 'Application' }),
+        precentage: 10,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 4, title: 'Struggling' }),
+        precentage: 20,
+      }),
+      new PlacementSkillAnalysisModel({
+        skill: new TitleInterface({ id: 6, title: 'Creativity' }),
+        precentage: 30,
+      }),
+    ],
+    quesions: [
+      new ShowQuestionsModel({
+        id: 1,
+        questionTitle: 'Which structure forms the outer layer of a cell?',
+        questionType: QuestionTypeEnum.mcq,
+        difficulty: QuestionDifficultyEnum.hard,
+        correctStatus: 1,
+        note: 'High',
+        subjectTree: new TitleInterface({
+          id: 1,
+          title: 'The Human Body',
+          full_title:
+            'Unit1:The Human Body / Chapter1: Introduction To Anatomy / Lesson1: Cell Structure',
+        }),
+        topics: [
+          new TitleInterface({ id: 11, title: 'Topic1: Epithelial Tissue', subtitle: 1 }),
+          new TitleInterface({ id: 12, title: 'Topic2: Connective Tissue', subtitle: 3 }),
+          new TitleInterface({ id: 13, title: 'Topic3: Muscle Tissue', subtitle: 2 }),
+          new TitleInterface({ id: 14, title: 'Topic4: Nervous Tissue', subtitle: 3 }),
+          new TitleInterface({ id: 15, title: 'Topic5: Cell Membrane', subtitle: 1 }),
+        ],
+      }),
+      new ShowQuestionsModel({
+        id: 2,
+        questionTitle: 'What is the primary function of epithelial tissue?',
+        questionType: QuestionTypeEnum.mcq,
+        difficulty: QuestionDifficultyEnum.medium,
+        correctStatus: 0,
+        note: 'Medium',
+        subjectTree: new TitleInterface({
+          id: 2,
+          title: 'The Human Body',
+          full_title:
+            'Unit1:The Human Body / Chapter1: Introduction To Anatomy / Lesson1: Cell Structure',
+        }),
+        topics: [
+          new TitleInterface({ id: 21, title: 'Topic1: Epithelial Tissue', subtitle: 3 }),
+          new TitleInterface({ id: 22, title: 'Topic2: Tissue Functions', subtitle: 1 }),
+        ],
+      }),
+      new ShowQuestionsModel({
+        id: 3,
+        questionTitle: 'Which tissue is responsible for body movement?',
+        questionType: QuestionTypeEnum.true_false,
+        difficulty: QuestionDifficultyEnum.easy,
+        correctStatus: 1,
+        note: 'Low',
+        subjectTree: new TitleInterface({
+          id: 3,
+          title: 'The Human Body',
+          full_title:
+            'Unit1:The Human Body / Chapter1: Introduction To Anatomy / Lesson1: Cell Structure',
+        }),
+        topics: [
+          new TitleInterface({ id: 31, title: 'Topic1: Muscle Tissue', subtitle: 2 }),
+          new TitleInterface({ id: 32, title: 'Topic2: Skeletal Tissue', subtitle: 2 }),
+          new TitleInterface({ id: 33, title: 'Topic3: Nervous Tissue', subtitle: 1 }),
+          new TitleInterface({ id: 34, title: 'Topic4: Connective Tissue', subtitle: 3 }),
+          new TitleInterface({ id: 35, title: 'Topic5: Cell Structure', subtitle: 1 }),
+        ],
+      }),
+    ],
     createdAt: '2026-08-03T10:29:01',
     allocation: PlacemntAllocationModel.example,
   });

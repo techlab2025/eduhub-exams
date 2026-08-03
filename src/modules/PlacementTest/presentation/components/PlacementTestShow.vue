@@ -9,6 +9,7 @@
   import PlacementResultAnalysisCard from './subCompnents/PlacementResultAnalysisCard.vue';
   import PlacementTimeAnalysisCard from './subCompnents/PlacementTimeAnalysisCard.vue';
   import PlacementQuestionTimeChart from './subCompnents/PlacementQuestionTimeChart.vue';
+  import PlacementAnalysisTabs from './subCompnents/PlacementAnalysisTabs.vue';
 
   const controller = PlacementTestController.getInstance();
   const state = computed(() => controller.itemState.value);
@@ -40,6 +41,7 @@
           <PlacementTimeAnalysisCard :placement-test="data" />
         </div>
         <PlacementQuestionTimeChart :placement-test="data" />
+        <PlacementAnalysisTabs :placement-test="data" />
       </div>
     </template>
   </DataStatusBuilder>
