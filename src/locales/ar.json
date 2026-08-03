@@ -256,5 +256,28 @@
     "created_at": "تاريخ الإنشاء",
     "manual": "يدوي",
     "ai": "الذكاء الاصطناعي"
+  },
+  "placement_test": {
+    "id": "المعرّف",
+    "exam": "اختبار تحديد المستوى",
+    "response_performance": "تحليل أداء الإجابات",
+    "excellent": "ممتاز",
+    "good": "جيد",
+    "result": "النتيجة",
+    "result_percentage": "النتيجة: {percentage}%",
+    "correct": "صحيح",
+    "wrong": "خطأ",
+    "skipped": "تم تخطيه",
+    "question_short": "س",
+    "real_time_analysis": "تحليل الوقت الفعلي",
+    "start_time": "وقت البدء",
+    "end_time": "وقت الانتهاء",
+    "exam_time": "مدة الاختبار",
+    "actual_duration": "المدة الفعلية",
+    "time_passed": "الوقت الإضافي",
+    "minutes_value": "{value} دقيقة",
+    "am": "ص",
+    "pm": "م",
+    "min": "دقائق"
   }
 }

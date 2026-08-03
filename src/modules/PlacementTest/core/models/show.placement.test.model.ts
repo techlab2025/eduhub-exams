@@ -23,6 +23,7 @@ export default class ShowPlcaementTestModel {
   public readonly MostImportantSkillsAnalysis?: PlacementSkillAnalysisModel[];
   public readonly NeedDevelopSkillsAnalysis?: PlacementSkillAnalysisModel[];
   public readonly quesions?: ShowQuestionsModel[];
+  public readonly createdAt?: string;
 
   constructor(data: {
     id?: number;
@@ -39,6 +40,7 @@ export default class ShowPlcaementTestModel {
     MostImportantSkillsAnalysis?: PlacementSkillAnalysisModel[];
     NeedDevelopSkillsAnalysis?: PlacementSkillAnalysisModel[];
     quesions?: ShowQuestionsModel[];
+    createdAt?: string;
   }) {
     this.id = data.id;
     this.student = data.student;
@@ -54,7 +56,7 @@ export default class ShowPlcaementTestModel {
     this.MostImportantSkillsAnalysis = data.MostImportantSkillsAnalysis;
     this.NeedDevelopSkillsAnalysis = data.NeedDevelopSkillsAnalysis;
     this.quesions = data.quesions;
-
+    this.createdAt = data.createdAt;
     Object.freeze(this);
   }
 
@@ -102,6 +104,7 @@ export default class ShowPlcaementTestModel {
       quesions: json.quesions
         ? json.quesions.map((item: any) => ShowQuestionsModel.fromJson(item))
         : undefined,
+      createdAt: json.created_at,
     });
   }
 
@@ -118,5 +121,6 @@ export default class ShowPlcaementTestModel {
     MostImportantSkillsAnalysis: [PlacementSkillAnalysisModel.example],
     NeedDevelopSkillsAnalysis: [PlacementSkillAnalysisModel.example],
     quesions: [ShowQuestionsModel.example],
+    createdAt: '2026-08-03T10:29:01',
   });
 }
