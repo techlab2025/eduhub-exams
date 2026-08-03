@@ -1,5 +1,4 @@
-import  { PlacementTotalRateEnum } from "../../constant/placment.total.rate.enum";
-
+import { PlacementTotalRateEnum } from '../../constant/placment.total.rate.enum';
 
 export default class ResultAnalysisModel {
   public readonly correct?: number;
@@ -31,7 +30,7 @@ export default class ResultAnalysisModel {
       correct: json.correct,
       wrong: json.wrong,
       Skipped: json.Skipped,
-      totalRate: json.totalRate,
+      totalRate: json.total_rate ?? json.totalRate,
       precentage: json.precentage,
     });
   }
