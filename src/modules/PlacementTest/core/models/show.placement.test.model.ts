@@ -7,6 +7,7 @@ import QuestionAnswerAnalysisModel from './subModels/question.answer.analysis.mo
 import PlacemntDifficultyLevelModel from './subModels/placment.difificulty.level.model';
 import PlacementSkillAnalysisModel from './subModels/placment.skill.analysis.model';
 import ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
+import PlacemntAllocationModel from './subModels/placementallocation.model';
 
 export default class ShowPlcaementTestModel {
   public readonly id?: number;
@@ -24,6 +25,7 @@ export default class ShowPlcaementTestModel {
   public readonly NeedDevelopSkillsAnalysis?: PlacementSkillAnalysisModel[];
   public readonly quesions?: ShowQuestionsModel[];
   public readonly createdAt?: string;
+  public readonly allocation?: PlacemntAllocationModel;
 
   constructor(data: {
     id?: number;
@@ -41,6 +43,7 @@ export default class ShowPlcaementTestModel {
     NeedDevelopSkillsAnalysis?: PlacementSkillAnalysisModel[];
     quesions?: ShowQuestionsModel[];
     createdAt?: string;
+    allocation?: PlacemntAllocationModel;
   }) {
     this.id = data.id;
     this.student = data.student;
@@ -57,6 +60,7 @@ export default class ShowPlcaementTestModel {
     this.NeedDevelopSkillsAnalysis = data.NeedDevelopSkillsAnalysis;
     this.quesions = data.quesions;
     this.createdAt = data.createdAt;
+    this.allocation = data.allocation;
     Object.freeze(this);
   }
 
@@ -105,6 +109,7 @@ export default class ShowPlcaementTestModel {
         ? json.quesions.map((item: any) => ShowQuestionsModel.fromJson(item))
         : undefined,
       createdAt: json.created_at,
+      allocation: json.allocation ? PlacemntAllocationModel.fromJson(json.allocation) : undefined,
     });
   }
 
@@ -122,5 +127,6 @@ export default class ShowPlcaementTestModel {
     NeedDevelopSkillsAnalysis: [PlacementSkillAnalysisModel.example],
     quesions: [ShowQuestionsModel.example],
     createdAt: '2026-08-03T10:29:01',
+    allocation: PlacemntAllocationModel.example,
   });
 }

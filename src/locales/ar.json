@@ -278,6 +278,15 @@
     "minutes_value": "{value} دقيقة",
     "am": "ص",
     "pm": "م",
-    "min": "دقائق"
+    "min": "دقائق",
+    "time_allocation_each_question": "الوقت المخصص لكل سؤال",
+    "seconds_short": "ث",
+    "question_number_short": "س{number}",
+    "question_time_label": "السؤال {number}: {seconds} ثانية",
+    "no_question_time_data": "لا توجد بيانات لوقت الأسئلة",
+    "questions_answered_difficulty": "الأسئلة المجابة حسب مستوى الصعوبة",
+    "easy": "سهل",
+    "medium": "متوسط",
+    "hard": "صعب"
   }
 }

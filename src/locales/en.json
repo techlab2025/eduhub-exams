@@ -679,6 +679,15 @@
     "minutes_value": "{value} Min",
     "am": "AM",
     "pm": "PM",
-    "min": "min"
+    "min": "min",
+    "time_allocation_each_question": "Time Allocation For Each Question",
+    "seconds_short": "s",
+    "question_number_short": "{number}Q",
+    "question_time_label": "Question {number}: {seconds} seconds",
+    "no_question_time_data": "No question time data available",
+    "questions_answered_difficulty": "Questions Answered by Difficulty Level",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
   }
 }
