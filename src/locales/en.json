@@ -603,7 +603,7 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "draft": "Draft",
-      "under_review": "Under Review",
+      "under_review": "Not Review",
       "archived": "Archived",
       "revision": "Revision Required",
       "unknown": "Unknown"
