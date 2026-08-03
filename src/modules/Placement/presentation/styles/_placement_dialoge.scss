@@ -1,0 +1,41 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins/flex' as *;
+
+.p-dialog {
+  &.placement-dialog {
+    background: $StandardWhite !important;
+    border-radius: var($MdSize);
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Medium';
+
+    .input-label label {
+      color: var(--Gray-5) !important;
+      font-size: var($MdSize);
+    }
+
+    .dialog-footer {
+      width: 100%;
+      padding-block: $XsSize3;
+      button {
+        width: 100%;
+      }
+    }
+  }
+  font-family: 'Regular';
+  .dialog-header-text {
+    @include flex-column(nowrap, flex-start, flex-start);
+  }
+
+  .dialog-content {
+    @include flex-column(nowrap, center, center);
+    padding: $XlSize !important;
+    gap: $XsSize2;
+    .dialog-title {
+      font-size: $MdSize;
+      color: $StandardBlack;
+      line-height: 1.4;
+      text-align: center;
+    }
+  }
+}

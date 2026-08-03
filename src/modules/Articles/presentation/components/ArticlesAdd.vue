@@ -59,7 +59,7 @@
         return;
       }
 
-      localStorage.setItem('article-draft', JSON.stringify(params.value));
+      // localStorage.setItem('article-draft', JSON.stringify(params.value));
       params.value.status = QuestionStatusEnum.DRAFT;
       await controller.create(params.value, undefined, formKey);
     } catch (error) {

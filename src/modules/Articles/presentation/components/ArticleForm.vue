@@ -248,44 +248,44 @@
     updateData();
   };
 
-  const ArticleDraftData = ref<AddArticlesParams>();
+  // const ArticleDraftData = ref<AddArticlesParams>();
 
   // const draftRef = localStorage.getItem('article-draft') ? CustomToast() : null;
-  const draftRef = !route.params.id && localStorage.getItem('article-draft') ? CustomToast() : null;
+  // const draftRef = !route.params.id && localStorage.getItem('article-draft') ? CustomToast() : null;
 
-  watch(draftRef!, (newVal) => {
-    if (!newVal) return;
+  // watch(draftRef!, (newVal) => {
+  //   if (!newVal) return;
 
-    ArticleDraftData.value = newVal;
+  //   ArticleDraftData.value = newVal;
 
-    QuestionDescription.value = newVal.question_description ?? '';
-    question.value = newVal.question ?? '';
+  //   QuestionDescription.value = newVal.question_description ?? '';
+  //   question.value = newVal.question ?? '';
 
-    articleSource.value = newVal.documents?.text ?? '';
+  //   articleSource.value = newVal.documents?.text ?? '';
 
-    if (newVal.e_c_subject_id) {
-      SelectedQuestionSequence.value = {
-        id: newVal.e_c_subject_id,
-        title: '',
-      };
-    }
+  //   if (newVal.e_c_subject_id) {
+  //     SelectedQuestionSequence.value = {
+  //       id: newVal.e_c_subject_id,
+  //       title: '',
+  //     };
+  //   }
 
-    if (newVal.documents?.id) {
-      SelectedDocument.value = {
-        id: newVal.documents.id,
-        title: newVal.documents.title,
-      };
-    }
-    console.log('draft', newVal.documents);
-    UploadedImage.value = newVal.attachments?.map((item: any) => item.file) ?? [];
+  //   if (newVal.documents?.id) {
+  //     SelectedDocument.value = {
+  //       id: newVal.documents.id,
+  //       title: newVal.documents.title,
+  //     };
+  //   }
+  //   console.log('draft', newVal.documents);
+  //   UploadedImage.value = newVal.attachments?.map((item: any) => item.file) ?? [];
 
-    descriptionArticle.value = newVal.explanation?.explanation ?? '';
+  //   descriptionArticle.value = newVal.explanation?.explanation ?? '';
 
-    explanationAttachments.value =
-      newVal.explanation?.attachments?.map((item: any) => item.file) ?? [];
+  //   explanationAttachments.value =
+  //     newVal.explanation?.attachments?.map((item: any) => item.file) ?? [];
 
-    updateData();
-  });
+  //   updateData();
+  // });
 </script>
 
 <template>

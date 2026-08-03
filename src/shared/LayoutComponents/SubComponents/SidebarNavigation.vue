@@ -72,6 +72,11 @@
           name: 'Placement Test',
           icon: SettingIcon,
         },
+        // {
+        //   link: '/placements/show',
+        //   name: 'Placement Configuration',
+        //   icon: SettingIcon,
+        // },
       ],
     },
 
@@ -108,7 +113,7 @@
               name: 'question_status_menu.not_reviewed',
               status: QuestionStatusEnum.NOT_REVIEW,
             },
-                   {
+            {
               link: { path: '/questions', query: { status: QuestionStatusEnum.REVISION } },
               name: 'question_status_menu.revision',
               status: QuestionStatusEnum.REVISION,

@@ -60,6 +60,7 @@
 @use '../modules/Subjects/presentation/styles/subject_imports';
 @use '../modules/PlacementTest/presentation/styles/placemnt_test_imports';
 
+@use '../modules/Placement/presentation/styles/placement_imports';
 /* ── Pages ─────────────────────────────────────────────────────── */
 @use '../modules/auth/presentation/styles/login';
 @use 'error/error';

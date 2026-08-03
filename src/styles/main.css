@@ -2006,7 +2006,6 @@ html[dir=rtl] .input-search .icon-remove {
   grid-template-columns: repeat(3, 1fr);
   gap: 1fr;
   width: 100%;
-  /* stylelint-disable-next-line media-query-no-invalid */
 }
 @media (max-width: 10px) {
   .permission .tabs {
@@ -2123,7 +2122,6 @@ html[dir=rtl] .input-search .icon-remove {
   grid-template-columns: repeat(3, 1fr);
   gap: 1fr;
   width: 100%;
-  /* stylelint-disable-next-line media-query-no-invalid */
 }
 @media (max-width: 10px) {
   .permission .premission-cards .tab-content {
@@ -2141,7 +2139,6 @@ html[dir=rtl] .input-search .icon-remove {
     grid-template-columns: repeat(2, 1fr);
     gap: 1fr;
     width: 100%;
-    /* stylelint-disable-next-line media-query-no-invalid */
   }
 }
 @media screen and (max-width: 1350px) and (max-width: 10px) {
@@ -2155,7 +2152,6 @@ html[dir=rtl] .input-search .icon-remove {
     grid-template-columns: repeat(1, 1fr);
     gap: 1fr;
     width: 100%;
-    /* stylelint-disable-next-line media-query-no-invalid */
   }
 }
 @media screen and (max-width: 900px) and (max-width: 10px) {
@@ -5147,7 +5143,6 @@ body::-webkit-scrollbar-thumb:hover {
   grid-template-columns: repeat(2, 1fr);
   gap: var(--xl-size-base);
   width: 100%;
-  /* stylelint-disable-next-line media-query-no-invalid */
 }
 @media (max-width: 600) {
   .employee-details-form-card .form-fields {
@@ -8568,7 +8563,6 @@ body::-webkit-scrollbar-thumb:hover {
   grid-template-columns: repeat(2, 1fr);
   gap: var(--xl-size-base);
   width: 100%;
-  /* stylelint-disable-next-line media-query-no-invalid */
 }
 @media (max-width: 600) {
   .about-form-card .form-fields {
@@ -10493,7 +10487,6 @@ body::-webkit-scrollbar-thumb:hover {
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
   width: 100%;
-  /* stylelint-disable-next-line media-query-no-invalid */
 }
 @media (max-width: 600) {
   .questions-details-form-card .form-fields {
@@ -15579,6 +15572,369 @@ body::-webkit-scrollbar-thumb:hover {
    MAIN STYLESHEET — Organized Import Hub
    ============================================================================= */
 /* ── Core ──────────────────────────────────────────────────────── */
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.placement-form-card {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: start;
+  background-color: var(--gray-soft);
+  padding: var(--md-size);
+  border-radius: var(--xl-size-base);
+  gap: var(--xl-size-1);
+}
+.placement-form-card .form-fields {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--xl-size-base);
+  width: 100%;
+}
+@media (max-width: 480px) {
+  .placement-form-card .form-fields {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+.placement-form-card .form-fields label {
+  font-size: var(--md-size);
+  font-family: "Light";
+  color: var(--gray-5) !important;
+  text-transform: none;
+  font-weight: 600 !important;
+}
+.placement-form-card .form-fields .field-input {
+  width: 100%;
+  padding: var(--md-size);
+  border: 1px solid var(--border-weak);
+  border-radius: var(--xl-size-3);
+  font-size: var(--md-size);
+  color: var(--gray-800);
+  background: var(--white);
+  outline: none;
+  transition: all 0.25s ease;
+  font-family: "Medium";
+}
+.placement-form-card .form-fields .field-input:focus {
+  border-color: var(--PrimaryColor);
+  background: var(--bg-main);
+  box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+}
+.placement-form-card .form-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-2);
+  padding: var(--md-size) 0;
+}
+.placement-form-card .form-header .title {
+  font-family: "Medium";
+  font-size: var(--xl-size-1);
+  color: var(--standard-black);
+}
+.placement-form-card .difficulty-selection {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--md-size);
+  width: 100%;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--xl-size-2);
+  border-radius: var(--md-size);
+  width: 100%;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: start;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input.easy {
+  background-color: var(--bg-approved);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input.medium {
+  background-color: var(--caution-bg);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input.hard {
+  background-color: var(--bg-rejected);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input {
+  padding: var(--md-size);
+  border-radius: var(--md-size);
+  flex: 1;
+  width: 100%;
+  gap: var(--xs-size);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input label {
+  font-size: var(--sm-size);
+  color: var(--color-dark-gray);
+  font-family: "Light";
+  text-transform: capitalize;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input input {
+  width: 100%;
+  padding: var(--md-size);
+  border: 1px solid var(--border-weak);
+  border-radius: var(--xl-size-3);
+  font-size: var(--md-size);
+  color: var(--gray-800);
+  background: var(--white);
+  outline: none;
+  transition: all 0.25s ease;
+  font-family: "Medium";
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .input input:focus {
+  border-color: var(--PrimaryColor);
+  background: var(--bg-main);
+  box-shadow: 0 0 0 3px var(--PrimaryColor-light);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .percentage {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xs-size-2);
+  background: var(--color-light-gray);
+  border-radius: var(--xs-size-3);
+  font-weight: bold;
+  color: var(--gray-5);
+  font-size: var(--xl-size-base);
+  border: 1px solid var(--border-color);
+  min-height: calc(var(--xl-size-3) * 2);
+  min-width: calc(var(--xl-size-3) * 2.5);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .percentage p {
+  color: var(--color-dark-gray);
+  font-size: var(--xs-size);
+  font-family: "Light";
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .percentage h6 {
+  color: var(--standard-black);
+  font-size: var(--md-size);
+  font-family: "Light";
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .percentage h6 span {
+  font-family: "Medium";
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .image-input {
+  width: 100%;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .image-input .upload-area {
+  background-color: var(--standard-white) !important;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .image-input .add-imaegs-data {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xs-size-5);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .image-input .add-imaegs-data .first-text {
+  color: var(--gray-5);
+  font-size: var(--xs-size);
+  font-weight: 600;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .image-input .add-imaegs-data .first-text span {
+  color: var(--PrimaryColor);
+  padding-inline: var(--xs-size-5);
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .image-input .add-imaegs-data .second-text {
+  color: var(--second-text);
+  font-size: var(--xs-size);
+  font-weight: 400;
+}
+.placement-form-card .difficulty-selection .difficulty-option-row .field-label {
+  font-size: var(--md-size);
+  color: var(--gray-5) !important;
+  text-transform: none;
+  font-weight: 600 !important;
+}
+.placement-form-card .summary {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: start;
+  gap: var(--xs-size);
+  padding: var(--md-size);
+  border-radius: var(--md-size);
+  background-color: var(--bg-high);
+  color: var(--PrimaryColor);
+}
+.placement-form-card .summary .error {
+  color: var(--high-color);
+  font-size: var(--md-size);
+  font-family: "Medium";
+}
+.placement-form-card .error-text {
+  color: var(--high-color);
+  font-family: "Medium";
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.placement-page {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--xl-size-1);
+}
+.placement-page .index-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--md-size);
+}
+.placement-page .index-header .search-input::-moz-placeholder {
+  font-family: "Medium";
+}
+.placement-page .index-header .search-input::placeholder {
+  font-family: "Medium";
+}
+.placement-page .index-header .btns-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--xs-size-4);
+}
+.placement-page .status {
+  font-size: var(--sm-size);
+  font-weight: 700;
+  font-family: "Bold";
+}
+.placement-page .status.completed {
+  color: var(--success);
+}
+.placement-page .status.not_reviewed {
+  color: var(--warning);
+}
+.placement-page .employee-name {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--md-size);
+}
+.placement-page .employee-name img {
+  width: var(--xl-size-2);
+  height: var(--xl-size-2);
+}
+.placement-page .employee-name span {
+  color: var(--standard-black);
+  font-size: var(--md-size);
+}
+.placement-page .row-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--xs-size-3);
+}
+.placement-page .action-btn {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  width: calc(var(--xl-size-2) + 2px);
+  height: calc(var(--xl-size-2) + 2px);
+  border-radius: var(--xs-size-2);
+  border: 1px solid var(--border-weak);
+  background: var(--white);
+  color: var(--gray-500);
+  transition: all 0.2s ease;
+}
+.placement-page .action-btn:hover {
+  transform: translateY(-1px);
+}
+.placement-page .action-btn.edit:hover {
+  border-color: var(--PrimaryColor);
+  color: var(--PrimaryColor);
+}
+.placement-page .action-btn.delete:hover {
+  border-color: var(--Red);
+  color: var(--Red);
+}
+
+/* =============================================================================
+   MAIN STYLESHEET — Organized Import Hub
+   ============================================================================= */
+/* ── Core ──────────────────────────────────────────────────────── */
+.p-dialog.placement-dialog {
+  background: var(--standard-white) !important;
+  border-radius: var(var(--md-size));
+  width: 100%;
+  overflow: hidden;
+  font-family: "Medium";
+}
+.p-dialog.placement-dialog .input-label label {
+  color: var(--Gray-5) !important;
+  font-size: var(var(--md-size));
+}
+.p-dialog.placement-dialog .dialog-footer {
+  width: 100%;
+  padding-block: var(--xs-size-3);
+}
+.p-dialog.placement-dialog .dialog-footer button {
+  width: 100%;
+}
+.p-dialog {
+  font-family: "Regular";
+}
+.p-dialog .dialog-header-text {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.p-dialog .dialog-content {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  padding: var(--xl-size-base) !important;
+  gap: var(--xs-size-2);
+}
+.p-dialog .dialog-content .dialog-title {
+  font-size: var(--md-size);
+  color: var(--standard-black);
+  line-height: 1.4;
+  text-align: center;
+}
+
 /* ── Pages ─────────────────────────────────────────────────────── */
 /* =============================================================================
    MAIN STYLESHEET — Organized Import Hub
