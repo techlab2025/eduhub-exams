@@ -93,4 +93,11 @@ export default class questionsRepository extends BaseRepository<
       () => true,
     );
   }
+
+  async QuestionHistory(params: Params): Promise<DataState<any>> {
+    return this.executeCustom(
+      () => this.apiService.QuestionHistory(params),
+      (data) => this.parseItem(data),
+    );
+  }
 }

@@ -179,4 +179,8 @@ export default class questionsController extends BaseController<
 
     return result;
   }
+  async questionHistory(params: Params) {
+    const result = await this.repository.QuestionHistory(params);
+    return result;
+  }
 }

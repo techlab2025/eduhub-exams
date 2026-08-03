@@ -22,6 +22,7 @@
   onMounted(() => {
     const params = new ShowquestionsParams(Number(route.params.id));
     controller.fetchOne(params);
+    controller.questionHistory(params);
   });
 </script>
 

@@ -280,7 +280,13 @@
 
             <template #actions="{ item }">
               <div class="row-actions">
-                <router-link class="action-btn edit" :to="`/articles/edit/${item.id}`" title="Edit">
+                <!-- v-if="item.status != QuestionStatusEnum.DRAFT" -->
+                <router-link
+                  v-if="item.status != QuestionStatusEnum.APPROVED"
+                  class="action-btn edit"
+                  :to="`/articles/edit/${item.id}`"
+                  title="Edit"
+                >
                   <svg
                     width="15"
                     height="15"
@@ -295,7 +301,13 @@
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </router-link>
-                <router-link :to="`/articles/show/${item.id}`" title="show" class="action-btn show">
+                <!-- v-if="" -->
+                <router-link
+                  v-if="item.status != QuestionStatusEnum.DRAFT"
+                  :to="`/articles/show/${item.id}`"
+                  title="show"
+                  class="action-btn show"
+                >
                   <ShowIcon />
                 </router-link>
 

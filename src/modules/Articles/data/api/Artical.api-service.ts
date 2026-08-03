@@ -26,4 +26,6 @@ export default class ArticleApiService extends BaseApiService {
       delete: this.articleEndpoints.delete,
     };
   }
+
+
 }

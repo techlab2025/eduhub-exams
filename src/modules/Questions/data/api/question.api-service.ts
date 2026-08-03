@@ -33,4 +33,8 @@ export default class QuestionApiService extends BaseApiService {
       enableRetry: false,
     });
   }
+
+  async QuestionHistory(params: Params): Promise<ApiResponse> {
+    return this.customPost(this.questionEndpoints.history, params);
+  }
 }

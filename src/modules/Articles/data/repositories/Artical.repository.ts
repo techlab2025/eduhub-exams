@@ -65,4 +65,5 @@ export default class ArticleRepository extends BaseRepository<ShowQuestionsModel
       return acc;
     }, []);
   }
+ 
 }
