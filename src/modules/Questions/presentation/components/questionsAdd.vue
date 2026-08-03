@@ -13,10 +13,12 @@
   const props = withDefaults(
     defineProps<{
       articleId?: number;
+      subjectId?: number;
       embedded?: boolean;
     }>(),
     {
       articleId: undefined,
+      subjectId: undefined,
       embedded: false,
     },
   );
@@ -117,6 +119,7 @@
       :class="loading ? 'disabled' : ''"
       :form-key="formKey"
       :article-id="props.articleId"
+      :subject-id="props.subjectId"
       @update-data="updateData"
     />
     <div class="actions">

@@ -27,10 +27,11 @@
   const emit = defineEmits(['updateData']);
   const route = useRoute();
 
-  const { loading, questionData, draftData, validationErrors } = defineProps<{
+  const { loading, questionData, draftData, validationErrors, subjectId } = defineProps<{
     loading?: boolean;
     questionData?: ShowQuestionsModel;
     draftData?: AddquestionsParams;
+    subjectId?: number;
     validationErrors?: Partial<
       Record<'title' | 'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
     >;
@@ -313,6 +314,7 @@
           <QuestionContantTabs
             :draft-data="draftData"
             :ContentData="ContentData!"
+            :subject-id="subjectId"
             class="field-group col-span-2"
             :validation-errors="validationErrors"
             @update-data="getQuestionCOntent"

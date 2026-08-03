@@ -1,17 +1,20 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRoute } from 'vue-router';
-  import type AddEmployeeParams from '../../core/params/add.Artical.params';
+  import { useRoute, useRouter } from 'vue-router';
+  import type AddArticlesParams from '../../core/params/add.Artical.params';
   import ArticleController from '../controllers/Article.controller';
   import ArticleForm from './ArticleForm.vue';
-  import LoadingIcon from '@/assets/images/loading.webp';
-  import router from '@/router/index.ts';
+  import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import WithReviewDialog from '@/modules/Questions/presentation/subComponents/Dialogs/WithReviewDialog.vue';
+  import CancelQuestionDialog from '@/modules/Questions/presentation/subComponents/Dialogs/CancelQuestionDialog.vue';
 
   const controller = ArticleController.getInstance();
   const route = useRoute();
+  const router = useRouter();
   const formKey = route.fullPath;
 
-  const params = ref<AddEmployeeParams | null>(null);
+  const params = ref<AddArticlesParams | null>(null);
   const articleFormRef = ref<InstanceType<typeof ArticleForm> | null>(null);
 
   /**
@@ -19,7 +22,12 @@
    */
 
   const loading = ref(false);
-  const saveArticle = async () => {
+  const SaveStatusEnum = {
+    Save: 1,
+    SaveAndNew: 2,
+  } as const;
+
+  const saveArticle = async (isRouting: boolean, isWithReview: boolean) => {
     try {
       if (!(await articleFormRef.value?.validateRequiredFields())) return;
 
@@ -28,6 +36,31 @@
         return;
       }
       loading.value = true;
+      params.value.status = isWithReview
+        ? QuestionStatusEnum.NOT_REVIEW
+        : QuestionStatusEnum.APPROVED;
+
+      const result = await controller.create(params.value, undefined, formKey, isRouting);
+      if (!(result instanceof DataSuccess) || isRouting) return;
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error saving article:', error);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const saveAsDraft = async () => {
+    loading.value = true;
+    try {
+      if (!params.value) {
+        console.error('No article parameters to save');
+        return;
+      }
+
+      localStorage.setItem('article-draft', JSON.stringify(params.value));
+      params.value.status = QuestionStatusEnum.DRAFT;
       await controller.create(params.value, undefined, formKey);
     } catch (error) {
       console.error('Error saving article:', error);
@@ -36,11 +69,11 @@
     }
   };
 
-  const updateData = (updatedParams: AddEmployeeParams) => {
+  const updateData = (updatedParams: AddArticlesParams) => {
     params.value = updatedParams;
   };
   const cancel = () => {
-    router.push('/Articles');
+    router.push({ name: 'Articles' });
   };
 </script>
 
@@ -55,42 +88,27 @@
     />
 
     <div class="actions" :class="{ disabled: loading }">
-      <!-- <AppButton  title="Save Article" size="sm" icon="right" type="submit" class="save-emp"  :class="{ disabled: loading }" @click="saveArticle">
-        <template #icon>
-   
-           <img
-          v-if="loading"
-          :src="LoadingIcon"
-          class="loader-skills"
-          alt="loading"
-          width="30"
-          height="30"
-        />
-          <IconAccept v-else />
-        </template>
-        <span v-if="!loading" >{{ $t(`Save Article`) }}</span>
-      </AppButton> -->
-      <button class="save-btn" :class="{ disabled: loading }" @click="saveArticle">
-        <img
-          v-if="loading"
-          :src="LoadingIcon"
-          class="loader-skills"
-          alt="loading"
-          width="30"
-          height="30"
-        />
-        <span v-else> {{ $t('next') }} </span>
-      </button>
-      <!-- <button class="btn btn-draft">{{ $t(`Save As draft`) }}</button> -->
-      <!-- <button
+      <WithReviewDialog
+        class="save-emp"
+        :save-status="SaveStatusEnum.Save"
+        @with-review="saveArticle(true, true)"
+        @without-review="saveArticle(true, false)"
+      />
+      <WithReviewDialog
+        class="save-emp"
+        :save-status="SaveStatusEnum.SaveAndNew"
+        @with-review="saveArticle(false, true)"
+        @without-review="saveArticle(false, false)"
+      />
+      <button
         class="btn btn-draft"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
         @click="saveAsDraft"
       >
         {{ $t(`Save As draft`) }}
-      </button> -->
-      <button class="btn btn-cancel" @click="cancel">{{ $t(`cancel`) }}</button>
+      </button>
+      <CancelQuestionDialog @cancel="cancel" />
     </div>
 
     <!-- Error Display -->
@@ -102,7 +120,6 @@
 
 <style scoped lang="scss">
   @use '../../../../styles/variables' as *;
-  @use '../../../../styles/mixins/flex' as *;
 
   .loader {
     width: 30px;
@@ -157,15 +174,8 @@
     }
   }
 
-  .save-btn {
-    width: 80%;
-    background-color: var(--primary-green);
-    color: white;
-
-    @include flex(wrap, row, center, center);
-
-    border-radius: 50px;
-    border: none;
+  .save-emp {
+    width: 100%;
   }
 
   .actions {

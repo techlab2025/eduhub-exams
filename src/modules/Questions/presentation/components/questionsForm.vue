@@ -20,9 +20,10 @@
   };
   const { t } = useI18n();
   const emit = defineEmits(['updateData']);
-  const { question, articleId } = defineProps<{
+  const { question, articleId, subjectId } = defineProps<{
     question?: ShowQuestionsModel;
     articleId?: number;
+    subjectId?: number;
   }>();
 
   type QuestionValidationErrors = Partial<
@@ -236,6 +237,7 @@
     <!-- :draft-data="QuestionDraftData" -->
     <BasicQuestionDataForm
       :question-data="question"
+      :subject-id="subjectId"
       :validation-errors="validationErrors"
       @update-data="GetAllBasicData"
     />

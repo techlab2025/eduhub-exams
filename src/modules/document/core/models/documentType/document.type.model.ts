@@ -11,6 +11,7 @@ export default class DocumentTypeModel {
   public readonly Subjtecs: TitleInterface<number>[];
   public readonly tranaslations: DocumentTranslationParams;
   public readonly title: string;
+  public readonly status: boolean;
   constructor(data: {
     id?: number;
     translations: {
@@ -21,6 +22,7 @@ export default class DocumentTypeModel {
     doecumentType: TitleInterface<number>;
     Subjtecs: TitleInterface<number>[];
     tranaslations: DocumentTranslationParams;
+    status: boolean;
   }) {
     this.id = data.id;
     this.translations = data.translations;
@@ -29,6 +31,7 @@ export default class DocumentTypeModel {
     this.Subjtecs = data.Subjtecs;
     this.tranaslations = data.tranaslations;
     this.title = data.title;
+    this.status = data.status;
 
     Object.freeze(this);
   }
@@ -48,7 +51,12 @@ export default class DocumentTypeModel {
       doecumentType: json.document_type,
       Subjtecs: json.subjtecs ?? [],
       tranaslations: json.tranaslations,
+      status: this.normalizeStatus(json.status ?? json.is_active ?? json.active),
     });
+  }
+
+  private static normalizeStatus(status: unknown): boolean {
+    return status === true || status === 1 || status === '1' || status === 'active';
   }
   static mapTranslations = (translations: any[], key: string = 'value') => {
     const result: Record<string, string> = {};
@@ -64,6 +72,7 @@ export default class DocumentTypeModel {
   static example: DocumentTypeModel = new DocumentTypeModel({
     id: 10,
     title: 'title',
+    status: true,
     RefNumber: '10',
     doecumentType: {
       id: 1,

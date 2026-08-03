@@ -11,12 +11,13 @@ const fetchTopics = vi.hoisted(() => vi.fn());
 const skillsListData = vi.hoisted(() => ({
   current: null as { value: unknown[] } | null,
 }));
+const routeMock = vi.hoisted(() => ({
+  params: { id: '1' } as Record<string, string>,
+  query: {} as Record<string, string>,
+}));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({
-    params: { id: '1' },
-    query: {},
-  }),
+  useRoute: () => routeMock,
 }));
 
 vi.mock('../../../presentation/controllers/FullSubjectTree/full.subject.tree.controller', () => ({
@@ -74,6 +75,8 @@ describe('QuestionContantTabs.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    routeMock.params = { id: '1' };
+    routeMock.query = {};
     if (skillsListData.current) skillsListData.current.value = [];
     fetchFullSubjectTree.mockResolvedValue({
       data: [
@@ -143,6 +146,29 @@ describe('QuestionContantTabs.vue', () => {
     expect(wrapper.findComponent('#question-sequence').props('staticOptions')).toEqual([
       expect.objectContaining({ id: 284, title: 'mostafa 1 -> mostafa 2' }),
       expect.objectContaining({ id: 285, title: 'mostafa 1 -> mostafa 3' }),
+    ]);
+  });
+
+  it('uses the routed article subject, hides its select, and filters sequences', async () => {
+    routeMock.params = {};
+    routeMock.query = { artical_id: '42', subject_id: '17' };
+
+    const wrapper = mount(QuestionContantTabs, {
+      props: {
+        ContentData: undefined,
+      },
+      global: globalConfig,
+    });
+    await flushPromises();
+
+    expect(wrapper.findComponent('#doc-branch').exists()).toBe(false);
+    expect(fetchFullSubjectTree).toHaveBeenCalledOnce();
+    expect(fetchFullSubjectTree.mock.calls[0]?.[0].toMap()).toEqual({
+      education_classification_branch_id: 17,
+    });
+    expect(wrapper.findComponent('#question-sequence').props('staticOptions')).toEqual([
+      expect.objectContaining({ id: 284 }),
+      expect.objectContaining({ id: 285 }),
     ]);
   });
 

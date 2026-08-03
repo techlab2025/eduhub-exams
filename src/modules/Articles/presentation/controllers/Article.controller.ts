@@ -9,6 +9,7 @@ import ArticleRepository from '../../data/repositories/Artical.repository';
 import type { questionsModel } from '@/modules/Questions';
 import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
 import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
 
 export default class ArticleController extends BaseController<
   ShowQuestionsModel,
@@ -43,15 +44,31 @@ export default class ArticleController extends BaseController<
     return ArticleController.instance;
   }
 
-  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+  async create(
+    params: Params,
+    options?: ApiCallOptions,
+    formKey?: string,
+    shouldRoute = true,
+  ) {
     const FormStore = useFormsStore();
+    const mappedParams = params.toMap();
 
-    const result = await super.create(params, { ...options, useJson: true });
+    const result = await super.create(
+      params,
+      { ...options, useJson: true },
+      undefined,
+      mappedParams.review_status !== QuestionStatusEnum.DRAFT,
+    );
     if (result instanceof DataSuccess) {
       const articleId = result.data?.question_id ?? result.data?.id;
-      if (articleId) {
-        router.push({ name: 'Article questions', params: { artical_id: articleId } });
-      } else {
+      const subjectId = mappedParams.e_c_subject_id;
+      if (articleId && shouldRoute) {
+        router.push({
+          name: 'Article questions',
+          params: { artical_id: articleId },
+          ...(subjectId && { query: { subject_id: subjectId } }),
+        });
+      } else if (shouldRoute) {
         router.push({ name: 'Articles' });
       }
       if (formKey) {

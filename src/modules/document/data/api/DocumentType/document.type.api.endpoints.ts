@@ -8,4 +8,5 @@ export class DocumentTypeEndpoints extends BaseEndpoints {
   readonly update = this.url('update_document_type');
   readonly delete = this.url('delete_document_type');
   readonly show = this.url('show_document_type');
+  readonly status = this.url('toggle_status_document_type');
 }

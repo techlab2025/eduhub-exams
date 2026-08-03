@@ -6,7 +6,10 @@ import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import DocumentTypeRepository from '@/modules/document/data/repositories/DocumentType/document.type.repository';
 import type DocumentTypeModel from '@/modules/document/core/models/documentType/document.type.model';
 
-export default class DocumentTypeController extends BaseController<DocumentTypeModel, DocumentTypeModel[]> {
+export default class DocumentTypeController extends BaseController<
+  DocumentTypeModel,
+  DocumentTypeModel[]
+> {
   private static instance: DocumentTypeController;
 
   protected get repository() {
@@ -44,6 +47,9 @@ export default class DocumentTypeController extends BaseController<DocumentTypeM
     return super.update(params, { ...options, useJson: true });
   }
 
+  async toggleStatus(params: Params, options?: ApiCallOptions) {
+    return this.repository.toggleStatus(params);
+  }
   async fetchOne(params: Params, options?: ApiCallOptions) {
     return super.fetchOne(params, {
       ...options,

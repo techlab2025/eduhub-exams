@@ -22,7 +22,10 @@
   );
   const addQuestionRoute = computed(() => ({
     name: 'Add question',
-    query: { artical_id: articleId.value },
+    query: {
+      artical_id: articleId.value,
+      ...(props.artical?.e_c_subject?.id && { subject_id: props.artical.e_c_subject.id }),
+    },
   }));
 </script>
 <template>

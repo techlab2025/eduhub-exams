@@ -28,7 +28,11 @@ const RouterLinkStub = {
 const mountComponent = (showHeader = true) =>
   mount(ArticleQuestion, {
     props: {
-      artical: { id: 42, questions: [] } as unknown as ShowQuestionsModel,
+      artical: {
+        id: 42,
+        questions: [],
+        e_c_subject: { id: 17, title: 'Algebra' },
+      } as unknown as ShowQuestionsModel,
       showHeader,
     },
     global: {
@@ -47,7 +51,7 @@ describe('ArticleQuestion', () => {
     );
     expect(wrapper.getComponent({ name: 'RouterLink' }).props('to')).toEqual({
       name: 'Add question',
-      query: { artical_id: 42 },
+      query: { artical_id: 42, subject_id: 17 },
     });
   });
 

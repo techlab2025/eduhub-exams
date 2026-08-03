@@ -22,13 +22,22 @@
   import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
 
   const emit = defineEmits(['updateData']);
-  const { ContentData, draftData, validationErrors } = defineProps<{
-    ContentData: ShowQuestionsModel;
+  const { ContentData, draftData, validationErrors, subjectId } = defineProps<{
+    ContentData?: ShowQuestionsModel;
     draftData?: AddquestionsParams;
+    subjectId?: number;
     validationErrors?: Partial<
       Record<'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
     >;
   }>();
+  const route = useRoute();
+
+  const routeSubjectId = computed(() => {
+    const value = route.query.subject_id;
+    const parsedValue = Number(Array.isArray(value) ? value[0] : value);
+    return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : undefined;
+  });
+  const lockedSubjectId = computed(() => subjectId ?? routeSubjectId.value);
 
   // const SelectedSubject = ref<TitleInterface<number> | null>(null);
   const SelectedQuestionSequence = ref<TitleInterface<number> | null>(null);
@@ -119,6 +128,15 @@
   const topicsControoller = EducationTopicsController.getInstance();
   const topicsOptions = ref<TitleInterface<number>[]>([]);
 
+  watch(
+    lockedSubjectId,
+    (id) => {
+      if (!id || route.params.id) return;
+      void handleBranchChange(new TitleInterface<number>({ id, title: '' }));
+    },
+    { immediate: true },
+  );
+
   const skillsOptions = computed<TitleInterface<number>[]>(() => {
     return skillsController.listData.value?.map((item) => {
       return new TitleInterface<number>({
@@ -201,7 +219,6 @@
     { immediate: true },
   );
 
-  const route = useRoute();
   watch(
     [() => ContentData, skillsOptions],
     ([content, options]) => {
@@ -226,7 +243,7 @@
   watch(
     () => draftData,
     () => {
-      if (route.params.id) return;
+      if (route.params.id || !draftData) return;
       SelectedDifficultyLevel.value = new TitleInterface<number>({
         id: draftData?.difficultyLevel || 0,
         title: DifficultLevels.value.find((item) => item.id === draftData?.difficultyLevel)
@@ -310,7 +327,7 @@
 <template>
   <div class="contant_tabs">
     <div class="form-group">
-      <div class="input required-field">
+      <div v-if="!lockedSubjectId" class="input required-field">
         <UpdatedCustomInputSelect
           id="doc-branch"
           v-model:dialog-visible="newDialo"

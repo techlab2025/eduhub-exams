@@ -24,6 +24,10 @@
   const showAddQuestionDialog = ref(false);
   const articleId = computed(() => Number(route.params.artical_id));
   const article = computed(() => controller.itemState.value.data);
+  const articleSubjectId = computed(() => {
+    const querySubjectId = Number(route.query?.subject_id);
+    return querySubjectId || article.value?.e_c_subject?.id;
+  });
   const questions = computed(() => article.value?.questions ?? []);
   const questionCount = computed(
     () => questions.value.length || article.value?.number_of_questions || 0,
@@ -229,6 +233,7 @@
           class="dialog-question-form"
           embedded
           :article-id="articleId"
+          :subject-id="articleSubjectId"
           @saved="handleQuestionSaved"
           @close="showAddQuestionDialog = false"
         />
