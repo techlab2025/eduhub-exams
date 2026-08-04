@@ -567,9 +567,9 @@
     "cancel": "Cancel"
   },
   "cancel_question_dialog": {
-    "title": "Are you sure you want to remove this question?",
-    "description": "This will permanently remove the question.",
-    "confirm": "Yes, delete it",
+    "title": "Are you sure you want to Cancel this question?",
+    "description": "This will permanently Cancel the question.",
+    "confirm": "Yes, cancel it",
     "cancel": "Cancel"
   },
   "save_review_dialog": {

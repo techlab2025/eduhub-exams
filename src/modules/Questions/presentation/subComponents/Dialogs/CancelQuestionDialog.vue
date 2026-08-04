@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import Dialog from 'primevue/dialog';
   import { ref } from 'vue';
-  import CancelQuestion from '@/assets/images/question/CancelQuestion.gif';
+  import Cancel from '@/assets/images/question/Cancel.gif';
 
   const visable = ref();
   defineEmits(['cancel', 'not-cancel']);
@@ -21,7 +21,7 @@
     }"
   >
     <div class="dialog-content">
-      <img class="dialog-illustration" :src="CancelQuestion" alt="" />
+      <img class="dialog-illustration" :src="Cancel" alt="" />
       <div class="dialog-message">
         <h2>{{ $t('cancel_question_dialog.title') }}</h2>
         <p>{{ $t('cancel_question_dialog.description') }}</p>
