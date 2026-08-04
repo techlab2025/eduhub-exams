@@ -2746,6 +2746,7 @@ html[dir=rtl] .input-search .icon-remove {
   align-items: center;
   gap: 0.8rem;
   width: 100%;
+  justify-content: space-between;
 }
 .list-body .list-item:not(:last-child) {
   border-bottom: 1px solid var(--Gray-2);
@@ -2840,6 +2841,12 @@ html[dir=rtl] .input-search .icon-remove {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+.app-table-wrapper .app-table thead tr th .th-content span {
+  color: #121212;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Demi";
 }
 .app-table-wrapper .app-table thead tr th .th-content .sort-icon {
   font-size: 0.65rem;
@@ -10373,33 +10380,27 @@ body::-webkit-scrollbar-thumb:hover {
   min-height: 32px;
   min-width: 104px;
   padding: var(--xs-size-4) var(--sm-size);
+  border: none;
 }
 .questions-page .status.status-approved {
-  background-color: var(--success-light);
   color: var(--success);
 }
 .questions-page .status.status-archived {
-  background-color: var(--gray-100);
   color: var(--gray-600);
 }
 .questions-page .status.status-created {
-  background-color: var(--info-light);
   color: var(--info);
 }
 .questions-page .status.status-draft {
-  background-color: var(--gray-50);
   color: var(--gray-500);
 }
 .questions-page .status.status-not-reviewed {
-  background-color: var(--warning-light);
   color: var(--warning);
 }
 .questions-page .status.status-rejected {
-  background-color: var(--danger-light);
   color: var(--danger);
 }
 .questions-page .status.status-revision {
-  background-color: var(--PrimaryColor-light);
   color: var(--low-color);
 }
 .questions-page .employee-name {

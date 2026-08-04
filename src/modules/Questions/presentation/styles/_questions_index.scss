@@ -39,39 +39,40 @@
     min-height: 32px;
     min-width: 104px;
     padding: $XsSize4 $SmSize;
+    border: none;
 
     &.status-approved {
-      background-color: var(--success-light);
+      // background-color: var(--success-light);
       color: var(--success);
     }
 
     &.status-archived {
-      background-color: var(--gray-100);
+      // background-color: var(--gray-100);
       color: var(--gray-600);
     }
 
     &.status-created {
-      background-color: var(--info-light);
+      // background-color: var(--info-light);
       color: var(--info);
     }
 
     &.status-draft {
-      background-color: var(--gray-50);
+      // background-color: var(--gray-50);
       color: var(--gray-500);
     }
 
     &.status-not-reviewed {
-      background-color: var(--warning-light);
+      // background-color: var(--warning-light);
       color: var(--warning);
     }
 
     &.status-rejected {
-      background-color: var(--danger-light);
+      // background-color: var(--danger-light);
       color: var(--danger);
     }
 
     &.status-revision {
-      background-color: var(--PrimaryColor-light);
+      // background-color: var(--PrimaryColor-light);
       color: var(--low-color);
     }
   }

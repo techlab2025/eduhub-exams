@@ -44,7 +44,7 @@ const globalConfig = {
     DataStatusBuilder: true,
     AppTable: true,
     Pagination: true,
-    DeleteDialog: true,
+    DropList: true,
     FilterDialog: true,
     IndexSearchIcon: true,
     IndexPluseIcon: true,
@@ -65,9 +65,6 @@ const mountWithTableItem = (status: QuestionStatusEnum) =>
         },
         AppTable: {
           template: `<div><slot name="actions" :item="{ id: 10, status: ${status} }" /></div>`,
-        },
-        DeleteDialog: {
-          template: '<div class="delete-dialog"><slot name="Dialog" /></div>',
         },
       },
     },
@@ -106,17 +103,19 @@ describe('questionsIndex.vue', () => {
 
   it('shows only the view action for an approved question', () => {
     const wrapper = mountWithTableItem(QuestionStatusEnum.APPROVED);
+    const actions = wrapper.findComponent({ name: 'DropList' }).props('actionList');
 
-    expect(wrapper.find('.action-btn.show').exists()).toBe(true);
-    expect(wrapper.find('.action-btn.edit').exists()).toBe(false);
-    expect(wrapper.find('.action-btn.delete').exists()).toBe(false);
+    expect(actions.map((action: { text: string }) => action.text)).toEqual(['show_question']);
   });
 
   it('shows edit, view, and delete actions for a non-approved question', () => {
     const wrapper = mountWithTableItem(QuestionStatusEnum.CREATED);
+    const actions = wrapper.findComponent({ name: 'DropList' }).props('actionList');
 
-    expect(wrapper.find('.action-btn.show').exists()).toBe(true);
-    expect(wrapper.find('.action-btn.edit').exists()).toBe(true);
-    expect(wrapper.find('.action-btn.delete').exists()).toBe(true);
+    expect(actions.map((action: { text: string }) => action.text)).toEqual([
+      'Edit',
+      'show_question',
+      'delete',
+    ]);
   });
 });

@@ -19,6 +19,7 @@
     rowKey?: string;
     striped?: boolean;
     hoverable?: boolean;
+    rowDisabled?: (item: T, index: number) => boolean;
   }>();
 
   const emit = defineEmits<{
@@ -47,20 +48,32 @@
   // --- Selection ---
   const selectedRows = ref<Set<number>>(new Set());
 
+  const selectableRowIndexes = computed(() =>
+    props.items.reduce<number[]>((indexes, item, index) => {
+      if (!isRowDisabled(item, index)) indexes.push(index);
+      return indexes;
+    }, []),
+  );
+
   const allSelected = computed(() => {
-    return props.items.length > 0 && selectedRows.value.size === props.items.length;
+    return (
+      selectableRowIndexes.value.length > 0 &&
+      selectableRowIndexes.value.every((index) => selectedRows.value.has(index))
+    );
   });
 
   function toggleAll() {
     if (allSelected.value) {
-      selectedRows.value.clear();
+      selectableRowIndexes.value.forEach((index) => selectedRows.value.delete(index));
     } else {
-      selectedRows.value = new Set(props.items.map((_, i) => i));
+      selectedRows.value = new Set(selectableRowIndexes.value);
     }
     emitSelection();
   }
 
   function toggleRow(index: number) {
+    if (isRowDisabled(props.items[index], index)) return;
+
     if (selectedRows.value.has(index)) {
       selectedRows.value.delete(index);
     } else {
@@ -71,6 +84,10 @@
 
   function isRowSelected(index: number): boolean {
     return selectedRows.value.has(index);
+  }
+
+  function isRowDisabled(item: T, index: number): boolean {
+    return props.rowDisabled?.(item, index) ?? false;
   }
 
   function emitSelection() {
@@ -172,12 +189,20 @@
           <tr
             v-for="(item, index) in items"
             :key="getRowKey(item, index)"
-            :class="{ selected: selectable && isRowSelected(index) }"
-            @click="emit('row-click', item, index)"
+            :class="{
+              selected: selectable && isRowSelected(index),
+              'row-disabled': isRowDisabled(item, index),
+            }"
+            @click="!isRowDisabled(item, index) && emit('row-click', item, index)"
           >
             <!-- Selection checkbox -->
             <td v-if="selectable" class="td-checkbox" @click.stop>
-              <input type="checkbox" :checked="isRowSelected(index)" @change="toggleRow(index)" />
+              <input
+                type="checkbox"
+                :checked="isRowSelected(index)"
+                :disabled="isRowDisabled(item, index)"
+                @change="toggleRow(index)"
+              />
             </td>
 
             <!-- Row index -->
@@ -215,3 +240,11 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  .row-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+</style>

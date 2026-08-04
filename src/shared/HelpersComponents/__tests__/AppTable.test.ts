@@ -108,11 +108,41 @@ describe('AppTable', () => {
     expect(wrapper.emitted('selection-change')).toBeTruthy();
   });
 
+  it('disables a row and its selection checkbox when rowDisabled returns true', async () => {
+    const wrapper = createWrapper({
+      selectable: true,
+      rowDisabled: (item: TestItem) => item.id === 1,
+    });
+    const firstRow = wrapper.findAll('tbody tr')[0];
+    const checkbox = firstRow.find('input[type="checkbox"]');
+
+    expect(firstRow.classes()).toContain('row-disabled');
+    expect(checkbox.attributes('disabled')).toBeDefined();
+
+    await checkbox.trigger('change');
+    expect(wrapper.emitted('selection-change')).toBeFalsy();
+
+    await firstRow.trigger('click');
+    expect(wrapper.emitted('row-click')).toBeFalsy();
+  });
+
   it('selects all rows', async () => {
     const wrapper = createWrapper({ selectable: true });
     const headerCheckbox = wrapper.find('.th-checkbox input[type="checkbox"]');
     await headerCheckbox.trigger('change');
     expect(wrapper.emitted('selection-change')).toBeTruthy();
+  });
+
+  it('excludes disabled rows when selecting all', async () => {
+    const wrapper = createWrapper({
+      selectable: true,
+      rowDisabled: (item: TestItem) => item.id === 1,
+    });
+    const headerCheckbox = wrapper.find('.th-checkbox input[type="checkbox"]');
+
+    await headerCheckbox.trigger('change');
+
+    expect(wrapper.emitted('selection-change')?.[0]).toEqual([[mockItems[1]]]);
   });
 
   it('handles sortable columns', async () => {

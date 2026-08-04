@@ -72,6 +72,13 @@
           justify-content: space-between;
           gap: 8px;
 
+          span {
+            color: #121212;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Demi';
+          }
+
           .sort-icon {
             font-size: 0.65rem;
             opacity: 0.4;
@@ -267,11 +274,11 @@
       text-align: center;
     }
   }
-/* ---- Checkbox ---- */
-.app-table input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: var(--table-checkbox-color, #6366f1);
-}
+  /* ---- Checkbox ---- */
+  .app-table input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--table-checkbox-color, #6366f1);
+  }
 }

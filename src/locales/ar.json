@@ -166,6 +166,7 @@
   "select_classification": "اختر التصنيف",
   "select_branch": "اختر الفرع",
   "select_subject": "اختر المادة",
+  "show_question": "عرض السؤال",
   "question_filters": {
     "status": "الحالة",
     "type": "النوع",

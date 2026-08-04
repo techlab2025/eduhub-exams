@@ -6,7 +6,10 @@
   import { useRoute, useRouter } from 'vue-router';
   import { debounce } from '@/base/Presentation/Utils/debouced';
   import DeleteEmployeeParams from '../../core/params/delete.question.params';
-  import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
+  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+  import ShowIcon from '@/shared/icons/ShowIcon.vue';
   import { useFormsStore } from '@/stores/formsStore';
   import IndexPluseIcon from '@/shared/icons/IndexPluseIcon.vue';
   // import ExportExcelIcon from '@/shared/icons/ExportExcelIcon.vue';
@@ -25,6 +28,7 @@
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import DatePicker from 'primevue/datepicker';
   import { useI18n } from 'vue-i18n';
+  import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
 
   // Controller instance
   const controller = questionsController.getInstance();
@@ -112,6 +116,33 @@
   const deleteQuestion = async (id: number) => {
     await controller.delete(new DeleteEmployeeParams(id));
     await fetchQuestions();
+  };
+
+  const actionList = (item: questionsModel) => {
+    const questionId = item.id ?? 0;
+    const viewAction = {
+      text: t('show_question'),
+      icon: ShowIcon,
+      link: `/questions/show/${questionId}`,
+    };
+
+    if (item.status === QuestionStatusEnum.APPROVED) {
+      return [viewAction];
+    }
+
+    return [
+      {
+        text: t('Edit'),
+        icon: EditIcon,
+        link: `/questions/edit/${questionId}`,
+      },
+      viewAction,
+      {
+        text: t('delete'),
+        icon: DeletIcon,
+        action: () => deleteQuestion(questionId),
+      },
+    ];
   };
 
   const isDraft = computed(() => {
@@ -240,6 +271,14 @@
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
+  const selectedRows = ref<questionsModel[]>([]);
+  const deleteSelected = () => {
+    selectedRows.value.forEach((item) => {
+      // delete
+      deleteQuestion(item.id!);
+    });
+    selectedRows.value = [];
+  };
 </script>
 
 <template>
@@ -352,6 +391,11 @@
             :hoverable="true"
             :striped="true"
             show-index
+            :selectable="true"
+            :row-disabled="
+              (item) => selectedRows.length > 0 && item.status === QuestionStatusEnum.APPROVED
+            "
+            @selection-change="selectedRows = $event"
           >
             <template #cell-title="{ item }">
               <div class="question-type">
@@ -392,75 +436,26 @@
 
             <template #actions="{ item }">
               <div class="row-actions">
-                <router-link
-                  v-if="item.status !== QuestionStatusEnum.APPROVED"
-                  class="action-btn edit"
-                  :to="`/questions/edit/${item.id}`"
-                  title="Edit"
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
-                </router-link>
-
-                <router-link
-                  class="action-btn show"
-                  :to="`/questions/show/${item.id}`"
-                  title="Show"
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M21 12a9 9 0 1 1-9-9 9 9 0 0 1 9 9z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                </router-link>
-
-                <DeleteDialog
-                  v-if="item.status !== QuestionStatusEnum.APPROVED"
-                  @delete="deleteQuestion(item.id!)"
-                >
-                  <template #Dialog>
-                    <button class="action-btn delete" title="Delete">
-                      <svg
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path d="M3 6h18" />
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                      </svg>
-                    </button>
-                  </template>
-                </DeleteDialog>
+                <DropList
+                  :action-list="actionList(item)"
+                  :delete-dialog-title="
+                    $t('are_you_sure_you_want_to_remove_this_education_classification')
+                  "
+                  :delete-dialog-message="
+                    $t(
+                      'Deleting_this_classification_will_remove_all_related_data_including_any_configurations_and_tree_structures_This_action_is_irreversible_and_the_classification_must_be_created_again_if_needed',
+                    )
+                  "
+                />
               </div>
             </template>
           </AppTable>
         </div>
 
+        <div class="delete-container" v-if="selectedRows.length > 0">
+          <div class="selected-count">{{ selectedRows.length }} question</div>
+          <button class="btn btn-danger" @click="deleteSelected">Delete Selected</button>
+        </div>
         <Pagination
           v-if="controller.pagination.value"
           :pagination="controller.pagination.value"
@@ -479,12 +474,45 @@
         >
         </TableSkelaton>
       </template>
+      <template #empty>
+        <NoItemContainer
+          :title="t('no_questions.title')"
+          :description="t('no_questions.description')"
+        />
+      </template>
     </DataStatusBuilder>
   </div>
 </template>
 
 <style scoped>
+  .delete-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e6e6e6;
+    border-radius: 24px;
+    margin-block: 10px;
+    padding: 10px;
+    .btn-danger {
+      margin-left: auto;
+      color: white;
+      background-color: var(--Red);
+    }
+    .selected-count {
+      color: #121212;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'bold';
+    }
+  }
   .form-fields {
     padding: 0 !important;
+  }
+  .question-type {
+    color: #121212;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Medium';
   }
 </style>
