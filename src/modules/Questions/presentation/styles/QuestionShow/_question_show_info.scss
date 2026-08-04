@@ -24,15 +24,20 @@
       border-radius: $XlSize;
 
       label {
-        font-size: $MdSize;
-        font-family: 'Medium';
-        color: var(--second-text);
+        // font-size: $MdSize;
+        // font-family: 'Medium';
+        // color: var(--second-text);
+        font-family: 'Medium' !important;
+        color: #8a8a8a !important ;
+        font-size: 14px !important ;
+        font-weight: 500 !important ;
       }
 
       p {
-        font-size: $MdSize;
-        font-family: 'Bold';
-        color: var(--Gray-6);
+        font-family: 'Demi' !important;
+        color: #4b4b4b !important ;
+        font-size: 16px !important ;
+        font-weight: 600 !important ;
       }
     }
   }

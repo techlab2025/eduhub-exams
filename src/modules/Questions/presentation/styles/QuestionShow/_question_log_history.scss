@@ -87,59 +87,73 @@
     }
   }
 
-  /* =========================
-     Waiting
-  ========================= */
-
-  .waiting {
-    background: var(--StandardBlue);
-    color: var(--standard-white);
-  }
-
-  h4.waiting {
-    background: transparent;
-    color: var(--StandardBlue);
-  }
-
-  /* =========================
-     Drafting / Created
-  ========================= */
-
-  .drafting {
+  .status-created {
     background: var(--sidebar-auth-bg);
     color: var(--standard-white);
   }
 
-  h4.drafting {
+  h4.status-created {
     background: transparent;
     color: var(--sidebar-auth-bg);
   }
 
-  /* =========================
-     Rejected
-  ========================= */
-
-  .rejected {
-    background: var(--bg-rejected);
-    color: var(--danger);
+  .status-approved {
+    background: var(--success);
+    color: var(--standard-white);
   }
 
-  h4.rejected {
+  h4.status-approved {
+    background: transparent;
+    color: var(--success);
+  }
+
+  .status-rejected {
+    background: var(--danger);
+    color: var(--standard-white);
+  }
+
+  h4.status-rejected {
     background: transparent;
     color: var(--danger);
   }
 
-  /* =========================
-     Approved
-  ========================= */
-
-  .approved {
-    background: var(--bg-approved);
-    color: $PrimaryColor;
+  .status-draft {
+    background: var(--gray-500);
+    color: var(--standard-white);
   }
 
-  h4.approved {
+  h4.status-draft {
     background: transparent;
-    color: $PrimaryColor;
+    color: var(--gray-500);
+  }
+
+  .status-not-reviewed {
+    background: var(--in-active-color);
+    color: var(--standard-white);
+  }
+
+  h4.status-not-reviewed {
+    background: transparent;
+    color: var(--in-active-color);
+  }
+
+  .status-archived {
+    background: var(--gray-600);
+    color: var(--standard-white);
+  }
+
+  h4.status-archived {
+    background: transparent;
+    color: var(--gray-600);
+  }
+
+  .status-revision {
+    background: var(--low-color);
+    color: var(--standard-white);
+  }
+
+  h4.status-revision {
+    background: transparent;
+    color: var(--low-color);
   }
 }

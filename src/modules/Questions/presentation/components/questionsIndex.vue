@@ -515,4 +515,186 @@
     font-weight: 500;
     font-family: 'Medium';
   }
+
+  /* filter dilaog styles */
+
+  .filter-body {
+    padding: 0;
+  }
+
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .field-group {
+    position: relative;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #ececec;
+  }
+
+  .field-group:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    line-height: 1;
+    font-family: 'Demi';
+  }
+
+  /* Optional reload icon positioning if you add one */
+  .field-group .reload-icon {
+    position: absolute;
+    right: 0;
+    top: 2px;
+    color: #8d8d8d;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .field-group .reload-icon:hover {
+    color: var(--primary-color);
+    transform: rotate(180deg);
+  }
+
+  .input-wrap {
+    width: 100%;
+  }
+
+  /* ============================
+   PrimeVue Select
+============================ */
+
+  .input-wrap .p-dropdown,
+  .input-wrap .p-select,
+  .input-wrap .p-calendar {
+    width: 100%;
+  }
+
+  .input-wrap .p-dropdown,
+  .input-wrap .p-select,
+  .input-wrap .p-calendar .p-inputtext,
+  .input-wrap .p-dropdown-label,
+  .input-wrap .p-select-label {
+    border-radius: 999px;
+  }
+
+  .input-wrap .p-dropdown,
+  .input-wrap .p-select,
+  .input-wrap .p-calendar .p-inputtext {
+    height: 48px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    transition: all 0.25s ease;
+    box-shadow: none;
+  }
+
+  .input-wrap .p-dropdown:hover,
+  .input-wrap .p-select:hover,
+  .input-wrap .p-calendar .p-inputtext:hover {
+    border-color: #d1d5db;
+  }
+
+  .input-wrap .p-dropdown:focus-within,
+  .input-wrap .p-select:focus-within,
+  .input-wrap .p-calendar .p-inputtext:focus {
+    border-color: #53b483;
+    box-shadow: 0 0 0 3px rgba(83, 180, 131, 0.15);
+  }
+
+  .input-wrap .p-dropdown-label,
+  .input-wrap .p-select-label,
+  .input-wrap .p-calendar .p-inputtext {
+    font-size: 13px;
+    color: #6b7280;
+    padding-inline: 18px;
+  }
+
+  .input-wrap .p-dropdown-trigger,
+  .input-wrap .p-select-dropdown {
+    width: 46px;
+    color: #8b8b8b;
+  }
+
+  /* Calendar icon */
+
+  .input-wrap .p-datepicker-trigger {
+    background: transparent;
+    border: none;
+    color: #7a7a7a;
+  }
+
+  .input-wrap .p-datepicker-trigger:hover {
+    background: transparent;
+  }
+
+  /* ============================
+   Footer Buttons
+============================ */
+
+  .filter-action {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 30px;
+  }
+
+  .filter-action .btn {
+    flex: 1;
+    height: 46px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.25s;
+  }
+
+  .filter-action .btn-primary {
+    border: none;
+    background: #53b483;
+    color: #fff;
+  }
+
+  .filter-action .btn-primary:hover {
+    background: #45a473;
+  }
+
+  .filter-action .btn-cancel {
+    background: #fff5f5;
+    border: 1px solid #ffc8c8;
+    color: #ef5b5b;
+  }
+
+  .filter-action .btn-cancel:hover {
+    background: #ffeaea;
+  }
+
+  /* ============================
+   Responsive
+============================ */
+
+  @media (max-width: 640px) {
+    .form-fields {
+      gap: 18px;
+    }
+
+    .field-label {
+      font-size: 13px;
+    }
+
+    .filter-action {
+      margin-top: 24px;
+    }
+
+    .filter-action .btn {
+      height: 44px;
+      font-size: 13px;
+    }
+  }
 </style>

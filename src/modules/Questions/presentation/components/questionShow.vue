@@ -1,6 +1,6 @@
 # QuestionShowPage.vue ```vue
 <script setup lang="ts">
-  import { computed, onMounted } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import questionsController from '../controllers/questions.controller';
   import QuestionAnswers from '../subComponents/QuestionShow/QuestionAnswers.vue';
   import QuestionClarification from '../subComponents/QuestionShow/QuestionClarification.vue';
@@ -16,13 +16,18 @@
   import { useRoute } from 'vue-router';
   import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
   import QuestionRejectActions from '../subComponents/QuestionShow/QuestionRejectActions.vue';
+  import type QuestionHistoryModel from '../../core/models/question.history.model.ts';
   const route = useRoute();
   const controller = questionsController.getInstance();
   const showState = computed(() => controller.itemState.value);
-  onMounted(() => {
+  const questionHistory = ref<QuestionHistoryModel[]>();
+  onMounted(async () => {
     const params = new ShowquestionsParams(Number(route.params.id));
     controller.fetchOne(params);
-    controller.questionHistory(params);
+    const res = await controller.questionHistory(params);
+    if (res.data) {
+      questionHistory.value = res.data;
+    }
   });
 </script>
 
@@ -39,25 +44,44 @@
       />
 
       <QuestionClarification
-        v-if="showState?.data?.questionClarification?.source?.length! > 0 ||showState?.data?.questionClarification?.attachments?.length! > 0"
+        v-if="
+          showState?.data?.questionClarification?.source?.length! > 0 ||
+          showState?.data?.questionClarification?.attachments?.length! > 0
+        "
         :clarification="showState?.data?.questionClarification!"
       />
 
       <div class="solution-container">
         <QuestionSolutionHint
-          v-if="showState?.data?.solutionHint?.hint.length! > 0 ||showState?.data?.solutionHint?.attachments.length! > 0"
+          v-if="
+            showState?.data?.solutionHint?.hint.length! > 0 ||
+            showState?.data?.solutionHint?.attachments.length! > 0
+          "
           :solution-hint="showState?.data?.solutionHint!"
         />
 
         <QuestionSolutionSteps
-          v-if="showState?.data?.solutionSteps?.step.length! > 0 ||showState?.data?.solutionSteps?.attachments.length! > 0"
+          v-if="
+            showState?.data?.solutionSteps?.step.length! > 0 ||
+            showState?.data?.solutionSteps?.attachments.length! > 0
+          "
           :solution-steps="showState?.data?.solutionSteps!"
         />
       </div>
 
       <!-- v-if="showState.data?.review_status == QuestionStatusEnum.NOT_REVIEW"  -->
-      <QuestionReviewProcedures :question-data="showState?.data" v-if="showState.data?.review_status == QuestionStatusEnum.NOT_REVIEW "/>
-      <QuestionRejectActions v-if="showState.data?.review_status === QuestionStatusEnum.REJECTED || showState.data?.review_status == QuestionStatusEnum.REVISION" :status="showState.data?.review_status" :note="showState.data.note || ''" />
+      <QuestionReviewProcedures
+        :question-data="showState?.data"
+        v-if="showState.data?.review_status == QuestionStatusEnum.NOT_REVIEW"
+      />
+      <QuestionRejectActions
+        v-if="
+          showState.data?.review_status === QuestionStatusEnum.REJECTED ||
+          showState.data?.review_status == QuestionStatusEnum.REVISION
+        "
+        :status="showState.data?.review_status"
+        :note="showState.data.note || ''"
+      />
     </div>
 
     <div class="side-content">
@@ -66,8 +90,8 @@
       <QuestionTree v-if="showState?.data" :question-data="showState?.data" />
 
       <QuestionLogHistory
-        v-if="showState?.data?.questionLogHistory"
-        :logs="showState?.data?.questionLogHistory"
+        v-if="questionHistory?.length! > 0"
+        :logs="questionHistory"
       />
     </div>
   </div>

@@ -8,6 +8,7 @@ import { QuestionGeneratedByEnum } from '../../core/constant/generatedby.enum';
 import ShowQuestionsModel from '../../core/models/show.questions.model';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
+import QuestionHistoryModel from '../../core/models/question.history.model';
 
 export default class questionsRepository extends BaseRepository<
   ShowQuestionsModel,
@@ -94,10 +95,20 @@ export default class questionsRepository extends BaseRepository<
     );
   }
 
-  async QuestionHistory(params: Params): Promise<DataState<any>> {
+  async QuestionHistory(params: Params): Promise<DataState<QuestionHistoryModel[]>> {
     return this.executeCustom(
       () => this.apiService.QuestionHistory(params),
-      (data) => this.parseItem(data),
+      (data) => {
+        if (!Array.isArray(data)) return [];
+        return data.reduce((acc: QuestionHistoryModel[], item) => {
+          try {
+            if (item != null) {
+              acc.push(QuestionHistoryModel.fromJson(item));
+            }
+          } catch {}
+          return acc;
+        }, []);
+      },
     );
   }
 }
