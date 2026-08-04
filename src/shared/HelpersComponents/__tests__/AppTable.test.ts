@@ -108,7 +108,7 @@ describe('AppTable', () => {
     expect(wrapper.emitted('selection-change')).toBeTruthy();
   });
 
-  it('disables a row and its selection checkbox when rowDisabled returns true', async () => {
+  it('disables a row and hides its selection checkbox when rowDisabled returns true', async () => {
     const wrapper = createWrapper({
       selectable: true,
       rowDisabled: (item: TestItem) => item.id === 1,
@@ -117,9 +117,7 @@ describe('AppTable', () => {
     const checkbox = firstRow.find('input[type="checkbox"]');
 
     expect(firstRow.classes()).toContain('row-disabled');
-    expect(checkbox.attributes('disabled')).toBeDefined();
-
-    await checkbox.trigger('change');
+    expect(checkbox.exists()).toBe(false);
     expect(wrapper.emitted('selection-change')).toBeFalsy();
 
     await firstRow.trigger('click');
@@ -142,6 +140,20 @@ describe('AppTable', () => {
 
     await headerCheckbox.trigger('change');
 
+    expect(wrapper.emitted('selection-change')?.[0]).toEqual([[mockItems[1]]]);
+  });
+
+  it('hides checkboxes and excludes rows when rowSelectable returns false', async () => {
+    const wrapper = createWrapper({
+      selectable: true,
+      rowSelectable: (item: TestItem) => item.id !== 1,
+    });
+    const rows = wrapper.findAll('tbody tr');
+
+    expect(rows[0].find('input[type="checkbox"]').exists()).toBe(false);
+    expect(rows[1].find('input[type="checkbox"]').exists()).toBe(true);
+
+    await wrapper.get('.th-checkbox input[type="checkbox"]').trigger('change');
     expect(wrapper.emitted('selection-change')?.[0]).toEqual([[mockItems[1]]]);
   });
 

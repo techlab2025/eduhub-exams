@@ -20,6 +20,7 @@
     striped?: boolean;
     hoverable?: boolean;
     rowDisabled?: (item: T, index: number) => boolean;
+    rowSelectable?: (item: T, index: number) => boolean;
   }>();
 
   const emit = defineEmits<{
@@ -50,7 +51,7 @@
 
   const selectableRowIndexes = computed(() =>
     props.items.reduce<number[]>((indexes, item, index) => {
-      if (!isRowDisabled(item, index)) indexes.push(index);
+      if (isRowSelectable(item, index)) indexes.push(index);
       return indexes;
     }, []),
   );
@@ -72,7 +73,7 @@
   }
 
   function toggleRow(index: number) {
-    if (isRowDisabled(props.items[index], index)) return;
+    if (!isRowSelectable(props.items[index], index)) return;
 
     if (selectedRows.value.has(index)) {
       selectedRows.value.delete(index);
@@ -88,6 +89,10 @@
 
   function isRowDisabled(item: T, index: number): boolean {
     return props.rowDisabled?.(item, index) ?? false;
+  }
+
+  function isRowSelectable(item: T, index: number): boolean {
+    return !isRowDisabled(item, index) && (props.rowSelectable?.(item, index) ?? true);
   }
 
   function emitSelection() {
@@ -198,9 +203,9 @@
             <!-- Selection checkbox -->
             <td v-if="selectable" class="td-checkbox" @click.stop>
               <input
+                v-if="isRowSelectable(item, index)"
                 type="checkbox"
                 :checked="isRowSelected(index)"
-                :disabled="isRowDisabled(item, index)"
                 @change="toggleRow(index)"
               />
             </td>

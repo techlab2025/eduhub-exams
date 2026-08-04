@@ -30,7 +30,7 @@ describe('QuestionStatusBox', () => {
     [QuestionStatusEnum.APPROVED, 'status-approved', 'Approved'],
     [QuestionStatusEnum.REJECTED, 'status-rejected', 'Rejected'],
     [QuestionStatusEnum.DRAFT, 'status-draft', 'Draft'],
-    [QuestionStatusEnum.NOT_REVIEW, 'status-under-review', 'Under Review'],
+    [QuestionStatusEnum.NOT_REVIEW, 'status-under-review', 'Not Review'],
     [QuestionStatusEnum.ARCHIVED, 'status-archived', 'Archived'],
     [QuestionStatusEnum.REVISION, 'status-revision', 'Revision Required'],
   ])('uses the correct class and label for status %s', (status, className, label) => {

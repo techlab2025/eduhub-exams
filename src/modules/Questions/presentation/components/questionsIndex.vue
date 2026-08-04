@@ -395,6 +395,9 @@
             :row-disabled="
               (item) => selectedRows.length > 0 && item.status === QuestionStatusEnum.APPROVED
             "
+            :row-selectable="
+              (item) => !(selectedRows.length > 0 && item.status === QuestionStatusEnum.APPROVED)
+            "
             @selection-change="selectedRows = $event"
           >
             <template #cell-title="{ item }">

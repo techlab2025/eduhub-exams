@@ -139,6 +139,8 @@
   --border-rejected: #f5c2c0;
   --bg-approved: #e9f9ee;
   --border-approved: #b7e9c9;
+  --revision-color: #6155f5;
+  --revision-bg: #6155f51a;
   --blue-opacity-50: rgba(29, 78, 216, 1);
   /* ── Typography ────────────────────────────────────────────── */
   --font-family: 'Medium', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -11433,6 +11435,7 @@ body::-webkit-scrollbar-thumb:hover {
   border-radius: var(--xl-size-1);
   border: 1px solid var(--border-color);
   overflow: hidden;
+  padding: 10px;
 }
 .question-tree-card .section {
   padding: var(--md-size);
@@ -11579,18 +11582,31 @@ body::-webkit-scrollbar-thumb:hover {
   font-size: var(--md-size);
   color: var(--standard-black);
 }
-.question-status-card.status-created, .question-status-card.status-under-review {
+.question-status-card.status-created {
   border: 1px solid var(--border-waiting);
   background: var(--bg-waiting);
 }
-.question-status-card.status-created::before, .question-status-card.status-under-review::before {
+.question-status-card.status-created::before {
   background: var(--border-waiting);
 }
-.question-status-card.status-created .status-item:nth-child(1), .question-status-card.status-created .status-item:nth-child(3), .question-status-card.status-under-review .status-item:nth-child(1), .question-status-card.status-under-review .status-item:nth-child(3) {
+.question-status-card.status-created .status-item:nth-child(1), .question-status-card.status-created .status-item:nth-child(3) {
   border-color: var(--border-waiting);
 }
-.question-status-card.status-created .status-item:first-child h3, .question-status-card.status-under-review .status-item:first-child h3 {
+.question-status-card.status-created .status-item:first-child h3 {
   color: var(--StandardBlue);
+}
+.question-status-card.status-under-review {
+  border: 1px solid var(--in-active-color);
+  background: var(--caution-bg);
+}
+.question-status-card.status-under-review::before {
+  background: var(--in-active-color);
+}
+.question-status-card.status-under-review .status-item:nth-child(1), .question-status-card.status-under-review .status-item:nth-child(3) {
+  border-color: var(--in-active-color);
+}
+.question-status-card.status-under-review .status-item:first-child h3 {
+  color: var(--in-active-color);
 }
 .question-status-card.status-draft, .question-status-card.status-archived, .question-status-card.status-unknown {
   border: 1px solid var(--border-drafting);
@@ -11632,17 +11648,17 @@ body::-webkit-scrollbar-thumb:hover {
   color: var(--success-alt);
 }
 .question-status-card.status-revision {
-  border: 1px solid var(--warning);
-  background: var(--warning-light);
+  border: 1px solid var(--revision-color);
+  background: var(--revision-bg);
 }
 .question-status-card.status-revision::before {
-  background: var(--warning);
+  background: var(--revision-color);
 }
 .question-status-card.status-revision .status-item:nth-child(1), .question-status-card.status-revision .status-item:nth-child(3) {
-  border-color: var(--warning);
+  border-color: var(--revision-color);
 }
 .question-status-card.status-revision .status-item:first-child h3 {
-  color: var(--warning-dark);
+  color: var(--revision-color);
 }
 
 /* =============================================================================
@@ -17111,6 +17127,10 @@ label,
 }
 
 .document-form-card .p-select-label.p-placeholder {
+  padding: 0 !important;
+}
+
+.p-dialog-content {
   padding: 0 !important;
 }
 

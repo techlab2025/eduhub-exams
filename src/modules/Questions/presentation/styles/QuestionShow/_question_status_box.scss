@@ -65,9 +65,12 @@
     }
   }
 
-  &.status-created,
-  &.status-under-review {
+  &.status-created {
     @include status-theme(var(--bg-waiting), var(--border-waiting), var(--StandardBlue));
+  }
+
+  &.status-under-review {
+    @include status-theme(var(--caution-bg), var(--in-active-color), var(--in-active-color));
   }
 
   &.status-draft,
@@ -85,6 +88,6 @@
   }
 
   &.status-revision {
-    @include status-theme(var(--warning-light), var(--warning), var(--warning-dark));
+    @include status-theme(var(--revision-bg), var(--revision-color), var(--revision-color));
   }
 }

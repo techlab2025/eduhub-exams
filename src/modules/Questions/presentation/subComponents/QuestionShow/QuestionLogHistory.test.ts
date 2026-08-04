@@ -43,4 +43,34 @@ describe('QuestionLogHistory', () => {
     expect(wrapper.get('.log-date').classes()).toContain(className);
     expect(wrapper.get('.log-content h4').classes()).toContain(className);
   });
+
+  it('renders the latest log first without mutating the input', () => {
+    const logs = [
+      {
+        questionId: 1,
+        status: { value: QuestionStatusEnum.CREATED, name: 'Oldest' },
+      },
+      {
+        questionId: 1,
+        status: { value: QuestionStatusEnum.APPROVED, name: 'Latest' },
+      },
+    ] as QuestionHistoryModel[];
+    const wrapper = mount(QuestionLogHistory, {
+      props: { logs },
+      global: {
+        stubs: {
+          Accordion: passthroughStub,
+          AccordionPanel: passthroughStub,
+          AccordionHeader: passthroughStub,
+          AccordionContent: passthroughStub,
+        },
+      },
+    });
+
+    expect(wrapper.findAll('.log-content h4').map((item) => item.text())).toEqual([
+      'Latest',
+      'Oldest',
+    ]);
+    expect(logs.map((log) => log.status?.name)).toEqual(['Oldest', 'Latest']);
+  });
 });

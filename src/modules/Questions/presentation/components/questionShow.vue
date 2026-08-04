@@ -91,7 +91,7 @@
 
       <QuestionLogHistory
         v-if="questionHistory?.length! > 0"
-        :logs="questionHistory"
+        :logs="questionHistory!"
       />
     </div>
   </div>

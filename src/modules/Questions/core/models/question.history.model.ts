@@ -38,7 +38,7 @@ export default class QuestionHistoryModel {
       status: json.status ? HistoryStatusModel.fromJson(json.status) : null,
       note: json.note!,
       employee: json.employee ? EmployeeModel.fromJson(json.employee!) : null,
-      caretedAt: json.created_at!,
+      caretedAt: json.date!,
     });
   }
 
