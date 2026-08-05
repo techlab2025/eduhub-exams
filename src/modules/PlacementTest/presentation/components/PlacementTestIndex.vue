@@ -206,7 +206,7 @@
                 <router-link
                   class="action-btn edit"
                   :to="`/placement-test/${item.id}`"
-                  title="Edit"
+                  title="show"
                 >
                   <ShowIcon />
                 </router-link>
