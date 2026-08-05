@@ -66,13 +66,13 @@ export default class ArticleController extends BaseController<
           ...(subjectId && { subject_id: subjectId }),
           ...(sequenceId && { sequence_id: sequenceId }),
         };
-        router.push({
+        await router.push({
           name: 'Article questions',
           params: { artical_id: articleId },
           ...(Object.keys(query).length && { query }),
         });
       } else if (shouldRoute) {
-        router.push({ name: 'Articles' });
+        await router.push({ name: 'Articles' });
       }
       if (formKey) {
         FormStore.clearFormData(formKey);

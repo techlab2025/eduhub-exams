@@ -27,6 +27,7 @@ vi.mock('@/base/Presentation/Controller/baseController', () => ({
 describe('ArticleController', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(router.push).mockResolvedValue(undefined);
     (ArticleController as unknown as { instance?: ArticleController }).instance = undefined;
   });
 
@@ -48,6 +49,35 @@ describe('ArticleController', () => {
       params: { artical_id: 42 },
       query: { subject_id: 284, sequence_id: 308 },
     });
+    expect(clearFormDataMock).toHaveBeenCalledWith('article-form');
+  });
+
+  it('keeps creation pending until question-page navigation finishes', async () => {
+    superCreateMock.mockResolvedValue(new DataSuccess({ data: { id: 42 } as never }));
+    let finishNavigation!: () => void;
+    vi.mocked(router.push).mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          finishNavigation = resolve;
+        }),
+    );
+    const controller = ArticleController.getInstance();
+
+    const createPromise = controller.create(
+      {
+        toMap: () => ({ e_c_subject_id: 284 }),
+        questionSequenceId: 308,
+      } as never,
+      undefined,
+      'article-form',
+    );
+    await Promise.resolve();
+
+    expect(clearFormDataMock).not.toHaveBeenCalled();
+
+    finishNavigation();
+    await createPromise;
+
     expect(clearFormDataMock).toHaveBeenCalledWith('article-form');
   });
 
