@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { env } from '@/base/Core/Config';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import PlcaementTestModel from '../../../core/models/placement.test.model';
+import PlacementStudentProfileModel from '../../../core/models/placement.student.profile.model';
+import ShowPlacementStudentParams from '../../../core/params/show.placement.student.params';
 import PlacementTestRepository from '../placement.test.repository';
 
 describe('PlacementTestRepository', () => {
@@ -61,6 +63,22 @@ describe('PlacementTestRepository', () => {
     vi.spyOn(repository as unknown as { apiService: unknown }, 'apiService', 'get').mockReturnValue(
       {
         index: vi.fn().mockResolvedValue(apiResponse),
+        showStudentProfile: vi.fn().mockResolvedValue({
+          statusCode: 200,
+          data: {
+            status: true,
+            message: 'Student profile fetched successfully',
+            data: {
+              id: 1,
+              student: { id: 7, name: 'Ahmed', image: '' },
+              student_code: 'ST-7',
+              exam_performance: [],
+              skill_progress: [],
+              plan_markers: [],
+              exam_history: [],
+            },
+          },
+        }),
       },
     );
     env.override({ useStaticData: false });
@@ -82,6 +100,16 @@ describe('PlacementTestRepository', () => {
       expect(result.data?.[0].EducationClassificationSubject?.title).toBe('mostafa 2');
       expect(result.data?.[0].numberOfQuestions).toBe(1);
       expect(result.data?.[0].in_plan).toBe(false);
+    }
+  });
+
+  it('parses the student profile through the placement repository', async () => {
+    const result = await repository.showStudentProfile(new ShowPlacementStudentParams(7));
+
+    expect(result).toBeInstanceOf(DataSuccess);
+    if (result instanceof DataSuccess) {
+      expect(result.data).toBeInstanceOf(PlacementStudentProfileModel);
+      expect(result.data?.placementTest.student?.id).toBe(7);
     }
   });
 });

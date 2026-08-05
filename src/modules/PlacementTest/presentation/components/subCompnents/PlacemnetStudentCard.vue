@@ -31,12 +31,22 @@
       </div>
       <div class="card-action">
         <ExportPlacmentIcon class="card-icon" />
-        <PlacemenetShowIcon class="card-icon" />
+        <router-link
+          v-if="student.id"
+          :to="{
+            name: 'Placement Test Student Profile',
+            params: { studentId: student.id },
+          }"
+          class="card-icon-link"
+          :title="$t('placement_test.open_profile')"
+        >
+          <PlacemenetShowIcon class="card-icon" />
+        </router-link>
         <SHarePlacemenetIcon class="card-icon" />
       </div>
     </div>
     <div class="subjects">
-      <div class="subject" v-for="subject in getSubjectPath(subjects)" :key="subject">
+      <div v-for="subject in getSubjectPath(subjects)" :key="subject" class="subject">
         {{ subject }}
       </div>
     </div>
@@ -44,99 +54,116 @@
 </template>
 <style scoped lang="scss">
   .placement-student-card {
-    width: 100%;
-    background-color: #24385c0d;
-    border-radius: 24px;
-    border: 1px solid #4faf7c1a;
-    padding: 10px;
-    gap: 10px;
+    position: relative;
     display: flex;
-    justify-content: start;
     align-items: start;
     flex-direction: column;
-    position: relative;
+    justify-content: start;
+    width: 100%;
+    gap: 10px;
+    padding: 10px;
     overflow: hidden;
+    background-color: var(--gray-50);
+    border: 1px solid var(--border-weak);
+    border-radius: var(--radius-xl);
+
     .placement-student-card-header {
-      width: 100%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      width: 100%;
+
       .card-body {
         display: flex;
-        justify-content: start;
         align-items: center;
+        justify-content: start;
         gap: 10px;
+
         img {
           width: 50px;
           height: 50px;
+          object-fit: cover;
+          border-radius: var(--radius-md);
         }
+
         .text {
           display: flex;
-          flex-direction: column;
-          gap: 5px;
           align-items: start;
+          flex-direction: column;
           justify-content: start;
+          gap: 5px;
+
           h5 {
-            color: #111827;
-            font-size: 18px;
+            color: var(--gray-900);
+            font-family: var(--font-family);
+            font-size: var(--md-size-2);
             font-weight: 700;
-            font-family: 'Demi';
           }
+
           span {
-            color: #8a8a8a;
-            font-size: 16px;
+            color: var(--gray-500);
+            font-family: var(--font-family);
+            font-size: var(--md-size);
             font-weight: 500;
-            font-family: 'Demi';
           }
         }
       }
+
       .card-action {
+        z-index: 2;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         gap: 10px;
-        z-index: 999;
+
         .card-icon {
           cursor: pointer;
         }
+
+        .card-icon-link {
+          display: inline-flex;
+          color: inherit;
+        }
       }
     }
+
     .subjects {
       display: flex;
-      justify-content: start;
       align-items: center;
+      justify-content: start;
+
       .subject {
         margin: 5px;
         padding: 5px 30px;
-        background-color: white !important;
-        border-radius: 20px;
-        color: #4b4b4b;
-        font-size: 14px;
+        color: var(--gray-700);
+        font-family: var(--font-family);
+        font-size: var(--sm-size);
         font-weight: 400;
-        font-family: 'Demi';
+        background-color: var(--bg-card);
+        border-radius: var(--radius-full);
       }
     }
+
     &::after {
-      content: '';
       position: absolute;
-      border-width: 2px;
-      border-radius: 50%;
-      background-color: #24385c26;
+      right: 0;
+      bottom: -90px;
       width: 200px;
       height: 200px;
-      bottom: -90px;
-      right: 0px;
-    }
-    &::before {
       content: '';
-      position: absolute;
-      border-width: 2px;
+      background-color: var(--gray-200);
       border-radius: 50%;
-      background-color: #24385c26;
-      width: 100px;
-      height: 100px;
+    }
+
+    &::before {
+      position: absolute;
       top: -20px;
       right: -20px;
+      width: 100px;
+      height: 100px;
+      content: '';
+      background-color: var(--gray-200);
+      border-radius: 50%;
     }
   }
 </style>

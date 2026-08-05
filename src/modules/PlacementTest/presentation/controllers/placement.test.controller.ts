@@ -3,15 +3,24 @@ import type { ControllerConfig } from '@/base/Presentation/Controller/baseContro
 import type PlcaementTestModel from '../../core/models/placement.test.model';
 import type ShowPlcaementTestModel from '../../core/models/show.placement.test.model';
 import PlacementTestRepository from '../../data/repositories/placement.test.repository';
-import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import {
+  DataInitial,
+  DataLoading,
+  type DataState,
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import { ref, type Ref } from 'vue';
+import type PlacementStudentProfileModel from '../../core/models/placement.student.profile.model';
 
 export default class PlacementTestController extends BaseController<
   ShowPlcaementTestModel,
   PlcaementTestModel[]
 > {
   private static instance: PlacementTestController;
+  public readonly studentProfileState: Ref<DataState<PlacementStudentProfileModel>> = ref(
+    new DataInitial<PlacementStudentProfileModel>(),
+  ) as Ref<DataState<PlacementStudentProfileModel>>;
 
   protected get repository() {
     return PlacementTestRepository.getInstance();
@@ -44,7 +53,7 @@ export default class PlacementTestController extends BaseController<
     params?: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<PlcaementTestModel[]>> {
-    const result = await super.fetchList(params, { ...options});
+    const result = await super.fetchList(params, { ...options });
     return result;
   }
 
@@ -52,7 +61,19 @@ export default class PlacementTestController extends BaseController<
     params: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<ShowPlcaementTestModel>> {
-    const result = await super.fetchOne(params, { ...options});
+    const result = await super.fetchOne(params, { ...options });
+    return result;
+  }
+
+  async fetchStudentProfile(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<PlacementStudentProfileModel>> {
+    this.studentProfileState.value = new DataLoading<PlacementStudentProfileModel>();
+    const result = await this.repository.showStudentProfile(params, options);
+    this.studentProfileState.value = result;
+
+    if (result.hasError) this.handleErrorResponse(result);
     return result;
   }
 }

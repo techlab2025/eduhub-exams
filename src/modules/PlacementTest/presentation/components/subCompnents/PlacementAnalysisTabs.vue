@@ -23,15 +23,16 @@
   }>();
 
   const { t } = useI18n();
-  const activeTab = ref<PlacementAnalysisTab>(PlacementAnalysisTabEnum.skills);
+  const activeTab = ref<PlacementAnalysisTab>(PlacementAnalysisTabEnum.questions);
 
   const tabs = computed(() => [
+    { value: PlacementAnalysisTabEnum.questions, label: t('placement_test.questions') },
     { value: PlacementAnalysisTabEnum.skills, label: t('placement_test.skills_analysis') },
+
     {
       value: PlacementAnalysisTabEnum.curriculum,
       label: t('placement_test.curriculum_analysis'),
     },
-    { value: PlacementAnalysisTabEnum.questions, label: t('placement_test.questions') },
   ]);
 </script>
 
@@ -89,7 +90,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px; 
+      gap: 8px;
       min-height: 48px;
       color: var(--table-header-color);
       font-family: 'demi';

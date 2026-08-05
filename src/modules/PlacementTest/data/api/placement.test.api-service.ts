@@ -1,5 +1,10 @@
 import BaseApiService from '@/base/Data/ApiService/baseApiService';
-import type { ApiEndpoints } from '@/base/Data/ApiService/baseApiService';
+import type {
+  ApiCallOptions,
+  ApiEndpoints,
+  ApiResponse,
+} from '@/base/Data/ApiService/baseApiService';
+import type Params from '@/base/Core/Params/params';
 import { PlacementTestEndpoints } from './placement.test.api.endpoints';
 
 export default class PlacementApiService extends BaseApiService {
@@ -19,5 +24,9 @@ export default class PlacementApiService extends BaseApiService {
       index: this.placementTestEndpoints.index,
       show: this.placementTestEndpoints.show,
     };
+  }
+
+  showStudentProfile(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+    return this.customPost(this.placementTestEndpoints.showStudentProfile, params, options);
   }
 }
