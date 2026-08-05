@@ -14,11 +14,13 @@
     defineProps<{
       articleId?: number;
       subjectId?: number;
+      sequenceId?: number;
       embedded?: boolean;
     }>(),
     {
       articleId: undefined,
       subjectId: undefined,
+      sequenceId: undefined,
       embedded: false,
     },
   );
@@ -120,6 +122,7 @@
       :form-key="formKey"
       :article-id="props.articleId"
       :subject-id="props.subjectId"
+      :sequence-id="props.sequenceId"
       @update-data="updateData"
     />
     <div class="actions">

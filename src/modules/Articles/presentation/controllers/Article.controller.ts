@@ -44,12 +44,7 @@ export default class ArticleController extends BaseController<
     return ArticleController.instance;
   }
 
-  async create(
-    params: Params,
-    options?: ApiCallOptions,
-    formKey?: string,
-    shouldRoute = true,
-  ) {
+  async create(params: Params, options?: ApiCallOptions, formKey?: string, shouldRoute = true) {
     const FormStore = useFormsStore();
     const mappedParams = params.toMap();
 
@@ -62,11 +57,19 @@ export default class ArticleController extends BaseController<
     if (result instanceof DataSuccess) {
       const articleId = result.data?.question_id ?? result.data?.id;
       const subjectId = mappedParams.e_c_subject_id;
+      const sequenceId =
+        'questionSequenceId' in params && typeof params.questionSequenceId === 'number'
+          ? params.questionSequenceId
+          : undefined;
       if (articleId && shouldRoute) {
+        const query = {
+          ...(subjectId && { subject_id: subjectId }),
+          ...(sequenceId && { sequence_id: sequenceId }),
+        };
         router.push({
           name: 'Article questions',
           params: { artical_id: articleId },
-          ...(subjectId && { query: { subject_id: subjectId } }),
+          ...(Object.keys(query).length && { query }),
         });
       } else if (shouldRoute) {
         router.push({ name: 'Articles' });

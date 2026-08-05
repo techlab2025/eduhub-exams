@@ -14,6 +14,7 @@ export default class AddArticlesParams implements Params {
   public question?: string;
   public question_type?: ArticleQuestionTypeEnum;
   public e_c_subject_id?: number;
+  public questionSequenceId?: number;
   public status?: QuestionStatusEnum | null;
   public documents?: TitleInterface<string>;
   public explanation?: {
@@ -33,6 +34,7 @@ export default class AddArticlesParams implements Params {
     question?: string;
     question_type?: ArticleQuestionTypeEnum;
     e_c_subject_id?: number;
+    questionSequenceId?: number;
     status?: QuestionStatusEnum | null;
     documents?: TitleInterface<string>;
     explanation?: {
@@ -45,6 +47,7 @@ export default class AddArticlesParams implements Params {
     this.question = data.question;
     this.question_type = data.question_type;
     this.e_c_subject_id = data.e_c_subject_id;
+    this.questionSequenceId = data.questionSequenceId;
     this.status = data.status;
     this.documents = data.documents;
     this.explanation = data.explanation;

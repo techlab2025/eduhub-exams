@@ -25,6 +25,7 @@ vi.mock('@/modules/Questions/presentation/components/questionsAdd.vue', () => ({
       embedded: Boolean,
       articleId: Number,
       subjectId: Number,
+      sequenceId: Number,
     },
     emits: ['saved', 'close'],
     template: '<div class="questions-add-stub" />',
@@ -32,7 +33,10 @@ vi.mock('@/modules/Questions/presentation/components/questionsAdd.vue', () => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ params: { artical_id: '42' }, query: { subject_id: '17' } }),
+  useRoute: () => ({
+    params: { artical_id: '42' },
+    query: { subject_id: '290', sequence_id: '304' },
+  }),
   useRouter: () => ({ push: routerPushMock }),
 }));
 
@@ -90,7 +94,12 @@ describe('ArticalQuestionsList', () => {
     await wrapper.get('.add-question-button').trigger('click');
     const questionsAdd = wrapper.findComponent({ name: 'QuestionsAdd' });
     expect(questionsAdd.exists()).toBe(true);
-    expect(questionsAdd.props()).toMatchObject({ embedded: true, articleId: 42, subjectId: 17 });
+    expect(questionsAdd.props()).toMatchObject({
+      embedded: true,
+      articleId: 42,
+      subjectId: 290,
+      sequenceId: 304,
+    });
 
     questionsAdd.vm.$emit('saved');
     await flushPromises();

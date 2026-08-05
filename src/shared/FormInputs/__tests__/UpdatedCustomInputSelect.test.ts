@@ -6,14 +6,14 @@ import UpdatedCustomInputSelect from '../UpdatedCustomInputSelect.vue';
 const MultiSelectStub = {
   name: 'MultiSelect',
   template: '<div class="multiselect-stub" />',
-  props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage'],
+  props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage', 'disabled'],
   emits: ['update:modelValue'],
 };
 const SelectStub = {
   name: 'Select',
   template:
     '<div class="select-stub"><slot name="value" :value="modelValue" :placeholder="placeholder" /></div>',
-  props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage'],
+  props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage', 'disabled'],
   emits: ['update:modelValue'],
 };
 const IconBackStageStub = {
@@ -171,5 +171,11 @@ describe('UpdatedCustomInputSelect', () => {
     const wrapper = createWrapper({ id: 'my-select' });
     const hidden = wrapper.find('input.hidden');
     expect(hidden.attributes('id')).toBe('my-select');
+  });
+
+  it('disables the underlying select when disabled is true', () => {
+    const wrapper = createWrapper({ disabled: true });
+
+    expect(wrapper.findComponent(SelectStub).props('disabled')).toBe(true);
   });
 });

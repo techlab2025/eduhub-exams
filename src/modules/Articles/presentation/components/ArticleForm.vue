@@ -20,7 +20,6 @@
   import type StageModel from '@/modules/Stages/core/models/stage.model';
   import flattenSubjectBranchTree from '@/modules/Questions/core/SubjectTreeSelectHelper';
   import FullSubjectTreeController from '@/modules/Questions/presentation/controllers/FullSubjectTree/full.subject.tree.controller';
-  import { CustomToast } from './CustomToast';
   import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
   // import GetFullNameOfbranch from '@/shared/GeneralMethods/CreateBranchSubjectTree';
@@ -138,9 +137,7 @@
   const AllSubjectTree = ref<StageModel[]>([]);
 
   const subjectOptions = computed<TitleInterface<number>[]>(() => {
-    return (AllSubjectTree.value! || []).flatMap((stage: StageModel) => {
-      return flattenSubjectBranchTree(stage.children);
-    });
+    return flattenSubjectBranchTree(AllSubjectTree.value ?? []);
   });
   const handelSubjectUpdate = async (selected: TitleInterface<number> | undefined) => {
     SelectedQuestionSequence.value = selected!;
@@ -164,6 +161,10 @@
     // console.log('AllSubjectTree.value', AllSubjectTree.value);
   });
   const updateData = () => {
+    // The selected option represents the last child in the chain. Its subtitle
+    // keeps the first subject id so both values can be carried to the question form.
+    const selectedSubjectId = SelectedQuestionSequence.value?.id;
+    const firstSubjectId = Number(SelectedQuestionSequence.value?.subtitle) || selectedSubjectId;
     let params: any;
     if (route?.params?.id) {
       params = new EditArticlesParams({
@@ -173,7 +174,8 @@
           UploadedImage.value.map((file) => new AttachmentsParams({ alt: 'img', file })) || [],
         question: question.value,
         question_type: 5,
-        e_c_subject_id: SelectedQuestionSequence.value?.id,
+        e_c_subject_id: firstSubjectId,
+        questionSequenceId: selectedSubjectId,
         documents: SelectedDocument.value?.id && {
           document_id: SelectedDocument.value?.id,
           text: articleSource.value,
@@ -194,7 +196,8 @@
           UploadedImage.value.map((file) => new AttachmentsParams({ alt: 'img', file })) || [],
         question: question.value,
         question_type: 5,
-        e_c_subject_id: SelectedQuestionSequence.value?.id,
+        e_c_subject_id: firstSubjectId,
+        questionSequenceId: selectedSubjectId,
         documents: SelectedDocument.value?.id && {
           document_id: SelectedDocument.value?.id,
           text: articleSource.value,

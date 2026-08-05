@@ -145,4 +145,27 @@ describe('questionsForm', () => {
     expect(isValid).toBe(true);
     expect(wrapper.emitted('updateData')?.at(-1)?.[0]).toMatchObject({ parentId: 42 });
   });
+
+  it('passes locked subject and sequence values to the basic data form', () => {
+    const wrapper = mount(questionsForm, {
+      props: { articleId: 42, subjectId: 290, sequenceId: 304 },
+      global: {
+        plugins: [i18n],
+        stubs: {
+          BasicQuestionDataForm: {
+            name: 'BasicQuestionDataForm',
+            props: ['subjectId', 'sequenceId', 'validationErrors'],
+            template: '<div />',
+          },
+          QuestionAnswersDataForm: true,
+          FolderIcon: true,
+        },
+      },
+    });
+
+    expect(wrapper.findComponent({ name: 'BasicQuestionDataForm' }).props()).toMatchObject({
+      subjectId: 290,
+      sequenceId: 304,
+    });
+  });
 });

@@ -36,7 +36,8 @@ describe('ArticleController', () => {
 
     await controller.create(
       {
-        toMap: () => ({ e_c_subject_id: 17 }),
+        toMap: () => ({ e_c_subject_id: 284 }),
+        questionSequenceId: 308,
       } as never,
       undefined,
       'article-form',
@@ -45,7 +46,7 @@ describe('ArticleController', () => {
     expect(router.push).toHaveBeenCalledWith({
       name: 'Article questions',
       params: { artical_id: 42 },
-      query: { subject_id: 17 },
+      query: { subject_id: 284, sequence_id: 308 },
     });
     expect(clearFormDataMock).toHaveBeenCalledWith('article-form');
   });

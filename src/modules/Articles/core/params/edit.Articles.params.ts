@@ -9,22 +9,21 @@ import type AttachmentsParams from '@/modules/Questions/core/params/subParams/at
  */
 export default class EditArticlesParams implements Params {
   public id: number;
-  public  question_description?: string;
-  public  attachments?: AttachmentsParams[];
-  public  question?:string;
-  public  question_type?: ArticleQuestionTypeEnum;
+  public question_description?: string;
+  public attachments?: AttachmentsParams[];
+  public question?: string;
+  public question_type?: ArticleQuestionTypeEnum;
   public e_c_subject_id?: number;
-  public documents?: TitleInterface<string>;    
-  public explanation?:{
-    explanation?:string;
-    attachments?:AttachmentsParams[];
+  public questionSequenceId?: number;
+  public documents?: TitleInterface<string>;
+  public explanation?: {
+    explanation?: string;
+    attachments?: AttachmentsParams[];
   };
-  
-  
 
   public static readonly validation = new ClassValidation().setRules({
     question_type: { required: true },
-    question: { required: true ,  minLength: 5 },
+    question: { required: true, minLength: 5 },
     documents: { required: true },
   });
 
@@ -32,28 +31,30 @@ export default class EditArticlesParams implements Params {
     id: number;
     question_description?: string;
     attachments?: AttachmentsParams[];
-    question?:string;
+    question?: string;
     question_type?: ArticleQuestionTypeEnum;
     e_c_subject_id?: number;
-    documents?: TitleInterface<string>;    
-    explanation?:{
-      explanation?:string;
+    questionSequenceId?: number;
+    documents?: TitleInterface<string>;
+    explanation?: {
+      explanation?: string;
       attachments?: AttachmentsParams[];
     };
   }) {
-    this.id=data.id;
-    this.question_description=data.question_description;
-    this.attachments=data.attachments;
-    this.question=data.question;
-    this.question_type=data.question_type;
-    this.e_c_subject_id=data.e_c_subject_id;
-    this.documents=data.documents;
-    this.explanation=data.explanation;
+    this.id = data.id;
+    this.question_description = data.question_description;
+    this.attachments = data.attachments;
+    this.question = data.question;
+    this.question_type = data.question_type;
+    this.e_c_subject_id = data.e_c_subject_id;
+    this.questionSequenceId = data.questionSequenceId;
+    this.documents = data.documents;
+    this.explanation = data.explanation;
   }
 
   toMap(): { [p: string]: any } {
     return {
-      question_id:this.id,
+      question_id: this.id,
       question_description: this.question_description,
       attachments: this.attachments?.map((f) => f.toMap()),
       question: this.question,
@@ -61,7 +62,7 @@ export default class EditArticlesParams implements Params {
       e_c_subject_id: this.e_c_subject_id,
       documents: [this.documents],
       explanation: this.explanation,
-      difficulty_level:1,
+      difficulty_level: 1,
     };
   }
 

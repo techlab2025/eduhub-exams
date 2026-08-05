@@ -11,6 +11,9 @@ const fetchTopics = vi.hoisted(() => vi.fn());
 const skillsListData = vi.hoisted(() => ({
   current: null as { value: unknown[] } | null,
 }));
+const stageListData = vi.hoisted(() => ({
+  current: null as { value: unknown[] } | null,
+}));
 const routeMock = vi.hoisted(() => ({
   params: { id: '1' } as Record<string, string>,
   query: {} as Record<string, string>,
@@ -52,14 +55,20 @@ vi.mock('@/modules/Skills/presentation/controllers/skills.controller', async () 
   };
 });
 
-vi.mock('@/modules/Stages/presentation/controllers/stage.controller', () => ({
-  default: {
-    getInstance: () => ({
-      listData: { value: [] },
-      fetchList: vi.fn(),
-    }),
-  },
-}));
+vi.mock('@/modules/Stages/presentation/controllers/stage.controller', async () => {
+  const { ref } = await import('vue');
+  const listData = ref<unknown[]>([]);
+  stageListData.current = listData;
+
+  return {
+    default: {
+      getInstance: () => ({
+        listData,
+        fetchList: vi.fn(),
+      }),
+    },
+  };
+});
 
 const globalConfig = {
   plugins: [createPinia(), i18n],
@@ -78,6 +87,7 @@ describe('QuestionContantTabs.vue', () => {
     routeMock.params = { id: '1' };
     routeMock.query = {};
     if (skillsListData.current) skillsListData.current.value = [];
+    if (stageListData.current) stageListData.current.value = [];
     fetchFullSubjectTree.mockResolvedValue({
       data: [
         {
@@ -149,7 +159,7 @@ describe('QuestionContantTabs.vue', () => {
     ]);
   });
 
-  it('uses the routed article subject, hides its select, and filters sequences', async () => {
+  it('uses the routed article subject, locks its select, and filters sequences', async () => {
     routeMock.params = {};
     routeMock.query = { artical_id: '42', subject_id: '17' };
 
@@ -161,7 +171,11 @@ describe('QuestionContantTabs.vue', () => {
     });
     await flushPromises();
 
-    expect(wrapper.findComponent('#doc-branch').exists()).toBe(false);
+    const subjectSelect = wrapper.findComponent('#doc-branch');
+    expect(subjectSelect.exists()).toBe(true);
+    expect(subjectSelect.props('disabled')).toBe(true);
+    expect(subjectSelect.props('modelValue')).toEqual(expect.objectContaining({ id: 17 }));
+    expect(subjectSelect.element.closest('.locked-select')).not.toBeNull();
     expect(fetchFullSubjectTree).toHaveBeenCalledOnce();
     expect(fetchFullSubjectTree.mock.calls[0]?.[0].toMap()).toEqual({
       education_classification_branch_id: 17,
@@ -170,6 +184,91 @@ describe('QuestionContantTabs.vue', () => {
       expect.objectContaining({ id: 284 }),
       expect.objectContaining({ id: 285 }),
     ]);
+  });
+
+  it('prefills the routed question sequence after loading the article subject tree', async () => {
+    routeMock.params = {};
+    routeMock.query = { artical_id: '42', subject_id: '290', sequence_id: '284' };
+
+    const wrapper = mount(QuestionContantTabs, {
+      global: globalConfig,
+    });
+    await flushPromises();
+
+    expect(wrapper.findComponent('#question-sequence').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 284 }),
+    );
+    expect(wrapper.findComponent('#question-sequence').props('disabled')).toBe(true);
+    expect(
+      wrapper.findComponent('#question-sequence').element.closest('.locked-select'),
+    ).not.toBeNull();
+    expect(fetchTopics).toHaveBeenCalledOnce();
+    expect(fetchTopics.mock.calls[0]?.[0].toMap()).toEqual({
+      education_classification_subject_id: 284,
+    });
+    expect(wrapper.emitted('updateData')?.at(-1)?.[0]).toMatchObject({
+      subjectId: 290,
+      questionSequenceId: 284,
+    });
+  });
+
+  it('uses the subject-tree title when a branch option has the same id', async () => {
+    routeMock.params = {};
+    routeMock.query = { artical_id: '42', subject_id: '284', sequence_id: '308' };
+    if (!stageListData.current) throw new Error('Stage controller mock was not initialized');
+    stageListData.current.value = [
+      {
+        branches: [
+          {
+            id: 284,
+            title: 'Private Education → Higher Education',
+            subjects: [],
+            children: [],
+          },
+        ],
+      },
+      {
+        branches: [
+          {
+            id: 361,
+            title: 'mostafa 1',
+            subjects: [
+              {
+                id: 284,
+                e_c_subject_id: 284,
+                title: 'mostafa 2',
+                full_title: 'mostafa 1 -> mostafa 2',
+                children: [
+                  {
+                    id: 308,
+                    e_c_subject_id: 308,
+                    title: 'mostafaf 2.1',
+                    full_title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1',
+                    children: [],
+                  },
+                ],
+              },
+            ],
+            children: [],
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mount(QuestionContantTabs, { global: globalConfig });
+    await flushPromises();
+
+    const subjectSelect = wrapper.findComponent('#doc-branch');
+    expect(subjectSelect.props('modelValue')).toEqual(
+      expect.objectContaining({ id: 284, title: 'mostafa 1 -> mostafa 2' }),
+    );
+    expect(subjectSelect.props('staticOptions')).toEqual([
+      expect.objectContaining({ id: 284, title: 'mostafa 1 -> mostafa 2' }),
+    ]);
+    expect(wrapper.findComponent('#question-sequence').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 308 }),
+    );
+    expect(fetchFullSubjectTree).not.toHaveBeenCalled();
   });
 
   it('keeps response topics selected after loading edit-mode topic options', async () => {

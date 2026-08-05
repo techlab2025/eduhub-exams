@@ -40,6 +40,7 @@ const globalConfig = {
   stubs: {
     questionsForm: {
       name: 'questionsForm',
+      props: ['articleId', 'subjectId', 'sequenceId'],
       template: '<div class="questions-form-stub" />',
     },
     WithReviewDialog: {
@@ -137,6 +138,19 @@ describe('questionsAdd.vue', () => {
     expect(wrapper.emitted('saved')).toHaveLength(1);
     expect(routerPushMock).not.toHaveBeenCalled();
     expect(routerBackMock).not.toHaveBeenCalled();
+  });
+
+  it('passes the article subject and sequence into the embedded question form', () => {
+    const wrapper = mount(questionsAdd, {
+      props: { embedded: true, articleId: 42, subjectId: 290, sequenceId: 304 },
+      global: globalConfig,
+    });
+
+    expect(wrapper.findComponent({ name: 'questionsForm' }).props()).toMatchObject({
+      articleId: 42,
+      subjectId: 290,
+      sequenceId: 304,
+    });
   });
 
   it('does not navigate when saving a draft returns no result', async () => {

@@ -28,6 +28,10 @@
     const querySubjectId = Number(route.query?.subject_id);
     return querySubjectId || article.value?.e_c_subject?.id;
   });
+  const articleSequenceId = computed(() => {
+    const querySequenceId = Number(route.query?.sequence_id);
+    return querySequenceId || undefined;
+  });
   const questions = computed(() => article.value?.questions ?? []);
   const questionCount = computed(
     () => questions.value.length || article.value?.number_of_questions || 0,
@@ -228,12 +232,14 @@
           <span class="tip-spark" aria-hidden="true">✦</span>
           <span>{{ $t('article_questions_dialog_tip') }}</span>
         </div>
+
         <QuestionsAdd
           v-if="showAddQuestionDialog"
           class="dialog-question-form"
           embedded
           :article-id="articleId"
           :subject-id="articleSubjectId"
+          :sequence-id="articleSequenceId"
           @saved="handleQuestionSaved"
           @close="showAddQuestionDialog = false"
         />

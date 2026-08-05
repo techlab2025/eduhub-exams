@@ -10,6 +10,7 @@
   import SkillsController from '@/modules/Skills/presentation/controllers/skills.controller';
   import IndexSkillsParams from '@/modules/Skills/core/params/index.skills.params';
   import type StageModel from '@/modules/Stages/core/models/stage.model';
+  import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
   import flattenBranchTree from '@/modules/document/core/TreeSelectHelper';
   import FullSubjectTreeController from '../../presentation/controllers/FullSubjectTree/full.subject.tree.controller';
@@ -22,10 +23,11 @@
   import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
 
   const emit = defineEmits(['updateData']);
-  const { ContentData, draftData, validationErrors, subjectId } = defineProps<{
+  const { ContentData, draftData, validationErrors, subjectId, sequenceId } = defineProps<{
     ContentData?: ShowQuestionsModel;
     draftData?: AddquestionsParams;
     subjectId?: number;
+    sequenceId?: number;
     validationErrors?: Partial<
       Record<'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
     >;
@@ -38,6 +40,12 @@
     return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : undefined;
   });
   const lockedSubjectId = computed(() => subjectId ?? routeSubjectId.value);
+  const routeSequenceId = computed(() => {
+    const value = route.query.sequence_id;
+    const parsedValue = Number(Array.isArray(value) ? value[0] : value);
+    return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : undefined;
+  });
+  const lockedSequenceId = computed(() => sequenceId ?? routeSequenceId.value);
 
   // const SelectedSubject = ref<TitleInterface<number> | null>(null);
   const SelectedQuestionSequence = ref<TitleInterface<number> | null>(null);
@@ -85,20 +93,58 @@
 
   const stageController = StageController.getInstance();
   const allStages = ref<StageModel[]>([]);
+  const stagesLoaded = ref(false);
 
   const fullSubjectTreeController = FullSubjectTreeController.getInstance();
 
   onMounted(async () => {
-    const stageParams = new IndexStageParams('', 1, 10, 0);
-    await stageController.fetchList(stageParams);
-    allStages.value = (stageController.listData.value ?? []) as StageModel[];
+    try {
+      const stageParams = new IndexStageParams('', 1, 10, 0);
+      await stageController.fetchList(stageParams);
+      allStages.value = (stageController.listData.value ?? []) as StageModel[];
+    } finally {
+      stagesLoaded.value = true;
+    }
   });
 
   const branchOptions = computed<TitleInterface<number>[]>(() => {
     return allStages.value.flatMap((stage: StageModel) => flattenBranchTree(stage.branches));
   });
 
+  const subjectSelectOptions = computed<TitleInterface<number>[]>(() => {
+    if (!lockedSubjectId.value) return branchOptions.value;
+    return selectedBranchTitle.value ? [selectedBranchTitle.value] : [];
+  });
+
   const AllSubjectTree = ref<StageModel[]>([]);
+  const findSubjectById = (nodes: StageModel[], id: number): StageModel | undefined => {
+    for (const node of nodes) {
+      if ((node.e_c_subject_id ?? node.id) === id) return node;
+      const child = findSubjectById(node.children ?? [], id);
+      if (child) return child;
+    }
+    return undefined;
+  };
+
+  const findSubjectInBranches = (branches: BranchesModel[], id: number): StageModel | undefined => {
+    for (const branch of branches) {
+      const subject = findSubjectById(branch.subjects as unknown as StageModel[], id);
+      if (subject) return subject;
+
+      const childSubject = findSubjectInBranches(branch.children ?? [], id);
+      if (childSubject) return childSubject;
+    }
+    return undefined;
+  };
+
+  const findSubjectInStages = (id: number): StageModel | undefined => {
+    for (const stage of allStages.value) {
+      const subject = findSubjectInBranches(stage.branches ?? [], id);
+      if (subject) return subject;
+    }
+    return undefined;
+  };
+
   const handleBranchChange = async (
     selected: TitleInterface<number> | null | undefined,
     shouldEmit = true,
@@ -117,6 +163,15 @@
       const result = await fullSubjectTreeController.fetchList(fullSubjectTreeParams);
       if (selectedBranchTitle.value?.id !== requestedBranchId) return;
       AllSubjectTree.value = result.data ?? [];
+      if (lockedSubjectId.value === requestedBranchId) {
+        const subject = findSubjectById(AllSubjectTree.value, requestedBranchId);
+        if (subject) {
+          selectedBranchTitle.value = new TitleInterface<number>({
+            id: subject.e_c_subject_id ?? subject.id!,
+            title: subject.full_title || subject.title,
+          });
+        }
+      }
     }
     if (shouldEmit) updateData();
   };
@@ -127,15 +182,6 @@
 
   const topicsControoller = EducationTopicsController.getInstance();
   const topicsOptions = ref<TitleInterface<number>[]>([]);
-
-  watch(
-    lockedSubjectId,
-    (id) => {
-      if (!id || route.params.id) return;
-      void handleBranchChange(new TitleInterface<number>({ id, title: '' }));
-    },
-    { immediate: true },
-  );
 
   const skillsOptions = computed<TitleInterface<number>[]>(() => {
     return skillsController.listData.value?.map((item) => {
@@ -174,6 +220,42 @@
     );
     if (shouldEmit) updateData();
   };
+
+  watch(
+    [lockedSubjectId, lockedSequenceId, stagesLoaded],
+    async ([currentSubjectId, currentSequenceId, areStagesLoaded], _previousValues, onCleanup) => {
+      if (!currentSubjectId || !areStagesLoaded || route.params.id) return;
+
+      let isCurrent = true;
+      onCleanup(() => {
+        isCurrent = false;
+      });
+
+      const stageSubject = findSubjectInStages(currentSubjectId);
+      if (stageSubject) {
+        selectedBranchTitle.value = new TitleInterface<number>({
+          id: stageSubject.e_c_subject_id ?? stageSubject.id!,
+          title: stageSubject.full_title || stageSubject.title,
+        });
+        SelectedQuestionSequence.value = null;
+        SelectedTopic.value = [];
+        topicsOptions.value = [];
+        AllSubjectTree.value = [stageSubject];
+      } else {
+        await handleBranchChange(
+          new TitleInterface<number>({ id: currentSubjectId, title: '' }),
+          !currentSequenceId,
+        );
+      }
+      if (!isCurrent || !currentSequenceId) return;
+
+      const selectedSequence = subjectOptions.value.find(
+        (option) => option.id === currentSequenceId,
+      );
+      if (selectedSequence) await handelSubjectUpdate(selectedSequence);
+    },
+    { immediate: true },
+  );
 
   watch(
     () => ContentData,
@@ -327,16 +409,21 @@
 <template>
   <div class="contant_tabs">
     <div class="form-group">
-      <div v-if="!lockedSubjectId" class="input required-field">
+      <div
+        class="input required-field"
+        :class="{ 'locked-select': lockedSubjectId }"
+        :aria-disabled="Boolean(lockedSubjectId)"
+      >
         <UpdatedCustomInputSelect
           id="doc-branch"
           v-model:dialog-visible="newDialo"
           :label="`Subject`"
-          :static-options="branchOptions"
+          :static-options="subjectSelectOptions"
           :model-value="selectedBranchTitle"
           :placeholder="$t('Select Subject')"
-          :reload="true"
-          :is-dialog="true"
+          :reload="!lockedSubjectId"
+          :is-dialog="!lockedSubjectId"
+          :disabled="Boolean(lockedSubjectId)"
           @update:model-value="handleBranchChange($event)"
         >
         </UpdatedCustomInputSelect>
@@ -344,13 +431,19 @@
           {{ validationErrors.subject }}
         </small>
       </div>
-      <div class="input required-field">
+
+      <div
+        class="input required-field"
+        :class="{ 'locked-select': lockedSequenceId }"
+        :aria-disabled="Boolean(lockedSequenceId)"
+      >
         <UpdatedCustomInputSelect
           id="question-sequence"
           v-model="SelectedQuestionSequence"
           :label="`question sequence`"
           :static-options="subjectOptions"
           placeholder="Question sequence"
+          :disabled="Boolean(lockedSequenceId)"
           @update:model-value="handelSubjectUpdate"
         />
         <small v-if="validationErrors?.sequence" class="question-field-error" data-question-error>
@@ -419,6 +512,11 @@
   </div>
 </template>
 <style scoped lang="scss">
+  .locked-select {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
   .skill-percentage {
     display: grid;
     grid-template-columns: 24px minmax(0, 1fr) minmax(120px, 160px);

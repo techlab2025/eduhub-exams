@@ -60,6 +60,7 @@
     isDialog?: boolean;
     dialogVisible?: boolean;
     onclick?: () => void;
+    disabled?: boolean;
   }
 
   const emit = defineEmits([
@@ -86,6 +87,8 @@
     staticOptions: null,
 
     optional: false,
+
+    disabled: false,
   });
 
   const {
@@ -353,6 +356,7 @@
       filter
       :loading="loading"
       :empty-message="message"
+      :disabled="disabled"
       :pt="{
         overlay: { class: 'custom-select-overlay' },
       }"
@@ -379,6 +383,7 @@
       filter
       :loading="loading"
       :empty-message="message"
+      :disabled="disabled"
       :pt="{
         overlay: { class: 'custom-select-overlay' },
       }"

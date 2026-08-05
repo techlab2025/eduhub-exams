@@ -20,10 +20,11 @@
   };
   const { t } = useI18n();
   const emit = defineEmits(['updateData']);
-  const { question, articleId, subjectId } = defineProps<{
+  const { question, articleId, subjectId, sequenceId } = defineProps<{
     question?: ShowQuestionsModel;
     articleId?: number;
     subjectId?: number;
+    sequenceId?: number;
   }>();
 
   type QuestionValidationErrors = Partial<
@@ -158,6 +159,7 @@
       });
     }
 
+    console.log(params, 'params');
     emit('updateData', params);
   };
 
@@ -238,6 +240,7 @@
     <BasicQuestionDataForm
       :question-data="question"
       :subject-id="subjectId"
+      :sequence-id="sequenceId"
       :validation-errors="validationErrors"
       @update-data="GetAllBasicData"
     />

@@ -27,15 +27,17 @@
   const emit = defineEmits(['updateData']);
   const route = useRoute();
 
-  const { loading, questionData, draftData, validationErrors, subjectId } = defineProps<{
-    loading?: boolean;
-    questionData?: ShowQuestionsModel;
-    draftData?: AddquestionsParams;
-    subjectId?: number;
-    validationErrors?: Partial<
-      Record<'title' | 'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
-    >;
-  }>();
+  const { loading, questionData, draftData, validationErrors, subjectId, sequenceId } =
+    defineProps<{
+      loading?: boolean;
+      questionData?: ShowQuestionsModel;
+      draftData?: AddquestionsParams;
+      subjectId?: number;
+      sequenceId?: number;
+      validationErrors?: Partial<
+        Record<'title' | 'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
+      >;
+    }>();
 
   const selectedDifficultyLevel = ref<number | null>(null);
   const SelectedSkill = ref<QuestionSkillParams[] | null>(null);
@@ -315,6 +317,7 @@
             :draft-data="draftData"
             :ContentData="ContentData!"
             :subject-id="subjectId"
+            :sequence-id="sequenceId"
             class="field-group col-span-2"
             :validation-errors="validationErrors"
             @update-data="getQuestionCOntent"
