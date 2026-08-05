@@ -3,9 +3,13 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createI18n } from 'vue-i18n';
 import ArticalQuestionsList from '../ArticalQuestionsList.vue';
 
-const { fetchOneMock, itemStateMock, routerPushMock } = vi.hoisted(() => ({
+const { fetchOneMock, itemStateMock, routeMock, routerPushMock } = vi.hoisted(() => ({
   fetchOneMock: vi.fn(),
   itemStateMock: { value: { data: null as null | Record<string, unknown> } },
+  routeMock: {
+    params: { artical_id: '42' },
+    query: { subject_id: '290', sequence_id: '304' } as Record<string, string>,
+  },
   routerPushMock: vi.fn(),
 }));
 
@@ -33,10 +37,7 @@ vi.mock('@/modules/Questions/presentation/components/questionsAdd.vue', () => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({
-    params: { artical_id: '42' },
-    query: { subject_id: '290', sequence_id: '304' },
-  }),
+  useRoute: () => routeMock,
   useRouter: () => ({ push: routerPushMock }),
 }));
 
@@ -77,8 +78,28 @@ const global = {
 describe('ArticalQuestionsList', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    routeMock.query = { subject_id: '290', sequence_id: '304' };
     itemStateMock.value.data = null;
     fetchOneMock.mockResolvedValue(undefined);
+  });
+
+  it('uses the article subject and sequence trees when query ids are absent', async () => {
+    routeMock.query = {};
+    itemStateMock.value.data = {
+      questions: [],
+      number_of_questions: 0,
+      subjectTree: { id: 361, title: 'mostafa 1' },
+      sequenceTree: { id: 284, title: 'mostafa 2' },
+    };
+    const wrapper = mount(ArticalQuestionsList, { global });
+    await flushPromises();
+
+    await wrapper.get('.add-question-button').trigger('click');
+
+    expect(wrapper.findComponent({ name: 'QuestionsAdd' }).props()).toMatchObject({
+      subjectId: 361,
+      sequenceId: 284,
+    });
   });
 
   it('opens the add-question dialog, then closes and refetches after saving', async () => {

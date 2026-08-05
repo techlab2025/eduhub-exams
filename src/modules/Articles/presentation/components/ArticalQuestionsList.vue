@@ -26,11 +26,11 @@
   const article = computed(() => controller.itemState.value.data);
   const articleSubjectId = computed(() => {
     const querySubjectId = Number(route.query?.subject_id);
-    return querySubjectId || article.value?.e_c_subject?.id;
+    return querySubjectId || article.value?.subjectTree?.id || article.value?.e_c_subject?.id;
   });
   const articleSequenceId = computed(() => {
     const querySequenceId = Number(route.query?.sequence_id);
-    return querySequenceId || undefined;
+    return querySequenceId || article.value?.sequenceTree?.id || article.value?.e_c_subject?.id;
   });
   const questions = computed(() => article.value?.questions ?? []);
   const questionCount = computed(
