@@ -59,17 +59,19 @@
     }"
   >
     <template #header>
-      <div class="dialog-icon">
-        <!-- <EducationTypeIcon /> -->
-        <img :src="EducationTypeIcon" alt="EducationTypeIcon" width="300" />
-      </div>
-      <div>
-        <h3 class="dialog-title">
-          {{ $t('add_named_level', { name: stageName || $t('stage') }) }}
-        </h3>
-        <p class="dialog-subtitle">
-          {{ $t('enter_named_level', { name: stageName || $t('stage') }) }}
-        </p>
+      <div class="custom-dialog-header">
+        <div class="dialog-icon">
+          <!-- <EducationTypeIcon /> -->
+          <img :src="EducationTypeIcon" alt="EducationTypeIcon" width="300" />
+        </div>
+        <div>
+          <h3 class="dialog-title">
+            {{ $t('add_named_level', { name: stageName || $t('stage') }) }}
+          </h3>
+          <p class="dialog-subtitle">
+            {{ $t('enter_named_level', { name: stageName || $t('stage') }) }}
+          </p>
+        </div>
       </div>
     </template>
 
@@ -107,6 +109,12 @@
 </template>
 
 <style scoped lang="scss">
+  .custom-dialog-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+  }
   :global(.p-dialog.add-education-type-dialog .multi-lang-input .field-input) {
     background: var(--standard-white) !important;
     border-color: var(--gray-200-std) !important;

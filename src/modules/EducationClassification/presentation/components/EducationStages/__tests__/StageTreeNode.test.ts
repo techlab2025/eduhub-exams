@@ -111,9 +111,7 @@ describe('StageTreeNode', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     await wrapper.vm.$nextTick();
 
-    // After clicking, isOpen should be true. The SVG should have rotate(0deg)
-    const svg = toggleBtn.find('svg');
-    expect(svg.attributes('style')).toContain('rotate(0deg)');
+    expect(wrapper.find('.children-wrapper').exists()).toBe(true);
   });
 
   it('calls onAddChild with correct arguments when add button is clicked', async () => {
@@ -157,8 +155,7 @@ describe('StageTreeNode', () => {
       depth: 2,
     };
     const wrapper = mountComponent({ node: leafNodeAtMax });
-    // Check for the rect element which is in the leaf icon
-    expect(wrapper.find('rect').exists()).toBe(true);
+    expect(wrapper.find('.leaf-folder-icon').exists()).toBe(true);
   });
 
   it('renders the configured singular title for the node level', () => {
@@ -170,5 +167,17 @@ describe('StageTreeNode', () => {
     });
 
     expect(wrapper.get('.level-label').text()).toBe('Newest');
+  });
+
+  it('marks nested rows for curved tree connectors', () => {
+    const wrapper = mountComponent({
+      node: { ...mockNode, depth: 2 },
+      isLast: true,
+    });
+
+    expect(wrapper.classes()).toContain('has-parent');
+    expect(wrapper.classes()).toContain('is-last');
+    expect(wrapper.attributes('style')).toContain('--tree-depth: 2');
+    expect(wrapper.get('.node-row').attributes('style')).toContain('padding-inline-start: 46px');
   });
 });
