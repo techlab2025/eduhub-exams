@@ -10,6 +10,7 @@ import type EducationClassificationModel from '../../core/models/education.class
 import type EditEducationClassificationParams from '../../core/params/edit.educationClassification.params';
 import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 import { hasEmptyTranslationKey } from '@/base/Presentation/Utils/ChecktranslationEmpty';
+import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
 
 /**
  * Education Classification Controller for managing education classifications
@@ -61,7 +62,16 @@ export default class EducationClassificationController extends BaseController<
     const FormStore = useFormsStore();
 
     const result = await super.create(params, { ...options, useJson: true });
-    await super.fetchList();
+    await super.fetchList(
+      new IndexEducationClassificationParams({
+        word: '',
+        pageNumber: 1,
+        perPage: 10,
+        withPage: 1,
+        date: '',
+        order: 1,
+      }),
+    );
     if (result instanceof DataSuccess) {
       router.push({ name: 'EducationClassifications' });
       if (formKey) {
