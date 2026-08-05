@@ -91,7 +91,7 @@
           {{ $t(' Add education classification') }}
         </h3>
       </div>
-      <FilterDialog v-model="FilterDialogShow">
+      <!-- <FilterDialog v-model="FilterDialogShow">
         <template #content>
           <div class="date-remove">
             <h6>{{ $t('date') }}</h6>
@@ -102,7 +102,7 @@
             <button class="btn btn-primary" @click="ApplayFilter">{{ $t('apply') }}</button>
           </div>
         </template>
-      </FilterDialog>
+      </FilterDialog> -->
     </header>
 
     <!-- ── Fields ────────────────────────────────────────── -->

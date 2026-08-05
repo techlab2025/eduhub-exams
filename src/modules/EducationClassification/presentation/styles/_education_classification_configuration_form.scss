@@ -54,7 +54,8 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 20px 24px 16px;
+    // padding: 20px 24px 16px;
+    padding: 5px !important;
 
     .header-icon {
       display: flex;
@@ -127,13 +128,13 @@
 
   /* ── Form Fields ────────────────────────── */
   .education-classification-form-fields {
-    padding: 0 24px 24px;
+    padding: 5px;
     display: flex;
     justify-content: space-between;
     align-items: end;
     width: 100%;
     gap: 20px;
-    border-bottom: 1px dashed var(--sidebar-group-text-color);
+    // border-bottom: 1px dashed var(--sidebar-group-text-color);
 
     &.disabled {
       opacity: 0.5;

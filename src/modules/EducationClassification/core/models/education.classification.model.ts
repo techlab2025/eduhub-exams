@@ -8,6 +8,7 @@ export default class EducationClassificationModel {
   public readonly status: boolean;
   public readonly has_configuration: boolean;
   public readonly has_configuration_subjct: boolean;
+  public readonly titles: Record<string, string>[];
 
   constructor(data: {
     id: number;
@@ -16,6 +17,7 @@ export default class EducationClassificationModel {
     status: boolean;
     has_configuration: boolean;
     has_configuration_subjct: boolean;
+    titles: Record<string, string>[];
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -23,6 +25,7 @@ export default class EducationClassificationModel {
     this.status = data.status;
     this.has_configuration = data.has_configuration;
     this.has_configuration_subjct = data.has_configuration_subjct;
+    this.titles = data.titles;
 
     Object.freeze(this);
   }
@@ -41,10 +44,21 @@ export default class EducationClassificationModel {
       id: json.id as number,
       title: json.title as string,
       created_at: json.created_at as string,
-      status: json.status as boolean,
+      status: EducationClassificationModel.parseStatus(json.status),
       has_configuration: json.has_configurations as boolean,
       has_configuration_subjct: json.has_configuration_subjct as boolean,
+      titles: json.titles as Record<string, string>[],
     });
+  }
+
+  private static parseStatus(status: unknown): boolean {
+    if (typeof status === 'boolean') return status;
+    if (typeof status === 'number') return status === 1;
+    if (typeof status === 'string') {
+      return ['1', 'true', 'active'].includes(status.toLowerCase());
+    }
+
+    return false;
   }
 
   static example: EducationClassificationModel = new EducationClassificationModel({
@@ -54,5 +68,6 @@ export default class EducationClassificationModel {
     status: true,
     has_configuration: true,
     has_configuration_subjct: true,
+    titles: [],
   });
 }

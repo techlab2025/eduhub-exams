@@ -386,10 +386,11 @@ input {
 }
 
 label,
-.input-label {
-  color: var(--gray-700) !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
+.input-label,
+.field-label {
+  color: #5d5d5d !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
   letter-spacing: 0;
 }
 
@@ -397,4 +398,13 @@ label,
   .p-select-label.p-placeholder {
     padding: 0 !important;
   }
+}
+
+.p-inputtext {
+  color: black !important;
+}
+input {
+  color: #121212 !important ;
+  font-size: 14px !important;
+  font-weight: 500 !important;
 }

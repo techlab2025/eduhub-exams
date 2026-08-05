@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import Dialog from 'primevue/dialog';
   import RenameIcon from '@/assets/images/RenameImage.png';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import EducationClassificationController from '../presentation/controllers/educationClassification.controller';
   import EditEducationClassificationParams from '../core/params/edit.educationClassification.params';
+  import ShowEducationClassificationParams from '../core/params/show.educationClassification.params';
 
   const props = defineProps<{
     visable: boolean;
@@ -39,9 +40,27 @@
     );
     emit('update:name');
   };
-  onMounted(() => {
-    // console.log(props.itemId, 'props.itemId');
-  });
+  const ShowSelectedClassification = async () => {
+    const classification = await controller.fetchOne(
+      new ShowEducationClassificationParams({
+        id: Number(props.itemId),
+      }),
+    );
+
+    title.value = Object.fromEntries(
+      (classification.data?.titles ?? []).map(({ locale, title }) => [locale, title]),
+    );
+  };
+
+  watch(
+    () => props.visable,
+    async (newValue) => {
+      if (newValue) {
+        await ShowSelectedClassification();
+      }
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>

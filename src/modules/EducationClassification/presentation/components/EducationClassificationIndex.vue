@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref, computed } from 'vue';
+  import { onMounted, ref, computed, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
@@ -11,7 +11,6 @@
   import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
   import type EducationClassificationModel from '../../core/models/education.classification.model';
   // import DeleteEducationClassificationParams from '../../core/params/educationClassificationParams';
-  // import ToggleSwitch from 'primevue/toggleswitch';
   import AddIcon from '@/shared/icons/AddIcon.vue';
   // import EducationClassificationForm from './EducationClassificationForm.vue';
   import EducationClassificationAdd from './EducationClassificationAdd.vue';
@@ -22,12 +21,25 @@
   import deleteEducationClassificationParams from '../../core/params/delete.educationClassification.params';
   import RenameEducatuinClassificationDialog from '../../subComponent/RenameEducatuinClassificationDialog.vue';
   import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
+  import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
+  import ToggleStatusEducationClassificationParams from '../../core/params/toggle.educationClassification.status.params.ts';
   // Controller instance
   const controller = EducationClassificationController.getInstance();
   const { t } = useI18n();
   const state = computed(() => controller.listState.value);
   const router = useRouter();
   const route = useRoute();
+  const statusById = ref<Record<number, boolean>>({});
+
+  watch(
+    () => state.value.data,
+    (items) => {
+      if (!items) return;
+
+      statusById.value = Object.fromEntries(items.map((item) => [item.id, item.status]));
+    },
+    { immediate: true },
+  );
 
   // Table headers
   const headers = computed<TableHeader[]>(() => [
@@ -122,6 +134,28 @@
       deleteEducationClassification(item.id);
     });
   };
+
+  const ToggleStatus = async (id: number) => {
+    await controller.toggleStatus(
+      new ToggleStatusEducationClassificationParams({
+        id: id,
+      }),
+    );
+    await fetchEducationClassifications(
+      route.query.page ? Number(route.query.page) : 1,
+      word.value,
+      1,
+    );
+  };
+
+  const getStatus = (item: EducationClassificationModel) => {
+    return statusById.value[item.id] ?? item.status;
+  };
+
+  const toggleItemStatus = async (item: EducationClassificationModel) => {
+    statusById.value[item.id] = !getStatus(item);
+    await ToggleStatus(item.id);
+  };
 </script>
 
 <template>
@@ -153,9 +187,19 @@
             <template #cell-added_date="{ item }">
               {{ item.created_at }}
             </template>
-
-            <!-- <template #cell-status="{ item }">
-              <ToggleSwitch v-model="item.status" @update:model-value="ToggleStatus(item.id!)" />
+<!-- 
+            <template #cell-status="{ item }">
+              <button
+                type="button"
+                class="status-toggle"
+                :class="{ 'status-toggle--active': getStatus(item) }"
+                role="switch"
+                :aria-checked="getStatus(item)"
+                :aria-label="`${$t('status')}: ${item.title}`"
+                @click="toggleItemStatus(item)"
+              >
+                <span class="status-toggle__thumb" aria-hidden="true"></span>
+              </button>
             </template> -->
 
             <template #actions="{ item }">
@@ -213,7 +257,7 @@
       </template>
 
       <template #empty>
-        <div class="empty-state">
+        <!-- <div class="empty-state">
           <svg
             width="56"
             height="56"
@@ -228,7 +272,11 @@
           </svg>
           <h3>{{ $t('no_education_classifications_yet') }}</h3>
           <p>{{ $t('add_first_education_classification') }}</p>
-        </div>
+        </div> -->
+        <NoItemContainer
+          :title="$t('no_education_classifications')"
+          :description="$t('add_first_education_classification')"
+        />
       </template>
       <template #loader>
         <TableSkelaton
@@ -243,3 +291,37 @@
     </DataStatusBuilder>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .status-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 42px;
+    height: 24px;
+    padding: 3px;
+    border: 0;
+    border-radius: var(--radius-full);
+    background-color: var(--gray-300);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+
+    &--active {
+      justify-content: flex-end;
+      background-color: var(--PrimaryColor);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--PrimaryColor);
+      outline-offset: 2px;
+    }
+
+    &__thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: var(--radius-full);
+      background-color: var(--BgWhite);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+</style>

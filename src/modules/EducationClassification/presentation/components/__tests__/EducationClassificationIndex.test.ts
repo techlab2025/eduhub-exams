@@ -63,7 +63,6 @@ describe('EducationClassificationIndex', () => {
           AppTable: true,
           Pagination: true,
           EducationClassificationAdd: true,
-          ToggleSwitch: true,
           DeleteDialog: true,
         },
         mocks: {
@@ -110,8 +109,9 @@ describe('EducationClassificationIndex', () => {
         },
       },
     });
-    expect(wrapper.find('.empty-state').exists()).toBe(true);
-    expect(wrapper.text()).toContain('no_education_classifications_yet');
+    expect(wrapper.find('.empty-items').exists()).toBe(true);
+    expect(wrapper.text()).toContain('no_education_classifications');
+    expect(wrapper.text()).toContain('add_first_education_classification');
   });
 
   it('renders table when data exists', async () => {
@@ -135,7 +135,6 @@ describe('EducationClassificationIndex', () => {
           },
           Pagination: true,
           EducationClassificationAdd: true,
-          ToggleSwitch: true,
         },
         mocks: {
           $t: (msg: string) => msg,
@@ -144,5 +143,38 @@ describe('EducationClassificationIndex', () => {
     });
 
     expect(wrapper.find('.table-frame').exists()).toBe(true);
+  });
+
+  it('toggles a row status through the controller and refreshes the list', async () => {
+    const wrapper = mount(EducationClassificationIndex, {
+      global: {
+        stubs: {
+          'router-link': true,
+          DataStatusBuilder: {
+            template: '<div><slot name="success" :data="[]" /></div>',
+          },
+          AppTable: {
+            template: '<div><slot name="cell-status" :item="{ id: 7, status: false }" /></div>',
+          },
+          Pagination: true,
+          EducationClassificationAdd: true,
+        },
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
+    });
+
+    await flushPromises();
+    mockFetchList.mockClear();
+
+    expect(wrapper.get('.status-toggle').attributes('aria-checked')).toBe('false');
+    await wrapper.get('.status-toggle').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get('.status-toggle').attributes('aria-checked')).toBe('true');
+    expect(mockToggleStatus).toHaveBeenCalledOnce();
+    expect(mockToggleStatus.mock.calls[0][0].toMap()).toEqual({ id: 7 });
+    expect(mockFetchList).toHaveBeenCalledOnce();
   });
 });

@@ -6790,7 +6790,7 @@ body::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 20px 24px 16px;
+  padding: 5px !important;
 }
 .education-classification-configuration-form-container .form-header .header-icon {
   display: flex;
@@ -6857,13 +6857,12 @@ body::-webkit-scrollbar-thumb:hover {
   /* ── Form Fields ────────────────────────── */
 }
 .education-classification-configuration-form-container .education-classification-form-fields {
-  padding: 0 24px 24px;
+  padding: 5px;
   display: flex;
   justify-content: space-between;
   align-items: end;
   width: 100%;
   gap: 20px;
-  border-bottom: 1px dashed var(--sidebar-group-text-color);
 }
 .education-classification-configuration-form-container .education-classification-form-fields.disabled {
   opacity: 0.5;
@@ -7274,6 +7273,7 @@ body::-webkit-scrollbar-thumb:hover {
   flex-direction: column;
   gap: 16px;
   padding: 20px;
+  border-top: 1px dashed var(--sidebar-group-text-color);
   /* HTML: <div class="loader"></div> */
   /* HTML: <div class="loader"></div> */
 }
@@ -17320,13 +17320,24 @@ input::placeholder {
 }
 
 label,
-.input-label {
-  color: var(--gray-700) !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
+.input-label,
+.field-label {
+  color: #5d5d5d !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
   letter-spacing: 0;
 }
 
 .document-form-card .p-select-label.p-placeholder {
   padding: 0 !important;
+}
+
+.p-inputtext {
+  color: black !important;
+}
+
+input {
+  color: #121212 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
 }/*# sourceMappingURL=main.css.map */

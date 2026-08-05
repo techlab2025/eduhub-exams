@@ -30,6 +30,26 @@ describe('EducationClassificationModel', () => {
       expect(model.status).toBe(false);
     });
 
+    it.each([
+      [true, true],
+      [false, false],
+      [1, true],
+      [0, false],
+      ['1', true],
+      ['0', false],
+      ['active', true],
+      ['inactive', false],
+    ])('should normalize API status %s to %s', (status, expected) => {
+      const model = EducationClassificationModel.fromJson({
+        id: 5,
+        title: 'Higher Education',
+        created_at: '2023-06-01',
+        status,
+      });
+
+      expect(model.status).toBe(expected);
+    });
+
     it('should throw error when JSON is null', () => {
       expect(() => EducationClassificationModel.fromJson(null as any)).toThrow(
         'Cannot create EducationClassificationModel from null or undefined',

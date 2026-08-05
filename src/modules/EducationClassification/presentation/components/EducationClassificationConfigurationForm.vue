@@ -238,6 +238,7 @@
       </div>
 
       <SingularPluralForm
+        v-if="ConfigurationNumberOfBranchs > 0"
         :number-of-branches="ConfigurationNumberOfBranchs"
         :label="$t('name_of_branch')"
         :initial-branches="configurationInitialBranches"
@@ -304,6 +305,7 @@
       </div>
 
       <SingularPluralForm
+        v-if="subjectNumberOfBranchs > 0"
         :number-of-branches="subjectNumberOfBranchs"
         :label="$t('name_of_branch')"
         :initial-branches="subjectInitialBranches"

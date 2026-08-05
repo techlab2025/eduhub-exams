@@ -17,7 +17,7 @@ export default class ShowEducationClassificationParams implements Params {
 
   toMap(): { [p: string]: any } {
     const map: { [key: string]: any } = {
-      id: this.id,
+      education_classification_id: this.id,
     };
 
     return map;
