@@ -5,8 +5,6 @@
   import ArticleController from '../controllers/Article.controller';
   import ArticleForm from './ArticleForm.vue';
   import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
-  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-  import WithReviewDialog from '@/modules/Questions/presentation/subComponents/Dialogs/WithReviewDialog.vue';
   import CancelQuestionDialog from '@/modules/Questions/presentation/subComponents/Dialogs/CancelQuestionDialog.vue';
 
   const controller = ArticleController.getInstance();
@@ -22,12 +20,7 @@
    */
 
   const loading = ref(false);
-  const SaveStatusEnum = {
-    Save: 1,
-    SaveAndNew: 2,
-  } as const;
-
-  const saveArticle = async (isRouting: boolean, isWithReview: boolean) => {
+  const goToQuestions = async () => {
     try {
       if (!(await articleFormRef.value?.validateRequiredFields())) return;
 
@@ -36,32 +29,8 @@
         return;
       }
       loading.value = true;
-      params.value.status = isWithReview
-        ? QuestionStatusEnum.NOT_REVIEW
-        : QuestionStatusEnum.APPROVED;
-
-      const result = await controller.create(params.value, undefined, formKey, isRouting);
-      if (!(result instanceof DataSuccess) || isRouting) return;
-
-      window.location.reload();
-    } catch (error) {
-      console.error('Error saving article:', error);
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const saveAsDraft = async () => {
-    loading.value = true;
-    try {
-      if (!params.value) {
-        console.error('No article parameters to save');
-        return;
-      }
-
-      // localStorage.setItem('article-draft', JSON.stringify(params.value));
-      params.value.status = QuestionStatusEnum.DRAFT;
-      await controller.create(params.value, undefined, formKey);
+      params.value.status = QuestionStatusEnum.CREATED;
+      await controller.create(params.value, undefined, formKey, true);
     } catch (error) {
       console.error('Error saving article:', error);
     } finally {
@@ -88,25 +57,14 @@
     />
 
     <div class="actions" :class="{ disabled: loading }">
-      <WithReviewDialog
-        class="save-emp"
-        :save-status="SaveStatusEnum.Save"
-        @with-review="saveArticle(true, true)"
-        @without-review="saveArticle(true, false)"
-      />
-      <WithReviewDialog
-        class="save-emp"
-        :save-status="SaveStatusEnum.SaveAndNew"
-        @with-review="saveArticle(false, true)"
-        @without-review="saveArticle(false, false)"
-      />
       <button
-        class="btn btn-draft"
+        class="btn btn-primary next-button"
+        type="button"
         :disabled="loading"
         :class="loading ? 'disabled' : ''"
-        @click="saveAsDraft"
+        @click="goToQuestions"
       >
-        {{ $t(`Save As draft`) }}
+        {{ $t('article_next') }}
       </button>
       <CancelQuestionDialog @cancel="cancel" />
     </div>
@@ -162,20 +120,13 @@
     }
   }
 
-  .btn-draft {
-    background-color: var(--PrimaryColor-alpha-10);
-    color: var(--PrimaryColor);
-    border: 1px solid var(--PrimaryColor-alpha-10);
+  .next-button {
     border-radius: 50px;
-    width: 20%;
+    width: 100%;
 
     @media (max-width: 768px) {
       width: 50%;
     }
-  }
-
-  .save-emp {
-    width: 100%;
   }
 
   .actions {

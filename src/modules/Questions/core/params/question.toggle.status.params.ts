@@ -8,24 +8,24 @@ import type { QuestionStatusEnum } from '../constant/question.status.enum';
 export default class ToggleQuestionStatusParams implements Params {
   public id: number;
   public status: QuestionStatusEnum;
-  public note?:string
-  
+  public note?: string;
+
   public static readonly validation = new ClassValidation().setRules({
     id: { required: true },
     status: { required: true },
   });
 
-  constructor(data: { id: number; status: QuestionStatusEnum , note?:string}) {
+  constructor(data: { id: number; status: QuestionStatusEnum; note?: string }) {
     this.id = data.id;
     this.status = data.status;
-    this.note = data.note
+    this.note = data.note;
   }
 
   toMap(): { [p: string]: any } {
     return {
       question_id: this.id,
       status: this.status,
-      note:this.note
+      ...(this.note && { note: this.note }),
     };
   }
 

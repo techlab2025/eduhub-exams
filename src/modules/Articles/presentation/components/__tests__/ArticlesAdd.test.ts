@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
 import ArticlesAdd from '../ArticlesAdd.vue';
 
@@ -42,17 +41,6 @@ const globalConfig = {
       },
       template: '<div class="article-form-stub" />',
     },
-    WithReviewDialog: {
-      name: 'WithReviewDialog',
-      props: ['saveStatus'],
-      emits: ['with-review', 'without-review'],
-      template: `
-        <div class="save-review-action" :data-save-status="saveStatus">
-          <button class="with-review" @click="$emit('with-review')">with review</button>
-          <button class="without-review" @click="$emit('without-review')">without review</button>
-        </div>
-      `,
-    },
     CancelQuestionDialog: {
       name: 'CancelQuestionDialog',
       emits: ['cancel'],
@@ -79,38 +67,21 @@ describe('ArticlesAdd.vue', () => {
     validateRequiredFieldsMock.mockResolvedValue(true);
   });
 
-  it('renders Save, Save & New, draft, and cancel actions', () => {
+  it('renders only Next and Cancel actions', () => {
     const { wrapper } = mountWithParams();
 
-    expect(wrapper.findAll('.save-review-action')).toHaveLength(2);
-    expect(wrapper.find('.btn-draft').exists()).toBe(true);
+    expect(wrapper.find('.next-button').exists()).toBe(true);
     expect(wrapper.find('.btn-cancel').exists()).toBe(true);
   });
 
-  it.each([
-    { selector: '.with-review', status: QuestionStatusEnum.NOT_REVIEW },
-    { selector: '.without-review', status: QuestionStatusEnum.APPROVED },
-  ])('sets review status before Save', async ({ selector, status }) => {
-    createMock.mockResolvedValueOnce(new DataSuccess({ data: { id: 42 } }));
+  it('creates with status 1 and routes to question management on Next', async () => {
     const { wrapper, params } = mountWithParams();
 
-    await wrapper.get(`[data-save-status="1"] ${selector}`).trigger('click');
+    await wrapper.get('.next-button').trigger('click');
     await flushPromises();
 
-    expect(params.status).toBe(status);
+    expect(params.status).toBe(QuestionStatusEnum.CREATED);
     expect(createMock).toHaveBeenCalledWith(params, undefined, '/eg/articles/add', true);
-  });
-
-  it('saves a draft with draft review status and local draft data', async () => {
-    createMock.mockResolvedValueOnce(new DataSuccess({ data: { id: 42 } }));
-    const { wrapper, params } = mountWithParams();
-
-    await wrapper.get('.btn-draft').trigger('click');
-    await flushPromises();
-
-    expect(params.status).toBe(QuestionStatusEnum.DRAFT);
-    expect(localStorage.getItem('article-draft')).not.toBeNull();
-    expect(createMock).toHaveBeenCalledWith(params, undefined, '/eg/articles/add');
   });
 
   it('returns to the articles list after confirming cancel', async () => {
