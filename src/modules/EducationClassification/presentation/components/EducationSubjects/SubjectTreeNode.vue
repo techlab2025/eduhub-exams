@@ -13,6 +13,10 @@
   import PricingDialog from '@/modules/EducationClassification/subComponent/EducationTree/PricingDialog.vue';
   import SkillsDialog from '@/modules/EducationClassification/subComponent/EducationTree/SkillsDialog.vue';
   import TopicsDialog from '@/modules/EducationClassification/subComponent/EducationTree/TopicsDialog.vue';
+  import ToggleArrowIcon from '@/shared/icons/TreeIcons/ToggleArrowIcon.vue';
+  import ToggleArrowIconOpen from '@/shared/icons/TreeIcons/ToggleArrowIconOpen.vue';
+  import ClosedFolder from '@/shared/icons/TreeIcons/ClosedFolder.vue';
+  import OpenFolder from '@/shared/icons/TreeIcons/OpenFolder.vue';
 
   export interface SubjectNode {
     subject: EducationSubjectModel;
@@ -29,9 +33,11 @@
       maxDepth: number;
       levelLabels?: Record<number, string>;
       parentId: number | null;
+      isLast?: boolean;
     }>(),
     {
       levelLabels: () => ({}),
+      isLast: false,
     },
   );
 
@@ -164,11 +170,15 @@
 </script>
 
 <template>
-  <div class="tree-node-wrapper">
+  <div
+    class="tree-node-wrapper"
+    :class="{ 'has-parent': node.depth > 0, 'is-last': isLast }"
+    :style="{ '--tree-depth': node.depth, '--connector-offset': `${node.depth * 16}px` }"
+  >
     <div
       class="node-row"
       :class="{ 'is-selected': selectedSubjectId === node.subject.subject_id }"
-      :style="{ paddingLeft: `${node.depth * 16 + 14}px` }"
+      :style="{ paddingInlineStart: `${node.depth * 16 + 14}px` }"
       @click="handleRowClick"
     >
       <button
@@ -176,7 +186,7 @@
         class="toggle-btn"
         @click.stop="handleToggle"
       >
-        <svg
+        <!-- <svg
           viewBox="0 0 20 20"
           fill="none"
           width="14"
@@ -193,12 +203,16 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           />
-        </svg>
+        </svg> -->
+        <ToggleArrowIcon />
       </button>
-      <span v-else class="toggle-spacer" />
+      <span v-else class="toggle-spacer">
+        <ToggleArrowIconOpen />
+      </span>
 
-      <svg
-        v-if="node.depth + 1 !== maxDepth"
+      <ClosedFolder v-if="node.depth + 1 !== maxDepth" />
+      <OpenFolder v-else />
+      <!-- <svg
         viewBox="0 0 20 20"
         fill="none"
         width="16"
@@ -211,8 +225,8 @@
           stroke-width="1.3"
           fill="none"
         />
-      </svg>
-      <svg v-else viewBox="0 0 20 20" fill="none" width="16" height="16" class="node-icon">
+      </svg> -->
+      <!-- <svg v-else viewBox="0 0 20 20" fill="none" width="16" height="16" class="node-icon">
         <rect
           x="4"
           y="3"
@@ -224,7 +238,7 @@
           fill="none"
         />
         <path d="M7 8h6M7 11h6M7 14h4" stroke="#4caf50" stroke-width="1.1" stroke-linecap="round" />
-      </svg>
+      </svg> -->
 
       <span class="level-label">
         {{
@@ -271,13 +285,14 @@
     <transition name="slide-down">
       <div v-if="isOpen && children.length > 0" class="children-wrapper">
         <SubjectTreeNode
-          v-for="child in children"
+          v-for="(child, index) in children"
           :key="child.subject.subject_id"
           :node="child"
           :max-depth="maxDepth"
           :level-labels="levelLabels"
           :selected-subject-id="selectedSubjectId"
           :parent-id="node.subject.subject_id"
+          :is-last="index === children.length - 1"
           @fetch-children="onChildFetch"
           @add-child="onChildAdd"
           @select="onChildSelect"
@@ -306,3 +321,52 @@
     />
   </div>
 </template>
+
+<style scoped>
+  .tree-node-wrapper {
+    position: relative;
+  }
+
+  .tree-node-wrapper.has-parent::before {
+    position: absolute;
+    z-index: 0;
+    inset-inline-start: calc(var(--connector-offset) + 8px);
+    top: -18px;
+    bottom: 0;
+    border-inline-start: 1px solid var(--input-border-color);
+    content: '';
+    pointer-events: none;
+  }
+
+  .tree-node-wrapper.has-parent.is-last::before {
+    bottom: auto;
+    height: 36px;
+  }
+
+  .node-row {
+    position: relative;
+    z-index: 1;
+  }
+
+  .tree-node-wrapper.has-parent > .node-row::after {
+    position: absolute;
+    z-index: 0;
+    inset-inline-start: calc(var(--connector-offset) + 2px);
+    top: calc(50% - 9px);
+    width: 12px;
+    height: 10px;
+    border-block-end: 1px solid var(--input-border-color);
+    border-inline-start: 1px solid var(--input-border-color);
+    border-end-start-radius: 8px;
+    content: '';
+    pointer-events: none;
+  }
+
+  .level-label {
+    border-radius: 20px;
+    color: var(--table-header-color);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Light';
+  }
+</style>

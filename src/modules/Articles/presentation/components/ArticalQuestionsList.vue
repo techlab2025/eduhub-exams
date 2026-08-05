@@ -2,13 +2,18 @@
   import { computed, onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import type { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
-  import type { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
+  import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
   import type { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
   import ShowArticlesParams from '../../core/params/show.Articles.params';
   import ArticleController from '../controllers/Article.controller';
   import ArticleQuestion from './ArticleDetails/ArticleQuestion.vue';
   import Dialog from 'primevue/dialog';
   import QuestionsAdd from '@/modules/Questions/presentation/components/questionsAdd.vue';
+  import WithReviewDialog from '@/modules/Questions/presentation/subComponents/Dialogs/WithReviewDialog.vue';
+  import CancelQuestionDialog from '@/modules/Questions/presentation/subComponents/Dialogs/CancelQuestionDialog.vue';
+  import QuestionsController from '@/modules/Questions/presentation/controllers/questions.controller';
+  import ToggleQuestionStatusParams from '@/modules/Questions/core/params/question.toggle.status.params';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
   interface ArticleQuestionFilters {
     question_type?: QuestionTypeEnum;
@@ -22,21 +27,27 @@
   const router = useRouter();
   const hasFetched = ref(false);
   const showAddQuestionDialog = ref(false);
+  const updatingStatus = ref(false);
   const articleId = computed(() => Number(route.params.artical_id));
   const article = computed(() => controller.itemState.value.data);
   const articleSubjectId = computed(() => {
     const querySubjectId = Number(route.query?.subject_id);
-    return querySubjectId || article.value?.e_c_subject?.id;
+    return querySubjectId || article.value?.subjectTree?.id || article.value?.e_c_subject?.id;
   });
   const articleSequenceId = computed(() => {
     const querySequenceId = Number(route.query?.sequence_id);
-    return querySequenceId || undefined;
+    return querySequenceId || article.value?.sequenceTree?.id || article.value?.e_c_subject?.id;
   });
   const questions = computed(() => article.value?.questions ?? []);
   const questionCount = computed(
     () => questions.value.length || article.value?.number_of_questions || 0,
   );
   const hasQuestions = computed(() => questionCount.value > 0);
+  const SaveStatusEnum = {
+    Save: 1,
+    SaveAndNew: 2,
+  } as const;
+  const questionsController = QuestionsController.getInstance();
 
   const fetchArticle = async (filters?: ArticleQuestionFilters) => {
     try {
@@ -54,12 +65,52 @@
     }
   };
 
-  const finish = () => {
+  const backToArticles = () => {
     router.push({ name: 'Articles' });
   };
 
-  const back = () => {
-    router.push({ name: 'Edit article', params: { id: articleId.value } });
+  const showArticle = () => {
+    router.push({ name: 'Show article', params: { id: articleId.value } });
+  };
+
+  const addAnotherArticle = () => {
+    router.push({ name: 'Add article' });
+  };
+
+  const updateArticleStatus = async (status: QuestionStatusEnum, onSuccess: () => void) => {
+    if (updatingStatus.value) return;
+
+    updatingStatus.value = true;
+    try {
+      const result = await questionsController.updateReviewStatus(
+        new ToggleQuestionStatusParams({ id: articleId.value, status }),
+      );
+      if (result instanceof DataSuccess) onSuccess();
+    } finally {
+      updatingStatus.value = false;
+    }
+  };
+
+  const saveArticle = (withReview: boolean) => {
+    return updateArticleStatus(
+      withReview ? QuestionStatusEnum.NOT_REVIEW : QuestionStatusEnum.APPROVED,
+      showArticle,
+    );
+  };
+
+  const saveAndAddAnother = (withReview: boolean) => {
+    return updateArticleStatus(
+      withReview ? QuestionStatusEnum.NOT_REVIEW : QuestionStatusEnum.APPROVED,
+      addAnotherArticle,
+    );
+  };
+
+  const saveAsDraft = () => {
+    return updateArticleStatus(QuestionStatusEnum.DRAFT, backToArticles);
+  };
+
+  const cancelArticle = () => {
+    return updateArticleStatus(QuestionStatusEnum.REJECTED, backToArticles);
   };
 
   const handleQuestionSaved = async () => {
@@ -174,12 +225,35 @@
       </div>
     </section>
 
-    <div v-if="hasFetched" class="article-question-actions">
-      <button class="finish-button" type="button" :disabled="!hasQuestions" @click="finish">
-        {{ $t('save') }}
+    <div
+      v-if="hasFetched && hasQuestions"
+      class="article-question-actions completion-actions"
+      :class="{ disabled: updatingStatus }"
+    >
+      <WithReviewDialog
+        class="save-emp"
+        :save-status="SaveStatusEnum.Save"
+        @with-review="saveArticle(true)"
+        @without-review="saveArticle(false)"
+      />
+      <!-- <WithReviewDialog
+        class="save-emp"
+        :save-status="SaveStatusEnum.SaveAndNew"
+        @with-review="saveAndAddAnother(true)"
+        @without-review="saveAndAddAnother(false)"
+      /> -->
+      <button class="btn btn-draft" type="button" :disabled="updatingStatus" @click="saveAsDraft">
+        {{ $t('Save As draft') }}
       </button>
-      <button class="back-button" type="button" @click="back">
+      <CancelQuestionDialog @cancel="cancelArticle" />
+    </div>
+
+    <div v-else-if="hasFetched" class="article-question-actions empty-state-actions">
+      <button class="back-button" type="button" @click="backToArticles">
         {{ $t('article_questions_back') }}
+      </button>
+      <button class="finish-button" type="button" @click="showArticle">
+        {{ $t('article_show') }}
       </button>
     </div>
 
@@ -256,6 +330,11 @@
     width: 100%;
   }
 
+  .completion-actions {
+    &:deep(button) {
+      width: 100%;
+    }
+  }
   .article-form-steps {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -422,6 +501,31 @@
       font-weight: $BaseFontSemiBoldWeight;
       cursor: pointer;
     }
+  }
+
+  .completion-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+
+  .empty-state-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .save-emp,
+  .btn-draft {
+    width: 100%;
+  }
+
+  .btn-draft {
+    border: 1px solid var(--PrimaryColor-alpha-10);
+    background: var(--PrimaryColor-alpha-10);
+    color: var(--PrimaryColor);
   }
 
   .finish-button {

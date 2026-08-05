@@ -29,6 +29,7 @@
   }));
 </script>
 <template>
+  <!-- <pre>{{ artical }}</pre> -->
   <div class="article_question">
     <header v-if="showHeader" class="questions-header">
       <div class="questions-header__content">

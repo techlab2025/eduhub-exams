@@ -308,6 +308,8 @@
   "article_questions_dialog_title": "Create a New Question",
   "article_questions_dialog_description": "Build an engaging question without leaving your article workspace.",
   "article_questions_dialog_tip": "Complete the required fields, add the answers, then choose the review status to publish.",
+  "article_next": "Next",
+  "article_show": "Show",
   "step_one": "Step 1",
   "step_two": "Step 2",
   "basic article data": "Basic Article Data",

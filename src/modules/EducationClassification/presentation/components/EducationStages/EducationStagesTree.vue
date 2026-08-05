@@ -284,7 +284,7 @@
           }}
         </p>
         <button class="btn btn-primary w-full" @click="showAddTypeDialog = true">
-          {{ $t('Add Education Type') }}
+          {{ $t('Add Education content ') }}
         </button>
       </div>
 
