@@ -5,4 +5,5 @@ export class PlacementTestEndpoints extends BaseEndpoints {
 
   readonly index = this.url('fetch_placement_test');
   readonly show = this.url('show_placement_test');
+  readonly showStudentProfile = this.url('show_placement_test_student');
 }

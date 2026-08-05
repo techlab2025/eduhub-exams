@@ -99,8 +99,10 @@ export default class ShowPlcaementTestModel {
             PlacementSkillAnalysisModel.fromJson(item),
           )
         : undefined,
-      resultAnalysis: ResultAnalysisModel.fromJson(json.result_analysis),
-      timeAnalysis: TimeAnalysisModel.fromJson(json.time_analysis),
+      resultAnalysis: json.result_analysis
+        ? ResultAnalysisModel.fromJson(json.result_analysis)
+        : undefined,
+      timeAnalysis: json.time_analysis ? TimeAnalysisModel.fromJson(json.time_analysis) : undefined,
       questionAnswerAnalysis: json.question_answer_analysis
         ? json.question_answer_analysis.map((item: any) =>
             QuestionAnswerAnalysisModel.fromJson(item),
