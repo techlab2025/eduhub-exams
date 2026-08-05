@@ -15,8 +15,13 @@ export default class PlacementSkillAnalysisModel {
     }
 
     return new PlacementSkillAnalysisModel({
-      skill: json.skill,
-      precentage: json.precentage,
+      skill: json.skill
+        ? new TitleInterface({
+            id: json.skill.id ?? json.skill.skill_id,
+            title: json.skill.title,
+          })
+        : undefined,
+      precentage: json.percentage ?? json.precentage,
     });
   }
 

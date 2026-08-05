@@ -20,7 +20,10 @@
   <div class="placement-student-card">
     <div class="placement-student-card-header">
       <div class="card-body">
-        <img :src="student?.image" alt="" />
+        <img
+          :src="student?.image || `https://cyber.comolho.com/static/img/avatar.png`"
+          :alt="student?.name || ''"
+        />
         <div class="text">
           <h5 class="card-title">{{ student?.name }}</h5>
           <span>{{ student.id }}</span>

@@ -1,9 +1,7 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
-/**
- * Parameters for adding a new employee
- */
+/** Parameters for saving the placement configuration. */
 export default class AddPlacementParams implements Params {
   public numberOfQuestions?: number;
   public time?: number;
@@ -29,12 +27,20 @@ export default class AddPlacementParams implements Params {
     this.difficulties = data.difficulties;
   }
 
-  toMap(): { [p: string]: any } {
+  toMap(): Record<string, number> {
+    const questionCount = this.numberOfQuestions ?? 0;
+
     return {
-      numberOfQuestions: this.numberOfQuestions,
-      time: this.time,
-      difficulties: this.difficulties,
+      question_count: questionCount,
+      easy_questions_count: this.getQuestionCount(this.difficulties?.easy),
+      medium_questions_count: this.getQuestionCount(this.difficulties?.medium),
+      hard_questions_count: this.getQuestionCount(this.difficulties?.hard),
+      minute_count: this.time ?? 0,
     };
+  }
+
+  private getQuestionCount(percentage?: number): number {
+    return Math.floor(((this.numberOfQuestions ?? 0) * (percentage ?? 0)) / 100);
   }
 
   validate() {

@@ -12,7 +12,7 @@ export default class PlcaementTestModel {
   public readonly EducationClassificationBranch?: EducationClassificationBranchModel;
   public readonly numberOfQuestions?: number;
   public readonly status?: PlacementTestEnum;
-  public readonly isPlan?: boolean;
+  public readonly in_plan?: boolean;
   public readonly date?: string;
 
   constructor(data: {
@@ -23,7 +23,7 @@ export default class PlcaementTestModel {
     EducationClassificationBranch?: EducationClassificationBranchModel;
     numberOfQuestions?: number;
     status?: PlacementTestEnum;
-    isPlan?: boolean;
+    in_plan?: boolean;
     date?: string;
   }) {
     this.id = data.id;
@@ -33,7 +33,7 @@ export default class PlcaementTestModel {
     this.EducationClassificationBranch = data.EducationClassificationBranch;
     this.numberOfQuestions = data.numberOfQuestions;
     this.status = data.status;
-    this.isPlan = data.isPlan;
+    this.in_plan = data.in_plan;
     this.date = data.date;
 
     Object.freeze(this);
@@ -56,7 +56,7 @@ export default class PlcaementTestModel {
         : undefined,
       numberOfQuestions: json.number_of_questions,
       status: json.status,
-      isPlan: json.isPlan,
+      in_plan: json.in_plan,
       date: json.date,
     });
   }
@@ -69,7 +69,7 @@ export default class PlcaementTestModel {
     EducationClassificationBranch: EducationClassificationBranchModel.example,
     numberOfQuestions: 50,
     status: 1,
-    isPlan: true,
+    in_plan: true,
     date: '2023-01-01',
   });
 }

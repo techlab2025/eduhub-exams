@@ -721,11 +721,13 @@
     "answer_number": "Answer {number}",
     "correct_answer_label": "Correct Answer",
     "history_log": "History Log",
-    "no_answer_data": "No answers available",
+    "no_answer_data": "No answers available", 
     "no_history_data": "No history available"
-  },
+    },
   "no_questions": {
     "title": "No Questions Yet",
     "description": "You haven't added any questions yet. Start now to organize your learning structure and content"
-  }
+  },  
+  "Most Important Skills": "Most Important Skills",
+  "the": "The"
 }

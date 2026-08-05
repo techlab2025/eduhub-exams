@@ -44,7 +44,7 @@ export default class PlacementTestController extends BaseController<
     params?: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<PlcaementTestModel[]>> {
-    const result = await super.fetchList(params, { ...options, useStaticData: true });
+    const result = await super.fetchList(params, { ...options});
     return result;
   }
 
@@ -52,7 +52,7 @@ export default class PlacementTestController extends BaseController<
     params: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<ShowPlcaementTestModel>> {
-    const result = await super.fetchOne(params, { ...options, useStaticData: true });
+    const result = await super.fetchOne(params, { ...options});
     return result;
   }
 }

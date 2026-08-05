@@ -59,7 +59,7 @@ import Iconalert from '@/shared/icons/Iconalert.vue';
 
         <div>
           <span class="time-analysis-card__label">{{ item.label }}</span>
-          <strong>{{ item.value }}</strong>
+          <strong>{{ item.value || '--' }}</strong>
         </div>
       </article>
     </div>

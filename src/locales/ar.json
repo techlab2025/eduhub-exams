@@ -322,6 +322,8 @@
     "correct_answer_label": "الإجابة الصحيحة",
     "history_log": "سجل النشاط",
     "no_answer_data": "لا توجد إجابات",
-    "no_history_data": "لا يوجد سجل نشاط"
+    "no_history_data": "لا يوجد سجل نشاط",
+    "Most Important Skills": "أهم 3 مهارات",
+    "the": "ال"
   }
 }
