@@ -49,8 +49,8 @@
         <h3>
           <!-- <span aria-hidden="true">◎</span> -->
           <IconSkill />
-          {{ t('placement_test.most_important_skills') }}
-        </h3>
+          {{ `${t('the')} ${placementTest.MostImportantSkillsAnalysis?.length} ${t('Most Important Skills')} ` }}  
+        </h3> 
         <div v-for="skill in placementTest.MostImportantSkillsAnalysis" :key="skill.skill?.id">
           <span>{{ skill.skill?.title }}</span>
           <strong>{{ skill.precentage ?? 0 }}%</strong>

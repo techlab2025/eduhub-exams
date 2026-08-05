@@ -29,9 +29,9 @@ export default class ResultAnalysisModel {
     return new ResultAnalysisModel({
       correct: json.correct,
       wrong: json.wrong,
-      Skipped: json.Skipped,
+      Skipped: json.skipped ?? json.Skipped,
       totalRate: json.total_rate ?? json.totalRate,
-      precentage: json.precentage,
+      precentage: json.percentage ?? json.precentage,
     });
   }
 

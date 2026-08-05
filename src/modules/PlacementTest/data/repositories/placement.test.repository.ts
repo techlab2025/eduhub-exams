@@ -46,7 +46,7 @@ export default class PlacementTestRepository extends BaseRepository<
     return data.reduce((acc: PlcaementTestModel[], item) => {
       try {
         if (item != null) {
-          acc.push(this.parseItem(item));
+          acc.push(PlcaementTestModel.fromJson(item));
         }
       } catch {}
       return acc;

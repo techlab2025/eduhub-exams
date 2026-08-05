@@ -7,7 +7,9 @@ import QuestionAnswerAnalysisModel from './subModels/question.answer.analysis.mo
 import PlacemntDifficultyLevelModel from './subModels/placment.difificulty.level.model';
 import PlacementSkillAnalysisModel from './subModels/placment.skill.analysis.model';
 import ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
-import PlacemntAllocationModel from './subModels/placementallocation.model';
+import PlacemntAllocationModel, {
+  PlacemntAllocationQuestionModel,
+} from './subModels/placementallocation.model';
 import TitleInterface from '@/base/Data/Models/titleInterface';
 import { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
 import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
@@ -109,11 +111,65 @@ export default class ShowPlcaementTestModel {
             PlacemntDifficultyLevelModel.fromJson(item),
           )
         : undefined,
-      quesions: json.quesions
-        ? json.quesions.map((item: any) => ShowQuestionsModel.fromJson(item))
-        : undefined,
-      createdAt: json.created_at,
-      allocation: json.allocation ? PlacemntAllocationModel.fromJson(json.allocation) : undefined,
+      quesions: json.questions
+        ? json.questions.map((item: any) => ShowQuestionsModel.fromJson(item))
+        : json.quesions
+          ? json.quesions.map((item: any) => ShowQuestionsModel.fromJson(item))
+          : undefined,
+      createdAt: json.created_at ?? json.date,
+      allocation: json.allocation
+        ? PlacemntAllocationModel.fromJson(json.allocation)
+        : ShowPlcaementTestModel.createAllocation(json),
+    });
+  }
+
+  private static createAllocation(json: any): PlacemntAllocationModel | undefined {
+    const questions = Array.isArray(json.questions) ? json.questions : [];
+    if (!questions.length) return undefined;
+
+    const answerAnalysis = Array.isArray(json.question_answer_analysis)
+      ? json.question_answer_analysis
+      : [];
+    const totals = { easy: 0, medium: 0, hard: 0 };
+    const correct = { easy: 0, medium: 0, hard: 0 };
+
+    const allTime = questions.map((question: any, index: number) => {
+      const questionId = question.question_id ?? question.id;
+      const analysis = answerAnalysis.find(
+        (item: any) => (item.question?.id ?? item.question?.question_id) === questionId,
+      );
+      const difficulty = question.difficulty_level;
+      const difficultyKey =
+        difficulty === QuestionDifficultyEnum.easy
+          ? 'easy'
+          : difficulty === QuestionDifficultyEnum.medium
+            ? 'medium'
+            : difficulty === QuestionDifficultyEnum.hard
+              ? 'hard'
+              : undefined;
+
+      if (difficultyKey) {
+        totals[difficultyKey] += 1;
+        if (question.correct_status === 1) correct[difficultyKey] += 1;
+      }
+
+      return new PlacemntAllocationQuestionModel({
+        time: analysis?.question_answer_duration ?? 0,
+        difficultyLevel: difficulty,
+        correctStatus: question.correct_status,
+        questionNumber: index + 1,
+      });
+    });
+
+    return new PlacemntAllocationModel({
+      allTime,
+      totalQuestions: questions.length,
+      Easy: correct.easy,
+      totalnumberEasy: totals.easy,
+      Medium: correct.medium,
+      totalnumberMedium: totals.medium,
+      Hard: correct.hard,
+      totalnumberHard: totals.hard,
     });
   }
 

@@ -25,7 +25,7 @@
   const route = useRoute();
 
   // const FormStore = useFormsStore();
-  const formRoute = computed(() => '/employees/add');
+  // const formRoute = computed(() => '/employees/add');
 
   // Table headers
   const headers: TableHeader[] = [
@@ -34,8 +34,9 @@
     { key: 'EducationClassificationSubject', label: 'subject', width: '20%' },
     { key: 'numberOfQuestions', label: 'num of Q', width: '10%' },
     { key: 'status', label: 'status', width: '10%' },
-    { key: 'isPlan', label: 'plan', width: '10%' },
-    { key: 'date', label: 'date', width: '15%' },
+    { key: 'in_plan', label: 'plan', width: '10%' },
+    { key: 'date', label: 'date', width: '10%' },
+    // { key: 'actions', label: 'Actions', width: '10%' },
   ];
 
   // Pagination state
@@ -126,7 +127,7 @@
         </span>
         <input
           v-model="word"
-          placeholder="Search by employee name or email…"
+          placeholder="Search by placement test..."
           class="search-input"
           type="text"
           @input="Search"
@@ -165,8 +166,11 @@
             <template #cell-status="{ value }">
               <span class="" :class="GetPlasmentStatus(value)">{{ GetPlasmentStatus(value) }}</span>
             </template>
+            <template #cell-in_plan="{ value }">
+              <span class="" :class="value ? 'text-success' : 'text-danger'">{{ value ? 'Yes' : 'No' }}</span>
+            </template>
             <template #cell-result="{ value }">
-              <span class="">{{ value }} / 100</span>
+              <span class="">{{ value }} </span>
             </template>
             <template #cell-student="{ value }">
               <div class="student-container">
@@ -235,9 +239,9 @@
             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
-          <h3>No employees found</h3>
-          <p>Start by adding a new employee to your organization</p>
-          <router-link :to="formRoute" class="btn btn-primary empty-cta">
+          <h3>No placement test found</h3>
+          <p>Start by adding a new placement test to your organization</p>
+          <!-- <router-link :to="formRoute" class="btn btn-primary empty-cta">
             <svg
               width="18"
               height="18"
@@ -249,8 +253,8 @@
             >
               <path d="M12 5v14M5 12h14" />
             </svg>
-            <span>Add Employee</span>
-          </router-link>
+            <span>Add Placement</span>
+          </router-link> -->
         </div>
       </template>
       <template #loader>
@@ -274,5 +278,12 @@
     img {
       width: 50px;
     }
+  }
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
   }
 </style>
