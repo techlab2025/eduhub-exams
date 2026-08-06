@@ -274,11 +274,11 @@
               @delete-branch="handleDeleteBranch"
             />
           </div>
-          <div v-if="rootNodes.length > 0" class="subjects-bottom-bar">
+          <!-- <div v-if="rootNodes.length > 0" class="subjects-bottom-bar">
             <button class="btn btn-primary btn-full" @click="showAddRootDialog = true">
               {{ $t('Add New') }} {{ getSubjectRootName() }}
             </button>
-          </div>
+          </div> -->
         </div>
       </transition>
     </div>

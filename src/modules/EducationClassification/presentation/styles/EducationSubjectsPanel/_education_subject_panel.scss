@@ -8,14 +8,19 @@
   width: 100%;
   gap: 0;
   font-family: 'Medium';
+  padding: 24px 16px;
+  border-radius: 15px;
 
   .subjects-left {
     flex: 0 0 100%;
-    border-right: 1px solid var(--gray-200-std);
+    // border-right: 1px solid var(--gray-200-std);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     background: $StandardWhite;
+    border-radius: 15px;
+    height: fit-content;
+    padding: 10px;
   }
 
   .subjects-right {
@@ -34,8 +39,8 @@
     gap: 6px;
     padding: 10px 14px;
     cursor: pointer;
-    background: var(--light-green-bg);
-    border-bottom: 1px solid var(--gray-200-std);
+    // background: var(--light-green-bg);
+    // border-bottom: 1px solid var(--gray-200-std);
     transition: background 0.15s;
 
     &:hover {

@@ -30,7 +30,9 @@
 
 <template>
   <div class="list-trigger" @click="toggle">
-    <ActionsIcon />
+    <slot name="icon">
+      <ActionsIcon />
+    </slot>
   </div>
 
   <Popover ref="op">

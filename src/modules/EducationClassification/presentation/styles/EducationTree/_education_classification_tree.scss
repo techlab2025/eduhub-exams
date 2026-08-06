@@ -10,7 +10,7 @@
   .left-panel {
     width: 50%;
     background: $StandardWhite;
-    border-right: 1px solid $Gray-200-std;
+    // border-right: 1px solid $Gray-200-std;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -21,7 +21,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px 14px;
-    border-bottom: 1px solid $ColorNearWhite-f0;
+    // border-bottom: 1px solid $ColorNearWhite-f0;
   }
 
   .search-box {
@@ -131,6 +131,7 @@
     display: flex;
     flex-direction: column;
     width: 50%;
+    border-radius: 20px;
   }
 
   .right-header {
