@@ -4,14 +4,17 @@ import ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.m
 import { questionsModel } from '@/modules/Questions';
 import { QuestionGeneratedByEnum } from '@/modules/Questions/core/constant/generatedby.enum';
 
-export default class ArticleRepository extends BaseRepository<ShowQuestionsModel, questionsModel[]> {
+export default class ArticleRepository extends BaseRepository<
+  ShowQuestionsModel,
+  questionsModel[]
+> {
   private static instance: ArticleRepository;
 
   protected get apiService() {
     return ArticleApiService.getInstance();
   }
 
-  protected get config(): RepositoryConfig { 
+  protected get config(): RepositoryConfig {
     return {
       hasPagination: true,
       dataKey: 'data',
@@ -29,14 +32,14 @@ export default class ArticleRepository extends BaseRepository<ShowQuestionsModel
       new questionsModel({
         id: 2,
         title: 'What are the benefits of renewable energy?',
-        subjects: {id: 2, title: 'Science'},
+        subjects: { id: 2, title: 'Science' },
         generatedBy: QuestionGeneratedByEnum.manual,
         noOfQs: 5,
       }),
       new questionsModel({
         id: 3,
         title: 'How does solar power work?',
-        subjects: {id: 3, title: 'Physics'},
+        subjects: { id: 3, title: 'Physics' },
         generatedBy: QuestionGeneratedByEnum.ai,
         noOfQs: 8,
       }),
@@ -50,8 +53,15 @@ export default class ArticleRepository extends BaseRepository<ShowQuestionsModel
     return ArticleRepository.instance;
   }
 
+  // protected parseItem(data: any): ShowQuestionsModel {
+  // return ShowQuestionsModel.fromJson(data);
+// }
   protected parseItem(data: any): ShowQuestionsModel {
-    return ShowQuestionsModel.fromJson(data);
+    return ShowQuestionsModel.fromJson({
+      ...data,
+      topics: Array.isArray(data?.topics) ? data.topics : [],
+      explanation: data?.explanation ?? {},
+    });
   }
 
   protected parseList(data: any): questionsModel[] {
@@ -65,5 +75,4 @@ export default class ArticleRepository extends BaseRepository<ShowQuestionsModel
       return acc;
     }, []);
   }
- 
 }

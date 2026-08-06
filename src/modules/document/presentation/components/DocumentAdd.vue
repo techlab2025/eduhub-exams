@@ -11,8 +11,11 @@
 
   const params = ref<AddDocumentParams | null>(null);
   const loading = ref(false);
+  const documentFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
 
   const saveDocument = async () => {
+    const isFormValid = await documentFormRef.value?.validate?.();
+    if (isFormValid === false) return;
     if (!params.value) return;
     loading.value = true;
     try {
@@ -30,7 +33,12 @@
 
 <template>
   <div class="document-crud-example">
-    <DocumentForm :form-key="formKey" :loading="loading" @update-data="updateData" />
+    <DocumentForm
+      ref="documentFormRef"
+      :form-key="formKey"
+      :loading="loading"
+      @update-data="updateData"
+    />
 
     <!-- <AppButton :title="$t('save_document')" size="sm" icon="right" type="submit" @click="saveDocument">
       {{ $t('save_document') }}
@@ -39,8 +47,8 @@
       </template>
 </AppButton> -->
     <div class="actions" :class="{ disabled: loading }">
-      <button  class="btn btn-primary w-full" type="submit" @click="saveDocument">
-        <span v-if="loading" class="loader"></span> 
+      <button class="btn btn-primary w-full" type="submit" @click="saveDocument">
+        <span v-if="loading" class="loader"></span>
         <span v-else>
           {{ $t('save_document') }}
         </span>

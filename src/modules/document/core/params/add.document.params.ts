@@ -15,6 +15,10 @@ export default class AddDocumentParams implements Params {
 
   public static readonly validation = new ClassValidation().setRules({
     translations: {   required: true  },
+    documentTypeId: {   required: true  },
+    stage_id: {   required: true  },
+    subjects: {   required: true  },
+    refNumber: {   required: true  },
   });
 
   constructor(data: {

@@ -1,7 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
+import { createI18n } from 'vue-i18n';
 import DocumentAdd from '../DocumentAdd.vue';
+
+const createMock = vi.hoisted(() => vi.fn());
+const validateMock = vi.hoisted(() => vi.fn());
+const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
+
+vi.mock('@/modules/document/presentation/controllers/document.controller', () => ({
+  default: {
+    getInstance: () => ({
+      create: createMock,
+      errorMessage: { value: '' },
+    }),
+  },
+}));
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
@@ -54,6 +68,7 @@ describe('DocumentAdd', () => {
   it('renders without crashing', () => {
     const wrapper = mount(DocumentAdd, {
       global: {
+        plugins: [i18n],
         stubs: {
           Teleport: true,
           Transition: true,
@@ -90,5 +105,28 @@ describe('DocumentAdd', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('does not save when the document form has required-field errors', async () => {
+    validateMock.mockResolvedValue(false);
+    const wrapper = mount(DocumentAdd, {
+      global: {
+        stubs: {
+          DocumentForm: {
+            name: 'DocumentForm',
+            methods: { validate: validateMock },
+            template: '<div />',
+          },
+        },
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
+    });
+
+    await wrapper.find('button[type="submit"]').trigger('click');
+
+    expect(validateMock).toHaveBeenCalledOnce();
+    expect(createMock).not.toHaveBeenCalled();
   });
 });

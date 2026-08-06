@@ -3,9 +3,16 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import DocumentForm from '../DocumentForm.vue';
 
+const toastWarningMock = vi.hoisted(() => vi.fn());
 const stageControllerMock = vi.hoisted(() => ({
   listData: { value: [] as unknown[] },
   fetchList: vi.fn(),
+}));
+
+vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
+  dialogManager: {
+    toastWarning: toastWarningMock,
+  },
 }));
 
 vi.mock('@/modules/Stages/presentation/controllers/stage.controller', () => ({
@@ -102,6 +109,39 @@ describe('DocumentForm', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('shows inline errors for every required document field', async () => {
+    const wrapper = mount(DocumentForm, {
+      global: {
+        stubs: {
+          UpdatedCustomInputSelect: true,
+          MultiLangInput: true,
+          HandleFilesUpload: true,
+          DocumentIcon: true,
+          DeleteTagIcon: true,
+        },
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
+    });
+
+    const isValid = await (
+      wrapper.vm as unknown as { validate: () => Promise<boolean> }
+    ).validate();
+
+    expect(isValid).toBe(false);
+    expect(toastWarningMock).toHaveBeenCalledWith('document_required_fields_warning', {
+      title: 'invalid_input_warning_title',
+    });
+    expect(wrapper.findAll('[data-document-error]').map((error) => error.text())).toEqual([
+      'document_name_required',
+      'document_reference_number_required',
+      'document_type_required',
+      'document_subject_required',
+      'document_description_required',
+    ]);
   });
 
   it('uses the first subject id and full title for nested branch options', async () => {

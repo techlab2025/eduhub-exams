@@ -3,9 +3,10 @@ import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/da
 import ArticleController from './Article.controller';
 import router from '@/router';
 
-const { clearFormDataMock, superCreateMock } = vi.hoisted(() => ({
+const { clearFormDataMock, superCreateMock, superUpdateMock } = vi.hoisted(() => ({
   clearFormDataMock: vi.fn(),
   superCreateMock: vi.fn(),
+  superUpdateMock: vi.fn(),
 }));
 
 vi.mock('@/router', () => ({
@@ -20,6 +21,10 @@ vi.mock('@/base/Presentation/Controller/baseController', () => ({
   default: class {
     create(...args: unknown[]) {
       return superCreateMock(...args);
+    }
+
+    update(...args: unknown[]) {
+      return superUpdateMock(...args);
     }
   },
 }));
@@ -112,5 +117,15 @@ describe('ArticleController', () => {
       undefined,
       false,
     );
+  });
+
+  it('can update an article without routing before the next workflow step', async () => {
+    superUpdateMock.mockResolvedValue(new DataSuccess({ data: { id: 42 } as never }));
+    const controller = ArticleController.getInstance();
+
+    await controller.update({} as never, undefined, 'article-form', false);
+
+    expect(router.push).not.toHaveBeenCalled();
+    expect(clearFormDataMock).toHaveBeenCalledWith('article-form');
   });
 });

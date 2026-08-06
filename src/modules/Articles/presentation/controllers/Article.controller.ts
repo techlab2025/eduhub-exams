@@ -81,12 +81,14 @@ export default class ArticleController extends BaseController<
     return result;
   }
 
-  async update(params: Params, options?: ApiCallOptions, formKey?: string) {
+  async update(params: Params, options?: ApiCallOptions, formKey?: string, shouldRoute = true) {
     const FormStore = useFormsStore();
 
     const result = await super.update(params, options);
     if (result instanceof DataSuccess) {
-      router.push({ name: 'Articles' });
+      if (shouldRoute) {
+        await router.push({ name: 'Articles' });
+      }
       if (formKey) {
         FormStore.clearFormData(formKey);
       }

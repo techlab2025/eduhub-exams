@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import type AddArticlesParams from '../../core/params/add.Artical.params';
   import ArticleController from '../controllers/Article.controller';
@@ -31,6 +31,7 @@
       loading.value = true;
       params.value.status = QuestionStatusEnum.CREATED;
       await controller.create(params.value, undefined, formKey, true);
+      // router.push({ name: 'articles/questions' });
     } catch (error) {
       console.error('Error saving article:', error);
     } finally {

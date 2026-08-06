@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
+import { createI18n } from 'vue-i18n';
 import DocumentEdit from '../DocumentEdit.vue';
+
+const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
@@ -54,6 +57,7 @@ describe('DocumentEdit', () => {
   it('renders without crashing', () => {
     const wrapper = mount(DocumentEdit, {
       global: {
+        plugins: [i18n],
         stubs: {
           Teleport: true,
           Transition: true,

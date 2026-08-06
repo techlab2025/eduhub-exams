@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import IconAccept from '@/shared/icons/IconAccept.vue';
   import ArticleController from '../controllers/Article.controller';
   import EditArticlesParams from '../../core/params/edit.Articles.params';
   import ShowArticlesParams from '../../core/params/show.Articles.params';
-  import LoadingIcon from '@/assets/images/loading.webp';
   import ArticleForm from './ArticleForm.vue';
   import type AddArticlesParams from '../../core/params/add.Artical.params.ts';
+  import CancelQuestionDialog from '@/modules/Questions/presentation/subComponents/Dialogs/CancelQuestionDialog.vue';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
   const controller = ArticleController.getInstance();
   const route = useRoute();
@@ -18,12 +18,9 @@
   const params = ref<EditArticlesParams | null>(null);
   const articleFormRef = ref<InstanceType<typeof ArticleForm> | null>(null);
 
-  /**
-   * Update article
-   */
   const loading = ref(false);
 
-  const saveArticle = async () => {
+  const updateArticleAndContinue = async () => {
     if (!(await articleFormRef.value?.validateRequiredFields())) return;
 
     if (!params.value) {
@@ -32,10 +29,20 @@
     }
     try {
       loading.value = true;
-      await controller.update(params.value, undefined, formKey);
+      const result = await controller.update(params.value, undefined, formKey, false);
+      if (!(result instanceof DataSuccess)) return;
+
+      const query = {
+        ...(params.value.e_c_subject_id && { subject_id: params.value.e_c_subject_id }),
+        ...(params.value.questionSequenceId && { sequence_id: params.value.questionSequenceId }),
+      };
+      await router.push({
+        name: 'Article questions',
+        params: { artical_id: Number(route.params.id) },
+        ...(Object.keys(query).length && { query }),
+      });
     } finally {
       loading.value = false;
-      router.push({ name: 'Articals' });
     }
   };
 
@@ -47,6 +54,7 @@
       question: updatedParams.question,
       question_type: updatedParams.question_type,
       e_c_subject_id: updatedParams.e_c_subject_id,
+      questionSequenceId: updatedParams.questionSequenceId,
       documents: updatedParams.documents,
       explanation: updatedParams.explanation,
     });
@@ -55,6 +63,10 @@
   onMounted(async () => {
     await controller.fetchOne(new ShowArticlesParams(Number(route.params.id)));
   });
+
+  const cancel = () => {
+    router.push({ name: 'Articles' });
+  };
 </script>
 
 <template>
@@ -68,24 +80,16 @@
     />
 
     <div class="actions" :class="{ disabled: loading }">
-      <!-- <AppButton  title="Save Article" size="sm" icon="right" type="submit" class="save-emp" @click="saveArticle">
-        <template #icon>
-          <span v-if="loading" class="loader"></span>
-          <IconAccept v-else />
-        </template>
-        <span v-if="!loading">{{ $t(`Save Article`) }}</span>
-      </AppButton> -->
-      <button class="save-btn" :class="{ disabled: loading }" @click="saveArticle">
-        <img
-          v-if="loading"
-          :src="LoadingIcon"
-          class="loader-skills"
-          alt="loading"
-          width="30"
-          height="30"
-        />
-        <span v-else> {{ $t('Save Article') }} <IconAccept /> </span>
+      <button
+        class="btn btn-primary next-button"
+        type="button"
+        :disabled="loading"
+        :class="loading ? 'disabled' : ''"
+        @click="updateArticleAndContinue"
+      >
+        {{ $t('article_next') }}
       </button>
+      <CancelQuestionDialog @cancel="cancel" />
     </div>
 
     <!-- Error Display -->
@@ -96,63 +100,22 @@
 </template>
 
 <style scoped lang="scss">
-  @use '../../../../styles/variables' as *;
-  @use '../../../../styles/mixins/flex' as *;
-  // .employee-edit-page {
-  //   padding: 24px;
-  //   max-width: 1000px;
-  //   margin: 0 auto;
-  // }
-
-  .save-btn {
-    width: 100%;
-    background-color: var(--primary-green);
-    color: white;
-
-    @include flex(wrap, row, center, center);
-
-    border-radius: 50px;
-    border: none;
-    padding: 10px 20px;
-  }
-
-  .loader {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 14px solid;
-    border-color: black transparent black transparent;
-    animation: l1 1.2s linear infinite;
-    display: inline-block;
-  }
-
-  @keyframes l1 {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
   .actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+
     &.disabled {
       cursor: not-allowed;
       pointer-events: none;
       opacity: 0.5;
     }
-  }
 
-  .actions {
-    margin-top: 24px;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .save-emp {
-    width: 100%;
-    padding: 10px 20px;
+    .next-button,
+    :deep(.btn-cancel) {
+      width: 100%;
+    }
   }
 
   .error-toast {

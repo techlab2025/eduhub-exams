@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  import { ref, watch, computed, onMounted } from 'vue';
+  import { ref, watch, computed, nextTick, onMounted } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
+  import { useI18n } from 'vue-i18n';
   import { useFormsStore } from '@/stores/formsStore';
   import AddDocumentParams from '../../core/params/add.document.params';
   import TitleInterface from '@/base/Data/Models/titleInterface';
@@ -18,6 +19,7 @@
   import type StageModel from '@/modules/Stages/core/models/stage.model';
   import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import type DocumentShowModel from '../../core/models/document.show.model';
+  import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
   // import NewIcon from '@/shared/icons/CustomSelect/NewIcon.vue';
 
   const emit = defineEmits(['updateData']);
@@ -30,6 +32,13 @@
   const tag = ref<string>('');
   const tags = ref<string[]>([]);
   const FormStore = useFormsStore();
+  const { t } = useI18n();
+
+  type DocumentValidationErrors = Partial<
+    Record<'title' | 'referenceNumber' | 'documentType' | 'subject' | 'description', string>
+  >;
+
+  const validationErrors = ref<DocumentValidationErrors>({});
 
   onBeforeRouteLeave((to, from) => {
     const savedData = formKey ? FormStore.getFormData(formKey) : null;
@@ -80,6 +89,53 @@
   });
 
   const selectedBranchTitle = ref<TitleInterface<number>>();
+
+  const hasTranslation = (value: Record<string, string>) =>
+    Object.values(value).some((translation) => translation?.trim());
+
+  const getValidationErrors = (): DocumentValidationErrors => {
+    const errors: DocumentValidationErrors = {};
+
+    if (!hasTranslation(title.value)) errors.title = t('document_name_required');
+    if (!RefrenceNumber.value.trim()) {
+      errors.referenceNumber = t('document_reference_number_required');
+    }
+    if (!selectedDocumentType.value?.id) {
+      errors.documentType = t('document_type_required');
+    }
+    if (!selectedBranchTitle.value?.id || !selectedBranchTitle.value?.subtitle) {
+      errors.subject = t('document_subject_required');
+    }
+    if (!hasTranslation(description.value)) {
+      errors.description = t('document_description_required');
+    }
+
+    return errors;
+  };
+
+  const refreshVisibleValidation = () => {
+    if (Object.keys(validationErrors.value).length) {
+      validationErrors.value = getValidationErrors();
+    }
+  };
+
+  const validate = async (): Promise<boolean> => {
+    validationErrors.value = getValidationErrors();
+    if (!Object.keys(validationErrors.value).length) return true;
+
+    dialogManager.toastWarning(t('document_required_fields_warning'), {
+      title: t('invalid_input_warning_title'),
+    });
+    await nextTick();
+    window.document.querySelector<HTMLElement>('[data-document-error]')?.scrollIntoView?.({
+      behavior: 'smooth',
+      block: 'center',
+    });
+    return false;
+  };
+
+  defineExpose({ validate });
+
   watch(
     () => document,
     (newDoc) => {
@@ -130,6 +186,7 @@
       tags: tags.value,
     });
 
+    refreshVisibleValidation();
     emit('updateData', params);
   };
 
@@ -191,7 +248,7 @@
     </div>
 
     <div class="form-fields" :class="{ disabled: loading }">
-      <div class="field-group">
+      <div class="field-group required-field">
         <MultiLangInput
           :field-key="`title`"
           :label="$t(`Document_name`)"
@@ -203,10 +260,13 @@
             updateData();
           "
         />
+        <small v-if="validationErrors.title" class="document-field-error" data-document-error>
+          {{ validationErrors.title }}
+        </small>
       </div>
 
       <div
-        class="field-group col-span-1 ref-number-group"
+        class="field-group required-field col-span-1 ref-number-group"
         :class="{ 'disabled-input': document?.RefNumber }"
       >
         <label class="field-label" for="doc-ref">{{ $t('Reference_Number') }}</label>
@@ -221,9 +281,16 @@
             @input="updateData"
           />
         </div>
+        <small
+          v-if="validationErrors.referenceNumber"
+          class="document-field-error"
+          data-document-error
+        >
+          {{ validationErrors.referenceNumber }}
+        </small>
       </div>
 
-      <div class="field-group select-group col-span-2">
+      <div class="field-group required-field select-group col-span-2">
         <UpdatedCustomInputSelect
           id="documentType"
           :class="`field-input`"
@@ -238,6 +305,13 @@
             updateData();
           "
         />
+        <small
+          v-if="validationErrors.documentType"
+          class="document-field-error"
+          data-document-error
+        >
+          {{ validationErrors.documentType }}
+        </small>
         <!-- @close="DocumentTypeDialog = false"
           :isDialog="true"
           v-model:dialogVisible="DocumentTypeDialog"
@@ -251,7 +325,7 @@
         </UpdatedCustomInputSelect> -->
       </div>
 
-      <div class="field-group col-span-2">
+      <div class="field-group required-field col-span-2">
         <UpdatedCustomInputSelect
           id="doc-branch"
           v-model="selectedBranchTitle"
@@ -262,9 +336,12 @@
           @update:model-value="handleBranchChange($event)"
           @reload="FetchStages"
         />
+        <small v-if="validationErrors.subject" class="document-field-error" data-document-error>
+          {{ validationErrors.subject }}
+        </small>
       </div>
 
-      <div class="field-group col-span-2">
+      <div class="field-group required-field col-span-2">
         <MultiLangInput
           :field-key="`description`"
           :label="$t(`Description`)"
@@ -276,6 +353,9 @@
             updateData();
           "
         />
+        <small v-if="validationErrors.description" class="document-field-error" data-document-error>
+          {{ validationErrors.description }}
+        </small>
       </div>
 
       <div class="field-group tags-group col-span-2">
@@ -365,5 +445,11 @@
   }
   .add-dialog {
     cursor: pointer;
+  }
+
+  .document-field-error {
+    color: var(--danger-color);
+    font-size: 12px;
+    font-weight: 400;
   }
 </style>
