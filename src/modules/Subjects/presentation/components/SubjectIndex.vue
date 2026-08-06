@@ -67,7 +67,13 @@
     await FetchSubjects();
   };
   const ShoweEditDialog = ref(false);
-  const showSkillsDialog = ref<boolean>(false);
+  const selectedSkillsSubject = ref<TitleInterface<number>>();
+  const skillsDialogVisible = computed({
+    get: () => selectedSkillsSubject.value !== undefined,
+    set: (visible: boolean) => {
+      if (!visible) selectedSkillsSubject.value = undefined;
+    },
+  });
 
   const { t } = useI18n();
   const router = useRouter();
@@ -97,7 +103,9 @@
     {
       text: t('skills'),
       icon: PricingIcon,
-      action: () => (showSkillsDialog.value = true),
+      action: () => {
+        selectedSkillsSubject.value = item;
+      },
     },
   ];
   const FetchSubjects = async (id?: number) => {
@@ -169,12 +177,6 @@
                     )
                   "
                 />
-                <SkillsDialog
-                  v-model:visible="showSkillsDialog"
-                  :level="1"
-                  :branch-name="item.title!"
-                  :branch-id="item.id"
-                />
               </div>
             </template>
           </AppTable>
@@ -214,6 +216,13 @@
       </template>
     </DataStatusBuilder>
   </div>
+  <SkillsDialog
+    v-if="selectedSkillsSubject"
+    v-model:visible="skillsDialogVisible"
+    :level="1"
+    :branch-name="selectedSkillsSubject.title!"
+    :branch-id="selectedSkillsSubject.id"
+  />
   <RenameSubjectDialog
     v-model:visable="ShoweEditDialog"
     :item-id="SelctedSubject!"

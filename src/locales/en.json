@@ -599,13 +599,15 @@
     "archived": "archived",
     "revision": "revision"
   },
+  "delete_question_title": "Are you sure you want to delete this question?",
+  "delete_question_message": "Deleting this question will permanently remove it. This action cannot be undone.",
   "question_status_details": {
     "titles": {
       "created": "Created",
       "approved": "Approved",
       "rejected": "Rejected",
       "draft": "Draft",
-      "under_review": "Not Review",
+      "under_review": "Under Review",
       "archived": "Archived",
       "revision": "Revision Required",
       "unknown": "Unknown"
@@ -776,4 +778,3 @@
   "no_item_found_description": "We couldn't find any items matching your search",
   "no_item_found_title": "No Items Found"
 }
-

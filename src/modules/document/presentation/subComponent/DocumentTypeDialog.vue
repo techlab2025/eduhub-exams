@@ -54,8 +54,10 @@
     visible.value = true;
     await FetchReasons();
   };
-  const deleteDialogTitle = ref('Are you sure you want to remove this delete account reasons?');
-  const deleteDialogMessage = ref('if you want this reason agiain , you want to write again');
+  const deleteDialogTitle = ref('Are you sure you want to remove this document type?');
+  const deleteDialogMessage = ref(
+    'Deleting this document type will remove all related data. This action is irreversible, and the document type must be created again if needed.',
+  );
 
   const deleteReason = async (id: number) => {
     await documentTypeController.delete(
@@ -126,6 +128,11 @@
           <span class="item-main-title">{{ item.title }}</span>
         </div>
 
+        <ToggleSwitch
+            :model-value="item.status"
+            :aria-label="`${$t('active')}: ${item.title}`"
+            @update:model-value="toggleStatus(item.id!)"
+          />
         <div class="item-actions">
           <EditeIcon @click="showDetails(item.id!)" />
 
@@ -139,11 +146,7 @@
               <IndexDelete />
             </template>
           </DeleteDialog>
-          <!-- <ToggleSwitch
-            :model-value="item.status"
-            :aria-label="`${$t('active')}: ${item.title}`"
-            @update:model-value="toggleStatus(item.id!)"
-          /> -->
+          
         </div>
       </div>
       <div class="input-wrapper">

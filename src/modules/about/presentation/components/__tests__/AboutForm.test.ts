@@ -33,6 +33,7 @@ vi.mock('@/shared/FormInputs/HandleFilesUpload.vue', () => ({
   default: {
     name: 'HandleFilesUpload',
     template: '<div class="upload-stub" />',
+    props: ['maxFiles'],
     emits: ['change'],
   },
 }));
@@ -68,6 +69,21 @@ describe('AboutForm', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('limits the main image and social icons to one file each', () => {
+    const wrapper = mount(AboutForm, {
+      props: { formKey: 'test-key', about: mockAbout },
+      global: {
+        mocks: { $t: (k: string) => k },
+        stubs: { Teleport: true, Transition: true },
+      },
+    });
+
+    const uploaders = wrapper.findAllComponents({ name: 'HandleFilesUpload' });
+
+    expect(uploaders).toHaveLength(2);
+    expect(uploaders.every((uploader) => uploader.props('maxFiles') === 1)).toBe(true);
   });
 
   it('does not send unchanged social icon for existing links', async () => {

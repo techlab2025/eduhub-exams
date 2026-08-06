@@ -230,6 +230,8 @@
     "draft": "مسودة",
     "not_reviewed": "لم تتم مراجعته"
   },
+  "delete_question_title": "هل أنت متأكد أنك تريد حذف هذا السؤال؟",
+  "delete_question_message": "سيؤدي حذف هذا السؤال إلى إزالته نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
   "question_status_details": {
     "titles": {
       "created": "تم الإنشاء",
