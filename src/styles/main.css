@@ -16910,7 +16910,7 @@ body::-webkit-scrollbar-thumb:hover {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
-  gap: var(--md-size);
+  gap: 32px;
 }
 .auth-layout > * {
   flex: 0 0 auto;
@@ -16924,17 +16924,38 @@ body::-webkit-scrollbar-thumb:hover {
   gap: var(--md-size);
   width: 100%;
 }
+.auth-layout .auth-header .input-wrapper {
+  width: 30%;
+}
+.auth-layout .auth-header .input-wrapper input {
+  width: 100%;
+}
+.auth-layout .auth-header .input-wrapper input::-moz-placeholder {
+  padding: 5px;
+  color: #7a7a7a;
+  font-size: 14px;
+  font-weight: 600;
+}
+.auth-layout .auth-header .input-wrapper input::placeholder {
+  padding: 5px;
+  color: #7a7a7a;
+  font-size: 14px;
+  font-weight: 600;
+}
 .auth-layout .auth-header .title {
-  color: var(--PrimaryColor-hover);
-  font-size: var(--xl-size-2);
+  color: #24385c;
+  font-size: 32px;
   font-weight: 700;
   font-family: "Bold";
 }
 .auth-layout .auth-header .sub-title {
-  color: var(--gray-5);
-  font-size: var(--md-size);
+  color: #5d5d5d;
+  font-size: 16px;
   font-weight: 500;
   font-family: "Medium";
+}
+.auth-layout .btn-primary {
+  width: 20%;
 }
 
 /* =============================================================================

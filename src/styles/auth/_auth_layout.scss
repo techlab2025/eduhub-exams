@@ -9,7 +9,7 @@
 
   @include flex-column(nowrap, center, center);
 
-  gap: $MdSize;
+  gap: 32px;
 
   > * {
     flex: 0 0 auto;
@@ -20,19 +20,34 @@
 
     gap: $MdSize;
     width: 100%;
+    .input-wrapper {
+      width: 30%;
+      input {
+        width: 100%;
+        &::placeholder {
+          padding: 5px;
+          color: #7a7a7a;
+          font-size: 14px;
+          font-weight: 600;
+        }
+      }
+    }
 
     .title {
-      color: $PrimaryColorHover;
-      font-size: $XlSize3;
-      font-weight: $BaseFontWeightBold;
+      color: #24385c;
+      font-size: 32px;
+      font-weight: 700;
       font-family: 'Bold';
     }
 
     .sub-title {
-      color: $Gray-5;
-      font-size: $MdSize;
-      font-weight: $BaseFontMediumWeight;
+      color: #5d5d5d;
+      font-size: 16px;
+      font-weight: 500;
       font-family: 'Medium';
     }
+  }
+  .btn-primary {
+    width: 20%;
   }
 }

@@ -7,6 +7,9 @@
   import IndexCountryParams from '@/modules/country/core/params/index.country.params';
   import { useRoute, useRouter } from 'vue-router';
   import { useCountryStore } from '@/stores/country';
+  import { debounce } from '@/base/Presentation/Utils/debouced.ts';
+  import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
+  import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   // import { debounce } from '@/base/Presentation/Utils/debouced';
   // import { debounce } from '@/base/Presentation/Utils/debouced';
 
@@ -48,15 +51,40 @@
     if (!selectedCountryId.value) return;
     router.push({ name: 'Login' });
   };
+  const countryText = ref();
+  const searchCountry = debounce(() => {
+    fetchCountries(1, countryText.value);
+  }, 300);
 </script>
 
 <template>
   <section class="auth-layout">
     <div class="auth-header">
-      <h3 class="title">{{ $t('Choose your country') }}</h3>
+      <h3 class="title">{{ $t('Select Your Country') }}</h3>
       <p class="sub-title">
         {{ $t('Choose your country to access localized content and settings') }}
       </p>
+      <!-- <div class="input-wrapper">
+        <input
+          v-model="countryText"
+          type="text"
+          class="input"
+          placeholder="search your country ..."
+          @input="searchCountry"
+        />
+      </div> -->
+      <div class="search-field">
+        <span class="search-icon">
+          <IndexSearchIcon />
+        </span>
+        <input
+          v-model="countryText"
+          placeholder="Search by country…"
+          class="search-input"
+          type="text"
+          @input="searchCountry"
+        />
+      </div>
     </div>
     <DataStatusBuilder :controller="state" :on-retry="async () => await fetchCountries()">
       <template #success="{ data }">
@@ -71,6 +99,13 @@
           <!-- </div> -->
         </div>
       </template>
+      <template #empty>
+        <NoItemContainer
+          :description="$t('no_item_found_description')"
+          :title="$t('no_item_found_title')"
+          :image="''"
+        />
+      </template>
     </DataStatusBuilder>
     <button
       :class="['btn btn-primary', { disabled: !selectedCountryId }]"
@@ -78,7 +113,7 @@
       @click="continueToLogin"
     >
       <!-- :disabled="!selectedCountryId" -->
-      {{ $t('continue_to_login') }}
+      {{ $t('countinue') }}
     </button>
   </section>
 </template>

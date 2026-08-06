@@ -772,6 +772,8 @@
   "failed": "Failed",
   "no_profile_data": "No student profile data available",
   "profile_load_failed": "Student profile could not be loaded",
-  "try_again": "Try Again"
+  "try_again": "Try Again",
+  "no_item_found_description": "We couldn't find any items matching your search",
+  "no_item_found_title": "No Items Found"
 }
 
