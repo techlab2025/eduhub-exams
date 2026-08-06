@@ -251,6 +251,7 @@
           :label="`upload image`"
           accept="image/*"
           :multiple="false"
+            :max-files="1"
           :index="1"
           :file="image || undefined"
           :have-content="true"

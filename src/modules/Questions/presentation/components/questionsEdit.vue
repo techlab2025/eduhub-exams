@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import type EditQuestionParams from '../../core/params/edit.question.params';
   import ShowQuestionParams from '../../core/params/show.question.params';
@@ -18,6 +18,9 @@
   const params = ref<EditQuestionParams | null>(null);
   const loading = ref(false);
   const questionFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
+  const isFormLocked = computed(
+    () => controller.itemData.value?.review_status === QuestionStatusEnum.ARCHIVED,
+  );
 
   const SaveStatusEnum = {
     Save: 1,
@@ -43,6 +46,8 @@
   };
 
   const saveQuestion = async (isRouting: boolean, isWithReview: boolean) => {
+    if (isFormLocked.value) return;
+
     const isFormValid = await questionFormRef.value?.validate?.();
     if (isFormValid === false) return;
     if (!params.value) {
@@ -68,6 +73,8 @@
   };
 
   const saveAsDraft = async () => {
+    if (isFormLocked.value) return;
+
     if (!params.value) {
       console.error('No question parameters to update');
       return;
@@ -109,36 +116,45 @@
 
 <template>
   <div class="questions-edit-page">
-    <QuestionsForm
-      ref="questionFormRef"
-      :class="loading ? 'disabled' : ''"
-      :question="controller.itemData.value!"
-      :form-key="formKey"
-      @update-data="updateData"
-    />
+    <fieldset
+      class="question-form-fieldset"
+      :class="{ disabled: loading, 'is-locked': isFormLocked }"
+      :disabled="loading || isFormLocked"
+      :aria-disabled="isFormLocked"
+      :inert="isFormLocked || undefined"
+    >
+      <QuestionsForm
+        ref="questionFormRef"
+        :question="controller.itemData.value!"
+        :form-key="formKey"
+        @update-data="updateData"
+      />
+    </fieldset>
 
     <div class="actions">
-      <WithReviewDialog
-        class="save-emp"
-        :save-status="SaveStatusEnum.Save"
-        @with-review="saveQuestion(true, true)"
-        @without-review="saveQuestion(true, false)"
-      />
-      <WithReviewDialog
-        class="save-emp"
-        :save-status="SaveStatusEnum.SaveAndNew"
-        @with-review="saveQuestion(false, true)"
-        @without-review="saveQuestion(false, false)"
-      />
-      <button
-        type="button"
-        class="btn btn-draft"
-        :disabled="loading"
-        :class="loading ? 'disabled' : ''"
-        @click="saveAsDraft"
-      >
-        {{ $t('Save As draft') }}
-      </button>
+      <template v-if="!isFormLocked">
+        <WithReviewDialog
+          class="save-emp"
+          :save-status="SaveStatusEnum.Save"
+          @with-review="saveQuestion(true, true)"
+          @without-review="saveQuestion(true, false)"
+        />
+        <WithReviewDialog
+          class="save-emp"
+          :save-status="SaveStatusEnum.SaveAndNew"
+          @with-review="saveQuestion(false, true)"
+          @without-review="saveQuestion(false, false)"
+        />
+        <button
+          type="button"
+          class="btn btn-draft"
+          :disabled="loading"
+          :class="loading ? 'disabled' : ''"
+          @click="saveAsDraft"
+        >
+          {{ $t('Save As draft') }}
+        </button>
+      </template>
       <CancelQuestionDialog @cancel="cancelEdit" />
     </div>
 
@@ -150,6 +166,18 @@
 </template>
 
 <style scoped lang="scss">
+  .question-form-fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    &.is-locked {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+  }
+
   .actions {
     margin-block: 18px;
     display: flex;

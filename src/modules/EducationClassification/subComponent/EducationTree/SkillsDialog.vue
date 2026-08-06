@@ -259,6 +259,7 @@
     padding: 0.5rem 0.75rem;
     border-radius: 8px;
     background-color: var(--color-light-gray);
+    width: 100%;
   }
 
   .item-title {

@@ -1,10 +1,16 @@
-import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
 import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
 import QuestionHeader from './QuestionHeader.vue';
 import { createI18n } from 'vue-i18n';
 import en from '@/locales/en.json';
+
+const { deleteQuestionMock, pushMock, updateReviewStatusMock } = vi.hoisted(() => ({
+  deleteQuestionMock: vi.fn(),
+  pushMock: vi.fn(),
+  updateReviewStatusMock: vi.fn(),
+}));
 
 const i18n = createI18n({
   legacy: false,
@@ -16,15 +22,15 @@ vi.mock('vue-router', () => ({
   useRoute: () => ({ params: { id: '10' } }),
   useRouter: () => ({
     currentRoute: { value: { params: { id: '10' } } },
-    push: vi.fn(),
+    push: pushMock,
   }),
 }));
 
 vi.mock('../../controllers/questions.controller', () => ({
   default: {
     getInstance: () => ({
-      delete: vi.fn(),
-      updateReviewStatus: vi.fn(),
+      delete: deleteQuestionMock,
+      updateReviewStatus: updateReviewStatusMock,
     }),
   },
 }));
@@ -45,11 +51,21 @@ const mountComponent = (reviewStatus: QuestionStatusEnum) =>
         RevisionQuestion: {
           template: '<button class="revision-action">Revision</button>',
         },
+        Dialog: {
+          props: ['visible'],
+          emits: ['update:visible'],
+          template: '<div v-if="visible" class="dialog-stub"><slot name="container" /></div>',
+        },
+        DeleteIcon: true,
       },
     },
   });
 
 describe('QuestionHeader', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it.each([
     [QuestionStatusEnum.CREATED, 'Created', 'has been created'],
     [QuestionStatusEnum.APPROVED, 'Approved', 'available for publishing'],
@@ -72,5 +88,23 @@ describe('QuestionHeader', () => {
     expect(wrapper.text()).toContain('archive');
     expect(wrapper.text()).not.toContain('edit');
     expect(wrapper.find('.action-btn.delete').exists()).toBe(false);
+  });
+
+  it('asks for confirmation before deleting the question', async () => {
+    const wrapper = mountComponent(QuestionStatusEnum.CREATED);
+    const deleteButton = wrapper.find('.action-btn.delete');
+
+    expect(deleteButton.attributes('aria-label')).toBe('Delete');
+
+    await deleteButton.trigger('click');
+
+    expect(wrapper.text()).toContain('Are you sure you want to delete this question?');
+    expect(deleteQuestionMock).not.toHaveBeenCalled();
+
+    await wrapper.find('.btn-delete-danger').trigger('click');
+    await flushPromises();
+
+    expect(deleteQuestionMock).toHaveBeenCalledOnce();
+    expect(pushMock).toHaveBeenCalledWith({ name: 'Questions' });
   });
 });

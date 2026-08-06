@@ -2,6 +2,9 @@
   import { ref } from 'vue';
   import Dialog from 'primevue/dialog';
   import DeleteIcon from '@/shared/icons/DeleteDialogIcons/DeleteIcon.vue';
+
+  defineOptions({ inheritAttrs: false });
+
   const visible = ref(false);
   const emits = defineEmits(['delete']);
 
@@ -17,10 +20,10 @@
 </script>
 
 <template>
-  <button v-if="hasbtn" @click="visible = true">
+  <button v-if="hasbtn" v-bind="$attrs" type="button" @click="visible = true">
     <slot name="btn"> </slot>
   </button>
-  <button v-else @click="visible = true">
+  <button v-else v-bind="$attrs" type="button" @click="visible = true">
     Delete
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path

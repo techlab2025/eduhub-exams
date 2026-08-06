@@ -10,7 +10,9 @@ const { fetchOneMock, updateMock, routerPushMock, routerBackMock, itemDataMock }
     updateMock: vi.fn(),
     routerPushMock: vi.fn(),
     routerBackMock: vi.fn(),
-    itemDataMock: { value: { parentId: 42 } },
+    itemDataMock: {
+      value: { parentId: 42 } as { parentId?: number; review_status?: QuestionStatusEnum },
+    },
   }),
 );
 
@@ -137,5 +139,24 @@ describe('questionsEdit', () => {
       name: 'Article questions',
       params: { artical_id: 42 },
     });
+  });
+
+  it('locks the complete form and removes save actions for an archived question', async () => {
+    itemDataMock.value = {
+      parentId: 42,
+      review_status: QuestionStatusEnum.ARCHIVED,
+    };
+    const wrapper = mount(questionsEdit, { global });
+    await flushPromises();
+
+    const formFieldset = wrapper.get('.question-form-fieldset');
+
+    expect(formFieldset.attributes('disabled')).toBeDefined();
+    expect(formFieldset.attributes('inert')).toBeDefined();
+    expect(formFieldset.attributes('aria-disabled')).toBe('true');
+    expect(wrapper.findAll('.review-action')).toHaveLength(0);
+    expect(wrapper.find('.btn-draft').exists()).toBe(false);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
+    expect(updateMock).not.toHaveBeenCalled();
   });
 });

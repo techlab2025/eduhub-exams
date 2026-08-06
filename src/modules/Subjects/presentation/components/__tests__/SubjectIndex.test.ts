@@ -91,17 +91,20 @@ const educationTree = [
 
 describe('SubjectIndex.vue', () => {
   let mockFetchList: ReturnType<typeof vi.fn>;
+  let mockIndexSubjects: ReturnType<typeof vi.fn>;
   let mockDeleteSubject: ReturnType<typeof vi.fn>;
   let mockDeleteBranch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
     sessionStorage.clear();
-    mockFetchList = vi.fn().mockResolvedValue({});
+    mockFetchList = vi.fn().mockResolvedValue({ data: educationTree });
+    mockIndexSubjects = vi.fn().mockResolvedValue({ data: educationTree });
     mockDeleteSubject = vi.fn().mockResolvedValue({});
     mockDeleteBranch = vi.fn().mockResolvedValue({});
     vi.mocked(SubjectController.getInstance).mockReturnValue({
       fetchList: mockFetchList,
+      indexSubjects: mockIndexSubjects,
       delete: mockDeleteSubject,
       deleteBranch: mockDeleteBranch,
       pagination: ref(null),
@@ -131,9 +134,26 @@ describe('SubjectIndex.vue', () => {
           emits: ['update:modelValue'],
         },
         DropList: {
-          template: '<button class="delete-action" @click="actionList[0].action()" />',
+          template: `
+            <div>
+              <button class="delete-action" @click="actionList[0].action()" />
+              <button
+                v-for="action in actionList.slice(1)"
+                :key="action.text"
+                :data-action="action.text"
+                @click="action.action()"
+              />
+            </div>
+          `,
           props: ['actionList', 'deleteDialogTitle', 'deleteDialogMessage'],
         },
+        SkillsDialog: {
+          name: 'SkillsDialog',
+          props: ['visible', 'level', 'branchName', 'branchId'],
+          emits: ['update:visible'],
+          template: '<div v-if="visible" class="skills-dialog-stub" />',
+        },
+        RenameSubjectDialog: true,
         DeleteDialog: true,
         'router-link': { template: '<a><slot /></a>', props: ['to'] },
       },
@@ -210,5 +230,24 @@ describe('SubjectIndex.vue', () => {
     const wrapper = mount(SubjectIndex, mountOptions);
     const links = wrapper.findAll('a');
     expect(links.length).toBeGreaterThan(0);
+  });
+
+  it('opens one skills dialog for only the selected subject', async () => {
+    const wrapper = mount(SubjectIndex, mountOptions);
+    await flushPromises();
+
+    await wrapper.find('[data-action="skills"]').trigger('click');
+
+    const dialogs = wrapper.findAllComponents({ name: 'SkillsDialog' });
+    expect(dialogs).toHaveLength(1);
+    expect(dialogs[0]?.props()).toMatchObject({
+      visible: true,
+      branchId: 103,
+      branchName: 'New EducationClassification',
+    });
+
+    await dialogs[0]?.vm.$emit('update:visible', false);
+
+    expect(wrapper.findComponent({ name: 'SkillsDialog' }).exists()).toBe(false);
   });
 });
