@@ -29,6 +29,7 @@
   import DatePicker from 'primevue/datepicker';
   import { useI18n } from 'vue-i18n';
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
+import wordSlice from '@/base/Presentation/Utils/word_slice';
 
   // Controller instance
   const controller = questionsController.getInstance();
@@ -405,7 +406,7 @@
 " -->
             <template #cell-title="{ item }">
               <div class="question-type">
-                {{ item.title || '--' }}
+                {{ wordSlice(item.title , 35) || '--' }}
               </div>
             </template>
             <template #cell-questionType="{ item }">
