@@ -4,7 +4,7 @@
   import IndexAddIcon from '@/shared/icons/IndexAddIcon.vue';
   import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-  import DeletedAccountsIcon from '@/assets/images/DeletedReson.png';
+ import DeletedAccountsIcon from '@/assets/images/DeletedReson.png';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import IndexDelete from '@/shared/icons/DocaumentType/IndexDelete.vue';
   import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
@@ -112,8 +112,8 @@
         <!-- <DeletedAccountsIcon /> -->
         <img :src="DeletedAccountsIcon" alt="DeletedAccountsIcon" width="50" />
         <div class="header-text">
-          <h4>Add New reason for delete</h4>
-          <p>Define why this item is being removed from the system.</p>
+          <h4>Add New Document Type</h4>
+          <p>Manage and organize your document categories</p>
         </div>
       </div>
     </template>
@@ -124,10 +124,14 @@
         class="document-type-row"
       >
         <div class="item-title">
-          <span class="item-small-title">document type</span>
+          <span class="item-small-title">doc type</span>
           <span class="item-main-title">{{ item.title }}</span>
         </div>
 
+        <!-- <div class="item-title">
+          <span class="item-small-title">doc type</span>
+          <span class="item-main-title">{{ item.title }}</span>
+        </div> -->
         <ToggleSwitch
             :model-value="item.status"
             :aria-label="`${$t('active')}: ${item.title}`"

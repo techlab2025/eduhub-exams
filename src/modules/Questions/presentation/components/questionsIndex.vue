@@ -392,14 +392,17 @@
             :striped="true"
             show-index
             :selectable="true"
-            :row-disabled="
-              (item) => selectedRows.length > 0 && item.status === QuestionStatusEnum.APPROVED
-            "
-            :row-selectable="
-              (item) => !(selectedRows.length > 0 && item.status === QuestionStatusEnum.APPROVED)
-            "
+            :row-selectable="(item) => item.status !== QuestionStatusEnum.APPROVED"
             @selection-change="selectedRows = $event"
           >
+          <!-- :row-disabled="
+  (item) => selectedRows.length > 0 &&
+    item.status === QuestionStatusEnum.APPROVED
+"
+:row-selectable="
+  (item) => !(selectedRows.length > 0 &&
+    item.status === QuestionStatusEnum.APPROVED)
+" -->
             <template #cell-title="{ item }">
               <div class="question-type">
                 {{ item.title || '--' }}

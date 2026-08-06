@@ -64,6 +64,8 @@ const mountWithTableItem = (status: QuestionStatusEnum) =>
           template: '<div><slot name="success" :data="[]" /></div>',
         },
         AppTable: {
+          name: 'AppTable',
+          props: ['rowSelectable', 'rowDisabled'],
           template: `<div><slot name="actions" :item="{ id: 10, status: ${status} }" /></div>`,
         },
       },
@@ -106,6 +108,18 @@ describe('questionsIndex.vue', () => {
     const actions = wrapper.findComponent({ name: 'DropList' }).props('actionList');
 
     expect(actions.map((action: { text: string }) => action.text)).toEqual(['show_question']);
+  });
+
+  it('hides the selection checkbox for approved questions', () => {
+    const wrapper = mountWithTableItem(QuestionStatusEnum.APPROVED);
+    const table = wrapper.findComponent({ name: 'AppTable' });
+    const rowSelectable = table.props('rowSelectable') as (item: {
+      status: QuestionStatusEnum;
+    }) => boolean;
+
+    expect(rowSelectable({ status: QuestionStatusEnum.APPROVED })).toBe(false);
+    expect(rowSelectable({ status: QuestionStatusEnum.CREATED })).toBe(true);
+    expect(table.props('rowDisabled')).toBeUndefined();
   });
 
   it('shows edit, view, and delete actions for a non-approved question', () => {
