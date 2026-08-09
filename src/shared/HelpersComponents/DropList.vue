@@ -1,12 +1,21 @@
+<script lang="ts">
+  interface DropListPopover {
+    toggle(event: Event): void;
+    hide(): void;
+  }
+
+  let activeDropListPopover: DropListPopover | null = null;
+</script>
+
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { onBeforeUnmount, ref, type Component } from 'vue';
   import Popover from 'primevue/popover';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import ActionsIcon from '../icons/ActionsIcon.vue';
 
   interface ActionItem {
     text: string;
-    icon: any;
+    icon: Component;
     link?: string;
     action?: () => void;
   }
@@ -14,11 +23,25 @@
   defineEmits(['delete']);
   defineOptions({ inheritAttrs: false });
 
-  const op = ref();
+  const op = ref<DropListPopover | null>(null);
 
   const toggle = (event: Event) => {
-    op.value.toggle(event);
+    const currentPopover = op.value;
+    if (!currentPopover) return;
+
+    if (activeDropListPopover !== currentPopover) {
+      activeDropListPopover?.hide();
+      activeDropListPopover = currentPopover;
+    }
+
+    currentPopover.toggle(event);
   };
+
+  const handleHide = () => {
+    if (activeDropListPopover === op.value) activeDropListPopover = null;
+  };
+
+  onBeforeUnmount(handleHide);
 
   const props = defineProps<{
     actionList: ActionItem[];
@@ -35,7 +58,7 @@
     </slot>
   </div>
 
-  <Popover ref="op">
+  <Popover ref="op" @hide="handleHide">
     <div class="list-body">
       <ul class="border-none">
         <li v-for="action in props.actionList" :key="action.text" class="list-item cursor-pointer">
