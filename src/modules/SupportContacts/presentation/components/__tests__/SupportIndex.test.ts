@@ -50,7 +50,13 @@ describe('SupportIndex.vue', () => {
         {
           id: 1,
           titles: 'Support',
-          supportContacts: [{ key: 'emails', value: 'support@example.com' }],
+          supportContacts: [
+            { id: 1, key: 'phonenumbers', value: '01011111111', type: '' },
+            { id: 2, key: 'phonenumbers', value: '01022222222', type: '' },
+            { id: 3, key: 'whatsapp_numbers', value: '01033333333', type: '' },
+            { id: 4, key: 'emails', value: 'support@example.com', type: '' },
+            { id: 5, key: 'telegram_numbers', value: '01044444444', type: '' },
+          ],
         },
       ],
     });
@@ -67,5 +73,16 @@ describe('SupportIndex.vue', () => {
     const wrapper = mount(SupportIndex, { global: globalConfig });
 
     expect(wrapper.find('.delete-dialog-stub .action-btn.delete').exists()).toBe(true);
+  });
+
+  it('renders every contact value grouped by its API key', () => {
+    const wrapper = mount(SupportIndex, { global: globalConfig });
+
+    expect(wrapper.get('[data-contact-group="phonenumbers"]').text()).toContain('01011111111');
+    expect(wrapper.get('[data-contact-group="phonenumbers"]').text()).toContain('01022222222');
+    expect(wrapper.get('[data-contact-group="whatsapp_numbers"]').text()).toContain('01033333333');
+    expect(wrapper.get('[data-contact-group="emails"]').text()).toContain('support@example.com');
+    expect(wrapper.get('[data-contact-group="telegram_numbers"]').text()).toContain('01044444444');
+    expect(wrapper.findAll('.contact-value-chip')).toHaveLength(5);
   });
 });

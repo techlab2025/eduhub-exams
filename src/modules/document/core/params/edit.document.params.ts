@@ -13,8 +13,10 @@ export default class EditDocumentParams implements Params {
   public files: string[];
 
   public static readonly validation = new ClassValidation().setRules({
-    document_id: { required: true },
     translations: { required: true },
+    documentTypeId: { required: true },
+    stage_id: { required: true },
+    subjects: { required: true },
   });
 
   constructor(data: {

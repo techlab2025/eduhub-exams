@@ -140,6 +140,8 @@
   };
   const CloseFiletrDialog = () => {
     FilterDialogShow.value = false;
+    selectedStatus.value = undefined;
+    fetchEmployees();
   };
   const employeeTypeOptions = ref<TitleInterface<number>[]>([
     new TitleInterface({

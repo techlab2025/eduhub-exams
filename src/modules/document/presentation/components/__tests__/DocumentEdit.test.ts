@@ -4,7 +4,21 @@ import { createPinia, setActivePinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import DocumentEdit from '../DocumentEdit.vue';
 
+const fetchOneMock = vi.hoisted(() => vi.fn());
+const updateMock = vi.hoisted(() => vi.fn());
+const validateMock = vi.hoisted(() => vi.fn());
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
+
+vi.mock('@/modules/document/presentation/controllers/document.controller', () => ({
+  default: {
+    getInstance: () => ({
+      fetchOne: fetchOneMock,
+      update: updateMock,
+      itemData: { value: null },
+      errorMessage: { value: '' },
+    }),
+  },
+}));
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
@@ -94,5 +108,38 @@ describe('DocumentEdit', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('shows form validation and does not update when required edit data is missing', async () => {
+    validateMock.mockResolvedValue(false);
+    const wrapper = mount(DocumentEdit, {
+      global: {
+        plugins: [i18n],
+        stubs: {
+          DocumentForm: {
+            name: 'DocumentForm',
+            methods: { validate: validateMock },
+            template: '<div />',
+          },
+        },
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
+    });
+
+    wrapper.findComponent({ name: 'DocumentForm' }).vm.$emit('updateData', {
+      subjects: 1,
+      stage_id: 1,
+      tags: [],
+      images: '',
+      files: '',
+      translations: {},
+      documentTypeId: 1,
+    });
+    await wrapper.find('button[type="submit"]').trigger('click');
+
+    expect(validateMock).toHaveBeenCalledOnce();
+    expect(updateMock).not.toHaveBeenCalled();
   });
 });

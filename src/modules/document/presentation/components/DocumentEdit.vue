@@ -15,8 +15,11 @@
 
   const params = ref<EditDocumentParams | null>(null);
   const loading = ref(false);
+  const documentFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
 
   const saveDocument = async () => {
+    const isFormValid = await documentFormRef.value?.validate?.();
+    if (isFormValid === false) return;
     if (!params.value) return;
     loading.value = true;
     try {
@@ -53,6 +56,7 @@
 <template>
   <div class="document-crud-example">
     <DocumentForm
+      ref="documentFormRef"
       :document="controller.itemData.value!"
       :form-key="formKey"
       :loading="loading"
