@@ -174,7 +174,9 @@ describe('EducationClassificationIndex', () => {
 
     expect(wrapper.get('.status-toggle').attributes('aria-checked')).toBe('true');
     expect(mockToggleStatus).toHaveBeenCalledOnce();
-    expect(mockToggleStatus.mock.calls[0][0].toMap()).toEqual({ id: 7 });
+    expect(mockToggleStatus.mock.calls[0][0].toMap()).toEqual({
+      education_classification_id: 7,
+    });
     expect(mockFetchList).toHaveBeenCalledOnce();
   });
 });

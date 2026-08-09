@@ -44,7 +44,7 @@ export default class EducationClassificationModel {
       id: json.id as number,
       title: json.title as string,
       created_at: json.created_at as string,
-      status: EducationClassificationModel.parseStatus(json.status),
+      status: EducationClassificationModel.parseStatus(json.is_active),
       has_configuration: json.has_configurations as boolean,
       has_configuration_subjct: json.has_configuration_subjct as boolean,
       titles: json.titles as Record<string, string>[],

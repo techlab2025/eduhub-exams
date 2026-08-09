@@ -45,7 +45,7 @@
   const headers = computed<TableHeader[]>(() => [
     { key: 'title', label: t('education type'), width: '40%' },
     { key: 'added_date', label: t('Added date'), width: '40%' },
-    { key: 'status', label: t('status'), width: '30%' },
+    // { key: 'status', label: t('status'), width: '30%' },
   ]);
 
   // Pagination state

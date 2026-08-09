@@ -8,18 +8,17 @@ export default class ToggleStatusEducationClassificationParams implements Params
   public id: number;
 
   public static readonly validation = new ClassValidation().setRules({
-    id: { required: true, minLength: 2, maxLength: 100 },
+    id: { required: true, min: 1 },
   });
 
   constructor(data: { id: number }) {
     this.id = data.id;
   }
 
-  toMap(): { [p: string]: any } {
-    const map: { [key: string]: any } = {
-      id: this.id,
+  toMap(): Record<string, number> {
+    return {
+      education_classification_id: this.id,
     };
-    return map;
   }
 
   validate() {
