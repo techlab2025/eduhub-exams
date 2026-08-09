@@ -1,12 +1,13 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import AppButton from '@/shared/HelpersComponents/AppButton.vue';
   import IconAccept from '@/shared/icons/IconAccept.vue';
   import { useRoute } from 'vue-router';
   import placementController from '../controllers/placement.controller';
   import { useI18n } from 'vue-i18n';
   import PlacementForm from './PlacementsForm.vue';
-  import type AddPlacementParams from '../../core/params/add.placement.params';
+  import AddPlacementParams from '../../core/params/add.placement.params';
+  import type EditPlacementParams from '../../core/params/edit.placement.params';
   import ShowPlacementParams from '../../core/params/show.placement.params';
   const { t } = useI18n();
   const controller = placementController.getInstance();
@@ -14,7 +15,6 @@
   const formKey = route.fullPath;
   const params = ref<AddPlacementParams | null>(null);
 
-  const showState = computed(() => controller.itemState.value);
   onMounted(() => {
     const params = new ShowPlacementParams(Number(route.params.id));
     controller.fetchOne(params);
@@ -33,14 +33,14 @@
     }
   };
 
-  const updateData = (updatedParams: AddPlacementParams) => {
-    params.value = updatedParams;
+  const updateData = (updatedParams: AddPlacementParams | EditPlacementParams) => {
+    if (updatedParams instanceof AddPlacementParams) params.value = updatedParams;
   };
 </script>
 
 <template>
   <div class="placement-add-page">
-    <PlacementForm  :form-key="formKey" @update-data="updateData" />
+    <PlacementForm :form-key="formKey" @update-data="updateData" />
 
     <div class="actions">
       <AppButton

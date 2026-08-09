@@ -47,7 +47,7 @@ export default class DocumentTypeController extends BaseController<
     return super.update(params, { ...options, useJson: true });
   }
 
-  async toggleStatus(params: Params, options?: ApiCallOptions) {
+  async toggleStatus(params: Params) {
     return this.repository.toggleStatus(params);
   }
   async fetchOne(params: Params, options?: ApiCallOptions) {

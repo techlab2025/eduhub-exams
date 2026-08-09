@@ -45,7 +45,7 @@
   const headers = computed<TableHeader[]>(() => [
     { key: 'title', label: t('education type'), width: '40%' },
     { key: 'added_date', label: t('Added date'), width: '40%' },
-    // { key: 'status', label: t('status'), width: '30%' },
+    { key: 'status', label: t('status'), width: '30%' },
   ]);
 
   // Pagination state
@@ -136,11 +136,7 @@
   };
 
   const ToggleStatus = async (id: number) => {
-    await controller.toggleStatus(
-      new ToggleStatusEducationClassificationParams({
-        id: id,
-      }),
-    );
+    await controller.toggleStatus(new ToggleStatusEducationClassificationParams({ id }));
     await fetchEducationClassifications(
       route.query.page ? Number(route.query.page) : 1,
       word.value,
@@ -156,6 +152,7 @@
     statusById.value[item.id] = !getStatus(item);
     await ToggleStatus(item.id);
   };
+
 </script>
 
 <template>
@@ -187,7 +184,6 @@
             <template #cell-added_date="{ item }">
               {{ item.created_at }}
             </template>
-<!-- 
             <template #cell-status="{ item }">
               <button
                 type="button"
@@ -200,7 +196,7 @@
               >
                 <span class="status-toggle__thumb" aria-hidden="true"></span>
               </button>
-            </template> -->
+            </template>
 
             <template #actions="{ item }">
               <div class="row-actions">

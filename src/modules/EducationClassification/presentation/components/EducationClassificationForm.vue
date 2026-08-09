@@ -7,13 +7,8 @@
   import FolderCrudIcon from '@/shared/icons/FolderCrudIcon.vue';
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-  import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
-  import DatePicker from 'primevue/datepicker';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
   import LoadingIcon from '@/assets/images/loading.webp';
-  import EducationClassificationController from '../controllers/educationClassification.controller';
-  import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
-  import { formatJoinDate } from '@/base/Presentation/Utils/date_format';
 
   const emit = defineEmits(['updateData', 'save-education-classification']);
 
@@ -24,7 +19,6 @@
   }>();
 
   const title = ref<Record<string, string>>({});
-  const date = ref<Date | null>(null);
 
   // watch(
   //   () => country,
@@ -51,22 +45,6 @@
     title.value = data;
     updateData();
   };
-  // fillter
-  const controller = EducationClassificationController.getInstance();
-  const FilterDialogShow = ref<boolean>(false);
-  const ApplayFilter = async () => {
-    FilterDialogShow.value = false;
-    await controller.fetchList(
-      new IndexEducationClassificationParams({
-        date: date.value ? formatJoinDate(date.value) : '',
-      }),
-    );
-  };
-  const CloseFiletrDialog = async () => {
-    FilterDialogShow.value = false;
-    await controller.fetchList(new IndexEducationClassificationParams({}));
-  };
-
   const SendRequest = () => {
     // console.log(title.value, 'Object.keys(title.value).length');
     if (loading) {

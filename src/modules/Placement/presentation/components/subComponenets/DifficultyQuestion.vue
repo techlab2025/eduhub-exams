@@ -1,9 +1,11 @@
 <script setup lang="ts">
   import { computed } from 'vue';
 
+  type DifficultyKey = 'easy' | 'medium' | 'hard';
+
   const props = defineProps<{
     difficultyFields: {
-      key: string;
+      key: DifficultyKey;
       label: string;
       placeholder: string;
       class: string;
@@ -22,10 +24,10 @@
     required: true,
   });
 
-  const handlePercentageInput = (event: Event, key: 'easy' | 'medium' | 'hard') => {
+  const handlePercentageInput = (event: Event, key: DifficultyKey) => {
     const target = event.target as HTMLInputElement;
-    let value = target.value.replace(/\D/g, '');
-    let numericValue = Number(value);
+    const value = target.value.replace(/\D/g, '');
+    const numericValue = Number(value);
     // if (numericValue > 100) {
     //   numericValue = 100;
     // }
@@ -59,12 +61,12 @@
           class="field-input"
           type="text"
           :placeholder="field.placeholder"
-          @input="handlePercentageInput($event, field.key as 'easy' | 'medium' | 'hard')"
+          :value="model[field.key] + '%'"
           :disabled="
-            (totalPercentage >= 100 && !model[field.key as 'easy' | 'medium' | 'hard']) ||
+            (totalPercentage >= 100 && !model[field.key]) ||
             showQuestionCountError
           "
-          :value="model[field?.key] + '%'"
+          @input="handlePercentageInput($event, field.key)"
         />
 
         <small v-if="showQuestionCountError" class="error-text">

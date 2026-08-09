@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import AgreeIcon from '@/shared/icons/Question/AgreeIcon.vue';
   import questionsController from '../../controllers/questions.controller';
   import ToggleQuestionStatusParams from '@/modules/Questions/core/params/question.toggle.status.params';
   import { useRoute, useRouter } from 'vue-router';

@@ -236,12 +236,12 @@
         @with-review="saveArticle(true)"
         @without-review="saveArticle(false)"
       />
-      <!-- <WithReviewDialog
+      <WithReviewDialog
         class="save-emp"
         :save-status="SaveStatusEnum.SaveAndNew"
         @with-review="saveAndAddAnother(true)"
         @without-review="saveAndAddAnother(false)"
-      /> -->
+      />
       <button class="btn btn-draft" type="button" :disabled="updatingStatus" @click="saveAsDraft">
         {{ $t('Save As draft') }}
       </button>

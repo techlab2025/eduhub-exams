@@ -5,6 +5,7 @@ import AppButton from '@/shared/HelpersComponents/AppButton.vue';
 import IconAccept from '@/shared/icons/IconAccept.vue';
 import PlacementController from '../controllers/placement.controller';
 import type EditPlacementParams from '../../core/params/edit.placement.params';
+import type AddPlacementParams from '../../core/params/add.placement.params';
 import ShowPlacementParams from '../../core/params/show.placement.params';
 import PlacementsForm from './PlacementsForm.vue';
 
@@ -26,8 +27,8 @@ const savePlacement = async () => {
   await controller.update(params.value, undefined, formKey);
 };
 
-const updateData = (updatedParams: EditPlacementParams) => {
-  params.value = updatedParams;
+const updateData = (updatedParams: AddPlacementParams | EditPlacementParams) => {
+  if ('id' in updatedParams) params.value = updatedParams;
 };
 
 onMounted(async () => {

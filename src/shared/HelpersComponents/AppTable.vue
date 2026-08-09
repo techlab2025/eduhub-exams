@@ -73,7 +73,8 @@
   }
 
   function toggleRow(index: number) {
-    if (!isRowSelectable(props.items[index], index)) return;
+    const item = props.items[index];
+    if (item === undefined || !isRowSelectable(item, index)) return;
 
     if (selectedRows.value.has(index)) {
       selectedRows.value.delete(index);

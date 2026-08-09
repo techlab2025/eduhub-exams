@@ -34,7 +34,13 @@
     medium: props.placement?.difficulties?.medium ?? 0,
     hard: props.placement?.difficulties?.hard ?? 0,
   });
-  const difficultyFields = [
+  const difficultyFields: {
+    key: 'easy' | 'medium' | 'hard';
+    label: string;
+    placeholder: string;
+    class: string;
+    value: number;
+  }[] = [
     {
       key: 'easy',
       label: 'easy questions',
