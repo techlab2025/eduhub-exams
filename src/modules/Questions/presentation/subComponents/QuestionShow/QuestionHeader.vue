@@ -135,6 +135,7 @@
       <button
         class="btn btn-primary"
         @click="router.push({ name: 'Edit question', params: { id } })"
+        v-if="questionData.review_status != QuestionStatusEnum.ARCHIVED"
       >
         <EditIcon /> {{ $t('edit') }}
       </button>
@@ -154,6 +155,7 @@
         :message="$t('delete_question_message')"
         :hasbtn="true"
         @delete="DeleteQuestion"
+        v-if="questionData?.can_delete!"
       >
         <template #btn>
           <svg

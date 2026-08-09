@@ -170,7 +170,7 @@
                 @update:model-value="updateData"
               />
             </div>
-            <div class="date-remove">
+            <!-- <div class="date-remove">
               <UpdatedCustomInputSelect
                 id="documentType"
                 :label="`added by`"
@@ -180,7 +180,7 @@
                 :placeholder="$t('Student Name')"
                 @update:model-value="updateData"
               />
-            </div>
+            </div> -->
             <div class="filter-action">
               <button class="btn btn-cancel" @click="CloseFiletrDialog">{{ $t('Reset') }}</button>
               <button class="btn btn-primary" @click="ApplayFilter">{{ $t('apply') }}</button>

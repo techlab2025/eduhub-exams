@@ -62,6 +62,9 @@ export default class ShowQuestionsModel {
   public readonly correctStatus?: number;
   public readonly note?: string;
 
+  public readonly can_delete?: boolean;
+
+
 
   constructor(data: {
     id?: number;
@@ -103,6 +106,7 @@ export default class ShowQuestionsModel {
     similarPrecentage?: number;
     correctStatus?: number;
     note?: string;
+    can_delete?: boolean;
   }) {
     this.id = data.id;
     this.generatedBy = data.generatedBy;
@@ -143,6 +147,7 @@ export default class ShowQuestionsModel {
     this.similarPrecentage = data.similarPrecentage;
     this.correctStatus = data.correctStatus;
     this.note = data.note;
+    this.can_delete = data.can_delete;
 
 
     Object.freeze(this);
@@ -217,7 +222,8 @@ export default class ShowQuestionsModel {
       attachments: json.attachments,
       similarPrecentage: json.identicality_percentage,
       correctStatus: json.correct_status,
-      note:json.note
+      note:json.note,
+      can_delete:json.can_delete,
     });
   }
 

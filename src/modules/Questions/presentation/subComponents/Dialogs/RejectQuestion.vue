@@ -5,9 +5,17 @@
   import RejectIcon from '@/shared/icons/Question/RejectIcon.vue';
 
   const visable = ref();
-  defineEmits(['reject']);
+  const emit = defineEmits(['reject']);
 
   const note = ref<string>();
+
+  const SaveNote = () => {
+    if (!note.value) {
+      return;
+    }
+    emit('reject', note.value);
+    visable.value = false;
+  };
 </script>
 
 <template>
@@ -45,7 +53,7 @@
         ></textarea>
       </div>
       <div class="btns">
-        <button type="button" class="btn btn-primary confirm-btn" @click="$emit('reject', note)">
+        <button type="button" class="btn btn-primary confirm-btn" @click="SaveNote">
           {{ $t('reject_question_dialog.confirm') }}
         </button>
         <button type="button" class="btn btn-secondary" @click="visable = false">

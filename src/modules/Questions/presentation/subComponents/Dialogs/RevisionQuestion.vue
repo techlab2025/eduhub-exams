@@ -5,9 +5,17 @@
   import EditIcon from '@/shared/icons/Privacy/EditIcon.vue';
 
   const visable = ref();
-  defineEmits(['revision']);
+  const emit = defineEmits(['revision']);
 
   const note = ref<string>();
+
+  const SaveNote = () => {
+    if (!note.value) {
+      return;
+    }
+    emit('revision', note.value);
+    visable.value = false;
+  };
 </script>
 
 <template>
@@ -52,7 +60,7 @@
       </div>
 
       <div class="btns">
-        <button type="button" class="btn btn-primary confirm-btn" @click="$emit('revision', note)">
+        <button type="button" class="btn btn-primary confirm-btn" @click="SaveNote">
           {{ $t('revision_question_dialog.confirm') }}
         </button>
         <button type="button" class="btn btn-secondary" @click="visable = false">
@@ -90,7 +98,8 @@
       display: flex;
       flex-direction: column;
       gap: 28px;
-      padding: 30px 28px 26px;
+      width: 100%;
+      padding: 20px 0;
     }
 
     .dialog-heading {
