@@ -9,18 +9,37 @@
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import HighlightBadgeController from '@/modules/HighlightBadge/presentation/controllers/highlightBadge.controller';
   import { IndexHighlightBadgeParams } from '@/modules/HighlightBadge/core/params/highlightBadge.params';
-  import PlanFeatureController from '@/modules/PlanFeatures/presentation/controllers/planFeature.controller';
-  import { IndexPlanFeatureParams } from '@/modules/PlanFeatures/core/params/planFeature.params';
   import PlanController from '../controllers/plan.controller';
   import { DurationTypeEnum, PlanStatusEnum, type PlanPricing } from '../../core/models/plan.model';
+  import {
+    PLAN_FEATURE_DEFINITIONS,
+    type PlanFeatureSubTypeEnum,
+    type PlanFeatureTypeEnum,
+  } from '../../core/enums/planType.enum';
   import { ShowPlanParams, StorePlanParams, UpdatePlanParams } from '../../core/params/plan.params';
+
+  interface PlanSubFeatureFormItem {
+    subType: PlanFeatureSubTypeEnum;
+    titleKey: string;
+    descriptionKey: string;
+    enabled: boolean;
+    hasLimit: boolean;
+    limit?: number;
+  }
+
+  interface PlanFeatureFormItem {
+    featureType: PlanFeatureTypeEnum;
+    titleKey: string;
+    descriptionKey: string;
+    enabled: boolean;
+    subTypes: PlanSubFeatureFormItem[];
+  }
 
   const { t } = useI18n();
   const route = useRoute();
   const router = useRouter();
   const controller = PlanController.getInstance();
   const badgeController = HighlightBadgeController.getInstance();
-  const featureController = PlanFeatureController.getInstance();
   const id = Number(route.params.id || 0);
   const title = ref<Record<string, string>>({});
   const description = ref<Record<string, string>>({});
@@ -29,7 +48,22 @@
   const durationType = ref<TitleInterface<number> | null>(null);
   const status = ref<TitleInterface<number> | null>(null);
   const badges = ref<TitleInterface<number>[]>([]);
-  const features = ref<TitleInterface<number>[]>([]);
+  const planFeatures = ref<PlanFeatureFormItem[]>(
+    PLAN_FEATURE_DEFINITIONS.map((feature) => ({
+      featureType: feature.type,
+      titleKey: feature.titleKey,
+      descriptionKey: feature.descriptionKey,
+      enabled: false,
+      subTypes: feature.subTypes.map((subType) => ({
+        subType: subType.type,
+        titleKey: subType.titleKey,
+        descriptionKey: subType.descriptionKey,
+        enabled: false,
+        hasLimit: subType.defaultLimit !== undefined,
+        limit: subType.defaultLimit,
+      })),
+    })),
+  );
   const hasTrial = ref(false);
   const trialDays = ref(0);
   const pricing = ref<PlanPricing[]>([]);
@@ -65,7 +99,17 @@
       pricing: pricing.value,
       hasTrial: hasTrial.value,
       trialDays: trialDays.value,
-      features: features.value.map((item) => ({ feature_id: Number(item.id), status: true })),
+      features: planFeatures.value
+        .filter((feature) => feature.enabled)
+        .map((feature) => ({
+          feature_type: feature.featureType,
+          feature_sub_type: feature.subTypes
+            .filter((subType) => subType.hasLimit || subType.enabled)
+            .map((subType) => ({
+              sub_type: subType.subType,
+              ...(subType.hasLimit ? { limit: subType.limit ?? 0 } : {}),
+            })),
+        })),
     };
     const result = id
       ? await controller.update(new UpdatePlanParams(id, payload))
@@ -89,10 +133,21 @@
     status.value = statusOptions.value.find((option) => option.id === Number(item.status)) ?? null;
     badges.value = item.highlightBadges;
     pricing.value = [...item.pricing];
-    features.value = item.features.map((feature) => ({
-      id: feature.feature_id,
-      title: feature.feature_title ?? String(feature.feature_id),
-    }));
+    planFeatures.value.forEach((feature) => {
+      const savedFeature = item.features.find(
+        (itemFeature) => itemFeature.feature_type === feature.featureType,
+      );
+      feature.enabled = Boolean(savedFeature?.status ?? savedFeature);
+      feature.subTypes.forEach((subType) => {
+        const savedSubType = savedFeature?.feature_sub_type.find(
+          (itemSubType) => itemSubType.sub_type === subType.subType,
+        );
+        subType.enabled = Boolean(savedSubType?.status ?? savedSubType);
+        if (subType.hasLimit && savedSubType?.limit !== undefined) {
+          subType.limit = savedSubType.limit;
+        }
+      });
+    });
   });
 </script>
 
@@ -137,15 +192,42 @@
         :controller="badgeController"
         :params="new IndexHighlightBadgeParams('', 1, 100, 0)"
       />
-      <UpdatedCustomInputSelect
-        v-model="features"
-        :type="2"
-        :label="$t('plan_features')"
-        :placeholder="$t('select_plan_features')"
-        :controller="featureController"
-        :params="new IndexPlanFeatureParams('', 1, 100, 0)"
-      />
     </div>
+    <section class="features-section">
+      <h3>{{ $t('plan_features') }}</h3>
+      <article
+        v-for="(feature, featureIndex) in planFeatures"
+        :key="feature.featureType"
+        class="feature-card"
+      >
+        <header class="feature-row feature-heading">
+          <span class="feature-number">{{ featureIndex + 1 }}</span>
+          <span class="feature-copy">
+            <strong>{{ $t(feature.titleKey) }}</strong>
+            <small>{{ $t(feature.descriptionKey) }}</small>
+          </span>
+          <ToggleSwitch v-model="feature.enabled" />
+        </header>
+        <div v-if="feature.enabled" class="sub-features">
+          <div v-for="subType in feature.subTypes" :key="subType.subType" class="feature-row">
+            <span class="sub-feature-dot" aria-hidden="true"></span>
+            <span class="feature-copy">
+              <strong>{{ $t(subType.titleKey) }}</strong>
+              <small>{{ $t(subType.descriptionKey) }}</small>
+            </span>
+            <input
+              v-if="subType.hasLimit"
+              v-model.number="subType.limit"
+              class="feature-limit"
+              type="number"
+              min="0"
+              :aria-label="$t(subType.titleKey)"
+            />
+            <ToggleSwitch v-else v-model="subType.enabled" />
+          </div>
+        </div>
+      </article>
+    </section>
     <label class="switch-row"><ToggleSwitch v-model="hasTrial" /> {{ $t('has_trial') }}</label>
     <label v-if="hasTrial"
       >{{ $t('trial_days') }}<input v-model.number="trialDays" type="number" min="0"
@@ -185,6 +267,66 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--xl-size-base);
+  }
+
+  .features-section {
+    display: grid;
+    gap: var(--xs-size);
+  }
+
+  .feature-card {
+    overflow: hidden;
+    border: 1px solid var(--border-weak);
+    border-radius: var(--radius-lg);
+    background: var(--BgWhite);
+  }
+
+  .feature-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--xs-size);
+    min-height: 58px;
+    padding: var(--xs-size) var(--xl-size-base);
+  }
+
+  .feature-number {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    color: var(--PrimaryColor);
+    background: var(--PrimaryColor-alpha-10);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-copy {
+    display: grid;
+    gap: var(--xs-size-3);
+  }
+
+  .feature-copy small {
+    color: var(--GrayText);
+  }
+
+  .sub-features {
+    margin-inline-start: 44px;
+    border-inline-start: 1px solid var(--border-weak);
+  }
+
+  .sub-features .feature-row {
+    border-top: 1px solid var(--border-weak);
+  }
+
+  .sub-feature-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--PrimaryColor);
+    border-radius: var(--radius-full);
+  }
+
+  .feature-limit {
+    width: 80px;
   }
 
   label {

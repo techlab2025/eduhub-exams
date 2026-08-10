@@ -57,7 +57,6 @@ describe('SidebarNavigation.vue', () => {
     expect(wrapper.text()).toContain('Documents');
     expect(wrapper.text()).toContain('Questions');
     expect(wrapper.text()).toContain('highlight_badges');
-    expect(wrapper.text()).toContain('plan_features');
     expect(wrapper.text()).toContain('plans');
     expect(wrapper.text()).toContain('subscriptions');
     expect(wrapper.text()).toContain('students');

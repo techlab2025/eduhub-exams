@@ -56,16 +56,16 @@
     );
   };
 
-  const Search = debounce(() => {
-    router.push({
-      query: {
-        ...route.query,
-        page: 1,
-        word: word.value || undefined,
-      },
+    const Search = debounce(() => {
+      router.push({
+        query: {
+          ...route.query,
+          page: 1,
+          word: word.value || undefined,
+        },
+      });
+      fetchEmployees(1, word.value);
     });
-    fetchEmployees(1, word.value);
-  });
 
   const onPageChange = (page: number) => {
     fetchEmployees(page);

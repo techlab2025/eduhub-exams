@@ -3,9 +3,14 @@
   import { useRoute, useRouter } from 'vue-router';
   import PlanController from '../controllers/plan.controller';
   import { ShowPlanParams } from '../../core/params/plan.params';
+  import { PLAN_FEATURE_DEFINITIONS } from '../../core/enums/planType.enum';
   const route = useRoute();
   const router = useRouter();
   const controller = PlanController.getInstance();
+  const featureDefinition = (featureType: number) =>
+    PLAN_FEATURE_DEFINITIONS.find((feature) => feature.type === featureType);
+  const subTypeDefinition = (featureType: number, subType: number) =>
+    featureDefinition(featureType)?.subTypes.find((feature) => feature.type === subType);
   onMounted(() => controller.fetchOne(new ShowPlanParams(Number(route.params.id))));
 </script>
 
@@ -34,9 +39,25 @@
       </li>
     </ul>
     <h3>{{ $t('plan_features') }}</h3>
-    <ul>
-      <li v-for="feature in controller.itemData.value.features" :key="feature.feature_id">
-        {{ feature.feature_title ?? feature.feature_id }}
+    <ul class="feature-list">
+      <li v-for="feature in controller.itemData.value.features" :key="feature.feature_type">
+        <strong>
+          {{
+            featureDefinition(feature.feature_type)
+              ? $t(featureDefinition(feature.feature_type)!.titleKey)
+              : (feature.feature_title ?? feature.feature_type)
+          }}
+        </strong>
+        <ul>
+          <li v-for="subType in feature.feature_sub_type" :key="subType.sub_type">
+            {{
+              subTypeDefinition(feature.feature_type, subType.sub_type)
+                ? $t(subTypeDefinition(feature.feature_type, subType.sub_type)!.titleKey)
+                : subType.sub_type
+            }}
+            <span v-if="subType.limit !== undefined">: {{ subType.limit }}</span>
+          </li>
+        </ul>
       </li>
     </ul>
   </section>
@@ -63,5 +84,10 @@
 
   dt {
     font-weight: 700;
+  }
+
+  .feature-list {
+    display: grid;
+    gap: var(--xs-size);
   }
 </style>

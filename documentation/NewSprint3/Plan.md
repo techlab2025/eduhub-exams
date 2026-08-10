@@ -24,6 +24,37 @@ export enum LastUpdatedEnum {
   LAST_3_MONTHS = '4',
   CUSTOM = '5',
 }
+
+export enum PlanFeatureTypeEnum {
+  REPORT = 1,
+  PROGRESS_TRACKING = 2,
+  HOME_STUDY_SCHEDULE = 3,
+  WHAT_DID_YOU_STUDY = 4,
+  LEARNING_RESOURCES = 5,
+}
+
+export enum PlanFeatureSubTypeEnum {
+  SHOW_OVERALL_SCORE = 1,
+  SHOW_SKILL_ANALYSIS = 2,
+  SHOW_CURRICULUM_ANALYSIS = 3,
+  ALLOW_REPORT_DOWNLOAD = 4,
+  MAXIMUM_REPORTS_PER_STUDENT = 5,
+  MAX_DOWNLOADS_PER_MONTH = 6,
+  OVERALL_PROGRESS_OVERVIEW = 7,
+  NEEDS_FOCUS_SECTION = 8,
+  SUBJECTS_WITH_PROGRESS_TRACKING = 9,
+  MAXIMUM_PROGRESS_HISTORY = 10,
+  ALLOW_STUDENTS_TO_VIEW_THEIR_SCHEDULE = 11,
+  ALLOW_STUDENTS_TO_SET_REMINDERS = 12,
+  MAXIMUM_SCHEDULES_PER_DAY = 13,
+  SHOW_SUBJECTS_STUDIED = 14,
+  MAXIMUM_ITEMS_SHOWN = 15,
+  MIND_MAPS = 16,
+  FLASH_CARDS = 17,
+  PRACTICE_EXAMS = 18,
+  MAXIMUM_MIND_MAPS = 19,
+  MAXIMUM_FLASH_CARD_SETS = 20,
+}
 ```
 
 ---
@@ -93,12 +124,7 @@ export enum LastUpdatedEnum {
       "ar": "وصف الخطة"
     }
   },
-
-  "duration": number,
-  "duration_type": DurationTypeEnum,
-  "price": number,
   "status": PlanStatusEnum,
-
   "highlight_badge": [
     number,
     number
@@ -116,9 +142,13 @@ export enum LastUpdatedEnum {
   "trail_days": number,
   "features": [
     {
-      "feature_id": number,
-      "status"?: bool,
-      "limit"?: number,
+      "feature_type": PlanFeatureTypeEnum,
+      "feature_sub_type":[
+        {
+            "sub_type": PlanFeatureSubTypeEnum,
+            "limit"?:number
+        }
+      ]
     }
   ]
 }
@@ -240,9 +270,13 @@ export enum LastUpdatedEnum {
   "trail_days": number,
   "features": [
     {
-      "feature_id": number,
-      "status"?: bool,
-      "limit"?: number,
+      "feature_type": PlanFeatureTypeEnum,
+      "feature_sub_type": [
+        {
+          "sub_type": PlanFeatureSubTypeEnum,
+          "limit"?: number
+        }
+      ]
     }
   ]
 }

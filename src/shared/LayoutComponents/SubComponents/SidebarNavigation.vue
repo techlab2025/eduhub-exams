@@ -68,11 +68,6 @@
           icon: SettingIcon,
         },
         {
-          link: '/plan-features',
-          name: 'plan_features',
-          icon: SettingIcon,
-        },
-        {
           link: '/plans',
           name: 'plans',
           icon: SettingIcon,
