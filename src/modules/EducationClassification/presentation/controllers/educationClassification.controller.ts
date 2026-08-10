@@ -8,9 +8,15 @@ import { useFormsStore } from '@/stores/formsStore';
 import EducationClassificationRepository from '../../data/repositories/educationClassification.repository';
 import type EducationClassificationModel from '../../core/models/education.classification.model';
 import type EditEducationClassificationParams from '../../core/params/edit.educationClassification.params';
+import type AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
 import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 import { hasEmptyTranslationKey } from '@/base/Presentation/Utils/ChecktranslationEmpty';
 import IndexEducationClassificationParams from '../../core/params/index.educationClassification.params';
+
+const MAX_TITLE_LENGTH = 150;
+
+const hasTitleOverMaxLength = (title?: Record<string, string>) =>
+  ['ar', 'en'].some((locale) => (title?.[locale] ?? '').length > MAX_TITLE_LENGTH);
 
 /**
  * Education Classification Controller for managing education classifications
@@ -58,8 +64,17 @@ export default class EducationClassificationController extends BaseController<
     return EducationClassificationController.instance;
   }
 
-  async create(params: Params, options?: ApiCallOptions, formKey?: string) {
+  async create(
+    params: AddEducationClassificationParams,
+    options?: ApiCallOptions,
+    formKey?: string,
+  ) {
     const FormStore = useFormsStore();
+
+    if (hasTitleOverMaxLength(params.translation.title)) {
+      dialogManager.toastWarning('Title should not exceed 150 characters');
+      return;
+    }
 
     const result = await super.create(params, { ...options, useJson: true });
     await super.fetchList(
@@ -100,6 +115,10 @@ export default class EducationClassificationController extends BaseController<
 
     if (hasEmptyTranslationKey(params.translations, 'title')) {
       dialogManager.toastWarning('You Must Add Title');
+      return;
+    }
+    if (hasTitleOverMaxLength(params.translations.title)) {
+      dialogManager.toastWarning('Title should not exceed 150 characters');
       return;
     }
     const result = await super.update(params, options);

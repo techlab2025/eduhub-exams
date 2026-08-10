@@ -7,6 +7,7 @@ import AddEducationClassificationParams from '../../core/params/add.educationCla
 import EditEducationClassificationParams from '../../core/params/edit.educationClassification.params';
 import TranslationParams from '@/modules/about/core/params/translation.params';
 import router from '@/router';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
 vi.mock('@/stores/formsStore', () => ({
   useFormsStore: () => ({
@@ -76,6 +77,23 @@ describe('EducationClassificationController', () => {
       expect(router.push).toHaveBeenCalledWith({ name: 'EducationClassifications' });
       expect(result).toBe(successState);
     });
+
+    it.each(['ar', 'en'])(
+      'blocks create when the %s title exceeds 150 characters',
+      async (locale) => {
+        const toastWarningSpy = vi
+          .spyOn(dialogManager, 'toastWarning')
+          .mockImplementation(() => undefined);
+        const translation = new TranslationParams({
+          title: { [locale]: 'a'.repeat(151) },
+        });
+        const params = new AddEducationClassificationParams({ translation });
+
+        expect(await controller.create(params)).toBeUndefined();
+        expect(toastWarningSpy).toHaveBeenCalledWith('Title should not exceed 150 characters');
+        expect(mockRepository.create).not.toHaveBeenCalled();
+      },
+    );
   });
 
   describe('update - update existing education classification', () => {
@@ -93,6 +111,38 @@ describe('EducationClassificationController', () => {
       expect(mockRepository.update).toHaveBeenCalled();
       expect(router.push).toHaveBeenCalledWith({ name: 'EducationClassifications' });
       expect(result).toBe(successState);
+    });
+
+    it.each(['ar', 'en'])(
+      'blocks update when the %s title exceeds 150 characters',
+      async (locale) => {
+        const toastWarningSpy = vi
+          .spyOn(dialogManager, 'toastWarning')
+          .mockImplementation(() => undefined);
+        const translations = new TranslationParams({
+          title: { [locale]: 'a'.repeat(151) },
+        });
+        const params = new EditEducationClassificationParams({ id: 5, translations });
+
+        expect(await controller.update(params)).toBeUndefined();
+        expect(toastWarningSpy).toHaveBeenCalledWith('Title should not exceed 150 characters');
+        expect(mockRepository.update).not.toHaveBeenCalled();
+      },
+    );
+
+    it('allows Arabic and English titles that are exactly 150 characters each', async () => {
+      const mockItem = EducationClassificationTestFactory.createMockEducationClassification({
+        id: 5,
+      });
+      const successState = new DataSuccess(mockItem);
+      const translations = new TranslationParams({
+        title: { ar: 'ا'.repeat(150), en: 'a'.repeat(150) },
+      });
+      const params = new EditEducationClassificationParams({ id: 5, translations });
+      mockRepository.update.mockResolvedValue(successState);
+
+      expect(await controller.update(params)).toBe(successState);
+      expect(mockRepository.update).toHaveBeenCalledOnce();
     });
   });
 

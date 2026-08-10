@@ -13,6 +13,13 @@ import { QuestionTypeEnum } from '../../core/constant/question.type.enum';
 import { AnswerEvaluationTypeEnum } from '../../core/constant/answer.evaluation.type.enum';
 import { QuestionStatusEnum } from '../../core/constant/question.status.enum';
 import type EditquestionsParams from '../../core/params/edit.question.params';
+import type QuestionSkillParams from '../../core/params/subParams/question.skills.params';
+
+const hasInvalidSkillPercentage = (skills?: QuestionSkillParams[]) =>
+  skills?.some((skill) => {
+    const percentage = Number(skill.percentage);
+    return !Number.isFinite(percentage) || percentage <= 0 || percentage >= 100;
+  }) ?? false;
 
 export default class questionsController extends BaseController<
   ShowQuestionsModel,
@@ -51,6 +58,10 @@ export default class questionsController extends BaseController<
     const FormStore = useFormsStore();
 
     if (params.status != QuestionStatusEnum.DRAFT) {
+      if (hasInvalidSkillPercentage(params.skills)) {
+        dialogManager.toastWarning('skill percentage should be greater than 0 and less than 100');
+        return;
+      }
       if (
         (params.questionType === QuestionTypeEnum.mcq &&
           params.answers?.filter((answer) => answer.isCorrect).length === 0) ||
@@ -113,6 +124,10 @@ export default class questionsController extends BaseController<
     const isDraft = params.status === QuestionStatusEnum.DRAFT;
 
     if (!isDraft) {
+      if (hasInvalidSkillPercentage(params.skills)) {
+        dialogManager.toastWarning('skill percentage should be greater than 0 and less than 100');
+        return;
+      }
       if (
         (params.questionType === QuestionTypeEnum.mcq &&
           params.answers?.filter((answer) => answer.isCorrect).length === 0) ||

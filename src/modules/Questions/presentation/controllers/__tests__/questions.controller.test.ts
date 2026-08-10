@@ -9,6 +9,8 @@ import { ErrorModel, ErrorType } from '@/base/Core/NetworkStructure/Resources/er
 import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 import questionsRepository from '@/modules/Questions/data/repositories/question.repository';
 import EditquestionsParams from '@/modules/Questions/core/params/edit.question.params';
+import AddquestionsParams from '@/modules/Questions/core/params/add.question.params';
+import QuestionSkillParams from '@/modules/Questions/core/params/subParams/question.skills.params';
 import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
 import questionsController from '../questions.controller';
 
@@ -80,5 +82,72 @@ describe('questionsController.update', () => {
     await questionsController.getInstance().update(params);
 
     expect(validateSpy).toHaveBeenCalled();
+  });
+});
+
+describe('questionsController skill percentage validation', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it.each([0, 100, -1, 101, Number.NaN])(
+    'blocks non-draft creation when a skill percentage is %s',
+    async (percentage) => {
+      const params = new AddquestionsParams({
+        status: QuestionStatusEnum.APPROVED,
+        skills: [new QuestionSkillParams({ skillId: 76, percentage })],
+      });
+      const toastWarningSpy = vi
+        .spyOn(dialogManager, 'toastWarning')
+        .mockImplementation(() => undefined);
+      const createSpy = vi.spyOn(questionsRepository.getInstance(), 'create');
+
+      expect(await questionsController.getInstance().create(params)).toBeUndefined();
+      expect(toastWarningSpy).toHaveBeenCalledWith(
+        'skill percentage should be greater than 0 and less than 100',
+      );
+      expect(createSpy).not.toHaveBeenCalled();
+    },
+  );
+
+  it('blocks non-draft updates when any skill percentage is invalid', async () => {
+    const params = new EditquestionsParams({
+      id: 1,
+      status: QuestionStatusEnum.APPROVED,
+      skills: [
+        new QuestionSkillParams({ skillId: 76, percentage: 25 }),
+        new QuestionSkillParams({ skillId: 77, percentage: 0 }),
+      ],
+    });
+    const toastWarningSpy = vi
+      .spyOn(dialogManager, 'toastWarning')
+      .mockImplementation(() => undefined);
+    const updateSpy = vi.spyOn(questionsRepository.getInstance(), 'update');
+
+    expect(await questionsController.getInstance().update(params)).toBeUndefined();
+    expect(toastWarningSpy).toHaveBeenCalledWith(
+      'skill percentage should be greater than 0 and less than 100',
+    );
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
+
+  it('allows invalid skill percentages when saving a draft', async () => {
+    const params = new EditquestionsParams({
+      id: 1,
+      status: QuestionStatusEnum.DRAFT,
+      skills: [new QuestionSkillParams({ skillId: 76, percentage: 0 })],
+    });
+    const result = new DataSuccess({ data: null });
+    const toastWarningSpy = vi
+      .spyOn(dialogManager, 'toastWarning')
+      .mockImplementation(() => undefined);
+    vi.spyOn(questionsRepository.getInstance(), 'update').mockResolvedValue(result);
+
+    expect(await questionsController.getInstance().update(params)).toBe(result);
+    expect(toastWarningSpy).not.toHaveBeenCalled();
   });
 });
