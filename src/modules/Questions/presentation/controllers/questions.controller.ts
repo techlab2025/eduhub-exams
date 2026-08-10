@@ -110,8 +110,9 @@ export default class questionsController extends BaseController<
     formKey?: string,
   ) {
     const FormStore = useFormsStore();
+    const isDraft = params.status === QuestionStatusEnum.DRAFT;
 
-    if (params.status != QuestionStatusEnum.DRAFT) {
+    if (!isDraft) {
       if (
         (params.questionType === QuestionTypeEnum.mcq &&
           params.answers?.filter((answer) => answer.isCorrect).length === 0) ||
@@ -156,7 +157,7 @@ export default class questionsController extends BaseController<
       }
     }
 
-    const result = await super.update(params, options);
+    const result = await super.update(params, options, !isDraft);
     if (result instanceof DataSuccess) {
       if (formKey) {
         FormStore.clearFormData(formKey);

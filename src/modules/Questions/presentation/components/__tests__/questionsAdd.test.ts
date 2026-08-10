@@ -7,6 +7,7 @@ import questionsAdd from '../questionsAdd.vue';
 const createMock = vi.hoisted(() => vi.fn());
 const routerPushMock = vi.hoisted(() => vi.fn());
 const routerBackMock = vi.hoisted(() => vi.fn());
+const routeLeaveRegistrationMock = vi.hoisted(() => vi.fn());
 
 // Mock dependencies
 vi.mock('@/router', () => ({
@@ -17,6 +18,7 @@ vi.mock('@/router', () => ({
 }));
 
 vi.mock('vue-router', () => ({
+  onBeforeRouteLeave: routeLeaveRegistrationMock,
   useRoute: vi.fn(() => ({
     fullPath: '/eg/questions/add',
   })),
@@ -56,6 +58,17 @@ const globalConfig = {
     },
     CancelQuestionDialog: {
       template: '<button class="btn-cancel">cancel</button>',
+    },
+    UnsavedQuestionChangesDialog: {
+      name: 'UnsavedQuestionChangesDialog',
+      props: ['visible'],
+      emits: ['update:visible', 'discard', 'stay'],
+      template: `
+        <div v-if="visible" class="unsaved-dialog">
+          <button class="discard" @click="$emit('discard')">discard</button>
+          <button class="stay" @click="$emit('stay')">stay</button>
+        </div>
+      `,
     },
     AppButton: true,
     IconAccept: true,
@@ -163,5 +176,25 @@ describe('questionsAdd.vue', () => {
 
     expect(routerPushMock).not.toHaveBeenCalled();
     expect(routerBackMock).not.toHaveBeenCalled();
+  });
+
+  it('blocks route navigation until unsaved changes are discarded', async () => {
+    const wrapper = mount(questionsAdd, { global: globalConfig });
+    await flushPromises();
+    wrapper.findComponent({ name: 'questionsForm' }).vm.$emit('update-data', {
+      toMap: () => ({ question: 'Changed question' }),
+    });
+    await flushPromises();
+
+    const guard = routeLeaveRegistrationMock.mock.calls.at(-1)?.[0];
+    const stayResult = guard();
+    await wrapper.vm.$nextTick();
+    await wrapper.get('.unsaved-dialog .stay').trigger('click');
+    expect(await stayResult).toBe(false);
+
+    const discardResult = guard();
+    await wrapper.vm.$nextTick();
+    await wrapper.get('.unsaved-dialog .discard').trigger('click');
+    expect(await discardResult).toBe(true);
   });
 });

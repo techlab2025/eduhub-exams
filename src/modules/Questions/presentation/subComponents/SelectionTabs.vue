@@ -23,7 +23,7 @@
       selectedTab.value = newSelectedTab!;
       emit('update:modelValue', newSelectedTab);
     },
-    { deep: true },
+    { deep: true, immediate: true },
   );
 </script>
 

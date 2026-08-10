@@ -115,6 +115,8 @@
     FilterDialogShow.value = false;
   };
   const CloseFiletrDialog = () => {
+    fetchDocuments(1, word.value);
+
     FilterDialogShow.value = false;
   };
 </script>

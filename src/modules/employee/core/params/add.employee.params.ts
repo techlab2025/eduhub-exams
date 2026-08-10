@@ -22,7 +22,7 @@ export default class AddEmployeeParams implements Params {
     email: { required: true },
     phone: { required: true },
     image: { required: false },
-    EmployeeRef: { required: true },
+    // EmployeeRef: { required: true },
     gender: { required: true },
   });
 

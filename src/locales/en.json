@@ -36,6 +36,13 @@
   "employee_work_email": "Employee Work Email",
   "employee_type": "Employee Type",
   "unsaved_changes": "Unsaved Changes",
+  "number_of_branches_integer_warning": "Number of branches should be an integer",
+  "unsaved_question_dialog": {
+    "title": "Discard unsaved changes?",
+    "description": "Your question changes will be removed if you leave this page.",
+    "discard": "Discard changes",
+    "stay": "Stay on page"
+  },
   "return_to_form": "Click here to return to the form",
   "invalid_email": "Invalid email address",
   "email_required": "Email address is required",
@@ -957,5 +964,6 @@
   "highlight_badge_updated_successfully": "Highlight badge updated successfully",
   "highlight_badge_deleted_successfully": "Highlight badge deleted successfully",
   "highlight_badge_not_found": "Highlight badge not found",
-  "highlight_badge_already_exists": "Highlight badge already exists"
+  "highlight_badge_already_exists": "Highlight badge already exists",
+  "employee_ID": "Employee ID"
 }

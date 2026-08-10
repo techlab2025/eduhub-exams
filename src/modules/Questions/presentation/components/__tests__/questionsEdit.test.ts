@@ -4,17 +4,23 @@ import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/da
 import { QuestionStatusEnum } from '../../../core/constant/question.status.enum';
 import questionsEdit from '../questionsEdit.vue';
 
-const { fetchOneMock, updateMock, routerPushMock, routerBackMock, itemDataMock } = vi.hoisted(
-  () => ({
-    fetchOneMock: vi.fn(),
-    updateMock: vi.fn(),
-    routerPushMock: vi.fn(),
-    routerBackMock: vi.fn(),
-    itemDataMock: {
-      value: { parentId: 42 } as { parentId?: number; review_status?: QuestionStatusEnum },
-    },
-  }),
-);
+const {
+  fetchOneMock,
+  updateMock,
+  routerPushMock,
+  routerBackMock,
+  itemDataMock,
+  routeLeaveRegistrationMock,
+} = vi.hoisted(() => ({
+  fetchOneMock: vi.fn(),
+  updateMock: vi.fn(),
+  routerPushMock: vi.fn(),
+  routerBackMock: vi.fn(),
+  itemDataMock: {
+    value: { parentId: 42 } as { parentId?: number; review_status?: QuestionStatusEnum },
+  },
+  routeLeaveRegistrationMock: vi.fn(),
+}));
 
 vi.mock('../../controllers/questions.controller', () => ({
   default: {
@@ -35,6 +41,7 @@ vi.mock('@/router', () => ({
 }));
 
 vi.mock('vue-router', () => ({
+  onBeforeRouteLeave: routeLeaveRegistrationMock,
   useRoute: () => ({
     params: { id: '7' },
     query: { article_id: '42' },
@@ -65,6 +72,17 @@ const global = {
       name: 'CancelQuestionDialog',
       emits: ['cancel'],
       template: '<button class="btn-cancel" @click="$emit(\'cancel\')">cancel</button>',
+    },
+    UnsavedQuestionChangesDialog: {
+      name: 'UnsavedQuestionChangesDialog',
+      props: ['visible'],
+      emits: ['update:visible', 'discard', 'stay'],
+      template: `
+        <div v-if="visible" class="unsaved-dialog">
+          <button class="discard" @click="$emit('discard')">discard</button>
+          <button class="stay" @click="$emit('stay')">stay</button>
+        </div>
+      `,
     },
   },
   mocks: {
@@ -158,5 +176,22 @@ describe('questionsEdit', () => {
     expect(wrapper.find('.btn-draft').exists()).toBe(false);
     expect(wrapper.find('.btn-cancel').exists()).toBe(true);
     expect(updateMock).not.toHaveBeenCalled();
+  });
+
+  it('asks before leaving an edited question with unsaved changes', async () => {
+    const wrapper = mount(questionsEdit, { global });
+    await flushPromises();
+    wrapper.findComponent({ name: 'QuestionsForm' }).vm.$emit('update-data', {
+      id: 7,
+      toMap: () => ({ question_id: 7, question: 'Changed question' }),
+    });
+    await flushPromises();
+
+    const guard = routeLeaveRegistrationMock.mock.calls.at(-1)?.[0];
+    const navigationResult = guard();
+    await wrapper.vm.$nextTick();
+    await wrapper.get('.unsaved-dialog .discard').trigger('click');
+
+    expect(await navigationResult).toBe(true);
   });
 });

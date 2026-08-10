@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
+  import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+  import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
   import type EditQuestionParams from '../../core/params/edit.question.params';
   import ShowQuestionParams from '../../core/params/show.question.params';
   import questionsController from '../controllers/questions.controller';
@@ -9,6 +9,7 @@
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import WithReviewDialog from '../subComponents/Dialogs/WithReviewDialog.vue';
   import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.vue';
+  import UnsavedQuestionChangesDialog from '../subComponents/Dialogs/UnsavedQuestionChangesDialog.vue';
 
   const controller = questionsController.getInstance();
   const route = useRoute();
@@ -18,6 +19,11 @@
   const params = ref<EditQuestionParams | null>(null);
   const loading = ref(false);
   const questionFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
+  const initialFormSnapshot = ref<string | null>(null);
+  const hasUnsavedChanges = ref(false);
+  const allowNavigation = ref(false);
+  const leaveDialogVisible = ref(false);
+  let resolveNavigation: ((allow: boolean) => void) | null = null;
   const isFormLocked = computed(
     () => controller.itemData.value?.review_status === QuestionStatusEnum.ARCHIVED,
   );
@@ -26,6 +32,38 @@
     Save: 1,
     SaveAndNew: 2,
   } as const;
+
+  const getFormSnapshot = () => {
+    const formParams = params.value;
+    return JSON.stringify(formParams ? (formParams.toMap?.() ?? formParams) : null);
+  };
+
+  const resolveLeaveRequest = (allow: boolean) => {
+    leaveDialogVisible.value = false;
+    const resolve = resolveNavigation;
+    resolveNavigation = null;
+    resolve?.(allow);
+  };
+
+  onBeforeRouteLeave(() => {
+    if (!hasUnsavedChanges.value || allowNavigation.value || isFormLocked.value) return true;
+
+    leaveDialogVisible.value = true;
+    return new Promise<boolean>((resolve) => {
+      resolveNavigation = resolve;
+    });
+  });
+
+  const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (!hasUnsavedChanges.value || allowNavigation.value || isFormLocked.value) return;
+    event.preventDefault();
+    event.returnValue = '';
+  };
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    resolveNavigation?.(false);
+  });
 
   const navigateAfterSave = (isRouting: boolean) => {
     const parentId = params.value?.parentId;
@@ -63,6 +101,8 @@
 
       const result = await controller.update(params.value, undefined, formKey);
       if (!(result instanceof DataSuccess)) return;
+      allowNavigation.value = true;
+      hasUnsavedChanges.value = false;
 
       navigateAfterSave(isRouting);
     } catch (error) {
@@ -85,6 +125,8 @@
       params.value.status = QuestionStatusEnum.DRAFT;
       const result = await controller.update(params.value, undefined, formKey);
       if (!(result instanceof DataSuccess)) return;
+      allowNavigation.value = true;
+      hasUnsavedChanges.value = false;
 
       navigateAfterSave(true);
     } catch (error) {
@@ -95,6 +137,7 @@
   };
 
   const cancelEdit = () => {
+    allowNavigation.value = true;
     const parentId =
       params.value?.parentId ??
       (route.query.article_id ? Number(route.query.article_id) : undefined);
@@ -107,10 +150,17 @@
 
   const updateData = (updatedParams: EditQuestionParams) => {
     params.value = updatedParams;
+    if (initialFormSnapshot.value !== null) {
+      hasUnsavedChanges.value = getFormSnapshot() !== initialFormSnapshot.value;
+    }
   };
 
   onMounted(async () => {
+    window.addEventListener('beforeunload', handleBeforeUnload);
     await controller.fetchOne(new ShowQuestionParams(Number(route.params.id)));
+    await nextTick();
+    await nextTick();
+    initialFormSnapshot.value = getFormSnapshot();
   });
 </script>
 
@@ -157,6 +207,12 @@
       </template>
       <CancelQuestionDialog @cancel="cancelEdit" />
     </div>
+
+    <UnsavedQuestionChangesDialog
+      v-model:visible="leaveDialogVisible"
+      @discard="resolveLeaveRequest(true)"
+      @stay="resolveLeaveRequest(false)"
+    />
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error-toast">

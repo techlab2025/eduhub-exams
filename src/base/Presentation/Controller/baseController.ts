@@ -390,7 +390,11 @@ export default abstract class BaseController<T, TList = T[]> {
   /**
    * Update existing item.
    */
-  async update(params?: Params, options?: ApiCallOptions): Promise<DataState<T> | undefined> {
+  async update(
+    params?: Params,
+    options?: ApiCallOptions,
+    applyValidation: boolean = true,
+  ): Promise<DataState<T> | undefined> {
     this._lastOperation = { type: 'update', params, options };
 
     this.setItemLoading();
@@ -399,10 +403,12 @@ export default abstract class BaseController<T, TList = T[]> {
       this.showLoadingDialog('Updating...');
     }
 
-    params?.validate();
-    if (!params?.validate().isValid) {
-      params?.validateOrThrow();
-      return;
+    if (applyValidation) {
+      params?.validate();
+      if (!params?.validate().isValid) {
+        params?.validateOrThrow();
+        return;
+      }
     }
 
     try {

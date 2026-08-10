@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { onMounted, ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
+  import { useI18n } from 'vue-i18n';
   import { useFormsStore } from '@/stores/formsStore';
   import type EducationClassificationModel from '../../core/models/education.classification.model';
   // import AddEducationClassificationParams from '../../core/params/add.educationClassification.params';
@@ -18,6 +19,7 @@
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import IndexEducationConfigurationParams from '../../core/params/EducationConfiguration/index.educationConfiguration.params co';
   // import { mapLocales } from '@/base/Presentation/Utils/MapLocales';
+  import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
   const emit = defineEmits([
     'updateData',
@@ -31,6 +33,7 @@
   }>();
   const ConfigurationnumberOfBranchs = ref<number>(0);
   const SubjectnumberOfBranchs = ref<number>(0);
+  const { t } = useI18n();
 
   const FormStore = useFormsStore();
 
@@ -84,11 +87,56 @@
   const configurationInitialBranches = ref<Branch[]>([]);
   const subjectInitialBranches = ref<Branch[]>([]);
 
+  const ensureIntegerBranchCount = (value: number, resetValue: (value: number) => void) => {
+    const numericValue = Number(value);
+    if (Number.isInteger(numericValue)) return true;
+
+    dialogManager.toastWarning(t('number_of_branches_integer_warning'));
+    resetValue(Number.isFinite(numericValue) ? Math.trunc(numericValue) : 0);
+    return false;
+  };
+
+  const handleConfigurationBranchInput = () => {
+    if (
+      !ensureIntegerBranchCount(ConfigurationnumberOfBranchs.value, (value) => {
+        ConfigurationnumberOfBranchs.value = value;
+      })
+    ) {
+      return;
+    }
+    updateData();
+  };
+
+  const handleSubjectBranchInput = () => {
+    if (
+      !ensureIntegerBranchCount(SubjectnumberOfBranchs.value, (value) => {
+        SubjectnumberOfBranchs.value = value;
+      })
+    ) {
+      return;
+    }
+    updateData();
+  };
+
   const ApplyConfigurationBranchs = () => {
+    if (
+      !ensureIntegerBranchCount(ConfigurationnumberOfBranchs.value, (value) => {
+        ConfigurationnumberOfBranchs.value = value;
+      })
+    )
+      return;
+
     emit('save-education-classification');
     ConfigurationNumberOfBranchs.value = ConfigurationnumberOfBranchs.value;
   };
   const ApplySubjectBranchs = () => {
+    if (
+      !ensureIntegerBranchCount(SubjectnumberOfBranchs.value, (value) => {
+        SubjectnumberOfBranchs.value = value;
+      })
+    )
+      return;
+
     emit('save-education-subjects');
     subjectNumberOfBranchs.value = SubjectnumberOfBranchs.value;
   };
@@ -226,9 +274,11 @@
               id="title"
               v-model="ConfigurationnumberOfBranchs"
               type="number"
+              min="0"
+              step="1"
               :placeholder="$t('Enter number of branchs')"
               class="field-input"
-              @input="updateData"
+              @input="handleConfigurationBranchInput"
             />
           </div>
         </div>
@@ -292,9 +342,11 @@
               id="subject_number"
               v-model="SubjectnumberOfBranchs"
               type="number"
+              min="0"
+              step="1"
               :placeholder="$t('num_of_levels')"
               class="field-input"
-              @input="updateData"
+              @input="handleSubjectBranchInput"
             />
           </div>
         </div>

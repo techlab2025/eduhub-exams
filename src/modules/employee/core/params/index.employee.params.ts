@@ -19,6 +19,7 @@ export default class IndexEmployeeParams extends IndexParams {
     if (this.status != null) {
       map['status'] = this.status;
     }
+    map['order_dir'] = 1;
     return map;
   }
 }

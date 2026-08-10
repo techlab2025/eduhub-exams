@@ -307,6 +307,8 @@
             </HandleFilesUpload>
           </div>
 
+          <!-- {{selectedTab}} -->
+
           <SelectionTabs
             class="field-group col-span-2"
             :tabs="tabs"

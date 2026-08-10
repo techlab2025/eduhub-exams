@@ -79,7 +79,7 @@
     });
     const result = await controller.updateReviewStatus(quiestionStatusParams);
     if (result instanceof DataSuccess) {
-      router.push('/questions');
+      router.push(`/questions?status=${QuestionStatusEnum.REVISION}`);
     }
     // dialogManager.toastSuccess('Question rejected successfully');
   };

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
+  import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+  import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
   import questionsController from '../controllers/questions.controller';
   import questionsForm from './questionsForm.vue';
   // import LoadingIcon from '@/assets/images/loading.webp';
@@ -9,6 +9,7 @@
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import WithReviewDialog from '../subComponents/Dialogs/WithReviewDialog.vue';
   import CancelQuestionDialog from '../subComponents/Dialogs/CancelQuestionDialog.vue';
+  import UnsavedQuestionChangesDialog from '../subComponents/Dialogs/UnsavedQuestionChangesDialog.vue';
 
   const props = withDefaults(
     defineProps<{
@@ -36,6 +37,50 @@
   const params = ref<AddquestionsParams | null>(null);
   const router = useRouter();
   const questionFormRef = ref<{ validate: () => Promise<boolean> } | null>(null);
+  const initialFormSnapshot = ref<string | null>(null);
+  const hasUnsavedChanges = ref(false);
+  const allowNavigation = ref(false);
+  const leaveDialogVisible = ref(false);
+  let resolveNavigation: ((allow: boolean) => void) | null = null;
+
+  const getFormSnapshot = () => {
+    const formParams = params.value;
+    return JSON.stringify(formParams ? (formParams.toMap?.() ?? formParams) : null);
+  };
+
+  const resolveLeaveRequest = (allow: boolean) => {
+    leaveDialogVisible.value = false;
+    const resolve = resolveNavigation;
+    resolveNavigation = null;
+    resolve?.(allow);
+  };
+
+  onBeforeRouteLeave(() => {
+    if (!hasUnsavedChanges.value || allowNavigation.value) return true;
+
+    leaveDialogVisible.value = true;
+    return new Promise<boolean>((resolve) => {
+      resolveNavigation = resolve;
+    });
+  });
+
+  const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    if (!hasUnsavedChanges.value || allowNavigation.value) return;
+    event.preventDefault();
+    event.returnValue = '';
+  };
+
+  onMounted(async () => {
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    await nextTick();
+    await nextTick();
+    initialFormSnapshot.value = getFormSnapshot();
+  });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    resolveNavigation?.(false);
+  });
 
   const SaveStatusEnum = {
     Save: 1,
@@ -57,6 +102,8 @@
 
       const result = await controller.create(params.value, undefined, formKey);
       if (!(result instanceof DataSuccess)) return;
+      allowNavigation.value = true;
+      hasUnsavedChanges.value = false;
 
       if (props.embedded) {
         emit('saved');
@@ -94,6 +141,8 @@
       params.value.status = QuestionStatusEnum.DRAFT;
       const result = await controller.create(params.value, undefined, formKey);
       if (!(result instanceof DataSuccess)) return;
+      allowNavigation.value = true;
+      hasUnsavedChanges.value = false;
 
       if (params.value?.parentId != null) {
         router.push({
@@ -111,6 +160,18 @@
   };
   const updateData = (updatedParams: AddquestionsParams) => {
     params.value = updatedParams;
+    if (initialFormSnapshot.value !== null) {
+      hasUnsavedChanges.value = getFormSnapshot() !== initialFormSnapshot.value;
+    }
+  };
+
+  const cancelAdd = () => {
+    allowNavigation.value = true;
+    if (route.query.article_id || route.query.artical_id) {
+      router.push({ name: 'Articles' });
+    } else {
+      router.push({ name: 'Questions' });
+    }
   };
 </script>
 
@@ -151,15 +212,14 @@
       <button v-if="props.embedded" class="btn btn-cancel" type="button" @click="emit('close')">
         {{ $t('cancel') }}
       </button>
-      <CancelQuestionDialog
-        v-else
-        @cancel="
-          route?.query?.article_id || route?.query?.artical_id
-            ? $router.push({ name: 'Articles' })
-            : $router.push({ name: 'Questions' })
-        "
-      />
+      <CancelQuestionDialog v-else @cancel="cancelAdd" />
     </div>
+
+    <UnsavedQuestionChangesDialog
+      v-model:visible="leaveDialogVisible"
+      @discard="resolveLeaveRequest(true)"
+      @stay="resolveLeaveRequest(false)"
+    />
 
     <!-- Error Display -->
     <div v-if="controller.errorMessage.value" class="error-toast">

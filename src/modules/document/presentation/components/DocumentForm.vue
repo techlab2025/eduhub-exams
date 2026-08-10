@@ -274,7 +274,7 @@
           <input
             id="doc-ref"
             v-model="RefrenceNumber"
-            type="text"
+            type="number"
             :placeholder="$t('enter_refrence_number')"
             class="field-input"
             @input="updateData"

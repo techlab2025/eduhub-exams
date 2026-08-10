@@ -1,10 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
+import { createI18n } from 'vue-i18n';
 import EducationClassificationConfigurationForm from '../EducationClassificationConfigurationForm.vue';
 import EducationConfigurationModel from '../../../core/models/EducationConfiguration/education.configuration.model';
 import EducationSubjectConfigurationModel from '../../../core/models/EducationConfiguration/education.subject.configuration.model';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  messages: {
+    en: {
+      number_of_branches_integer_warning: 'Number of branches should be an integer',
+    },
+  },
+});
 
 // ── Shared controller mock objects ────────────────────────────────────────────
 const mockConfigFetchList = vi.fn();
@@ -61,6 +73,7 @@ const mountForm = (props: Record<string, unknown> = {}) =>
   mount(EducationClassificationConfigurationForm, {
     props,
     global: {
+      plugins: [i18n],
       mocks: { $t: (k: string) => k },
       // Stub child components so their buttons don't pollute the DOM
       stubs: {
@@ -131,7 +144,7 @@ describe('EducationClassificationConfigurationForm', () => {
       );
     });
 
-    it('falls back to example data when fetchList does not return DataSuccess', async () => {
+    it('keeps the default branch count when fetchList does not return DataSuccess', async () => {
       mockConfigFetchList.mockResolvedValue({ data: null });
       mockSubjectFetchList.mockResolvedValue({ data: null });
 
@@ -140,9 +153,7 @@ describe('EducationClassificationConfigurationForm', () => {
 
       expect(wrapper.exists()).toBe(true);
       const inputs = wrapper.findAll('input[type="number"]');
-      expect((inputs[0].element as HTMLInputElement).valueAsNumber).toBe(
-        EducationConfigurationModel.example.numberOfBranches,
-      );
+      expect((inputs[0].element as HTMLInputElement).valueAsNumber).toBe(0);
     });
   });
 
@@ -172,6 +183,20 @@ describe('EducationClassificationConfigurationForm', () => {
       await applyBtns[1].trigger('click');
 
       expect(wrapper.emitted('save-education-subjects')).toBeTruthy();
+    });
+
+    it.each([0, 1])('warns and removes decimals from branch input %s', async (inputIndex) => {
+      const toastWarningSpy = vi
+        .spyOn(dialogManager, 'toastWarning')
+        .mockImplementation(() => undefined);
+      const wrapper = mountForm();
+      await flushPromises();
+      const input = wrapper.findAll('input[type="number"]')[inputIndex];
+
+      await input.setValue('2.6');
+
+      expect(toastWarningSpy).toHaveBeenCalledWith('Number of branches should be an integer');
+      expect((input.element as HTMLInputElement).valueAsNumber).toBe(2);
     });
   });
 });
