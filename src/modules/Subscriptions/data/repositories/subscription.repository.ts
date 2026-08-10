@@ -1,7 +1,8 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
-import SubscriptionModel, { type SubscriptionStats } from '../../core/models/subscription.model';
+import SubscriptionModel from '../../core/models/subscription.model';
+import SubscriptionStatsModel from '../../core/models/subscription.stats.model';
 import SubscriptionApiService from '../api/subscription.api-service';
 
 export default class SubscriptionRepository extends BaseRepository<
@@ -31,10 +32,10 @@ export default class SubscriptionRepository extends BaseRepository<
   protected parseList(data: unknown) {
     return Array.isArray(data) ? data.map((item) => this.parseItem(item)) : [];
   }
-  fetchStats(params: Params): Promise<DataState<SubscriptionStats>> {
+  fetchStats(params: Params): Promise<DataState<SubscriptionStatsModel>> {
     return this.executeCustom(
       () => this.apiService.fetchStats(params),
-      SubscriptionModel.statsFromJson,
+      SubscriptionStatsModel.fromJson,
     );
   }
 }

@@ -12,7 +12,7 @@
   import EducationClassificationController from '@/modules/EducationClassification/presentation/controllers/educationClassification.controller';
   import IndexEducationClassificationParams from '@/modules/EducationClassification/core/params/index.educationClassification.params';
   import PlanController from '@/modules/Plan/presentation/controllers/plan.controller';
-  import { IndexPlanParams } from '@/modules/Plan/core/params/plan.params';
+  import IndexPlanParams from '@/modules/Plan/core/params/index.plan.params';
   import type StudentModel from '../../core/models/student.model';
   import { StudentStatusEnum } from '../../core/models/student.model';
   import {

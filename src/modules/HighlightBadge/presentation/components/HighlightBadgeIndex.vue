@@ -6,12 +6,15 @@
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
   import type HighlightBadgeModel from '../../core/models/highlightBadge.model';
-  import {
-    DeleteHighlightBadgeParams,
-    IndexHighlightBadgeParams,
-  } from '../../core/params/highlightBadge.params';
+
   import HighlightBadgeController from '../controllers/highlightBadge.controller';
   import { debounce } from '@/base/Presentation/Utils/debouced';
+  import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
+  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+  import IndexHighLightsBadgesParams from '../../core/params/index.highlightBadge.params';
+  import DeleteHighLightsBadgesParams from '../../core/params/delete.highlightBadge.params';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -22,12 +25,28 @@
   const headers = computed<TableHeader[]>(() => [{ key: 'title', label: t('title') }]);
 
   const fetchItems = (page = 1, word: string = '') =>
-    controller.fetchList(new IndexHighlightBadgeParams(word, page, perPage.value));
+    controller.fetchList(
+      new IndexHighLightsBadgesParams({ word, pageNumber: page, perPage: perPage.value }),
+    );
+
   const remove = async (id: number) => {
-    if (!window.confirm(t('confirm_delete'))) return;
-    await controller.delete(new DeleteHighlightBadgeParams(id));
+    await controller.delete(new DeleteHighLightsBadgesParams({ highlightBadgeId: id }));
     await fetchItems();
   };
+
+  const actionList = (item: HighlightBadgeModel) => [
+    {
+      text: t('edit'),
+      icon: EditIcon,
+      link: `/highlight-badges/edit/${item.id}`,
+    },
+    {
+      text: t('delete'),
+      icon: DeletIcon,
+      action: () => remove(item.id),
+    },
+  ];
+
   onMounted(() => fetchItems());
   const route = useRoute();
   const Search = debounce(() => {
@@ -44,18 +63,23 @@
 
 <template>
   <section class="feature-page">
-    <div class="search-field">
-      <span class="search-icon">
-        <IndexSearchIcon />
-      </span>
-      <input
-        v-model="word"
-        placeholder="Search by employee name or email…"
-        class="search-input"
-        type="text"
-        @input="Search"
-      />
-    </div>
+    <header>
+      <div class="search-field">
+        <span class="search-icon">
+          <IndexSearchIcon />
+        </span>
+        <input
+          v-model="word"
+          placeholder="Search by employee name or email…"
+          class="search-input"
+          type="text"
+          @input="Search"
+        />
+      </div>
+      <button class="btn btn-primary" @click="router.push('/highlight-badges/add')">
+        {{ $t('add_highlight_badge') }}
+      </button>
+    </header>
     <DataStatusBuilder
       :controller="state"
       :on-retry="
@@ -68,10 +92,11 @@
         <AppTable :headers="headers" :items="data as HighlightBadgeModel[]" show-index>
           <template #actions="{ item }">
             <div class="row-actions">
-              <button class="btn" @click="router.push(`/highlight-badges/edit/${item.id}`)">
-                {{ $t('edit') }}
-              </button>
-              <button class="btn btn-cancel" @click="remove(item.id)">{{ $t('delete') }}</button>
+              <DropList
+                :action-list="actionList(item)"
+                :delete-dialog-title="$t('confirm_delete')"
+                :delete-dialog-message="$t('delete_highlight_badge_message')"
+              />
             </div>
           </template>
         </AppTable>
@@ -92,6 +117,12 @@
 </template>
 
 <style scoped lang="scss">
+  header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
   .index-header,
   .row-actions {
     display: flex;

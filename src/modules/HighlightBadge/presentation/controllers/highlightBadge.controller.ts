@@ -28,4 +28,7 @@ export default class HighlightBadgeController extends BaseController<
       headers: { 'Accept-Language': (params as { allLocales?: boolean }).allLocales ? '*' : 'en' },
     });
   }
+  async fetchList(params?: Params, options?: ApiCallOptions) {
+    return super.fetchList(params, { ...options, useStaticData: true });
+  }
 }

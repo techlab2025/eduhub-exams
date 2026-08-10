@@ -2,7 +2,7 @@
   import { onMounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import PlanController from '../controllers/plan.controller';
-  import { ShowPlanParams } from '../../core/params/plan.params';
+  import ShowPlanParams from '../../core/params/show.plan.params';
   import { PLAN_FEATURE_DEFINITIONS } from '../../core/enums/planType.enum';
   const route = useRoute();
   const router = useRouter();

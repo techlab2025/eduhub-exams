@@ -12,9 +12,12 @@
   import EducationClassificationController from '@/modules/EducationClassification/presentation/controllers/educationClassification.controller';
   import IndexEducationClassificationParams from '@/modules/EducationClassification/core/params/index.educationClassification.params';
   import PlanController from '@/modules/Plan/presentation/controllers/plan.controller';
-  import { IndexPlanParams } from '@/modules/Plan/core/params/plan.params';
+  import IndexPlanParams from '@/modules/Plan/core/params/index.plan.params';
   import type SubscriptionModel from '../../core/models/subscription.model';
-  import { SubscriptionStatusEnum } from '../../core/models/subscription.model';
+  import {
+    SubscriptionStatusEnum,
+    type SubscriptionStatusEnum as SubscriptionStatus,
+  } from '../../core/enums/subscription.status.enum';
   import {
     DeleteSubscriptionParams,
     IndexSubscriptionParams,
@@ -67,7 +70,7 @@
       new IndexSubscriptionParams(word.value, page, perPage.value, {
         educationTypeId: education.value ? Number(education.value.id) : undefined,
         planId: plan.value ? Number(plan.value.id) : undefined,
-        status: status.value ? (String(status.value.id) as SubscriptionStatusEnum) : undefined,
+        status: status.value ? (String(status.value.id) as SubscriptionStatus) : undefined,
         paidFrom: paidFrom.value,
         paidTo: paidTo.value,
         subscriptionDateFrom: dateValue(subscribeFrom.value),

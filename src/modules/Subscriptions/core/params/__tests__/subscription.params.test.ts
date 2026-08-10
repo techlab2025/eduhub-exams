@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SubscriptionStatusEnum } from '../../models/subscription.model';
+import { SubscriptionStatusEnum } from '../../enums/subscription.status.enum';
 import { IndexSubscriptionParams, ShowSubscriptionParams } from '../subscription.params';
 describe('subscription params', () => {
   it('maps filters and identifiers', () => {

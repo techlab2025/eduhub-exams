@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed, onMounted, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { useRouter } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import DatePicker from 'primevue/datepicker';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
@@ -12,7 +12,10 @@
   import PlanController from '../controllers/plan.controller';
   import type PlanModel from '../../core/models/plan.model';
   import { LastUpdatedEnum, PlanStatusEnum } from '../../core/models/plan.model';
-  import { DeletePlanParams, IndexPlanParams } from '../../core/params/plan.params';
+  import DeletePlanParams from '../../core/params/delete.plan.params';
+  import IndexPlanParams from '../../core/params/index.plan.params';
+  import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
+  import { debounce } from '@/base/Presentation/Utils/debouced';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -48,9 +51,9 @@
     { key: 'status', label: t('status') },
     { key: 'subscribers', label: t('subscribers') },
   ]);
-  const fetchItems = (page = 1) =>
+  const fetchItems = (page = 1, word = '') =>
     controller.fetchList(
-      new IndexPlanParams(word.value, page, perPage.value, {
+      new IndexPlanParams(word, page, perPage.value, {
         fromPrice: fromPrice.value,
         toPrice: toPrice.value,
         status: status.value ? (String(status.value.id) as PlanStatusEnum) : undefined,
@@ -80,17 +83,34 @@
     await applyFilters();
   };
   onMounted(() => fetchItems());
+  const route = useRoute();
+  const Search = debounce(() => {
+    router.push({
+      query: {
+        ...route.query,
+        page: 1,
+        word: word.value || undefined,
+      },
+    });
+    fetchItems(1, word.value);
+  });
 </script>
 
 <template>
   <section class="plan-page">
     <header class="index-header">
-      <input
-        v-model="word"
-        class="search-input"
-        :placeholder="$t('search')"
-        @input="fetchItems()"
-      />
+      <div class="search-field">
+        <span class="search-icon">
+          <IndexSearchIcon />
+        </span>
+        <input
+          v-model="word"
+          placeholder="Search by title "
+          class="search-input"
+          type="text"
+          @input="Search"
+        />
+      </div>
       <div class="header-actions">
         <FilterDialog v-model="filterDialogVisible">
           <template #content>

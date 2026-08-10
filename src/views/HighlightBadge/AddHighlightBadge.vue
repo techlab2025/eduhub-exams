@@ -1,4 +1,6 @@
 <script setup lang="ts">
-  import HighlightBadgeForm from '@/modules/HighlightBadge/presentation/components/HighlightBadgeForm.vue';
+  import HighlightBadgeAdd from '@/modules/HighlightBadge/presentation/components/HighlightBadgeAdd.vue';
 </script>
-<template><HighlightBadgeForm /></template>
+<template>
+  <HighlightBadgeAdd />
+</template>

@@ -3,10 +3,12 @@ export type LocalizedField = Record<string, string> | Array<Record<string, strin
 export default class HighlightBadgeModel {
   public readonly id: number;
   public readonly title: LocalizedField;
+  public readonly titles?: LocalizedField[];
 
-  constructor(data: { id: number; title: LocalizedField }) {
+  constructor(data: { id: number; title: LocalizedField; titles?: LocalizedField[] }) {
     this.id = data.id;
     this.title = data.title;
+    this.titles = data.titles;
     Object.freeze(this);
   }
 
@@ -14,6 +16,7 @@ export default class HighlightBadgeModel {
     return new HighlightBadgeModel({
       id: Number(json.id ?? json.highlight_badge_id),
       title: (json.title ?? '') as LocalizedField,
+      titles: json.titles as LocalizedField[],
     });
   }
 

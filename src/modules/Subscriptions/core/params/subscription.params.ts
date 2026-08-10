@@ -1,6 +1,6 @@
 import IndexParams from '@/base/Core/Params/indexParams';
 import type Params from '@/base/Core/Params/params';
-import type { SubscriptionStatusEnum } from '../models/subscription.model';
+import type { SubscriptionStatusEnum } from '../enums/subscription.status.enum';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export interface SubscriptionFilters {

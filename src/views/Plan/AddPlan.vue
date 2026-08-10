@@ -1,4 +1,4 @@
 <script setup lang="ts">
-  import PlanForm from '@/modules/Plan/presentation/components/PlanForm.vue';
+  import PlanAdd from '@/modules/Plan/presentation/components/PlanAdd.vue';
 </script>
-<template><PlanForm /></template>
+<template><PlanAdd /></template>
