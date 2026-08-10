@@ -25,7 +25,7 @@
       case QuestionStatusEnum.CREATED:
         return t('question_status_details.titles.created');
       case QuestionStatusEnum.NOT_REVIEW:
-        return t('question_status_details.titles.under_review');
+        return t('question_status_details.titles.not_review');
       case QuestionStatusEnum.APPROVED:
         return t('question_status_details.titles.approved');
       case QuestionStatusEnum.REJECTED:
@@ -46,7 +46,7 @@
       case QuestionStatusEnum.CREATED:
         return t('question_status_details.descriptions.created');
       case QuestionStatusEnum.NOT_REVIEW:
-        return t('question_status_details.descriptions.under_review');
+        return t('question_status_details.descriptions.not_review');
       case QuestionStatusEnum.REJECTED:
         return t('question_status_details.descriptions.rejected');
       case QuestionStatusEnum.APPROVED:

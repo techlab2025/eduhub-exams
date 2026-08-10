@@ -613,7 +613,7 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "draft": "Draft",
-      "under_review": "Under Review",
+      "not_review": "Not Reviewed",
       "archived": "Archived",
       "revision": "Revision Required",
       "unknown": "Unknown"
@@ -623,7 +623,7 @@
       "approved": "The question is approved and available for publishing.",
       "rejected": "Review the question details and the rejection reason before making changes.",
       "draft": "This question is saved as a draft. Complete the required details when you are ready.",
-      "under_review": "The question is being reviewed. Check its details and available actions before publishing.",
+      "not_review": "The question is not reviewed yet. Check its details and available actions before publishing.",
       "archived": "This question is archived and is no longer available for publishing.",
       "revision": "This question requires revision. Review the notes and update the requested details.",
       "unknown": "The current question status is unavailable."

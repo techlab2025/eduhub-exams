@@ -40,7 +40,7 @@
       case QuestionStatusEnum.DRAFT:
         return t('question_status_details.titles.draft');
       case QuestionStatusEnum.NOT_REVIEW:
-        return t('question_status_details.titles.under_review');
+        return t('question_status_details.titles.not_review');
       case QuestionStatusEnum.ARCHIVED:
         return t('question_status_details.titles.archived');
       case QuestionStatusEnum.REVISION:
