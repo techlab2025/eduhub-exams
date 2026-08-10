@@ -1,0 +1,40 @@
+import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
+import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import type Params from '@/base/Core/Params/params';
+import SubscriptionModel, { type SubscriptionStats } from '../../core/models/subscription.model';
+import SubscriptionApiService from '../api/subscription.api-service';
+
+export default class SubscriptionRepository extends BaseRepository<
+  SubscriptionModel,
+  SubscriptionModel[]
+> {
+  private static instance: SubscriptionRepository;
+  protected get apiService() {
+    return SubscriptionApiService.getInstance();
+  }
+  protected get config(): RepositoryConfig {
+    return { hasPagination: true, dataKey: 'data', paginationKey: 'meta' };
+  }
+  protected get mockItem() {
+    return SubscriptionModel.example;
+  }
+  protected get mockList() {
+    return [SubscriptionModel.example];
+  }
+  static getInstance() {
+    if (!this.instance) this.instance = new SubscriptionRepository();
+    return this.instance;
+  }
+  protected parseItem(data: unknown) {
+    return SubscriptionModel.fromJson(data as Record<string, unknown>);
+  }
+  protected parseList(data: unknown) {
+    return Array.isArray(data) ? data.map((item) => this.parseItem(item)) : [];
+  }
+  fetchStats(params: Params): Promise<DataState<SubscriptionStats>> {
+    return this.executeCustom(
+      () => this.apiService.fetchStats(params),
+      SubscriptionModel.statsFromJson,
+    );
+  }
+}

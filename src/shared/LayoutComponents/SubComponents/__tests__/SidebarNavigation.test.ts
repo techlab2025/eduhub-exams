@@ -56,19 +56,25 @@ describe('SidebarNavigation.vue', () => {
     expect(wrapper.text()).toContain('Employees');
     expect(wrapper.text()).toContain('Documents');
     expect(wrapper.text()).toContain('Questions');
+    expect(wrapper.text()).toContain('highlight_badges');
+    expect(wrapper.text()).toContain('plan_features');
+    expect(wrapper.text()).toContain('plans');
+    expect(wrapper.text()).toContain('subscriptions');
+    expect(wrapper.text()).toContain('students');
   });
 
-  it('renders five question status links with status queries', () => {
+  it('renders six question status links with status queries', () => {
     const wrapper = mount(SidebarNavigation, mountOptions);
     const statusLinks = wrapper.findAll('.submenu-item');
 
-    expect(statusLinks).toHaveLength(5);
+    expect(statusLinks).toHaveLength(6);
     expect(statusLinks.map((link) => link.attributes('data-status'))).toEqual([
-      '1',
+      '6',
       '2',
       '3',
       '4',
       '5',
+      '7',
     ]);
   });
 
