@@ -156,6 +156,12 @@ describe('EducationClassificationIndex', () => {
           AppTable: {
             template: '<div><slot name="cell-status" :item="{ id: 7, status: false }" /></div>',
           },
+          ToggleSwitch: {
+            props: ['modelValue'],
+            emits: ['update:modelValue'],
+            template:
+              '<button class="toggle-switch-stub" :aria-checked="modelValue" @click="$emit(\'update:modelValue\', !modelValue)" />',
+          },
           Pagination: true,
           EducationClassificationAdd: true,
         },
@@ -168,11 +174,11 @@ describe('EducationClassificationIndex', () => {
     await flushPromises();
     mockFetchList.mockClear();
 
-    expect(wrapper.get('.status-toggle').attributes('aria-checked')).toBe('false');
-    await wrapper.get('.status-toggle').trigger('click');
+    expect(wrapper.get('.toggle-switch-stub').attributes('aria-checked')).toBe('false');
+    await wrapper.get('.toggle-switch-stub').trigger('click');
     await flushPromises();
 
-    expect(wrapper.get('.status-toggle').attributes('aria-checked')).toBe('true');
+    expect(wrapper.get('.toggle-switch-stub').attributes('aria-checked')).toBe('true');
     expect(mockToggleStatus).toHaveBeenCalledOnce();
     expect(mockToggleStatus.mock.calls[0][0].toMap()).toEqual({
       education_classification_id: 7,

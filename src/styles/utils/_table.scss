@@ -275,6 +275,12 @@
     }
   }
   /* ---- Checkbox ---- */
+  .p-toggleswitch input[type='checkbox'] {
+    width: 100% !important;
+    height: 100% !important;
+    cursor: pointer;
+    accent-color: var(--table-checkbox-color, #6366f1);
+  }
   .app-table input[type='checkbox'] {
     width: 16px;
     height: 16px;

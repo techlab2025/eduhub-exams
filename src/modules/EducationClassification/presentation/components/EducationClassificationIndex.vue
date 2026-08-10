@@ -24,6 +24,8 @@
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
   import ToggleStatusEducationClassificationParams from '../../core/params/toggle.educationClassification.status.params.ts';
   // Controller instance
+  import ToggleSwitch from 'primevue/toggleswitch';
+
   const controller = EducationClassificationController.getInstance();
   const { t } = useI18n();
   const state = computed(() => controller.listState.value);
@@ -45,7 +47,7 @@
   const headers = computed<TableHeader[]>(() => [
     { key: 'title', label: t('education type'), width: '40%' },
     { key: 'added_date', label: t('Added date'), width: '40%' },
-    // { key: 'status', label: t('status'), width: '30%' },
+    { key: 'status', label: t('status'), width: '30%' },
   ]);
 
   // Pagination state
@@ -148,11 +150,10 @@
     return statusById.value[item.id] ?? item.status;
   };
 
-  const toggleItemStatus = async (item: EducationClassificationModel) => {
-    statusById.value[item.id] = !getStatus(item);
+  const toggleItemStatus = async (item: EducationClassificationModel, status: boolean) => {
+    statusById.value[item.id] = status;
     await ToggleStatus(item.id);
   };
-
 </script>
 
 <template>
@@ -185,17 +186,11 @@
               {{ item.created_at }}
             </template>
             <template #cell-status="{ item }">
-              <button
-                type="button"
-                class="status-toggle"
-                :class="{ 'status-toggle--active': getStatus(item) }"
-                role="switch"
-                :aria-checked="getStatus(item)"
-                :aria-label="`${$t('status')}: ${item.title}`"
-                @click="toggleItemStatus(item)"
-              >
-                <span class="status-toggle__thumb" aria-hidden="true"></span>
-              </button>
+              <ToggleSwitch
+                :model-value="getStatus(item)"
+                :aria-label="`${$t('active')}: ${item.title}`"
+                @update:model-value="toggleItemStatus(item, $event)"
+              />
             </template>
 
             <template #actions="{ item }">
@@ -289,6 +284,15 @@
 </template>
 
 <style scoped lang="scss">
+  :deep(.td-data::before) {
+    display: none;
+    // pointer-events: none;
+  }
+
+  .p-toggleswitch-input {
+    width: 100% !important;
+    height: 100% !important;
+  }
   .status-toggle {
     display: flex;
     align-items: center;
