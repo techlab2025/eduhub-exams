@@ -1,3 +1,5 @@
+import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
@@ -63,5 +65,13 @@ export default class EducationStageController extends BaseController<
       return;
     }
     return super.update(params, { ...options, useJson: true });
+  }
+
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    if (result?.error?.title) {
+      dialogManager.toastError(result?.error?.title);
+    }
+    return result;
   }
 }

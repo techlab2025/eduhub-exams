@@ -47,7 +47,7 @@ export default class DocumentTypeModel {
         title: this.mapTranslations(json.title, 'title'),
       },
       RefNumber: json.ref_number,
-      title: json.title,
+      title: this.resolveTitle(json.title),
       doecumentType: json.document_type,
       Subjtecs: json.subjtecs ?? [],
       tranaslations: json.tranaslations,
@@ -58,6 +58,21 @@ export default class DocumentTypeModel {
   private static normalizeStatus(status: unknown): boolean {
     return status === true || status === 1 || status === '1' || status === 'active';
   }
+
+  private static resolveTitle(title: unknown): string {
+    if (typeof title === 'string') return title;
+    if (!Array.isArray(title)) return '';
+
+    const translation = title.find(
+      (item) =>
+        item &&
+        typeof item === 'object' &&
+        typeof (item as Record<string, unknown>).title === 'string',
+    ) as Record<string, unknown> | undefined;
+
+    return String(translation?.title ?? '');
+  }
+
   static mapTranslations = (translations: any[], key: string = 'value') => {
     const result: Record<string, string> = {};
     if (Array.isArray(translations)) {

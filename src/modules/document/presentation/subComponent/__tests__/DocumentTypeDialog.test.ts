@@ -2,7 +2,8 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import DocumentTypeDialog from '../DocumentTypeDialog.vue';
 
-const { fetchListMock, toggleStatusMock } = vi.hoisted(() => ({
+const { documentTypeList, fetchListMock, toggleStatusMock } = vi.hoisted(() => ({
+  documentTypeList: [{ id: 7, title: 'PDF', status: true }],
   fetchListMock: vi.fn().mockResolvedValue(undefined),
   toggleStatusMock: vi.fn().mockResolvedValue(undefined),
 }));
@@ -14,7 +15,7 @@ vi.mock(
       getInstance: () => ({
         listState: {
           value: {
-            data: [{ id: 7, title: 'PDF', status: true }],
+            data: documentTypeList,
           },
         },
         fetchList: fetchListMock,
@@ -48,6 +49,8 @@ const global = {
 describe('DocumentTypeDialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    const [documentType] = documentTypeList;
+    if (documentType) documentType.title = 'PDF';
   });
 
   it('renders without errors', () => {
@@ -71,5 +74,17 @@ describe('DocumentTypeDialog', () => {
     expect(toggleStatusMock).toHaveBeenCalledOnce();
     expect(toggleStatusMock.mock.calls[0]?.[0].toMap()).toEqual({ document_type_id: 7 });
     expect(fetchListMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('renders the full title for CSS truncation and exposes it on hover', async () => {
+    const [documentType] = documentTypeList;
+    if (documentType) documentType.title = 'A'.repeat(110);
+    const wrapper = mount(DocumentTypeDialog, { global });
+
+    await wrapper.get('button.btn-primary').trigger('click');
+
+    const renderedTitle = wrapper.get('.item-main-title');
+    expect(renderedTitle.text()).toBe('A'.repeat(110));
+    expect(renderedTitle.attributes('title')).toBe('A'.repeat(110));
   });
 });

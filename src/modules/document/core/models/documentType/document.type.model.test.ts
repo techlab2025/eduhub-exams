@@ -12,6 +12,10 @@ const createJson = (status: unknown) => ({
 });
 
 describe('DocumentTypeModel status', () => {
+  it('maps a translated API title to displayable text', () => {
+    expect(DocumentTypeModel.fromJson(createJson(true)).title).toBe('PDF');
+  });
+
   it.each([true, 1, '1', 'active'])('maps %s to an active status', (status) => {
     expect(DocumentTypeModel.fromJson(createJson(status)).status).toBe(true);
   });

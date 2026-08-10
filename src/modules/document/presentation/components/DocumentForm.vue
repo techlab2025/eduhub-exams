@@ -136,41 +136,6 @@
 
   defineExpose({ validate });
 
-  watch(
-    () => document,
-    (newDoc) => {
-      if (newDoc) {
-        title.value = newDoc.translations.title;
-        selectedDocumentType.value = newDoc.documentType; // ← فقط اضبط لو القيمة اتغيرت فعلاً
-
-        if (UploadedImage.value !== newDoc.images) {
-          UploadedImage.value = newDoc.images;
-        }
-        if (UploadedFiles.value !== newDoc.files) {
-          UploadedFiles.value = newDoc.files;
-        }
-
-        RefrenceNumber.value = newDoc.RefNumber;
-        selectedBranchTitle.value = new TitleInterface({
-          id: newDoc.subject.id,
-          title: `${newDoc.stage.title} → ${newDoc.subject.title}`,
-          subtitle: newDoc.stage.id,
-        });
-        selectedSubject.value = new TitleInterface({
-          id: newDoc.subject.id,
-          title: newDoc.subject.title,
-        });
-        selectedDocumentType.value = new TitleInterface({
-          id: newDoc.documentType.id,
-          title: newDoc.documentType.title,
-        });
-        tags.value = newDoc.tags;
-        description.value = newDoc.description;
-      }
-    },
-    { immediate: true },
-  );
-
   const updateData = () => {
     const params = new AddDocumentParams({
       translations: new DocumentTranslationParams({
@@ -180,7 +145,7 @@
       documentTypeId: selectedDocumentType.value?.id || 0,
       stage_id: selectedBranchTitle.value?.subtitle || 0,
       subjects: selectedBranchTitle.value?.id || 0,
-      files: UploadedFiles.value!,
+      files: UploadedFiles.value || '',
       images: UploadedImage.value || '',
       refNumber: RefrenceNumber.value,
       tags: tags.value,
@@ -190,9 +155,43 @@
     emit('updateData', params);
   };
 
+  watch(
+    () => document,
+    (newDoc) => {
+      if (!newDoc) return;
+
+      title.value = newDoc.translations.title;
+
+      if (UploadedImage.value !== newDoc.images) {
+        UploadedImage.value = newDoc.images;
+      }
+      if (UploadedFiles.value !== newDoc.files) {
+        UploadedFiles.value = newDoc.files;
+      }
+
+      RefrenceNumber.value = newDoc.RefNumber;
+      selectedBranchTitle.value = new TitleInterface({
+        id: newDoc.subject.id,
+        title: `${newDoc.stage.title} → ${newDoc.subject.title}`,
+        subtitle: newDoc.stage.id,
+      });
+      selectedSubject.value = new TitleInterface({
+        id: newDoc.subject.id,
+        title: newDoc.subject.title,
+      });
+      selectedDocumentType.value = new TitleInterface({
+        id: newDoc.documentType.id,
+        title: newDoc.documentType.title,
+      });
+      tags.value = [...newDoc.tags];
+      description.value = { ...newDoc.description };
+      updateData();
+    },
+    { immediate: true },
+  );
+
   const handleBranchChange = (selected: TitleInterface<number> | undefined) => {
     selectedBranchTitle.value = selected;
-    console.log(selected, 'selected');
     updateData();
   }; // const handleImageChange = (files: UploadedFile[]) => {
   //   UploadedImage.value = files?.[0]?.base64;
@@ -439,10 +438,15 @@
 </template>
 
 <style scoped lang="scss">
+  :deep(.p-select-label) {
+    padding: 0 !important;
+  }
+
   .disabled-input {
     pointer-events: none;
     opacity: 0.5;
   }
+
   .add-dialog {
     cursor: pointer;
   }

@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import DocumentForm from '../DocumentForm.vue';
+import DocumentShowModel from '../../../core/models/document.show.model';
+import type AddDocumentParams from '../../../core/params/add.document.params';
 
 const toastWarningMock = vi.hoisted(() => vi.fn());
 const stageControllerMock = vi.hoisted(() => ({
@@ -48,8 +50,8 @@ vi.mock('vue-router', () => ({
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({
     t: (key: string) => key,
-    d: (d: any) => d,
-    n: (n: any) => n,
+    d: (date: unknown) => date,
+    n: (number: unknown) => number,
   }),
 }));
 
@@ -109,6 +111,32 @@ describe('DocumentForm', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('emits the populated edit data without requiring a description change', () => {
+    const wrapper = mount(DocumentForm, {
+      props: {
+        document: DocumentShowModel.example,
+        formKey: 'edit-document-1',
+      },
+      global: {
+        stubs: {
+          UpdatedCustomInputSelect: true,
+          MultiLangInput: true,
+          HandleFilesUpload: true,
+          DocumentIcon: true,
+          DeleteTagIcon: true,
+        },
+        mocks: {
+          $t: (msg: string) => msg,
+        },
+      },
+    });
+
+    const emittedParams = wrapper.emitted('updateData')?.[0]?.[0] as AddDocumentParams;
+
+    expect(emittedParams).toBeTruthy();
+    expect(emittedParams.translations.description).toEqual(DocumentShowModel.example.description);
   });
 
   it('shows inline errors for every required document field', async () => {

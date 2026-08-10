@@ -4,7 +4,7 @@
   import IndexAddIcon from '@/shared/icons/IndexAddIcon.vue';
   import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
- import DeletedAccountsIcon from '@/assets/images/DeletedReson.png';
+  import DeletedAccountsIcon from '@/assets/images/DeletedReson.png';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
   import IndexDelete from '@/shared/icons/DocaumentType/IndexDelete.vue';
   import DocumentTypeController from '../controllers/DocumentType/document.type.controller';
@@ -101,7 +101,7 @@
     v-model:visible="visible"
     :modal="true"
     :pt="{
-      root: 'delete-reason-dialog',
+      root: 'add-document-type-dialog',
       header: 'dialog-header',
       content: 'dialog-body',
     }"
@@ -125,7 +125,7 @@
       >
         <div class="item-title">
           <span class="item-small-title">doc type</span>
-          <span class="item-main-title">{{ item.title }}</span>
+          <span class="item-main-title" :title="item.title">{{ item.title }}</span>
         </div>
 
         <!-- <div class="item-title">
@@ -133,10 +133,10 @@
           <span class="item-main-title">{{ item.title }}</span>
         </div> -->
         <ToggleSwitch
-            :model-value="item.status"
-            :aria-label="`${$t('active')}: ${item.title}`"
-            @update:model-value="toggleStatus(item.id!)"
-          />
+          :model-value="item.status"
+          :aria-label="`${$t('active')}: ${item.title}`"
+          @update:model-value="toggleStatus(item.id!)"
+        />
         <div class="item-actions">
           <EditeIcon @click="showDetails(item.id!)" />
 
@@ -150,7 +150,6 @@
               <IndexDelete />
             </template>
           </DeleteDialog>
-          
         </div>
       </div>
       <div class="input-wrapper">
@@ -170,3 +169,29 @@
     </div>
   </Dialog>
 </template>
+
+<style scoped lang="scss">
+  .document-type-row {
+    min-width: 0;
+    gap: var(--xs-size);
+  }
+
+  .item-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .item-main-title {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .p-toggleswitch,
+  .item-actions {
+    flex: 0 0 auto;
+  }
+</style>
