@@ -1,10 +1,13 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import type Params from '@/base/Core/Params/params';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-import PlanModel, { PlanDurationTypeEnum, PlanStatusEnum } from '../../core/models/plan.model';
+import PlanModel from '../../core/models/plan.model';
+import PlanDetailsModel from '../../core/models/plan.details.model';
+import { PlanDurationTypeEnum } from '../../core/enums/plan.duration.enum';
+import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
 import PlanApiService from '../api/plan.api-service';
 
-export default class PlanRepository extends BaseRepository<PlanModel, PlanModel[]> {
+export default class PlanRepository extends BaseRepository<PlanDetailsModel, PlanModel[]> {
   private static instance: PlanRepository;
   protected get apiService() {
     return PlanApiService.getInstance();
@@ -13,7 +16,7 @@ export default class PlanRepository extends BaseRepository<PlanModel, PlanModel[
     return { hasPagination: true, dataKey: 'data', paginationKey: 'meta' };
   }
   protected get mockItem() {
-    return PlanModel.example;
+    return PlanDetailsModel.example;
   }
   protected get mockList() {
     return [
@@ -57,13 +60,15 @@ export default class PlanRepository extends BaseRepository<PlanModel, PlanModel[
     return this.instance;
   }
   protected parseItem(data: unknown) {
-    return PlanModel.fromJson(data as Record<string, unknown>);
+    return PlanDetailsModel.fromJson(data as Record<string, unknown>);
   }
   protected parseList(data: unknown) {
-    return Array.isArray(data) ? data.map((item) => this.parseItem(item)) : [];
+    return Array.isArray(data)
+      ? data.map((item) => PlanModel.fromJson(item as Record<string, unknown>))
+      : [];
   }
 
-  async toggleStatus(params: Params): Promise<DataState<PlanModel>> {
+  async toggleStatus(params: Params): Promise<DataState<PlanDetailsModel>> {
     return this.executeCustom(
       () => this.apiService.toggleStatus(params),
       (data) => this.parseItem(data),

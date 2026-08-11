@@ -1,40 +1,37 @@
-import { PlanFeatureTypeEnum } from '../enums/planType.enum';
-import PlanFeatureSubTypeModel from './plan.sub.feature.model';
+import type { PlanFeatureTypeEnum } from '../enums/planType.enum';
+import PlanSubFeatureModel from './plan.sub.feature.model';
 
-export default class PlanFeatureTypeModel {
-  public readonly featureType: PlanFeatureTypeEnum;
-  public readonly featureSubType: PlanFeatureSubTypeModel[];
-  public readonly featuretitle?: string;
-  public readonly status?: boolean;
+export default class PlanFeatureModel {
+  public readonly featureId: PlanFeatureTypeEnum;
+  public readonly featureTitle: string;
+  public readonly subFeatures: PlanSubFeatureModel[];
 
   constructor(data: {
-    featureType: PlanFeatureTypeEnum;
-    featureSubType: PlanFeatureSubTypeModel[];
-    featuretitle?: string;
-    status?: boolean;
+    featureId: PlanFeatureTypeEnum;
+    featureTitle: string;
+    subFeatures: PlanSubFeatureModel[];
   }) {
-    this.featureType = data.featureType;
-    this.featureSubType = data.featureSubType;
-    this.featuretitle = data.featuretitle;
-    this.status = data.status;
+    this.featureId = data.featureId;
+    this.featureTitle = data.featureTitle;
+    this.subFeatures = data.subFeatures;
     Object.freeze(this);
   }
 
-  static fromJson(json: Record<string, any>) {
-    return new PlanFeatureTypeModel({
-      featureType: Number(json.feature_type ?? json.id) as PlanFeatureTypeEnum,
-      featureSubType: Array.isArray(json.feature_sub_type)
-        ? json.feature_sub_type.map((subType: any) => PlanFeatureSubTypeModel.fromJson(subType))
+  static fromJson(json: Record<string, unknown>) {
+    return new PlanFeatureModel({
+      featureId: Number(json.feature_id ?? 0) as PlanFeatureTypeEnum,
+      featureTitle: String(json.feature_title ?? ''),
+      subFeatures: Array.isArray(json.sub_features)
+        ? json.sub_features.map((item) =>
+            PlanSubFeatureModel.fromJson(item as Record<string, unknown>),
+          )
         : [],
-      featuretitle: json.feature_title as string | undefined,
-      status: json.status === undefined ? true : Boolean(json.status),
     });
   }
 
-  static readonly example = PlanFeatureTypeModel.fromJson({
-    featureType: PlanFeatureTypeEnum.REPORT,
-    featureSubType: [PlanFeatureSubTypeModel.example, PlanFeatureSubTypeModel.example],
-    featuretitle: 'Example Feature',
-    status: true,
+  static readonly example = PlanFeatureModel.fromJson({
+    feature_id: 1,
+    feature_title: 'Analytical Reports',
+    sub_features: [{ id: 1, status: true }],
   });
 }

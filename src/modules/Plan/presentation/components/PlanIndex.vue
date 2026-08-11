@@ -19,10 +19,8 @@
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
   import DropList from '@/shared/HelpersComponents/DropList.vue';
   import ShowIcon from '@/shared/icons/ShowIcon.vue';
-  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
-  import PricingIcon from '@/shared/icons/PricingIcon.vue';
-  import { PlanDurationTypeEnum } from '../../core/models/plan.model';
+  import { PlanDurationTypeEnum } from '../../core/enums/plan.duration.enum';
   import TogglePlanStatusParams from '../../core/params/toggle.plan.status.params';
   import DeactivatePlanDialog from '../subCopmnents/DeactivatePlanDialog.vue';
   import ArchivePlanDialog from '../subCopmnents/ArchivePlanDialog.vue';

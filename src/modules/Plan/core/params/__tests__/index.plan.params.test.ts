@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PlanStatusEnum } from '../../models/plan.model';
+import { PlanStatusEnum } from '../../enums/plan.status.enum';
 import IndexPlanParams from '../index.plan.params';
 
 describe('IndexPlanParams', () => {
@@ -10,7 +10,7 @@ describe('IndexPlanParams', () => {
       word: 'premium',
       page: 2,
       per_page: 20,
-      status: '1',
+      status: 1,
     });
   });
 });

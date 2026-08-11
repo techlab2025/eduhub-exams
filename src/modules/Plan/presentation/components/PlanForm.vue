@@ -10,7 +10,7 @@
   import TranslationParams from '@/modules/about/core/params/translation.params';
   import IndexHighLightsBadgesParams from '@/modules/HighlightBadge/core/params/index.highlightBadge.params';
   import HighlightBadgeController from '@/modules/HighlightBadge/presentation/controllers/highlightBadge.controller';
-  import type PlanModel from '../../core/models/plan.model';
+  import type PlanDetailsModel from '../../core/models/plan.details.model';
   import { PlanDurationTypeEnum } from '../../core/enums/plan.duration.enum';
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
   import {
@@ -42,7 +42,7 @@
   }
 
   const props = defineProps<{
-    plan?: PlanModel;
+    plan?: PlanDetailsModel;
     loading?: boolean;
     formKey?: string;
   }>();
@@ -210,7 +210,9 @@
             String(item[key] ?? ''),
           ]),
         )
-      : ((value as Record<string, string>) ?? {});
+      : typeof value === 'string'
+        ? { en: value }
+        : ((value as Record<string, string>) ?? {});
 
   const addPricing = () => pricing.value.push(createPricing());
   const resetBasicInfo = () => {
@@ -278,11 +280,11 @@
       if (!plan) return;
 
       title.value = normalizeTranslations(plan.title, 'title');
-      description.value = normalizeTranslations(plan.description, 'description');
+      description.value = {};
       status.value =
         statusOptions.value.find((option) => option.id === Number(plan.status)) ?? null;
       badges.value = plan.highlightBadges;
-      hasTrial.value = plan.hasTrial;
+      hasTrial.value = plan.trialDays > 0;
       trialDays.value = plan.trialDays;
       pricing.value = plan.pricing.map(
         (item) =>
@@ -293,13 +295,13 @@
           }),
       );
       planFeatures.value.forEach((feature) => {
-        const savedFeature = plan.features.find((item) => item.featureType === feature.featureType);
-        feature.enabled = Boolean(savedFeature?.status ?? savedFeature);
+        const savedFeature = plan.features.find((item) => item.featureId === feature.featureType);
+        feature.enabled = Boolean(savedFeature);
         feature.subTypes.forEach((subType) => {
-          const savedSubType = savedFeature?.featureSubType.find(
-            (item) => item.subtype === subType.subType,
+          const savedSubType = savedFeature?.subFeatures.find(
+            (item) => item.id === subType.subType,
           );
-          subType.enabled = Boolean(savedSubType?.status ?? savedSubType);
+          subType.enabled = Boolean(savedSubType?.status);
           if (subType.hasLimit && savedSubType?.limit !== undefined) {
             subType.limit = savedSubType.limit;
           }

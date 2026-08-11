@@ -1,5 +1,6 @@
 import IndexParams from '@/base/Core/Params/indexParams';
-import type { LastUpdatedEnum, PlanStatusEnum } from '../models/plan.model';
+import type { LastUpdatedEnum } from '../enums/plan.last.updated.enum';
+import type { PlanStatusEnum } from '../enums/plan.status.enum';
 
 export interface PlanFilters {
   userId?: number;
