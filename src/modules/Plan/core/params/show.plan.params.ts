@@ -15,7 +15,7 @@ export default class ShowPlanParams implements Params {
   }
 
   toMap(): Record<string, unknown> {
-    return { plan_id: this.id };
+    return { subscription_plan_id: this.id };
   }
 
   validate() {

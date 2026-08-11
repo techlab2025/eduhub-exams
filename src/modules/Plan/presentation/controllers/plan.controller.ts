@@ -33,7 +33,6 @@ export default class PlanController extends BaseController<PlanDetailsModel, Pla
   async fetchOne(params: Params, options?: ApiCallOptions) {
     return super.fetchOne(params, {
       ...options,
-      useStaticData: true,
       headers: { 'Accept-Language': (params as { allLocales?: boolean }).allLocales ? '*' : 'en' },
     });
   }
@@ -41,7 +40,6 @@ export default class PlanController extends BaseController<PlanDetailsModel, Pla
   async fetchList(params?: Params, options?: ApiCallOptions) {
     return super.fetchList(params, {
       ...options,
-      useStaticData: true,
       headers: { 'Accept-Language': (params as { allLocales?: boolean }).allLocales ? '*' : 'en' },
     });
   }

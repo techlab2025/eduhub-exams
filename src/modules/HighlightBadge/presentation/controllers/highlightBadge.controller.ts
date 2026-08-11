@@ -25,7 +25,7 @@ export default class HighlightBadgeController extends BaseController<
   async fetchOne(params: Params, options?: ApiCallOptions) {
     return super.fetchOne(params, {
       ...options,
-      headers: { 'Accept-Language': (params as { allLocales?: boolean }).allLocales ? '*' : 'en' },
+      headers: { 'Accept-Language': (params as { allLocales?: boolean }).allLocales ? '*' : '*' },
     });
   }
   async fetchList(params?: Params, options?: ApiCallOptions) {

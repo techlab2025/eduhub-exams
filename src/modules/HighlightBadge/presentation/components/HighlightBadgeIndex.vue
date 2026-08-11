@@ -120,7 +120,7 @@
           :description="$t('add_highlight_badge_message')"
         />
       </template>
-      <template #feild>
+      <template #failed>
         <NoItemContainer
           :title="$t('no_highlight_badges_found')"
           :description="$t('add_highlight_badge_message')"

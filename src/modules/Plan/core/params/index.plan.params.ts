@@ -6,7 +6,7 @@ export interface PlanFilters {
   userId?: number;
   fromPrice?: number;
   toPrice?: number;
-  duration?: string;
+  duration?: number;
   hasTrial?: boolean;
   status?: PlanStatusEnum;
   fromDate?: string;
@@ -28,7 +28,9 @@ export default class IndexPlanParams extends IndexParams {
       user_id: this.filters.userId,
       from_price: this.filters.fromPrice,
       to_price: this.filters.toPrice,
-      duration: this.filters.duration,
+      ...(this.filters.duration != undefined && {
+        duration: this.filters.duration,
+      }),
       has_trail: this.filters.hasTrial,
       status: this.filters.status,
       from_date: this.filters.fromDate,

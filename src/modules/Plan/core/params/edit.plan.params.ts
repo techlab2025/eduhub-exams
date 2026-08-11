@@ -31,14 +31,14 @@ export default class EditPlanParams extends AddPlanParams {
     const fullMap = super.toMap();
     if (this.section === 'basic') {
       return {
-        plan_id: this.id,
+        subscription_plan_id: this.id,
         translations: fullMap.translations,
         highlight_badge: fullMap.highlight_badge,
       };
     }
     if (this.section === 'pricing') {
       return {
-        plan_id: this.id,
+        subscription_plan_id: this.id,
         pricing: fullMap.pricing,
         has_trail: fullMap.has_trail,
         trail_days: fullMap.trail_days,

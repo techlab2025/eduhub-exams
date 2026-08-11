@@ -26,7 +26,7 @@
   import ArchivePlanDialog from '../subCopmnents/ArchivePlanDialog.vue';
   import DeactiveIcon from '@/shared/icons/Plan/DeactiveIcon.vue';
   import ArchiveIcon from '@/shared/icons/Plan/ArchiveIcon.vue';
-import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
+  import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -81,7 +81,7 @@ import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
             : status.value
               ? (status.value.id as PlanStatusEnum)
               : undefined,
-        duration: String(durationType.value?.id),
+        duration: durationType.value?.id || undefined,
         fromDate: dateValue(fromDate.value),
         toDate: dateValue(toDate.value),
         lastUpdated: lastUpdated.value
