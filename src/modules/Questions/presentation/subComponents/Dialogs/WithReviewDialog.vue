@@ -9,11 +9,19 @@
 
   type SaveStatusEnum = (typeof SaveStatusEnum)[keyof typeof SaveStatusEnum];
 
-  const visable = ref();
-  defineEmits(['with-review', 'without-review']);
+  const visible = ref(false);
+  const emit = defineEmits<{
+    'with-review': [];
+    'without-review': [];
+  }>();
   const { saveStatus } = defineProps<{
     saveStatus: SaveStatusEnum;
   }>();
+
+  const selectSaveOption = (withReview: boolean) => {
+    visible.value = false;
+    emit(withReview ? 'with-review' : 'without-review');
+  };
 </script>
 
 <template>
@@ -21,12 +29,12 @@
     type="button"
     class="btn"
     :class="saveStatus == SaveStatusEnum.Save ? `btn-primary` : `btn-secondary`"
-    @click="visable = true"
+    @click="visible = true"
   >
     {{ saveStatus == SaveStatusEnum.Save ? $t('save') : $t(`Save & New`) }}
   </button>
   <Dialog
-    v-model:visible="visable"
+    v-model:visible="visible"
     modal
     :pt="{
       root: 'review-dialog question-action-dialog save-review-dialog',
@@ -44,11 +52,11 @@
         <button
           type="button"
           class="btn btn-primary without-review-btn"
-          @click="$emit('without-review')"
+          @click="selectSaveOption(false)"
         >
           {{ $t('save_review_dialog.without_review') }}
         </button>
-        <button type="button" class="btn btn-secondary" @click="$emit('with-review')">
+        <button type="button" class="btn btn-secondary" @click="selectSaveOption(true)">
           {{ $t('save_review_dialog.with_review') }}
         </button>
       </div>

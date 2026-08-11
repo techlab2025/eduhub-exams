@@ -7,32 +7,39 @@ const globalConfig = {
   stubs: {
     Dialog: {
       props: ['visible', 'pt'],
-      template: '<div class="dialog-stub"><slot /></div>',
+      template: '<div v-if="visible" class="dialog-stub"><slot /></div>',
     },
   },
 };
 
 describe('WithReviewDialog', () => {
-  it('renders both review choices', () => {
+  it('renders both review choices after opening', async () => {
     const wrapper = mount(WithReviewDialog, {
       props: { saveStatus: 1 },
       global: globalConfig,
     });
+
+    await wrapper.get('button').trigger('click');
 
     expect(wrapper.find('.dialog-illustration').exists()).toBe(true);
     expect(wrapper.findAll('.btns .btn')).toHaveLength(2);
   });
 
-  it('emits both save actions', async () => {
+  it.each([
+    { selector: '.without-review-btn', event: 'without-review' },
+    { selector: '.btns .btn-secondary', event: 'with-review' },
+  ])('closes before emitting $event', async ({ selector, event }) => {
     const wrapper = mount(WithReviewDialog, {
       props: { saveStatus: 1 },
       global: globalConfig,
     });
 
-    await wrapper.find('.without-review-btn').trigger('click');
-    await wrapper.find('.btns .btn-secondary').trigger('click');
+    await wrapper.get('button').trigger('click');
+    expect(wrapper.find('.dialog-stub').exists()).toBe(true);
 
-    expect(wrapper.emitted('without-review')).toHaveLength(1);
-    expect(wrapper.emitted('with-review')).toHaveLength(1);
+    await wrapper.get(selector).trigger('click');
+
+    expect(wrapper.emitted(event)).toHaveLength(1);
+    expect(wrapper.find('.dialog-stub').exists()).toBe(false);
   });
 });
