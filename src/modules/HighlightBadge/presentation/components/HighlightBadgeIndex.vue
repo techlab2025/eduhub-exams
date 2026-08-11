@@ -15,6 +15,7 @@
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
   import IndexHighLightsBadgesParams from '../../core/params/index.highlightBadge.params';
   import DeleteHighLightsBadgesParams from '../../core/params/delete.highlightBadge.params';
+  import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -100,6 +101,7 @@
             </div>
           </template>
         </AppTable>
+
         <Pagination
           v-if="controller.pagination.value"
           :pagination="controller.pagination.value"
@@ -110,6 +112,24 @@
               fetchItems();
             }
           "
+        />
+      </template>
+      <template #empty>
+        <NoItemContainer
+          :title="$t('no_highlight_badges_found')"
+          :description="$t('add_highlight_badge_message')"
+        />
+      </template>
+      <template #feild>
+        <NoItemContainer
+          :title="$t('no_highlight_badges_found')"
+          :description="$t('add_highlight_badge_message')"
+        />
+      </template>
+      <template #no-network>
+        <NoItemContainer
+          :title="$t('no_highlight_badges_found')"
+          :description="$t('add_highlight_badge_message')"
         />
       </template>
     </DataStatusBuilder>

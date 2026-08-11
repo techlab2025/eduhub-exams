@@ -3,7 +3,6 @@
   import { useI18n } from 'vue-i18n';
   import { useRoute, useRouter } from 'vue-router';
   import ActionsIcon from '@/shared/icons/ActionsIcon.vue';
-  import EmployeeIcon from '@/shared/icons/EmployeeIcon.vue';
   import PricingIcon from '@/shared/icons/PricingIcon.vue';
   import PlanController from '../controllers/plan.controller';
   import ShowPlanParams from '../../core/params/show.plan.params';
@@ -14,6 +13,7 @@
   import CreatedDateicon from '@/shared/icons/Plan/CreatedDateicon.vue';
   import LastUpdatedIcon from '@/shared/icons/Plan/LastUpdatedIcon.vue';
   import PlanSucbscripbersIcon from '@/shared/icons/Plan/PlanSucbscripbersIcon.vue';
+  import IncludedFeatureIcon from '@/shared/icons/Plan/IncludedFeatureIcon.vue';
 
   const route = useRoute();
   const router = useRouter();
@@ -75,7 +75,11 @@
 
   const subFeatureTitle = (featureId: number, subFeatureId: number) => {
     const definition = PLAN_FEATURE_DEFINITIONS.find((item) => item.type === featureId);
-    const subFeature = definition?.subTypes.find((item) => item.type === subFeatureId);
+    const subFeature =
+      definition?.subTypes.find((item) => item.type === subFeatureId) ??
+      PLAN_FEATURE_DEFINITIONS.flatMap((item) => item.subTypes).find(
+        (item) => item.type === subFeatureId,
+      );
     return subFeature ? t(subFeature.titleKey) : String(subFeatureId);
   };
 
@@ -170,7 +174,7 @@
 
       <section class="details-section included-features">
         <header class="section-heading">
-          <span class="features-mark" aria-hidden="true">&#10003;</span>
+          <IncludedFeatureIcon />
           <h2>{{ $t('included_features') }}</h2>
         </header>
         <div class="feature-groups">
@@ -183,7 +187,7 @@
                 class="sub-feature"
               >
                 {{ subFeatureTitle(feature.featureId, subFeature.id) }}
-                <strong v-if="subFeature.limit !== undefined">{{ subFeature.limit }}</strong>
+                <strong v-if="subFeature.limit > 0">{{ subFeature.limit }}</strong>
               </span>
             </div>
           </article>
@@ -330,7 +334,7 @@
     color: var(--primary-green);
     background: var(--success-light);
     border-radius: var(--radius-md);
-    margin-block:auto;
+    margin-block: auto;
   }
 
   .details-tabs {
@@ -415,24 +419,27 @@
   .feature-groups {
     padding-top: var(--xs-size);
     display: grid;
-    gap: var(--xs-size-3);
+    gap: var(--xs-size);
   }
 
   .feature-group {
-    padding: var(--xs-size);
-    background: var(--bg-main);
-    border-radius: var(--radius-lg);
+    padding: var(--xs-size) var(--xl-size-base);
+    background: var(--BgWhite);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
 
     h3 {
-      margin: 0 0 var(--xs-size-3);
-      padding-bottom: var(--xs-size-3);
+      margin: 0;
+      padding-bottom: var(--xs-size);
       border-bottom: 1px dashed var(--border-weak);
-      font-size: 0.82rem;
+      font-size: 0.85rem;
+      font-weight: 700;
       letter-spacing: 0;
     }
   }
 
   .sub-feature-list {
+    padding-top: var(--xs-size);
     display: flex;
     flex-wrap: wrap;
     gap: var(--xs-size-3);
@@ -440,11 +447,19 @@
 
   .sub-feature {
     color: var(--SecondText);
-    background: var(--gray-100);
+    background: var(--gray-100-std);
+    line-height: 1.2;
 
     strong {
       margin-inline-start: 4px;
     }
+  }
+
+  .included-features {
+    background: var(--gray-50-std);
+    border: 0;
+    border-inline-start: 2px solid var(--primary-green);
+    border-radius: var(--radius-sm);
   }
 
   .activity-log {

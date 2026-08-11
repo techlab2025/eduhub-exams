@@ -48,7 +48,8 @@ describe('PlanDetails', () => {
     expect(wrapper.get('h1').text()).toBe('The Complete Plan');
     expect(wrapper.find('.pricing-details').exists()).toBe(true);
     expect(wrapper.find('.included-features').exists()).toBe(true);
-    expect(wrapper.findAll('.feature-group')).toHaveLength(1);
+    expect(wrapper.findAll('.feature-group')).toHaveLength(6);
+    expect(wrapper.findAll('.feature-group').at(0)?.findAll('.sub-feature')).toHaveLength(4);
     expect(fetchOneMock.mock.calls[0]?.[0].toMap()).toEqual({ plan_id: 5 });
   });
 

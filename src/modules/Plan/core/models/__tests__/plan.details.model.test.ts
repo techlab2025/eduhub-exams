@@ -38,7 +38,10 @@ describe('PlanDetailsModel', () => {
       status: PlanStatusEnum.ACTIVE,
       highlightBadges: [{ id: 2, title: 'Most Popular' }],
       createdBy: { id: 7, title: 'Ahmed Hawam' },
+      createdAt: '2026-06-20',
+      lastUpdateAt: '2026-07-05',
       subscribers: 1245,
+      trialDays: 14,
       pricing: [{ price: 499, duration: 1, durationType: PlanDurationTypeEnum.MONTH }],
       features: [
         {

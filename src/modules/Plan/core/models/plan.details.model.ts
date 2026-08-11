@@ -49,7 +49,7 @@ export default class PlanDetailsModel {
   }
 
   static fromJson(json: Record<string, unknown>) {
-    const createdBy = (json.craeted_by ?? json.created_by ?? {}) as Record<string, unknown>;
+    const createdBy = (json.craeted_by ?? {}) as Record<string, unknown>;
 
     return new PlanDetailsModel({
       id: Number(json.id ?? 0),
@@ -63,7 +63,7 @@ export default class PlanDetailsModel {
       createdBy: PlanCreatedByModel.fromJson(createdBy),
       createdAt: String(json.created_at ?? ''),
       lastUpdateAt: String(json.last_update_at ?? ''),
-      subscribers: Number(json['subscribers:'] ?? json.subscribers ?? 0),
+      subscribers: Number(json['subscribers:'] ?? 0),
       trialDays: Number(json.trail_days ?? 0),
       pricing: Array.isArray(json.pricing)
         ? json.pricing.map((item) => PlanPricingModel.fromJson(item as Record<string, unknown>))
@@ -97,7 +97,56 @@ export default class PlanDetailsModel {
       {
         feature_id: 1,
         feature_title: 'Analytical Reports',
-        sub_features: [{ id: 1, status: true }],
+        sub_features: [
+          { id: 1, status: true, limit: 0 },
+          { id: 2, status: true, limit: 0 },
+          { id: 3, status: true, limit: 0 },
+          { id: 4, status: true, limit: 0 },
+        ],
+      },
+      {
+        feature_id: 3,
+        feature_title: 'Study Plan',
+        sub_features: [
+          { id: 11, status: true, limit: 0 },
+          { id: 12, status: true, limit: 0 },
+          { id: 13, status: true, limit: 1 },
+        ],
+      },
+      {
+        feature_id: 5,
+        feature_title: 'Practice',
+        sub_features: [
+          { id: 16, status: true, limit: 0 },
+          { id: 17, status: true, limit: 0 },
+          { id: 18, status: true, limit: 0 },
+          { id: 19, status: true, limit: 30 },
+        ],
+      },
+      {
+        feature_id: 6,
+        feature_title: 'Placement Test',
+        sub_features: [
+          { id: 1, status: true, limit: 0 },
+          { id: 2, status: true, limit: 0 },
+          { id: 3, status: true, limit: 0 },
+        ],
+      },
+      {
+        feature_id: 4,
+        feature_title: 'What Did You Study',
+        sub_features: [
+          { id: 14, status: true, limit: 0 },
+          { id: 15, status: true, limit: 20 },
+        ],
+      },
+      {
+        feature_id: 2,
+        feature_title: 'Progress Tracking',
+        sub_features: [
+          { id: 7, status: true, limit: 0 },
+          { id: 8, status: true, limit: 0 },
+        ],
       },
     ],
     active_log: [PlanActiveLogModel.example],

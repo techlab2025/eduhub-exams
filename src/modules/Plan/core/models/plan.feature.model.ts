@@ -1,13 +1,12 @@
-import type { PlanFeatureTypeEnum } from '../enums/planType.enum';
 import PlanSubFeatureModel from './plan.sub.feature.model';
 
 export default class PlanFeatureModel {
-  public readonly featureId: PlanFeatureTypeEnum;
+  public readonly featureId: number;
   public readonly featureTitle: string;
   public readonly subFeatures: PlanSubFeatureModel[];
 
   constructor(data: {
-    featureId: PlanFeatureTypeEnum;
+    featureId: number;
     featureTitle: string;
     subFeatures: PlanSubFeatureModel[];
   }) {
@@ -19,7 +18,7 @@ export default class PlanFeatureModel {
 
   static fromJson(json: Record<string, unknown>) {
     return new PlanFeatureModel({
-      featureId: Number(json.feature_id ?? 0) as PlanFeatureTypeEnum,
+      featureId: Number(json.feature_id ?? 0),
       featureTitle: String(json.feature_title ?? ''),
       subFeatures: Array.isArray(json.sub_features)
         ? json.sub_features.map((item) =>
@@ -32,6 +31,6 @@ export default class PlanFeatureModel {
   static readonly example = PlanFeatureModel.fromJson({
     feature_id: 1,
     feature_title: 'Analytical Reports',
-    sub_features: [{ id: 1, status: true }],
+    sub_features: [{ id: 1, status: true, limit: 0 }],
   });
 }

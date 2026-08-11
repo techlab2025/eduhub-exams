@@ -1,11 +1,9 @@
-import type { PlanFeatureSubTypeEnum } from '../enums/planType.enum';
-
 export default class PlanSubFeatureModel {
-  public readonly id: PlanFeatureSubTypeEnum;
+  public readonly id: number;
   public readonly status: boolean;
-  public readonly limit?: number;
+  public readonly limit: number;
 
-  constructor(data: { id: PlanFeatureSubTypeEnum; status: boolean; limit?: number }) {
+  constructor(data: { id: number; status: boolean; limit: number }) {
     this.id = data.id;
     this.status = data.status;
     this.limit = data.limit;
@@ -14,11 +12,11 @@ export default class PlanSubFeatureModel {
 
   static fromJson(json: Record<string, unknown>) {
     return new PlanSubFeatureModel({
-      id: Number(json.id ?? 0) as PlanFeatureSubTypeEnum,
+      id: Number(json.id ?? 0),
       status: Boolean(json.status),
-      ...(json.limit === undefined || json.limit === null ? {} : { limit: Number(json.limit) }),
+      limit: Number(json.limit ?? 0),
     });
   }
 
-  static readonly example = PlanSubFeatureModel.fromJson({ id: 1, status: true });
+  static readonly example = PlanSubFeatureModel.fromJson({ id: 1, status: true, limit: 0 });
 }

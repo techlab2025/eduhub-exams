@@ -29,6 +29,6 @@ export default class HighlightBadgeController extends BaseController<
     });
   }
   async fetchList(params?: Params, options?: ApiCallOptions) {
-    return super.fetchList(params, { ...options, useStaticData: true });
+    return super.fetchList(params, { ...options });
   }
 }
