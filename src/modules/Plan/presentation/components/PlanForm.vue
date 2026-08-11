@@ -1,12 +1,7 @@
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue';
+  import { computed, nextTick, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRoute } from 'vue-router';
-  import Tab from 'primevue/tab';
-  import TabList from 'primevue/tablist';
-  import TabPanel from 'primevue/tabpanel';
-  import TabPanels from 'primevue/tabpanels';
-  import Tabs from 'primevue/tabs';
   import ToggleSwitch from 'primevue/toggleswitch';
   import type TitleInterface from '@/base/Data/Models/titleInterface';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
@@ -24,7 +19,7 @@
     type PlanFeatureTypeEnum,
   } from '../../core/enums/planType.enum';
   import AddPlanParams from '../../core/params/add.plan.params';
-  import EditPlanParams from '../../core/params/edit.plan.params';
+  import EditPlanParams, { type PlanEditSection } from '../../core/params/edit.plan.params';
   import PlanFeatureParams from '../../core/params/plan.features.params';
   import PlanPricingParams from '../../core/params/plan.pricing.params';
   import PlanSubFeatureParams from '../../core/params/plan.sub.features.params';
@@ -51,12 +46,27 @@
     loading?: boolean;
     formKey?: string;
   }>();
-  const emit = defineEmits(['updateData']);
+  const emit = defineEmits<{
+    updateData: [params: AddPlanParams | EditPlanParams];
+    validityChange: [isValid: boolean];
+  }>();
   const { t } = useI18n();
   const route = useRoute();
   const badgeController = HighlightBadgeController.getInstance();
   const id = Number(route.params.id || 0);
+  const editSection = computed<PlanEditSection | undefined>(() => {
+    if (!id) return undefined;
+    const section = route.query.section;
+    return section === 'basic' || section === 'pricing' || section === 'features'
+      ? section
+      : undefined;
+  });
   const activeTab = ref('basic');
+  const planFormRoot = ref<HTMLElement | null>(null);
+  const showValidationErrors = ref(false);
+  const basicSection = ref<HTMLElement | null>(null);
+  const pricingSection = ref<HTMLElement | null>(null);
+  const featuresSection = ref<HTMLElement | null>(null);
 
   const title = ref<Record<string, string>>({});
   const description = ref<Record<string, string>>({});
@@ -99,10 +109,98 @@
   ]);
   const statusOptions = computed(() => [
     { id: PlanStatusEnum.ACTIVE, title: t('active') },
-    { id: PlanStatusEnum.INACTIVE, title: t('inactive') },
-    { id: PlanStatusEnum.ARCHIVED, title: t('archived') },
+    { id: PlanStatusEnum.deactivated, title: t('deactivated') },
+    { id: PlanStatusEnum.Archived, title: t('archived') },
     { id: PlanStatusEnum.DRAFT, title: t('draft') },
   ]);
+
+  const hasTranslation = (value: Record<string, string>) =>
+    ['en', 'ar'].some((locale) => (value[locale]?.trim().length ?? 0) > 0);
+  const isNumberAtLeast = (value: number, minimum: number) =>
+    Number.isFinite(Number(value)) && Number(value) >= minimum;
+  const isPricingComplete = (item: PlanPricingParams) =>
+    isNumberAtLeast(item.price, 0) &&
+    isNumberAtLeast(item.duration, 1) &&
+    Boolean(item.durationType);
+
+  const validationErrors = computed<Record<string, string>>(() => {
+    const errors: Record<string, string> = {};
+    const validates = (section: PlanEditSection) =>
+      editSection.value === undefined || editSection.value === section;
+
+    if (validates('basic')) {
+      if (!hasTranslation(title.value)) errors.title = t('plan_title_required');
+      if (!hasTranslation(description.value)) {
+        errors.description = t('plan_description_required');
+      }
+      if (badges.value.length === 0) errors.badges = t('plan_badge_required');
+    }
+
+    if (validates('pricing')) {
+      if (!pricing.value.some(isPricingComplete)) errors.pricing = t('plan_pricing_required');
+      pricing.value.forEach((item, index) => {
+        if (!isNumberAtLeast(item.price, 0)) {
+          errors[`pricing-${index}-price`] = t('plan_price_required');
+        }
+        if (!isNumberAtLeast(item.duration, 1)) {
+          errors[`pricing-${index}-duration`] = t('plan_duration_required');
+        }
+        if (!item.durationType) {
+          errors[`pricing-${index}-duration-type`] = t('plan_duration_type_required');
+        }
+      });
+
+      if (hasTrial.value && !isNumberAtLeast(trialDays.value, 1)) {
+        errors.trialDays = t('plan_trial_days_required');
+      }
+    }
+
+    if (validates('features')) {
+      const enabledFeatures = planFeatures.value.filter((feature) => feature.enabled);
+      if (enabledFeatures.length === 0) errors.features = t('plan_feature_required');
+      enabledFeatures.forEach((feature) => {
+        feature.subTypes.forEach((subType) => {
+          if (subType.hasLimit && !isNumberAtLeast(subType.limit ?? Number.NaN, 1)) {
+            errors[`feature-${feature.featureType}-limit-${subType.subType}`] = t(
+              'plan_feature_limit_required',
+            );
+          }
+        });
+      });
+    }
+
+    return errors;
+  });
+
+  const isPublishReady = computed(() => Object.keys(validationErrors.value).length === 0);
+
+  const validate = async () => {
+    showValidationErrors.value = true;
+    if (isPublishReady.value) return true;
+
+    await nextTick();
+    const firstError = planFormRoot.value?.querySelector<HTMLElement>(
+      '[data-plan-validation-error]',
+    );
+    firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    firstError
+      ?.closest<HTMLElement>('.validated-field')
+      ?.querySelector<HTMLElement>('input, textarea, select, button')
+      ?.focus();
+    return false;
+  };
+
+  defineExpose({ validate });
+
+  const scrollToSection = (section: 'basic' | 'pricing' | 'features') => {
+    activeTab.value = section;
+    const target = {
+      basic: basicSection.value,
+      pricing: pricingSection.value,
+      features: featuresSection.value,
+    }[section];
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const normalizeTranslations = (value: unknown, key: string) =>
     Array.isArray(value)
@@ -165,7 +263,13 @@
         ),
     };
 
-    emit('updateData', id ? new EditPlanParams({ id, ...data }) : new AddPlanParams(data));
+    emit(
+      'updateData',
+      id
+        ? new EditPlanParams({ id, section: editSection.value, ...data })
+        : new AddPlanParams(data),
+    );
+    emit('validityChange', isPublishReady.value);
   };
 
   watch(
@@ -185,17 +289,15 @@
           new PlanPricingParams({
             price: item.price,
             duration: item.duration,
-            durationType: Number(item.duration_type) as PlanDurationTypeEnum,
+            durationType: Number(item.durationType) as PlanDurationTypeEnum,
           }),
       );
       planFeatures.value.forEach((feature) => {
-        const savedFeature = plan.features.find(
-          (item) => item.feature_type === feature.featureType,
-        );
+        const savedFeature = plan.features.find((item) => item.featureType === feature.featureType);
         feature.enabled = Boolean(savedFeature?.status ?? savedFeature);
         feature.subTypes.forEach((subType) => {
-          const savedSubType = savedFeature?.feature_sub_type.find(
-            (item) => item.sub_type === subType.subType,
+          const savedSubType = savedFeature?.featureSubType.find(
+            (item) => item.subtype === subType.subType,
           );
           subType.enabled = Boolean(savedSubType?.status ?? savedSubType);
           if (subType.hasLimit && savedSubType?.limit !== undefined) {
@@ -215,28 +317,51 @@
 </script>
 
 <template>
-  <section class="plan-form" :class="{ 'is-loading': props.loading }">
+  <section ref="planFormRoot" class="plan-form" :class="{ 'is-loading': props.loading }">
     <header class="plan-form-header">
       <h2>{{ $t(id ? 'plan_form_edit_title' : 'plan_form_create_title') }}</h2>
       <p>{{ $t(id ? 'plan_form_edit_subtitle' : 'plan_form_create_subtitle') }}</p>
     </header>
 
-    <Tabs v-model:value="activeTab" class="plan-tabs">
-      <TabList>
-        <Tab value="basic">{{ $t('basic_info') }}</Tab>
-        <Tab value="pricing">{{ $t('pricing') }}</Tab>
-        <Tab value="features">{{ $t('features') }}</Tab>
-      </TabList>
+    <nav v-if="!editSection" class="plan-tabs" :aria-label="$t('plan_form_sections')">
+      <button
+        type="button"
+        :class="{ active: activeTab === 'basic' }"
+        @click="scrollToSection('basic')"
+      >
+        {{ $t('basic_info') }}
+      </button>
+      <button
+        type="button"
+        :class="{ active: activeTab === 'pricing' }"
+        @click="scrollToSection('pricing')"
+      >
+        {{ $t('pricing') }}
+      </button>
+      <button
+        type="button"
+        :class="{ active: activeTab === 'features' }"
+        @click="scrollToSection('features')"
+      >
+        {{ $t('features') }}
+      </button>
+    </nav>
 
-      <TabPanels>
-        <TabPanel value="basic">
-          <div class="panel-heading">
-            <h3>{{ $t('basic_info') }}</h3>
-            <button type="button" class="reset-button" @click="resetBasicInfo">
-              {{ $t('reset') }}
-            </button>
-          </div>
-          <div class="basic-info-fields">
+    <div class="plan-sections">
+      <section
+        v-if="!editSection || editSection === 'basic'"
+        id="plan-basic"
+        ref="basicSection"
+        class="plan-section"
+      >
+        <div class="panel-heading">
+          <h3>{{ $t('basic_info') }}</h3>
+          <button type="button" class="reset-button" @click="resetBasicInfo">
+            {{ $t('reset') }}
+          </button>
+        </div>
+        <div class="basic-info-fields">
+          <div class="validated-field">
             <MultiLangInput
               field-key="title"
               :label="$t('plan_display_name')"
@@ -244,6 +369,15 @@
               :model-value="title"
               @update:model-value="title = $event"
             />
+            <p
+              v-if="showValidationErrors && validationErrors.title"
+              data-plan-validation-error
+              class="field-error"
+            >
+              {{ validationErrors.title }}
+            </p>
+          </div>
+          <div class="validated-field">
             <MultiLangInput
               field-key="description"
               type="description"
@@ -252,6 +386,15 @@
               :model-value="description"
               @update:model-value="description = $event"
             />
+            <p
+              v-if="showValidationErrors && validationErrors.description"
+              data-plan-validation-error
+              class="field-error"
+            >
+              {{ validationErrors.description }}
+            </p>
+          </div>
+          <div class="validated-field">
             <UpdatedCustomInputSelect
               v-model="badges"
               :type="2"
@@ -267,120 +410,189 @@
                 })
               "
             />
+            <p
+              v-if="showValidationErrors && validationErrors.badges"
+              data-plan-validation-error
+              class="field-error"
+            >
+              {{ validationErrors.badges }}
+            </p>
           </div>
-        </TabPanel>
+        </div>
+      </section>
 
-        <TabPanel value="pricing">
-          <div class="panel-heading">
-            <h3>{{ $t('pricing') }}</h3>
-            <button type="button" class="reset-button" @click="resetPricing">
-              {{ $t('reset') }}
+      <section
+        v-if="!editSection || editSection === 'pricing'"
+        id="plan-pricing"
+        ref="pricingSection"
+        class="plan-section"
+      >
+        <div class="panel-heading">
+          <h3>{{ $t('pricing') }}</h3>
+          <button type="button" class="reset-button" @click="resetPricing">
+            {{ $t('reset') }}
+          </button>
+        </div>
+        <div class="pricing-list">
+          <p
+            v-if="showValidationErrors && validationErrors.pricing"
+            data-plan-validation-error
+            class="field-error"
+          >
+            {{ validationErrors.pricing }}
+          </p>
+          <div v-for="(row, index) in pricing" :key="index" class="pricing-card">
+            <label class="validated-field">
+              {{ $t('price') }}
+              <input
+                v-model.number="row.price"
+                type="number"
+                min="0"
+                :placeholder="$t('enter_plan_price')"
+              />
+              <span
+                v-if="showValidationErrors && validationErrors[`pricing-${index}-price`]"
+                data-plan-validation-error
+                class="field-error"
+              >
+                {{ validationErrors[`pricing-${index}-price`] }}
+              </span>
+            </label>
+            <label class="validated-field">
+              {{ $t('duration') }}
+              <span class="duration-field">
+                <input
+                  v-model.number="row.duration"
+                  type="number"
+                  min="1"
+                  :placeholder="$t('enter_duration_number')"
+                />
+                <select v-model="row.durationType" :aria-label="$t('duration_type')">
+                  <option v-for="option in durationOptions" :key="option.id" :value="option.id">
+                    {{ option.title }}
+                  </option>
+                </select>
+              </span>
+              <span
+                v-if="showValidationErrors && validationErrors[`pricing-${index}-duration`]"
+                data-plan-validation-error
+                class="field-error"
+              >
+                {{ validationErrors[`pricing-${index}-duration`] }}
+              </span>
+              <span
+                v-if="showValidationErrors && validationErrors[`pricing-${index}-duration-type`]"
+                data-plan-validation-error
+                class="field-error"
+              >
+                {{ validationErrors[`pricing-${index}-duration-type`] }}
+              </span>
+            </label>
+            <button
+              v-if="index === pricing.length - 1"
+              type="button"
+              class="pricing-action pricing-action--add"
+              :aria-label="$t('add_pricing')"
+              @click="addPricing"
+            >
+              <IndexAddIcon />
+            </button>
+            <button
+              v-else
+              type="button"
+              class="pricing-action pricing-action--remove"
+              :aria-label="$t('remove')"
+              @click="pricing.splice(index, 1)"
+            >
+              &times;
             </button>
           </div>
-          <div class="pricing-list">
-            <div v-for="(row, index) in pricing" :key="index" class="pricing-card">
-              <label>
-                {{ $t('price') }}
+        </div>
+        <div class="trial-section validated-field">
+          <div class="trial-heading">
+            <span>{{ $t('trial_days') }}</span>
+            <ToggleSwitch v-model="hasTrial" :aria-label="$t('has_trial')" />
+          </div>
+          <input v-model.number="trialDays" type="number" min="0" :disabled="!hasTrial" />
+          <p
+            v-if="showValidationErrors && validationErrors.trialDays"
+            data-plan-validation-error
+            class="field-error"
+          >
+            {{ validationErrors.trialDays }}
+          </p>
+        </div>
+      </section>
+
+      <section
+        v-if="!editSection || editSection === 'features'"
+        id="plan-features"
+        ref="featuresSection"
+        class="plan-section"
+      >
+        <div class="panel-heading">
+          <h3>{{ $t('features') }}</h3>
+          <button type="button" class="reset-button" @click="resetFeatures">
+            {{ $t('reset') }}
+          </button>
+        </div>
+        <section class="features-section">
+          <p
+            v-if="showValidationErrors && validationErrors.features"
+            data-plan-validation-error
+            class="field-error"
+          >
+            {{ validationErrors.features }}
+          </p>
+          <article
+            v-for="(feature, featureIndex) in planFeatures"
+            :key="feature.featureType"
+            class="feature-card"
+          >
+            <header class="feature-row">
+              <span class="feature-number">{{ featureIndex + 1 }}</span>
+              <span class="feature-copy">
+                <strong>{{ $t(feature.titleKey) }}</strong>
+                <small>{{ $t(feature.descriptionKey) }}</small>
+              </span>
+              <ToggleSwitch v-model="feature.enabled" :aria-label="$t(feature.titleKey)" />
+            </header>
+            <div v-if="feature.enabled" class="sub-features">
+              <div
+                v-for="subType in feature.subTypes"
+                :key="subType.subType"
+                class="feature-row validated-field"
+              >
+                <span class="sub-feature-dot" aria-hidden="true"></span>
+                <span class="feature-copy">
+                  <strong>{{ $t(subType.titleKey) }}</strong>
+                  <small>{{ $t(subType.descriptionKey) }}</small>
+                </span>
                 <input
-                  v-model.number="row.price"
+                  v-if="subType.hasLimit"
+                  v-model.number="subType.limit"
+                  class="feature-limit"
                   type="number"
                   min="0"
-                  :placeholder="$t('enter_plan_price')"
+                  :aria-label="$t(subType.titleKey)"
                 />
-              </label>
-              <label>
-                {{ $t('duration') }}
-                <span class="duration-field">
-                  <input
-                    v-model.number="row.duration"
-                    type="number"
-                    min="1"
-                    :placeholder="$t('enter_duration_number')"
-                  />
-                  <select v-model="row.durationType" :aria-label="$t('duration_type')">
-                    <option v-for="option in durationOptions" :key="option.id" :value="option.id">
-                      {{ option.title }}
-                    </option>
-                  </select>
+                <ToggleSwitch v-else v-model="subType.enabled" :aria-label="$t(subType.titleKey)" />
+                <span
+                  v-if="
+                    showValidationErrors &&
+                    validationErrors[`feature-${feature.featureType}-limit-${subType.subType}`]
+                  "
+                  data-plan-validation-error
+                  class="field-error feature-limit-error"
+                >
+                  {{ validationErrors[`feature-${feature.featureType}-limit-${subType.subType}`] }}
                 </span>
-              </label>
-              <button
-                v-if="index === pricing.length - 1"
-                type="button"
-                class="pricing-action pricing-action--add"
-                :aria-label="$t('add_pricing')"
-                @click="addPricing"
-              >
-                <IndexAddIcon />
-              </button>
-              <button
-                v-else
-                type="button"
-                class="pricing-action pricing-action--remove"
-                :aria-label="$t('remove')"
-                @click="pricing.splice(index, 1)"
-              >
-                &times;
-              </button>
-            </div>
-          </div>
-          <div class="trial-section">
-            <div class="trial-heading">
-              <span>{{ $t('trial_days') }}</span>
-              <ToggleSwitch v-model="hasTrial" :aria-label="$t('has_trial')" />
-            </div>
-            <input v-model.number="trialDays" type="number" min="0" :disabled="!hasTrial" />
-          </div>
-        </TabPanel>
-
-        <TabPanel value="features">
-          <div class="panel-heading">
-            <h3>{{ $t('features') }}</h3>
-            <button type="button" class="reset-button" @click="resetFeatures">
-              {{ $t('reset') }}
-            </button>
-          </div>
-          <section class="features-section">
-            <article
-              v-for="(feature, featureIndex) in planFeatures"
-              :key="feature.featureType"
-              class="feature-card"
-            >
-              <header class="feature-row">
-                <span class="feature-number">{{ featureIndex + 1 }}</span>
-                <span class="feature-copy">
-                  <strong>{{ $t(feature.titleKey) }}</strong>
-                  <small>{{ $t(feature.descriptionKey) }}</small>
-                </span>
-                <ToggleSwitch v-model="feature.enabled" :aria-label="$t(feature.titleKey)" />
-              </header>
-              <div v-if="feature.enabled" class="sub-features">
-                <div v-for="subType in feature.subTypes" :key="subType.subType" class="feature-row">
-                  <span class="sub-feature-dot" aria-hidden="true"></span>
-                  <span class="feature-copy">
-                    <strong>{{ $t(subType.titleKey) }}</strong>
-                    <small>{{ $t(subType.descriptionKey) }}</small>
-                  </span>
-                  <input
-                    v-if="subType.hasLimit"
-                    v-model.number="subType.limit"
-                    class="feature-limit"
-                    type="number"
-                    min="0"
-                    :aria-label="$t(subType.titleKey)"
-                  />
-                  <ToggleSwitch
-                    v-else
-                    v-model="subType.enabled"
-                    :aria-label="$t(subType.titleKey)"
-                  />
-                </div>
               </div>
-            </article>
-          </section>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+            </div>
+          </article>
+        </section>
+      </section>
+    </div>
   </section>
 </template>
 
@@ -416,32 +628,45 @@
   }
 
   .plan-tabs {
+    position: sticky;
+    z-index: 4;
+    top: 0;
     min-width: 0;
-  }
-
-  :deep(.p-tablist-tab-list) {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    background: transparent;
-    border-color: var(--border-weak);
+    border-bottom: 1px solid var(--border-weak);
+    background: var(--bg-main);
+
+    button {
+      min-height: 48px;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      color: var(--GrayText);
+      cursor: pointer;
+
+      &.active {
+        border-color: var(--Black);
+        color: var(--Black);
+      }
+    }
   }
 
-  :deep(.p-tab) {
-    justify-content: center;
-    color: var(--GrayText);
-    background: transparent;
-    border-width: 0 0 3px;
+  .plan-sections {
+    display: grid;
+    gap: var(--xl-size-2);
+    padding-top: var(--xl-size-base);
   }
 
-  :deep(.p-tab-active) {
-    color: var(--Black);
-    border-color: var(--Black);
-  }
+  .plan-section {
+    scroll-margin-top: 64px;
+    padding-bottom: var(--xl-size-2);
+    border-bottom: 1px solid var(--border-weak);
 
-  :deep(.p-tabpanels) {
-    padding: var(--xl-size-base) 0 0;
-    color: inherit;
-    background: transparent;
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
   }
 
   .panel-heading,
@@ -467,6 +692,21 @@
   .trial-section {
     display: grid;
     gap: var(--xl-size-base);
+  }
+
+  .validated-field {
+    min-width: 0;
+  }
+
+  .field-error {
+    margin: var(--xs-size-3) 0 0;
+    color: var(--danger-color);
+    font-size: 0.85rem;
+  }
+
+  .feature-limit-error {
+    grid-column: 2 / -1;
+    justify-self: end;
   }
 
   .features-section {

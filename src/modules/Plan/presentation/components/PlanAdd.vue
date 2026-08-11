@@ -4,14 +4,20 @@
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
   import type AddPlanParams from '../../core/params/add.plan.params';
+  import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
 
   const controller = PlanController.getInstance();
   const route = useRoute();
   const formKey = route.fullPath;
 
   const params = ref<AddPlanParams | null>(null);
+  const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
   const loading = ref(false);
+  const publishReady = ref(false);
   const savePlan = async () => {
+    const isValid = await planFormRef.value?.validate?.();
+    if (isValid === false) return;
+
     loading.value = true;
     try {
       if (!params.value) {
@@ -19,6 +25,7 @@
         return;
       }
 
+      params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.create(params.value, undefined);
       if (result?.data) {
         router.push({ name: 'Plans' });
@@ -36,15 +43,19 @@
   };
 
   const router = useRouter();
-  const saveDraft = () => {
+  const saveDraft = async () => {
     loading.value = true;
     try {
       if (!params.value) {
         console.error('No plan parameters to save');
         return;
       }
-      localStorage.setItem('plan-draft', JSON.stringify(params.value));
-      router.push({ name: 'Plans' });
+      params.value.status = PlanStatusEnum.DRAFT;
+      const result = await controller.create(params.value, undefined);
+      if (result?.data) {
+        router.push({ name: 'Plans' });
+        await controller.fetchList();
+      }
     } catch (error) {
       console.error('Error saving plan draft:', error);
     } finally {
@@ -55,23 +66,32 @@
 
 <template>
   <div class="plan-add-page">
-    <PlanForm :form-key="formKey" :loading="loading" @update-data="updateData" />
+    <PlanForm
+      ref="planFormRef"
+      :form-key="formKey"
+      :loading="loading"
+      @update-data="updateData"
+      @validity-change="publishReady = $event"
+    />
 
     <div class="actions">
-      <button class="btn btn-primary w-full" type="button" :disabled="loading" @click="savePlan">
+      <button
+        class="btn btn-primary publish-button"
+        :class="{ 'is-not-ready': !publishReady }"
+        type="button"
+        :aria-disabled="!publishReady"
+        :disabled="loading"
+        @click="savePlan"
+      >
         <span v-if="loading" class="loader"></span>
         <span v-else>
-          {{ $t('save_plan') }}
+          {{ $t('publish') }}
         </span>
       </button>
       <button type="button" class="btn btn-draft" :disabled="loading" @click="saveDraft">
         {{ $t('save_as_draft') }}
       </button>
-      <router-link to="/plans" class="btn btn-cancel">
-        {{ $t(`cancel`) }}
-      </router-link>
     </div>
-
   </div>
 </template>
 
@@ -97,28 +117,25 @@
     }
   }
 
-  .btn-cancel {
-    background-color: var(--background-btn-outline-color);
-    color: var(--danger-color);
-    border: 1px solid var(--error-border);
+  .btn-draft,
+  .publish-button {
     border-radius: var(--radius-full);
-    width: 20%;
+    width: min(240px, 50%);
 
-    @media (max-width: 768px) {
-      width: 50%;
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
   }
 
+  .publish-button.is-not-ready:not(:disabled) {
+    opacity: 0.5;
+  }
+
   .btn-draft {
+    border: 1px solid var(--PrimaryColor-alpha-10);
     background-color: var(--PrimaryColor-alpha-10);
     color: var(--PrimaryColor);
-    border: 1px solid var(--PrimaryColor-alpha-10);
-    border-radius: var(--radius-full);
-    width: 20%;
-
-    @media (max-width: 768px) {
-      width: 50%;
-    }
   }
 
   .actions {
@@ -126,6 +143,21 @@
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+
+    button {
+      width: 50%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .actions {
+      flex-direction: column;
+    }
+
+    .btn-draft,
+    .publish-button {
+      width: 100%;
+    }
   }
 
   .error-toast {

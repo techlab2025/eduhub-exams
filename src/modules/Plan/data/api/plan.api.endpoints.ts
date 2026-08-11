@@ -6,5 +6,6 @@ export class PlanEndpoints extends BaseEndpoints {
   readonly store = this.url('store_plan');
   readonly show = this.url('show_plan');
   readonly update = this.url('update_plan');
+  readonly toggleStatus = this.url('toggle_plan_status');
   readonly delete = this.url('delete_plan');
 }

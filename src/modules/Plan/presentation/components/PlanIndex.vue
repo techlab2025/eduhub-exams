@@ -11,11 +11,24 @@
   import type TitleInterface from '@/base/Data/Models/titleInterface';
   import PlanController from '../controllers/plan.controller';
   import type PlanModel from '../../core/models/plan.model';
-  import { LastUpdatedEnum, PlanStatusEnum } from '../../core/models/plan.model';
-  import DeletePlanParams from '../../core/params/delete.plan.params';
-  import IndexPlanParams from '../../core/params/index.plan.params';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   import { debounce } from '@/base/Presentation/Utils/debouced';
+  import { LastUpdatedEnum } from '../../core/enums/plan.last.updated.enum';
+  import IndexPlanParams from '../../core/params/index.plan.params';
+  import DeletePlanParams from '../../core/params/delete.plan.params';
+  import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import ShowIcon from '@/shared/icons/ShowIcon.vue';
+  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
+  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+  import PricingIcon from '@/shared/icons/PricingIcon.vue';
+  import { PlanDurationTypeEnum } from '../../core/models/plan.model';
+  import TogglePlanStatusParams from '../../core/params/toggle.plan.status.params';
+  import DeactivatePlanDialog from '../subCopmnents/DeactivatePlanDialog.vue';
+  import ArchivePlanDialog from '../subCopmnents/ArchivePlanDialog.vue';
+  import DeactiveIcon from '@/shared/icons/Plan/DeactiveIcon.vue';
+  import ArchiveIcon from '@/shared/icons/Plan/ArchiveIcon.vue';
+import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -30,11 +43,16 @@
   const status = ref<TitleInterface<number> | null>(null);
   const lastUpdated = ref<TitleInterface<number> | null>(null);
   const filterDialogVisible = ref(false);
+  const deactivateDialogVisible = ref(false);
+  const archiveDialogVisible = ref(false);
+  const selectedPlanId = ref<number | null>(null);
+  const statusLoading = ref(false);
+  const listMode = ref<'active' | 'archived'>('active');
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
     { id: Number(PlanStatusEnum.ACTIVE), title: t('active') },
-    { id: Number(PlanStatusEnum.INACTIVE), title: t('inactive') },
-    { id: Number(PlanStatusEnum.ARCHIVED), title: t('archived') },
+    { id: Number(PlanStatusEnum.deactivated), title: t('inactive') },
+    { id: Number(PlanStatusEnum.Archived), title: t('archived') },
     { id: Number(PlanStatusEnum.DRAFT), title: t('draft') },
   ]);
   const updatedOptions = computed(() => [
@@ -45,18 +63,27 @@
     { id: Number(LastUpdatedEnum.CUSTOM), title: t('custom') },
   ]);
   const headers = computed<TableHeader[]>(() => [
-    { key: 'title', label: t('title') },
-    { key: 'price', label: t('price') },
+    { key: 'id', label: t('ID') },
+    { key: 'title', label: t('plan name') },
     { key: 'duration', label: t('duration') },
+    { key: 'price', label: t('price') },
     { key: 'status', label: t('status') },
-    { key: 'subscribers', label: t('subscribers') },
+    { key: 'trialDays', label: t('trial_days') },
+    { key: 'lastUpdated', label: t('lastUpdated') },
   ]);
+  const durationType = ref<TitleInterface<string>>();
   const fetchItems = (page = 1, word = '') =>
     controller.fetchList(
       new IndexPlanParams(word, page, perPage.value, {
         fromPrice: fromPrice.value,
         toPrice: toPrice.value,
-        status: status.value ? (String(status.value.id) as PlanStatusEnum) : undefined,
+        status:
+          listMode.value === 'archived'
+            ? PlanStatusEnum.Archived
+            : status.value
+              ? (status.value.id as PlanStatusEnum)
+              : undefined,
+        duration: String(durationType.value?.id),
         fromDate: dateValue(fromDate.value),
         toDate: dateValue(toDate.value),
         lastUpdated: lastUpdated.value
@@ -65,10 +92,74 @@
       }),
     );
   const remove = async (id: number) => {
-    if (!window.confirm(t('confirm_delete'))) return;
     await controller.delete(new DeletePlanParams(id));
     await fetchItems();
   };
+  const changeStatus = async (id: number, nextStatus: PlanStatusEnum) => {
+    statusLoading.value = true;
+    try {
+      const result = await controller.toggleStatus(
+        new TogglePlanStatusParams({ planId: id, status: nextStatus }),
+      );
+      if (result.hasError) return;
+
+      await fetchItems();
+      deactivateDialogVisible.value = false;
+      archiveDialogVisible.value = false;
+      selectedPlanId.value = null;
+    } finally {
+      statusLoading.value = false;
+    }
+  };
+  const openDeactivateDialog = (id: number) => {
+    selectedPlanId.value = id;
+    deactivateDialogVisible.value = true;
+  };
+  const openArchiveDialog = (id: number) => {
+    selectedPlanId.value = id;
+    archiveDialogVisible.value = true;
+  };
+  const confirmStatusChange = async (status: PlanStatusEnum) => {
+    if (selectedPlanId.value === null) return;
+    await changeStatus(selectedPlanId.value, status);
+  };
+  const actionList = (item: PlanModel) => [
+    {
+      text: t('view'),
+      icon: ShowIcon,
+      link: `/plans/${item.id}`,
+    },
+    {
+      text: t('edit_price'),
+      icon: PlanEditIcon,
+      link: `/plans/edit/${item.id}?section=pricing`,
+    },
+    {
+      text: t('edit_basic_info'),
+      icon: PlanEditIcon,
+      link: `/plans/edit/${item.id}?section=basic`,
+    },
+    {
+      text: t('edit_features'),
+      icon: PlanEditIcon,
+      link: `/plans/edit/${item.id}?section=features`,
+    },
+    {
+      text: t('deactivate'),
+      icon: DeactiveIcon,
+      action: () => openDeactivateDialog(item.id),
+    },
+    {
+      text: t('archive'),
+      icon: ArchiveIcon,
+      action: () => openArchiveDialog(item.id),
+    },
+    {
+      text: t('delete'),
+      icon: DeletIcon,
+      action: () => remove(item.id),
+    },
+  ];
   const applyFilters = async () => {
     filterDialogVisible.value = false;
     await fetchItems();
@@ -82,6 +173,11 @@
     lastUpdated.value = null;
     await applyFilters();
   };
+  const setListMode = async (mode: 'active' | 'archived') => {
+    if (listMode.value === mode) return;
+    listMode.value = mode;
+    await fetchItems(1, word.value);
+  };
   onMounted(() => fetchItems());
   const route = useRoute();
   const Search = debounce(() => {
@@ -94,10 +190,49 @@
     });
     fetchItems(1, word.value);
   });
+
+  const GetDuarationType = (durationType: PlanDurationTypeEnum) => {
+    switch (durationType) {
+      case PlanDurationTypeEnum.DAY:
+        return t('days');
+      case PlanDurationTypeEnum.MONTH:
+        return t('months');
+      case PlanDurationTypeEnum.WEEK:
+        return t('weeks');
+      case PlanDurationTypeEnum.YEAR:
+        return t('years');
+      default:
+        return '';
+    }
+  };
+  const GetStatusText = (status: PlanStatusEnum) => {
+    switch (status) {
+      case PlanStatusEnum.ACTIVE:
+        return t('active');
+      case PlanStatusEnum.deactivated:
+        return t('deactivated');
+      case PlanStatusEnum.Archived:
+        return t('archived');
+      case PlanStatusEnum.DRAFT:
+        return t('draft');
+      default:
+        return '';
+    }
+  };
+
+  const DurationTypeOptions = computed(() => [
+    { id: PlanDurationTypeEnum.DAY, title: t('days') },
+    { id: PlanDurationTypeEnum.WEEK, title: t('weeks') },
+    { id: PlanDurationTypeEnum.MONTH, title: t('months') },
+    { id: PlanDurationTypeEnum.YEAR, title: t('years') },
+  ]);
 </script>
 
 <template>
   <section class="plan-page">
+    <button class="btn btn-primary" @click="router.push('/plans/add')">
+      <span class="plus">+</span> {{ $t('Add New Plan') }}
+    </button>
     <header class="index-header">
       <div class="search-field">
         <span class="search-icon">
@@ -105,18 +240,47 @@
         </span>
         <input
           v-model="word"
-          placeholder="Search by title "
+          placeholder="search by  Name,id,duration...... "
           class="search-input"
           type="text"
           @input="Search"
         />
       </div>
       <div class="header-actions">
+        <div class="plan-list-toggle" role="group" :aria-label="$t('status')">
+          <button
+            type="button"
+            :class="{ active: listMode === 'active' }"
+            :aria-pressed="listMode === 'active'"
+            @click="setListMode('active')"
+          >
+            {{ $t('active') }}
+          </button>
+          <button
+            type="button"
+            :class="{ active: listMode === 'archived' }"
+            :aria-pressed="listMode === 'archived'"
+            @click="setListMode('archived')"
+          >
+            {{ $t('plan_archive_filter') }}
+          </button>
+        </div>
         <FilterDialog v-model="filterDialogVisible">
           <template #content>
             <div class="filters">
-              <input v-model.number="fromPrice" type="number" :placeholder="$t('from_price')" />
-              <input v-model.number="toPrice" type="number" :placeholder="$t('to_price')" />
+              <div class="price-container">
+                <h2>price range</h2>
+                <div>
+                  <input v-model.number="fromPrice" type="number" :placeholder="$t('from_price')" />
+                  <input v-model.number="toPrice" type="number" :placeholder="$t('to_price')" />
+                </div>
+              </div>
+              <UpdatedCustomInputSelect
+                v-model="durationType"
+                :label="$t('duration_type')"
+                :placeholder="$t('select_duration_type')"
+                :static-options="DurationTypeOptions"
+              />
               <UpdatedCustomInputSelect
                 v-model="status"
                 :label="$t('status')"
@@ -148,9 +312,6 @@
             </div>
           </template>
         </FilterDialog>
-        <button class="btn btn-primary" @click="router.push('/plans/add')">
-          {{ $t('add_plan') }}
-        </button>
       </div>
     </header>
     <DataStatusBuilder
@@ -164,19 +325,30 @@
       <template #success="{ data }">
         <AppTable :headers="headers" :items="data as PlanModel[]" show-index>
           <template #cell-duration="{ item }"
-            >{{ item.duration }} / {{ item.durationType }}</template
+            >{{ item.duration }} {{ GetDuarationType(item.durationType) }}</template
           >
-          <template #cell-status="{ item }">{{ $t(`plan_status_${item.status}`) }}</template>
-          <template #actions="{ item }">
-            <div class="row-actions">
-              <button class="btn" @click="router.push(`/plans/${item.id}`)">
-                {{ $t('view') }}
-              </button>
-              <button class="btn" @click="router.push(`/plans/edit/${item.id}`)">
-                {{ $t('edit') }}
-              </button>
-              <button class="btn btn-cancel" @click="remove(item.id)">{{ $t('delete') }}</button>
+          <template #cell-status="{ item }">
+            <p :class="`status-${GetStatusText(item.status)}`">
+              {{ $t(GetStatusText(item.status)) }}
+            </p>
+          </template>
+          <template #cell-price="{ item }">{{ item.price }} LE</template>
+          <template #cell-trialDays="{ item }">{{ item.trialDays }} Days</template>
+          <template #cell-lastUpdated="{ item }">
+            <div class="last-updated-cell">
+              <strong v-if="item.lastUpdated.lastupdatedBy.name">
+                {{ item.lastUpdated.lastupdatedBy.name }}
+              </strong>
+              <small v-if="item.lastUpdated.date">{{ item.lastUpdated.date }}</small>
+              <span v-if="!item.lastUpdated.lastupdatedBy.name && !item.lastUpdated.date">--</span>
             </div>
+          </template>
+          <template #actions="{ item }">
+            <DropList
+              :action-list="actionList(item)"
+              :delete-dialog-title="$t('confirm_delete')"
+              :delete-dialog-message="$t('confirm_delete')"
+            />
           </template>
         </AppTable>
         <Pagination
@@ -192,16 +364,100 @@
         />
       </template>
     </DataStatusBuilder>
+    <DeactivatePlanDialog
+      v-model="deactivateDialogVisible"
+      :loading="statusLoading"
+      @confirm="confirmStatusChange(PlanStatusEnum.deactivated)"
+    />
+    <ArchivePlanDialog
+      v-model="archiveDialogVisible"
+      :loading="statusLoading"
+      @confirm="confirmStatusChange(PlanStatusEnum.Archived)"
+    />
   </section>
 </template>
 
 <style scoped lang="scss">
+  .action-confirmation {
+    h3 {
+      font-family: 'Demi';
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  :deep(.input-label) {
+    color: var(--SecondText);
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    font-family: var(--font-family);
+  }
+
+  .price-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+
+    h2 {
+      color: var(--SecondText);
+      font-size: 18px;
+      font-weight: 600;
+      padding-block: 8px;
+      font-family: var(--font-family);
+    }
+
+    div {
+      display: flex;
+      gap: 10px;
+
+      input {
+        width: 50%;
+      }
+    }
+  }
+
+  .plus {
+    margin-inline: 3px;
+    font-size: 12px;
+  }
+
+  .btn-primary {
+    margin-left: auto !important;
+    margin-block: 15px;
+  }
+
+  .th-content {
+    color: var(--standard-black);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .status-Active {
+    color: var(--primary-green) !important;
+  }
+
+  .status-deactivated {
+    color: var(--warning-dark);
+  }
+
+  .status-Draft {
+    color: var(--blue-primary);
+  }
+
+  .status-Archived {
+    color: var(--gray-500-std);
+  }
+
   .index-header,
   .header-actions,
   .row-actions {
     display: flex;
     gap: var(--xs-size);
     justify-content: space-between;
+  }
+
+  .header-actions {
+    align-items: center;
+    flex-wrap: wrap;
   }
 
   .filters {
@@ -215,6 +471,48 @@
     gap: var(--xs-size);
     justify-content: flex-end;
     grid-column: 1 / -1;
+  }
+
+  .plan-list-toggle {
+    min-height: 42px;
+    padding: 4px;
+    border-radius: 24px;
+    background: var(--gray-100);
+    display: inline-grid;
+    grid-template-columns: repeat(2, minmax(76px, 1fr));
+
+    button {
+      min-height: 34px;
+      padding-inline: 14px;
+      border: 0;
+      border-radius: 20px;
+      background: transparent;
+      color: var(--SecondText);
+      cursor: pointer;
+      font-weight: 500;
+
+      &.active {
+        background: var(--BgWhite);
+        color: var(--primary-green);
+        box-shadow: var(--shadow-sm);
+      }
+    }
+  }
+
+  .last-updated-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong {
+      color: var(--SecondText);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    small {
+      color: var(--SecondText);
+    }
   }
 
   .filters input {

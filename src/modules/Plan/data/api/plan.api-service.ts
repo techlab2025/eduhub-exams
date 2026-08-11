@@ -1,5 +1,6 @@
 import BaseApiService from '@/base/Data/ApiService/baseApiService';
-import type { ApiEndpoints } from '@/base/Data/ApiService/baseApiService';
+import type Params from '@/base/Core/Params/params';
+import type { ApiEndpoints, ApiResponse } from '@/base/Data/ApiService/baseApiService';
 import { PlanEndpoints } from './plan.api.endpoints';
 
 export default class PlanApiService extends BaseApiService {
@@ -17,5 +18,9 @@ export default class PlanApiService extends BaseApiService {
       update: this.planEndpoints.update,
       delete: this.planEndpoints.delete,
     };
+  }
+
+  toggleStatus(params: Params): Promise<ApiResponse> {
+    return this.customPost(this.planEndpoints.toggleStatus, params);
   }
 }

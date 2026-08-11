@@ -3,7 +3,8 @@
   import { useRoute, useRouter } from 'vue-router';
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
-  import type EditPlanParams from '../../core/params/edit.plan.params';
+  import EditPlanParams from '../../core/params/edit.plan.params';
+  import type AddPlanParams from '../../core/params/add.plan.params';
   import ShowPlanParams from '../../core/params/show.plan.params';
 
   const controller = PlanController.getInstance();
@@ -11,13 +12,17 @@
   const router = useRouter();
   const formKey = route.fullPath;
   const params = ref<EditPlanParams | null>(null);
+  const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
   const loading = ref(false);
 
-  const updateData = (updatedParams: EditPlanParams) => {
-    params.value = updatedParams;
+  const updateData = (updatedParams: AddPlanParams | EditPlanParams) => {
+    if (updatedParams instanceof EditPlanParams) params.value = updatedParams;
   };
 
   const savePlan = async () => {
+    const isValid = await planFormRef.value?.validate?.();
+    if (isValid === false) return;
+
     if (!params.value) {
       console.error('No plan parameters to update');
       return;
@@ -25,7 +30,7 @@
 
     loading.value = true;
     try {
-      const result = await controller.update(params.value);
+      const result = await controller.update(params.value, undefined, false);
       if (result?.data || !result?.hasError) {
         await router.push({ name: 'Plans' });
         await controller.fetchList();
@@ -38,13 +43,19 @@
   };
 
   onMounted(async () => {
-    await controller.fetchOne(new ShowPlanParams(Number(route.params.id), true));
+    loading.value = true;
+    try {
+      await controller.fetchOne(new ShowPlanParams(Number(route.params.id), true));
+    } finally {
+      loading.value = false;
+    }
   });
 </script>
 
 <template>
   <div class="plan-edit-page">
     <PlanForm
+      ref="planFormRef"
       :plan="controller.itemData.value!"
       :form-key="formKey"
       :loading="loading"
@@ -58,8 +69,6 @@
       </button>
       <router-link to="/plans" class="btn btn-cancel">{{ $t('cancel') }}</router-link>
     </div>
-
-
   </div>
 </template>
 

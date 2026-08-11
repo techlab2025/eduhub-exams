@@ -18,7 +18,18 @@ export default class AddPlanParams implements Params {
     translations: { required: true },
     status: { required: true },
     highlightBadge: { required: true },
-    pricing: { required: true },
+    pricing: {
+      required: true,
+      custom: (value: PlanPricingParams[]) =>
+        value.some(
+          (item) =>
+            Number.isFinite(Number(item.price)) &&
+            Number(item.price) >= 0 &&
+            Number.isFinite(Number(item.duration)) &&
+            Number(item.duration) > 0 &&
+            Boolean(item.durationType),
+        ) || 'pricing must include at least one complete item',
+    },
     hasTrail: { required: true },
     trialDays: { required: true },
     features: { required: true },
@@ -44,7 +55,10 @@ export default class AddPlanParams implements Params {
 
   toMap(): Record<string, unknown> {
     return {
-      translations: this.translations.toMap(),
+      translations: {
+        title: this.translations.title,
+        description: this.translations.description,
+      },
       status: this.status,
       highlight_badge: this.highlightBadge,
       pricing: this.pricing.map((item) => item.toMap()),

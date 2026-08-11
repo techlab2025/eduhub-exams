@@ -7,6 +7,7 @@ describe('PlanEndpoints', () => {
     expect(value.store).toContain('store_plan');
     expect(value.show).toContain('show_plan');
     expect(value.update).toContain('update_plan');
+    expect(value.toggleStatus).toContain('toggle_plan_status');
     expect(value.delete).toContain('delete_plan');
   });
 });
