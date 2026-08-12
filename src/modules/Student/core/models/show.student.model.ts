@@ -67,30 +67,30 @@ const resultList = (value: unknown): StudentResultModel[] =>
     : [];
 
 export default class ShowStudentModel {
-  public readonly id: number;
-  public readonly name: string;
-  public readonly image: string;
-  public readonly serial: string;
-  public readonly status: StudentStatusEnum;
-  public readonly points: number;
-  public readonly rank: string;
-  public readonly phone: string;
-  public readonly educationType: StudentTitleModel | null;
-  public readonly educationStage: StudentTitleModel | null;
-  public readonly grade: StudentTitleModel | null;
-  public readonly parentName: string;
-  public readonly parentPhone: string;
-  public readonly reason: string;
-  public readonly blockedBy: { id: number; name: string } | null;
-  public readonly blockDate: string;
-  public readonly registration: StudentRegistrationModel;
-  public readonly applicationInformation: StudentApplicationModel;
-  public readonly plan: StudentPlanModel | null;
-  public readonly performance: StudentPerformanceModel;
-  public readonly placementTests: StudentResultModel[];
-  public readonly practicesPlan: StudentResultModel[];
-  public readonly studentSchedules: unknown[];
-  public readonly notes: StudentNoteModel[];
+  public readonly id!: number;
+  public readonly name!: string;
+  public readonly image!: string;
+  public readonly serial!: string;
+  public readonly status!: StudentStatusEnum;
+  public readonly points!: number;
+  public readonly rank!: string;
+  public readonly phone!: string;
+  public readonly educationType!: StudentTitleModel | null;
+  public readonly educationStage!: StudentTitleModel | null;
+  public readonly grade!: StudentTitleModel | null;
+  public readonly parentName!: string;
+  public readonly parentPhone!: string;
+  public readonly reason!: string;
+  public readonly blockedBy!: { id: number; name: string } | null;
+  public readonly blockDate!: string;
+  public readonly registration!: StudentRegistrationModel;
+  public readonly applicationInformation!: StudentApplicationModel;
+  public readonly plan!: StudentPlanModel | null;
+  public readonly performance!: StudentPerformanceModel;
+  public readonly placementTests!: StudentResultModel[];
+  public readonly practicesPlan!: StudentResultModel[];
+  public readonly studentSchedules!: unknown[];
+  public readonly notes!: StudentNoteModel[];
 
   private constructor(values: ShowStudentModel) {
     Object.assign(this, values);

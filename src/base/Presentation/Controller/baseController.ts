@@ -393,6 +393,7 @@ export default abstract class BaseController<T, TList = T[]> {
   async update(
     params?: Params,
     options?: ApiCallOptions,
+    _formKey?: string,
     applyValidation: boolean = true,
   ): Promise<DataState<T> | undefined> {
     this._lastOperation = { type: 'update', params, options };

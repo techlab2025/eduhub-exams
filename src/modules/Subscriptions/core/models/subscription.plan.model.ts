@@ -4,15 +4,30 @@ import {
 } from '../enums/subscription.status.enum';
 
 export default class SubscriptionPlanModel {
+  public readonly id: number;
+  public readonly title: string;
+  public readonly status: SubscriptionStatus;
+  public readonly totalPaid: string;
+  public readonly paymentMethod: string;
+  public readonly subscribeDate: string;
+  public readonly expireDate: string;
+
   constructor(
-    public readonly id: number,
-    public readonly title: string,
-    public readonly status: SubscriptionStatus,
-    public readonly totalPaid: string,
-    public readonly paymentMethod: string,
-    public readonly subscribeDate: string,
-    public readonly expireDate: string,
+    id: number,
+    title: string,
+    status: SubscriptionStatus,
+    totalPaid: string,
+    paymentMethod: string,
+    subscribeDate: string,
+    expireDate: string,
   ) {
+    this.id = id;
+    this.title = title;
+    this.status = status;
+    this.totalPaid = totalPaid;
+    this.paymentMethod = paymentMethod;
+    this.subscribeDate = subscribeDate;
+    this.expireDate = expireDate;
     Object.freeze(this);
   }
 

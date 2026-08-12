@@ -20,7 +20,8 @@
 
   const selectSaveOption = (withReview: boolean) => {
     visible.value = false;
-    emit(withReview ? 'with-review' : 'without-review');
+    if (withReview) emit('with-review');
+    else emit('without-review');
   };
 </script>
 

@@ -172,7 +172,7 @@ export default class questionsController extends BaseController<
       }
     }
 
-    const result = await super.update(params, options, !isDraft);
+    const result = await super.update(params, options, undefined, !isDraft);
     if (result instanceof DataSuccess) {
       if (formKey) {
         FormStore.clearFormData(formKey);

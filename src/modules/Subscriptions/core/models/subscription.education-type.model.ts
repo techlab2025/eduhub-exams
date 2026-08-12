@@ -1,8 +1,10 @@
 export default class SubscriptionEducationTypeModel {
-  constructor(
-    public readonly id: number,
-    public readonly title: string,
-  ) {
+  public readonly id: number;
+  public readonly title: string;
+
+  constructor(id: number, title: string) {
+    this.id = id;
+    this.title = title;
     Object.freeze(this);
   }
 

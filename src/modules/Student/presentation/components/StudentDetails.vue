@@ -15,6 +15,9 @@
   const showAllPractices = ref(false);
 
   const fetchStudent = () => controller.fetchOne(new ShowStudentParams(Number(route.params.id)));
+  const retryFetchStudent = async () => {
+    await fetchStudent();
+  };
   const valueOrDash = (value: unknown) =>
     value === null || value === undefined || value === '' ? '—' : String(value);
   const verificationValue = (verified: boolean) => (verified ? 'verified' : 'not_verified');
@@ -60,7 +63,7 @@
 </script>
 
 <template>
-  <DataStatusBuilder :controller="itemState" :on-retry="fetchStudent" use-skeleton>
+  <DataStatusBuilder :controller="itemState" :on-retry="retryFetchStudent" use-skeleton>
     <template #success>
       <main v-if="student" class="student-details-page">
         <aside class="student-details-sidebar">

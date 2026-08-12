@@ -26,7 +26,7 @@ describe('BaseController.update', () => {
       validateOrThrow: vi.fn(),
     };
 
-    expect(await controller.update(params, undefined, false)).toBe(result);
+    expect(await controller.update(params, undefined, undefined, false)).toBe(result);
     expect(params.validate).not.toHaveBeenCalled();
     expect(params.validateOrThrow).not.toHaveBeenCalled();
     expect(update).toHaveBeenCalledOnce();

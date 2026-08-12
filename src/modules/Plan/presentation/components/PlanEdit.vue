@@ -36,7 +36,7 @@
     loading.value = true;
     try {
       if (isDraft.value) params.value.status = PlanStatusEnum.ACTIVE;
-      const result = await controller.update(params.value, undefined, false);
+      const result = await controller.update(params.value, undefined, undefined, false);
       if (result?.data || !result?.hasError) {
         await router.push({ name: 'Plans' });
         await controller.fetchList();
@@ -62,7 +62,7 @@
     loading.value = true;
     try {
       params.value.status = PlanStatusEnum.DRAFT;
-      const result = await controller.update(params.value, undefined, false);
+      const result = await controller.update(params.value, undefined, undefined, false);
       if (result?.data || !result?.hasError) {
         await controller.fetchList();
         await router.push({ name: 'Plans' });

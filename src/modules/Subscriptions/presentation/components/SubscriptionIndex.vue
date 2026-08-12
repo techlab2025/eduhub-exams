@@ -39,7 +39,7 @@
   const perPage = ref(10);
   const education = ref<TitleInterface<number> | null>(null);
   const plan = ref<TitleInterface<number> | null>(null);
-  const status = ref<TitleInterface<string> | null>(null);
+  const status = ref<TitleInterface<number> | null>(null);
   const paidFrom = ref<number>();
   const paidTo = ref<number>();
   const subscribeFrom = ref<Date | null>(null);
@@ -54,9 +54,9 @@
 
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
-    { id: SubscriptionStatusEnum.ACTIVE, title: t('active') },
-    { id: SubscriptionStatusEnum.EXPIRED, title: t('expired') },
-    { id: SubscriptionStatusEnum.CANCELLED, title: t('cancelled') },
+    { id: Number(SubscriptionStatusEnum.ACTIVE), title: t('active') },
+    { id: Number(SubscriptionStatusEnum.EXPIRED), title: t('expired') },
+    { id: Number(SubscriptionStatusEnum.CANCELLED), title: t('cancelled') },
   ]);
   const stats = computed(() => [
     { label: t('all_subscriptions'), value: controller.stats.value?.totalSubscribers ?? 0 },

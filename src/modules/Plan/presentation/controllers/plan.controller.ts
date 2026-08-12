@@ -24,8 +24,13 @@ export default class PlanController extends BaseController<PlanDetailsModel, Pla
       params.status !== PlanStatusEnum.DRAFT,
     );
   }
-  async update(params: Params, options?: ApiCallOptions, applyValidation: boolean = true) {
-    return super.update(params, { ...options, useJson: true }, applyValidation);
+  async update(
+    params: Params,
+    options?: ApiCallOptions,
+    formKey?: string,
+    applyValidation: boolean = true,
+  ) {
+    return super.update(params, { ...options, useJson: true }, formKey, applyValidation);
   }
   async toggleStatus(params: Params) {
     return this.repository.toggleStatus(params);
