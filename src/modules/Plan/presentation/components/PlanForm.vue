@@ -721,9 +721,9 @@
   .plan-form {
     display: grid;
     gap: var(--xs-size);
-    padding: var(--xl-size-1);
+    // padding: var(--xl-size-1);
     background: var(--bg-main);
-    border: 1px solid var(--border-weak);
+    // border: 1px solid var(--border-weak);
     border-radius: var(--radius-lg);
 
     &.is-loading {
