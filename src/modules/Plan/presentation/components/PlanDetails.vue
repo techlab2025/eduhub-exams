@@ -5,7 +5,6 @@
   import PricingIcon from '@/shared/icons/PricingIcon.vue';
   import DropList from '@/shared/HelpersComponents/DropList.vue';
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
-  import PlanViewIcon from '@/shared/icons/Plan/PlanViewIcon.vue';
   import PlanPriceIcon from '@/shared/icons/Plan/PlanPriceIcon.vue';
   import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
   import DeactiveIcon from '@/shared/icons/Plan/DeactiveIcon.vue';

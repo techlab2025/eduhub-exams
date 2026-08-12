@@ -25,4 +25,13 @@ export default class SubscriptionStatsModel {
       expiredSubscriptions: Number(json.expired_subscriptions ?? 0),
     });
   }
+
+  static get exmpale(): SubscriptionStatsModel {
+    return new SubscriptionStatsModel({
+      totalSubscribers: 589212,
+      activeSubscriptions: 500000,
+      cancelledSubscriptions: 40000,
+      expiredSubscriptions: 19842,
+    });
+  }
 }

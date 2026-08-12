@@ -4,6 +4,7 @@ import type Params from '@/base/Core/Params/params';
 import SubscriptionModel from '../../core/models/subscription.model';
 import SubscriptionStatsModel from '../../core/models/subscription.stats.model';
 import SubscriptionApiService from '../api/subscription.api-service';
+import { SubscriptionStatusEnum } from '../../core/enums/subscription.status.enum';
 
 export default class SubscriptionRepository extends BaseRepository<
   SubscriptionModel,
@@ -20,7 +21,12 @@ export default class SubscriptionRepository extends BaseRepository<
     return SubscriptionModel.example;
   }
   protected get mockList() {
-    return [SubscriptionModel.example];
+    return [
+      SubscriptionModel.example,
+      { ...SubscriptionModel.example, status: SubscriptionStatusEnum.EXPIRED },
+      { ...SubscriptionModel.example, status: SubscriptionStatusEnum.ACTIVE },
+      { ...SubscriptionModel.example, status: SubscriptionStatusEnum.CANCELLED },
+    ];
   }
   static getInstance() {
     if (!this.instance) this.instance = new SubscriptionRepository();

@@ -4,7 +4,7 @@ import type { ControllerConfig } from '@/base/Presentation/Controller/baseContro
 import type SubscriptionStatsModel from '../../core/models/subscription.stats.model';
 import type SubscriptionModel from '../../core/models/subscription.model';
 import SubscriptionRepository from '../../data/repositories/subscription.repository';
-import { SubscriptionStatsParams } from '../../core/params/subscription.params';
+import { SubscriptionStatsParams } from '../../core/params/index.subscription.params';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
@@ -48,6 +48,7 @@ export default class SubscriptionController extends BaseController<
     this.stats.value = result.data;
     return result;
   }
+
   async fetchList(
     params?: Params,
     options?: ApiCallOptions,

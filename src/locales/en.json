@@ -973,6 +973,16 @@
   "trial_days": "Trial days",
   "add_pricing": "Add pricing",
   "subscriptions": "Subscriptions",
+  "all_subscriptions": "All Subscription",
+  "student_name": "Student Name",
+  "plan_name": "Plan Name",
+  "subscribe_date": "Subscribe Date",
+  "search_subscriptions_placeholder": "Search by plan name, student ID, student name...",
+  "clear_all": "Clear all",
+  "date_format_placeholder": "mm /dd /yyyy",
+  "subscription_delete_blocked_title": "This Student Has An Subscription Plan, You Can Not Delete Him Now.",
+  "subscription_delete_blocked_message": "You Cannot Delete Him Until He End His Subscribe",
+  "subscription_delete_blocked_close": "No",
   "subscription_details": "Subscription Details",
   "student": "Student",
   "plan": "Plan",
@@ -1020,5 +1030,7 @@
   "highlight_badge_deleted_successfully": "Highlight badge deleted successfully",
   "highlight_badge_not_found": "Highlight badge not found",
   "highlight_badge_already_exists": "Highlight badge already exists",
-  "employee_ID": "Employee ID"
+  "employee_ID": "Employee ID",
+  "subscription_confirm_delete": "Are you sure you want to remove this subscription details ?",
+  "subscription_confirm_delete_message": "This action will permanently delete the subscription details and cannot be undone."
 }

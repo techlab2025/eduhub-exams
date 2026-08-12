@@ -1,3 +1,124 @@
-import { expect, it } from 'vitest';
+import { shallowMount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Component from '../SubscriptionIndex.vue';
-it('exports the subscription index', () => expect(Component).toBeTruthy());
+
+const mocks = vi.hoisted(() => ({
+  fetchList: vi.fn().mockResolvedValue(undefined),
+  fetchStats: vi.fn().mockResolvedValue(undefined),
+  remove: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({ t: (key: string) => key }),
+}));
+
+vi.mock('../../controllers/subscription.controller', () => ({
+  default: {
+    getInstance: () => ({
+      listState: { value: {} },
+      stats: { value: null },
+      pagination: { value: null },
+      fetchList: mocks.fetchList,
+      fetchStats: mocks.fetchStats,
+      delete: mocks.remove,
+    }),
+  },
+}));
+
+vi.mock(
+  '@/modules/EducationClassification/presentation/controllers/educationClassification.controller',
+  () => ({ default: { getInstance: () => ({}) } }),
+);
+
+vi.mock('@/modules/Plan/presentation/controllers/plan.controller', () => ({
+  default: { getInstance: () => ({}) },
+}));
+
+describe('SubscriptionIndex', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('shows selected quick filters and allows clearing them', async () => {
+    const wrapper = shallowMount(Component, {
+      global: {
+        mocks: {
+          $t: (key: string) => key,
+        },
+        stubs: {
+          FilterDialog: {
+            template: '<div class="filter-dialog-stub"><slot name="content" /></div>',
+          },
+          UpdatedCustomInputSelect: {
+            props: ['modelValue', 'placeholder'],
+            emits: ['update:modelValue'],
+            template: `
+              <button
+                class="select-stub"
+                @click="$emit('update:modelValue', { id: 1, title: placeholder })"
+              >
+                {{ placeholder }}
+              </button>
+            `,
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findAll('.subscription-filter-section')).toHaveLength(6);
+    expect(wrapper.find('.filter-actions').exists()).toBe(true);
+    expect(wrapper.find('.selected-filter-summary').exists()).toBe(false);
+
+    await wrapper.findAll('.select-stub')[0].trigger('click');
+
+    expect(wrapper.find('.selected-filter-summary').exists()).toBe(true);
+    expect(wrapper.find('.selected-filter-chip').text()).toContain('education_type');
+
+    await wrapper.find('.clear-filter-button').trigger('click');
+
+    expect(wrapper.find('.selected-filter-summary').exists()).toBe(false);
+    expect(mocks.fetchList).toHaveBeenCalled();
+  });
+
+  it('blocks deleting an active subscription and opens the warning dialog', async () => {
+    const wrapper = shallowMount(Component, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          DataStatusBuilder: {
+            template: `
+              <div>
+                <slot
+                  name="success"
+                  :data="[{ id: 7, status: '1', student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+                />
+              </div>
+            `,
+          },
+          AppTable: {
+            props: ['items'],
+            template: '<div><slot name="actions" :item="items[0]" /></div>',
+          },
+          DropList: {
+            props: ['actionList'],
+            template: `
+              <button class="delete-action" @click="actionList[1].action()">
+                delete
+              </button>
+            `,
+          },
+          SubscriptionDeleteWarningDialog: {
+            props: ['modelValue'],
+            template: '<div v-if="modelValue" class="warning-dialog-stub" />',
+          },
+          FilterDialog: true,
+          UpdatedCustomInputSelect: true,
+          Pagination: true,
+        },
+      },
+    });
+
+    await wrapper.find('.delete-action').trigger('click');
+
+    expect(wrapper.find('.warning-dialog-stub').exists()).toBe(true);
+    expect(mocks.remove).not.toHaveBeenCalled();
+  });
+});

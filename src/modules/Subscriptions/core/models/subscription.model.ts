@@ -7,7 +7,7 @@ export default class SubscriptionModel {
   public readonly id: number;
   public readonly student: { id?: number; name: string; serial?: string };
   public readonly educationType: { id: number; title: string } | null;
-  public readonly plan: Record<string, unknown>;
+  public readonly plan: { id: number; title: string };
   public readonly totalPrice: number;
   public readonly subscriptionDate: string;
   public readonly expireDate: string;
@@ -17,7 +17,7 @@ export default class SubscriptionModel {
     id: number,
     student: { id?: number; name: string; serial?: string },
     educationType: { id: number; title: string } | null,
-    plan: Record<string, unknown>,
+    plan: { id: number; title: string },
     totalPrice: number,
     subscriptionDate: string,
     expireDate: string,
@@ -40,8 +40,12 @@ export default class SubscriptionModel {
         ? (json.user as Record<string, unknown>)
         : { name: json.stident_name ?? json.student_name ?? '' };
     const planSource = json.plan ?? json.plane;
-    const plan =
+    const rawPlan =
       planSource && typeof planSource === 'object' ? (planSource as Record<string, unknown>) : {};
+    const plan = {
+      id: Number(rawPlan.id ?? 0),
+      title: String(rawPlan.title ?? ''),
+    };
     const educationTypeSource = json.education_type;
     const educationType =
       educationTypeSource && typeof educationTypeSource === 'object'
@@ -60,14 +64,22 @@ export default class SubscriptionModel {
       },
       educationType,
       plan,
-      Number(json.total_price ?? plan.total_paied ?? 0),
-      String(json.subscription_date ?? plan.subscribe_date ?? ''),
-      String(json.expire_date ?? plan.expire_date ?? ''),
+      Number(json.total_price ?? rawPlan.total_paied ?? 0),
+      String(json.subscription_date ?? rawPlan.subscribe_date ?? ''),
+      String(json.expire_date ?? rawPlan.expire_date ?? ''),
       String(
-        json.status ?? plan.plan_status ?? SubscriptionStatusEnum.ACTIVE,
+        json.status ?? rawPlan.plan_status ?? SubscriptionStatusEnum.ACTIVE,
       ) as SubscriptionStatus,
     );
   }
 
-  static readonly example = SubscriptionModel.fromJson({ id: 1, stident_name: 'Student' });
+  static readonly example = SubscriptionModel.fromJson({
+    id: 1254,
+    stident_name: 'Ahmed Hawam',
+    plane: { id: 1, title: 'Starter Plan' },
+    total_price: 150,
+    subscription_date: '20-6-2026',
+    expire_date: '20-7-2026',
+    status: SubscriptionStatusEnum.ACTIVE,
+  });
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { onMounted } from 'vue';
   import { useRoute } from 'vue-router';
-  import { ShowSubscriptionParams } from '../../core/params/subscription.params';
+  import { ShowSubscriptionParams } from '../../core/params/show.subscription.params';
   import SubscriptionController from '../controllers/subscription.controller';
   const route = useRoute();
   const controller = SubscriptionController.getInstance();
