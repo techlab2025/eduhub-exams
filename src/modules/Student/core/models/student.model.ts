@@ -1,11 +1,25 @@
 export const StudentStatusEnum = { ACTIVE: '1', ARCHIVE: '2', BLOCK: '3' } as const;
 export type StudentStatusEnum = (typeof StudentStatusEnum)[keyof typeof StudentStatusEnum];
 
-export interface StudentStats {
-  totalStudents: number;
-  activeStudents: number;
-  archivedStudents: number;
-  blockedStudents: number;
+export interface StudentTitleModel {
+  id: number;
+  title: string;
+}
+
+export interface StudentNoteModel {
+  id: number;
+  note: string;
+  created_at: string;
+  created_by?: StudentTitleModel;
+}
+
+export interface StudentDetailsData {
+  registration?: Record<string, unknown>;
+  application_information?: Record<string, unknown>;
+  performance?: Record<string, unknown>;
+  plan?: Record<string, unknown>;
+  notes?: StudentNoteModel[];
+  [key: string]: unknown;
 }
 
 export default class StudentModel {
@@ -13,30 +27,30 @@ export default class StudentModel {
   public readonly name: string;
   public readonly image: string;
   public readonly serial: string;
-  public readonly educationType: Record<string, any> | null;
-  public readonly educationStage: Record<string, any> | null;
-  public readonly grade: Record<string, any> | null;
-  public readonly currentPlan: Record<string, any> | null;
+  public readonly educationType: StudentTitleModel | null;
+  public readonly educationStage: StudentTitleModel | null;
+  public readonly grade: StudentTitleModel | null;
+  public readonly currentPlan: StudentTitleModel | null;
   public readonly examsCount: number;
   public readonly studyPlanCount: number;
   public readonly status: StudentStatusEnum;
   public readonly joinDate: string;
-  public readonly details: Record<string, any>;
+  public readonly details: StudentDetailsData;
 
   constructor(
     id: number,
     name: string,
     image: string,
     serial: string,
-    educationType: Record<string, any> | null,
-    educationStage: Record<string, any> | null,
-    grade: Record<string, any> | null,
-    currentPlan: Record<string, any> | null,
+    educationType: StudentTitleModel | null,
+    educationStage: StudentTitleModel | null,
+    grade: StudentTitleModel | null,
+    currentPlan: StudentTitleModel | null,
     examsCount: number,
     studyPlanCount: number,
     status: StudentStatusEnum,
     joinDate: string,
-    details: Record<string, any>,
+    details: StudentDetailsData,
   ) {
     this.id = id;
     this.name = name;
@@ -54,32 +68,50 @@ export default class StudentModel {
     Object.freeze(this);
   }
 
-  static fromJson(json: Record<string, any>) {
+  private static titleFromJson(value: unknown): StudentTitleModel | null {
+    if (!value || typeof value !== 'object') return null;
+    const json = value as Record<string, unknown>;
+    return {
+      id: Number(json.id ?? 0),
+      title: String(json.title ?? ''),
+    };
+  }
+
+  static fromJson(json: Record<string, unknown>) {
+    const registration =
+      json.registration && typeof json.registration === 'object'
+        ? (json.registration as Record<string, unknown>)
+        : undefined;
+
     return new StudentModel(
       Number(json.id ?? json.student_id),
       String(json.name ?? ''),
       String(json.image ?? ''),
       String(json.serial ?? ''),
-      json.education_type ?? null,
-      json.education_stage ?? null,
-      json.grade ?? null,
-      json.current_plan ?? json.plan ?? null,
+      StudentModel.titleFromJson(json.education_type),
+      StudentModel.titleFromJson(json.education_stage),
+      StudentModel.titleFromJson(json.grade),
+      StudentModel.titleFromJson(json.current_plan ?? json.plan),
       Number(json.num_of_exams ?? 0),
       Number(json.num_of_study_plan ?? 0),
       String(json.status ?? StudentStatusEnum.ACTIVE) as StudentStatusEnum,
-      String(json.join_date ?? json.registration?.register_date ?? ''),
-      json,
+      String(json.join_date ?? registration?.register_date ?? ''),
+      json as StudentDetailsData,
     );
   }
 
-  static statsFromJson(json: Record<string, unknown>): StudentStats {
-    return {
-      totalStudents: Number(json.total_students ?? 0),
-      activeStudents: Number(json.active_students ?? 0),
-      archivedStudents: Number(json.archive_students ?? 0),
-      blockedStudents: Number(json.blocked_students ?? 0),
-    };
-  }
-
-  static readonly example = StudentModel.fromJson({ id: 1, name: 'Student', serial: 'ST-1' });
+  static readonly example = StudentModel.fromJson({
+    id: 1,
+    name: 'Ahmed Hawam',
+    image: '',
+    serial: 'ST-0001',
+    education_type: { id: 1, title: 'Governmental' },
+    education_stage: { id: 2, title: 'Primary' },
+    grade: { id: 3, title: 'First' },
+    current_plan: { id: 1, title: 'Basic' },
+    num_of_exams: 20,
+    num_of_study_plan: 20,
+    status: StudentStatusEnum.ACTIVE,
+    join_date: '09-05-2022',
+  });
 }

@@ -21,4 +21,7 @@ export default class StudentApiService extends BaseApiService {
   forceLogout(params: Params): Promise<ApiResponse> {
     return this.customPost(this.studentEndpoints.forceLogout, params);
   }
+  addNote(params: Params): Promise<ApiResponse> {
+    return this.customPost(this.studentEndpoints.addNote, params);
+  }
 }

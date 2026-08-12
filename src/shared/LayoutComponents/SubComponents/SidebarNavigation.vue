@@ -63,11 +63,6 @@
           icon: SettingIcon,
         },
 
-        // {
-        //   link: '/students',
-        //   name: 'students',
-        //   icon: SettingIcon,
-        // },
         {
           link: '/subjects',
           name: 'Subjects',
@@ -91,6 +86,11 @@
         {
           link: '/subscriptions',
           name: 'subscriptions',
+          icon: SettingIcon,
+        },
+        {
+          link: '/students',
+          name: 'students',
           icon: SettingIcon,
         },
         // {

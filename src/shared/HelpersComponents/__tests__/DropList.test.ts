@@ -81,4 +81,29 @@ describe('DropList', () => {
     expect(action).toHaveBeenCalledOnce();
     expect(wrapper.findComponent({ name: 'DeleteDialog' }).exists()).toBe(false);
   });
+
+  it('renders the student menu variant with leading icons and danger styling', () => {
+    const wrapper = mount(DropList, {
+      props: {
+        variant: 'student',
+        actionList: [
+          {
+            text: 'Block',
+            icon: ActionsIcon,
+            action: vi.fn(),
+            danger: true,
+          },
+        ],
+      },
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: { Popover: PopoverStub },
+      },
+    });
+
+    expect(wrapper.find('.student-list-body').exists()).toBe(true);
+    expect(wrapper.find('.list-item').classes()).toContain('list-item-danger');
+    expect(wrapper.find('.student-action-icon').exists()).toBe(true);
+    expect(wrapper.find('.list-item button').text()).toContain('Block');
+  });
 });

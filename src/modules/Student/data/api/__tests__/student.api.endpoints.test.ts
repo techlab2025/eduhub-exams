@@ -8,5 +8,6 @@ describe('StudentEndpoints', () => {
     expect(value.stats).toContain('fetch_students_statics');
     expect(value.changeStatus).toContain('change_student_status');
     expect(value.forceLogout).toContain('force_logout_student');
+    expect(value.addNote).toContain('add_student_note');
   });
 });

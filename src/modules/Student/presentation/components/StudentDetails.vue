@@ -2,7 +2,7 @@
   import { computed, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
   import StudentController from '../controllers/student.controller';
-  import { ShowStudentParams } from '../../core/params/student.params';
+  import { ShowStudentParams } from '../../core/params/show.student.params';
   const route = useRoute();
   const controller = StudentController.getInstance();
   const sections = computed(() => {
@@ -41,7 +41,7 @@
         </dl>
       </article>
     </div>
-    <article>
+    <article id="notes">
       <h3>{{ $t('notes') }}</h3>
       <ul>
         <li v-for="note in controller.itemData.value.details.notes ?? []" :key="note.id">
