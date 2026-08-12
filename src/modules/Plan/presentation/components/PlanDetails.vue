@@ -67,12 +67,6 @@
     return `${duration} ${t(keys[durationType])}`;
   };
 
-  const featureTitle = (featureId: number, apiTitle: string) => {
-    if (apiTitle) return apiTitle;
-    const definition = PLAN_FEATURE_DEFINITIONS.find((item) => item.type === featureId);
-    return definition ? t(definition.titleKey) : String(featureId);
-  };
-
   const subFeatureTitle = (featureId: number, subFeatureId: number) => {
     const definition = PLAN_FEATURE_DEFINITIONS.find((item) => item.type === featureId);
     const subFeature =
@@ -124,7 +118,12 @@
         <div>
           <span class="meta-icon"><LastUpdatedIcon /></span>
           <dt>{{ $t('last_updated') }}</dt>
-          <dd>{{ formatDate(plan.lastUpdateAt) }}</dd>
+          <dd class="last-updated-meta">
+            <!-- <span v-if="plan.lastUpdated.lastupdatedBy.name">
+              {{ plan.lastUpdated.lastupdatedBy.name }}
+            </span> -->
+            <span>{{ formatDate(plan.lastUpdated.date ?? '') }}</span>
+          </dd>
         </div>
         <div>
           <span class="meta-icon"><PlanSucbscripbersIcon /></span>
@@ -179,7 +178,7 @@
         </header>
         <div class="feature-groups">
           <article v-for="feature in plan.features" :key="feature.featureId" class="feature-group">
-            <h3>{{ featureTitle(feature.featureId, feature.featureTitle) }}</h3>
+            <h3>{{ feature.featureTitle }}</h3>
             <div class="sub-feature-list">
               <span
                 v-for="subFeature in feature.subFeatures.filter((item) => item.status)"

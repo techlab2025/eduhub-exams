@@ -29,7 +29,7 @@ export default class IndexPlanParams extends IndexParams {
       from_price: this.filters.fromPrice,
       to_price: this.filters.toPrice,
       ...(this.filters.duration != undefined && {
-        duration: this.filters.duration,
+        duration: String(this.filters.duration),
       }),
       has_trail: this.filters.hasTrial,
       status: this.filters.status,

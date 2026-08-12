@@ -12,11 +12,11 @@ export default class PlanSubFeatureModel {
 
   static fromJson(json: Record<string, unknown>) {
     return new PlanSubFeatureModel({
-      id: Number(json.id ?? 0),
-      status: Boolean(json.status),
+      id: Number(json.sub_feature_id ?? json.id ?? 0),
+      status: Boolean(json.is_active ?? json.status),
       limit: Number(json.limit ?? 0),
     });
   }
 
-  static readonly example = PlanSubFeatureModel.fromJson({ id: 1, status: true, limit: 0 });
+  static readonly example = PlanSubFeatureModel.fromJson({ id: 1, is_active: true, limit: 0 });
 }

@@ -273,7 +273,7 @@
         <FilterDialog
           v-model="filterDialogVisible"
           dialog-class="plan-filter-dialog"
-          width="28.125rem"
+          width="40rem"
         >
           <template #content>
             <div class="filters plan-filters">
@@ -297,6 +297,7 @@
                   label="duration"
                   :placeholder="$t('select_duration')"
                   :static-options="DurationTypeOptions"
+                  :reload="false"
                 />
               </section>
 

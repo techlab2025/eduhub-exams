@@ -4,6 +4,7 @@ import PlanCreatedByModel from './plan.created.by.model';
 import PlanFeatureModel from './plan.feature.model';
 import PlanHighlightBadgeModel from './plan.highlight.badge.model';
 import PlanPricingModel from './plan.pricing.model';
+import PlanLastUpdatedModel from './plan.last.upadated.model';
 
 export default class PlanDetailsModel {
   public readonly id: number;
@@ -12,7 +13,7 @@ export default class PlanDetailsModel {
   public readonly highlightBadges: PlanHighlightBadgeModel[];
   public readonly createdBy: PlanCreatedByModel;
   public readonly createdAt: string;
-  public readonly lastUpdateAt: string;
+  public readonly lastUpdated: PlanLastUpdatedModel;
   public readonly subscribers: number;
   public readonly trialDays: number;
   public readonly pricing: PlanPricingModel[];
@@ -26,7 +27,7 @@ export default class PlanDetailsModel {
     highlightBadges: PlanHighlightBadgeModel[];
     createdBy: PlanCreatedByModel;
     createdAt: string;
-    lastUpdateAt: string;
+    lastUpdated: PlanLastUpdatedModel;
     subscribers: number;
     trialDays: number;
     pricing: PlanPricingModel[];
@@ -39,7 +40,7 @@ export default class PlanDetailsModel {
     this.highlightBadges = data.highlightBadges;
     this.createdBy = data.createdBy;
     this.createdAt = data.createdAt;
-    this.lastUpdateAt = data.lastUpdateAt;
+    this.lastUpdated = data.lastUpdated;
     this.subscribers = data.subscribers;
     this.trialDays = data.trialDays;
     this.pricing = data.pricing;
@@ -50,6 +51,9 @@ export default class PlanDetailsModel {
 
   static fromJson(json: Record<string, unknown>) {
     const createdBy = (json.created_by ?? {}) as Record<string, unknown>;
+    const lastUpdated = (json.last_updated ?? {
+      last_updated_date: json.last_update_at,
+    }) as Record<string, unknown>;
 
     return new PlanDetailsModel({
       id: Number(json.id ?? 0),
@@ -62,7 +66,7 @@ export default class PlanDetailsModel {
         : [],
       createdBy: PlanCreatedByModel.fromJson(createdBy),
       createdAt: String(json.created_at ?? ''),
-      lastUpdateAt: String(json.last_update_at ?? ''),
+      lastUpdated: PlanLastUpdatedModel.fromJson(lastUpdated),
       subscribers: Number(json['subscribers:'] ?? 0),
       trialDays: Number(json.trail_days ?? 0),
       pricing: Array.isArray(json.pricing)
@@ -86,7 +90,10 @@ export default class PlanDetailsModel {
     highlight_badge: [{ id: 1, title: 'Most Popular' }],
     craeted_by: { id: 1, title: 'Ahmed Hawam' },
     created_at: '2026-06-20',
-    last_update_at: '2026-07-05',
+    last_updated: {
+      last_updated_date: '2026-07-05',
+      last_updated_person: { id: 1, name: 'Admin EG' },
+    },
     'subscribers:': 1245,
     trail_days: 14,
     pricing: [

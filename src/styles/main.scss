@@ -408,3 +408,13 @@ input {
   font-size: 14px !important;
   font-weight: 500 !important;
 }
+
+.plan-filter-dialog .p-dialog-content,
+.plan-filter-dialog .p-dialog-header {
+  padding: 0 !important;
+}
+.plan-filter-dialog .p-dialog-header {
+  color: #121212 !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
