@@ -708,6 +708,12 @@
 </template>
 
 <style scoped lang="scss">
+  :global(.content-wrapper:has(.plan-form)),
+  :global(.main-content:has(.plan-form)) {
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+
   .validated-field input {
     width: 100%;
   }
@@ -744,13 +750,14 @@
 
   .plan-tabs {
     position: sticky;
-    z-index: 4;
+    z-index: 10;
     top: 0;
     min-width: 0;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     border-bottom: 1px solid var(--border-weak);
     background: var(--bg-main);
+    box-shadow: var(--shadow-sm);
 
     button {
       min-height: 48px;

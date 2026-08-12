@@ -1,11 +1,13 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
   import EditPlanParams from '../../core/params/edit.plan.params';
   import type AddPlanParams from '../../core/params/add.plan.params';
   import ShowPlanParams from '../../core/params/show.plan.params';
+  import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
+  import DraftPlanDialog from '../subCopmnents/DraftPlanDialog.vue';
 
   const controller = PlanController.getInstance();
   const route = useRoute();
@@ -14,6 +16,9 @@
   const params = ref<EditPlanParams | null>(null);
   const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
   const loading = ref(false);
+  const publishReady = ref(false);
+  const draftDialogVisible = ref(false);
+  const isDraft = computed(() => controller.itemData.value?.status === PlanStatusEnum.DRAFT);
 
   const updateData = (updatedParams: AddPlanParams | EditPlanParams) => {
     if (updatedParams instanceof EditPlanParams) params.value = updatedParams;
@@ -30,6 +35,7 @@
 
     loading.value = true;
     try {
+      if (isDraft.value) params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.update(params.value, undefined, false);
       if (result?.data || !result?.hasError) {
         await router.push({ name: 'Plans' });
@@ -37,6 +43,32 @@
       }
     } catch (error) {
       console.error('Error updating plan:', error);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const saveDraft = () => {
+    draftDialogVisible.value = true;
+  };
+
+  const acknowledgeDraft = async () => {
+    draftDialogVisible.value = false;
+    if (!params.value) {
+      console.error('No plan parameters to update');
+      return;
+    }
+
+    loading.value = true;
+    try {
+      params.value.status = PlanStatusEnum.DRAFT;
+      const result = await controller.update(params.value, undefined, false);
+      if (result?.data || !result?.hasError) {
+        await controller.fetchList();
+        await router.push({ name: 'Plans' });
+      }
+    } catch (error) {
+      console.error('Error saving plan draft:', error);
     } finally {
       loading.value = false;
     }
@@ -60,15 +92,35 @@
       :form-key="formKey"
       :loading="loading"
       @update-data="updateData"
+      @validity-change="publishReady = $event"
     />
 
-    <div class="actions" :class="{ disabled: loading }">
+    <div v-if="isDraft" class="actions">
+      <button
+        class="btn btn-primary publish-button"
+        :class="{ 'is-not-ready': !publishReady }"
+        type="button"
+        :aria-disabled="!publishReady"
+        :disabled="loading"
+        @click="savePlan"
+      >
+        <span v-if="loading" class="loader"></span>
+        <span v-else>{{ $t('publish') }}</span>
+      </button>
+      <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
+        {{ $t('save_as_draft') }}
+      </button>
+    </div>
+
+    <div v-else class="actions" :class="{ disabled: loading }">
       <button class="btn btn-primary w-full" type="button" :disabled="loading" @click="savePlan">
         <span v-if="loading" class="loader"></span>
         <span v-else>{{ $t('update_plan') }}</span>
       </button>
       <router-link to="/plans" class="btn btn-cancel">{{ $t('cancel') }}</router-link>
     </div>
+
+    <DraftPlanDialog v-model="draftDialogVisible" @acknowledge="acknowledgeDraft" />
   </div>
 </template>
 
@@ -97,6 +149,29 @@
     &.disabled {
       pointer-events: none;
       opacity: 0.7;
+    }
+  }
+
+  .btn-draft,
+  .publish-button {
+    width: min(240px, 50%);
+    border-radius: var(--radius-full);
+  }
+
+  .btn-draft {
+    color: var(--PrimaryColor);
+    background-color: var(--PrimaryColor-alpha-10);
+    border: 1px solid var(--PrimaryColor-alpha-10);
+  }
+
+  @media (max-width: 768px) {
+    .actions {
+      flex-direction: column;
+    }
+
+    .btn-draft,
+    .publish-button {
+      width: 100%;
     }
   }
 
