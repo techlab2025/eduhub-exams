@@ -4,10 +4,11 @@ import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type StudentModel from '../../core/models/student.model';
+import type ShowStudentModel from '../../core/models/show.student.model';
 import type StudentStatsModel from '../../core/models/student.stats.model';
 import StudentRepository from '../../data/repositories/student.repository';
 import { StudentStatsParams } from '../../core/params/student.stats.params';
-export default class StudentController extends BaseController<StudentModel, StudentModel[]> {
+export default class StudentController extends BaseController<ShowStudentModel, StudentModel[]> {
   private static instance: StudentController;
   readonly stats = ref<StudentStatsModel | null>(null);
   protected get repository() {
@@ -25,8 +26,8 @@ export default class StudentController extends BaseController<StudentModel, Stud
   fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<StudentModel[]>> {
     return super.fetchList(params, { ...options, useStaticData: true });
   }
-  fetchOne(params: Params, options?: ApiCallOptions): Promise<DataState<StudentModel>> {
-    return super.fetchOne(params, options);
+  fetchOne(params: Params, options?: ApiCallOptions): Promise<DataState<ShowStudentModel>> {
+    return super.fetchOne(params, { ...options, useStaticData: true });
   }
   changeStatus(params: Params) {
     return this.repository.changeStatus(params);

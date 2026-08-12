@@ -7,7 +7,7 @@ describe('StudentRepository', () => {
 
   it('parses both documented list and details responses', () => {
     const repository = Repository.getInstance() as unknown as {
-      parseItem(data: unknown): { name: string; details: Record<string, unknown> };
+      parseItem(data: unknown): { name: string; registration: Record<string, unknown> };
       parseList(data: unknown): Array<{ examsCount: number; currentPlan: { title: string } }>;
     };
     const list = repository.parseList([
@@ -26,6 +26,6 @@ describe('StudentRepository', () => {
 
     expect(list[0]).toMatchObject({ examsCount: 20, currentPlan: { title: 'Basic' } });
     expect(details.name).toBe('Ahmed');
-    expect(details.details.registration).toEqual({ email: 'student@example.com' });
+    expect(details.registration).toMatchObject({ email: 'student@example.com' });
   });
 });

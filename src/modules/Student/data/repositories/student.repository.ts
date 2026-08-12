@@ -2,9 +2,10 @@ import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositorie
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import StudentModel, { StudentStatusEnum } from '../../core/models/student.model';
+import ShowStudentModel from '../../core/models/show.student.model';
 import StudentStatsModel from '../../core/models/student.stats.model';
 import StudentApiService from '../api/student.api-service';
-export default class StudentRepository extends BaseRepository<StudentModel, StudentModel[]> {
+export default class StudentRepository extends BaseRepository<ShowStudentModel, StudentModel[]> {
   private static instance: StudentRepository;
   protected get apiService() {
     return StudentApiService.getInstance();
@@ -13,7 +14,7 @@ export default class StudentRepository extends BaseRepository<StudentModel, Stud
     return { hasPagination: true, dataKey: 'data', paginationKey: 'meta' };
   }
   protected get mockItem() {
-    return StudentModel.example;
+    return ShowStudentModel.example;
   }
   protected get mockList() {
     return [
@@ -27,10 +28,12 @@ export default class StudentRepository extends BaseRepository<StudentModel, Stud
     return this.instance;
   }
   protected parseItem(data: unknown) {
-    return StudentModel.fromJson(data as Record<string, unknown>);
+    return ShowStudentModel.fromJson(data as Record<string, unknown>);
   }
   protected parseList(data: unknown) {
-    return Array.isArray(data) ? data.map((item) => this.parseItem(item)) : [];
+    return Array.isArray(data)
+      ? data.map((item) => StudentModel.fromJson(item as Record<string, unknown>))
+      : [];
   }
   fetchStats(params: Params): Promise<DataState<StudentStatsModel>> {
     return this.executeCustom(

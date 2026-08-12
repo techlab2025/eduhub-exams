@@ -1,96 +1,765 @@
 <script setup lang="ts">
-  import { computed, onMounted } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
-  import StudentController from '../controllers/student.controller';
+  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+  import { StudentStatusEnum } from '../../core/models/student.model';
   import { ShowStudentParams } from '../../core/params/show.student.params';
+  import StudentController from '../controllers/student.controller';
+
   const route = useRoute();
   const controller = StudentController.getInstance();
-  const sections = computed(() => {
-    const details = controller.itemData.value?.details;
-    if (!details) return [];
+  const student = computed(() => controller.itemData.value);
+  const itemState = computed(() => controller.itemState.value);
+  const showAllNotes = ref(false);
+  const showAllPlacementTests = ref(false);
+  const showAllPractices = ref(false);
+
+  const fetchStudent = () => controller.fetchOne(new ShowStudentParams(Number(route.params.id)));
+  const valueOrDash = (value: unknown) =>
+    value === null || value === undefined || value === '' ? '—' : String(value);
+  const verificationValue = (verified: boolean) => (verified ? 'verified' : 'not_verified');
+  const money = (value: number) => `${value.toLocaleString()} LE`;
+  const visibleNotes = computed(() =>
+    showAllNotes.value ? (student.value?.notes ?? []) : (student.value?.notes ?? []).slice(0, 5),
+  );
+  const visiblePlacementTests = computed(() =>
+    showAllPlacementTests.value
+      ? (student.value?.placementTests ?? [])
+      : (student.value?.placementTests ?? []).slice(0, 1),
+  );
+  const visiblePractices = computed(() =>
+    showAllPractices.value
+      ? (student.value?.practicesPlan ?? [])
+      : (student.value?.practicesPlan ?? []).slice(0, 1),
+  );
+  const registrationRows = computed(() => {
+    const data = student.value?.registration;
+    if (!data) return [];
     return [
-      { key: 'registration', value: details.registration },
-      { key: 'application_information', value: details.application_information },
-      { key: 'performance', value: details.performance },
-      { key: 'plan', value: details.plan },
+      { label: 'register_date', value: data.registerDate },
+      { label: 'authentication_method', value: data.authenticationMethod },
+      { label: 'email', value: data.email },
+      { label: 'email_verified', value: verificationValue(data.emailVerified), state: true },
+      { label: 'phone_verified', value: verificationValue(data.phoneVerified), state: true },
     ];
   });
-  onMounted(() => controller.fetchOne(new ShowStudentParams(Number(route.params.id))));
+  const applicationRows = computed(() => {
+    const data = student.value?.applicationInformation;
+    if (!data) return [];
+    return [
+      { label: 'registration_method', value: data.registrationMethod },
+      { label: 'device_used', value: data.deviceUsed },
+      { label: 'operation_system', value: data.operationSystem },
+      { label: 'app_version', value: data.appVersion },
+      { label: 'current_status', value: data.currentStatus, state: true },
+      { label: 'last_seen', value: data.lastSeen },
+    ];
+  });
+
+  onMounted(fetchStudent);
 </script>
+
 <template>
-  <section v-if="controller.itemData.value" class="student-details">
-    <header>
-      <img
-        v-if="controller.itemData.value.image"
-        :src="controller.itemData.value.image"
-        :alt="controller.itemData.value.name"
-      />
-      <div>
-        <h2>{{ controller.itemData.value.name }}</h2>
-        <p>{{ controller.itemData.value.serial }}</p>
-      </div>
-    </header>
-    <div class="details-grid">
-      <article v-for="section in sections" :key="section.key">
-        <h3>{{ $t(section.key) }}</h3>
-        <dl>
-          <template v-for="(value, key) in section.value" :key="key"
-            ><dt>{{ $t(String(key)) }}</dt>
-            <dd>{{ value }}</dd></template
-          >
-        </dl>
-      </article>
-    </div>
-    <article id="notes">
-      <h3>{{ $t('notes') }}</h3>
-      <ul>
-        <li v-for="note in controller.itemData.value.details.notes ?? []" :key="note.id">
-          {{ note.note }} — {{ note.created_by?.name }}
-        </li>
-      </ul>
-    </article>
-  </section>
+  <DataStatusBuilder :controller="itemState" :on-retry="fetchStudent" use-skeleton>
+    <template #success>
+      <main v-if="student" class="student-details-page">
+        <aside class="student-details-sidebar">
+          <article class="student-profile-card">
+            <header class="student-profile-header">
+              <img v-if="student.image" :src="student.image" :alt="student.name" />
+              <span v-else class="student-profile-avatar" aria-hidden="true">
+                {{ student.name.charAt(0) }}
+              </span>
+              <div>
+                <div class="student-profile-name">
+                  <h1>{{ student.name }}</h1>
+                  <span class="student-online-dot"></span>
+                  <span>{{ $t(`student_status_${student.status}`) }}</span>
+                </div>
+                <p>{{ student.serial }}</p>
+              </div>
+            </header>
+
+            <div class="student-badges">
+              <span class="student-rank-badge">{{ valueOrDash(student.rank) }}</span>
+              <span class="student-points-badge">{{ student.points }} {{ $t('points') }}</span>
+            </div>
+
+            <dl class="student-profile-list">
+              <div>
+                <dt>{{ $t('phone_number') }}</dt>
+                <dd>{{ valueOrDash(student.phone) }}</dd>
+              </div>
+              <div>
+                <dt>{{ $t('education_type') }}</dt>
+                <dd>{{ valueOrDash(student.educationType?.title) }}</dd>
+              </div>
+              <div>
+                <dt>{{ $t('education_stage') }}</dt>
+                <dd>{{ valueOrDash(student.educationStage?.title) }}</dd>
+              </div>
+              <div>
+                <dt>{{ $t('grade_level') }}</dt>
+                <dd>{{ valueOrDash(student.grade?.title) }}</dd>
+              </div>
+              <div>
+                <dt>{{ $t('parent_name') }}</dt>
+                <dd>{{ valueOrDash(student.parentName) }}</dd>
+              </div>
+              <div>
+                <dt>{{ $t('parent_phone') }}</dt>
+                <dd>{{ valueOrDash(student.parentPhone) }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="student-info-card">
+            <h2>{{ $t('registration_security') }}</h2>
+            <dl class="student-info-list">
+              <div v-for="row in registrationRows" :key="row.label">
+                <dt>{{ $t(row.label) }}</dt>
+                <dd :class="{ 'student-state-value': row.state }">
+                  {{ row.state ? $t(row.value) : valueOrDash(row.value) }}
+                </dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="student-info-card">
+            <h2>{{ $t('application_information') }}</h2>
+            <dl class="student-info-list">
+              <div v-for="row in applicationRows" :key="row.label">
+                <dt>{{ $t(row.label) }}</dt>
+                <dd :class="{ 'student-current-offline': row.label === 'current_status' }">
+                  {{ valueOrDash(row.value) }}
+                </dd>
+              </div>
+            </dl>
+          </article>
+        </aside>
+
+        <section class="student-details-content">
+          <article class="student-content-card student-account-card">
+            <header class="student-card-heading">
+              <div>
+                <h2>{{ $t('account_status') }}</h2>
+                <p>{{ $t('account_status_description') }}</p>
+              </div>
+              <button type="button" class="student-more-button" :aria-label="$t('more_actions')">
+                ⋮
+              </button>
+            </header>
+            <p
+              class="student-account-message"
+              :class="{ blocked: student.status === StudentStatusEnum.BLOCK }"
+            >
+              <span aria-hidden="true">✓</span>
+              {{
+                $t(
+                  student.status === StudentStatusEnum.BLOCK
+                    ? 'student_account_blocked'
+                    : 'student_account_active',
+                )
+              }}
+            </p>
+          </article>
+
+          <article class="student-content-card">
+            <h2 class="student-section-title">{{ $t('plans_finance') }}</h2>
+            <div class="student-finance-grid">
+              <div>
+                <span>{{ $t('current_plan') }}</span>
+                <strong>{{ valueOrDash(student.plan?.title) }}</strong>
+                <small>{{
+                  $t('expire_date', { date: valueOrDash(student.plan?.expireDate) })
+                }}</small>
+              </div>
+              <div>
+                <span>{{ $t('total_paid_for_all_plans') }}</span>
+                <strong>{{ money(student.plan?.totalPaid ?? 0) }}</strong>
+                <small>{{ valueOrDash(student.plan?.paymentMethod) }}</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="student-content-card">
+            <h2 class="student-section-title">{{ $t('performance_snapshot') }}</h2>
+            <div class="student-performance-grid">
+              <div>
+                <span>{{ $t('total_placement_tests') }}</span>
+                <strong>{{ student.performance.totalPlacementTests }}</strong>
+              </div>
+              <div>
+                <span>{{ $t('placement_tests_this_month') }}</span>
+                <strong>{{ student.performance.placementTestsThisMonth }}</strong>
+              </div>
+              <div>
+                <span>{{ $t('total_practices_plan') }}</span>
+                <strong>{{ student.performance.totalPracticesPlan }}</strong>
+              </div>
+              <div>
+                <span>{{ $t('practices_plan_this_month') }}</span>
+                <strong>{{ student.performance.totalPracticesPlanThisMonth }}</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="student-content-card student-history-card">
+            <header class="student-card-heading">
+              <h2>{{ $t('subscription_history') }}</h2>
+              <button type="button" class="student-show-button">{{ $t('show_all') }}</button>
+            </header>
+            <dl v-if="student.plan" class="student-subscription-summary">
+              <div>
+                <dt>{{ $t('plan') }}</dt>
+                <dd>{{ student.plan.title }}</dd>
+              </div>
+              <div>
+                <dt>{{ $t('subscription_date') }}</dt>
+                <dd>{{ valueOrDash(student.plan.subscribeDate) }}</dd>
+              </div>
+              <div>
+                <dt>{{ $t('payment_method') }}</dt>
+                <dd>{{ valueOrDash(student.plan.paymentMethod) }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article class="student-content-card student-results-card">
+            <header class="student-card-heading">
+              <h2>
+                {{ $t('placement_tests_label') }}
+                <span>({{ student.placementTests.length }})</span>
+              </h2>
+              <button
+                type="button"
+                class="student-show-button"
+                @click="showAllPlacementTests = !showAllPlacementTests"
+              >
+                {{ $t(showAllPlacementTests ? 'show_less' : 'show_all') }}
+              </button>
+            </header>
+            <div class="student-results-table">
+              <div class="student-results-head">
+                <span>{{ $t('last_placement_tests') }}</span>
+                <span>{{ $t('correct_answer_label_short') }}</span>
+                <span>{{ $t('wrong_answer_label') }}</span>
+              </div>
+              <div v-for="test in visiblePlacementTests" :key="test.id" class="student-results-row">
+                <span>{{ test.title }}</span>
+                <strong>{{ test.correctCount }}</strong>
+                <strong>{{ test.wrongCount }}</strong>
+              </div>
+              <p v-if="student.placementTests.length === 0" class="student-empty-row">
+                {{ $t('no_placement_tests') }}
+              </p>
+            </div>
+          </article>
+
+          <article class="student-content-card student-results-card">
+            <header class="student-card-heading">
+              <h2>
+                {{ $t('practices_plan') }}
+                <span>({{ student.practicesPlan.length }})</span>
+              </h2>
+              <button
+                type="button"
+                class="student-show-button"
+                @click="showAllPractices = !showAllPractices"
+              >
+                {{ $t(showAllPractices ? 'show_less' : 'show_all') }}
+              </button>
+            </header>
+            <div class="student-results-table">
+              <div class="student-results-head">
+                <span>{{ $t('last_practices_plan') }}</span>
+                <span>{{ $t('correct_answer_label_short') }}</span>
+                <span>{{ $t('wrong_answer_label') }}</span>
+              </div>
+              <div v-for="plan in visiblePractices" :key="plan.id" class="student-results-row">
+                <span>{{ plan.title }}</span>
+                <strong>{{ plan.correctCount }}</strong>
+                <strong>{{ plan.wrongCount }}</strong>
+              </div>
+              <p v-if="student.practicesPlan.length === 0" class="student-empty-row">
+                {{ $t('no_practices_plan') }}
+              </p>
+            </div>
+          </article>
+
+          <article class="student-content-card student-schedule-card">
+            <header class="student-card-heading">
+              <h2>
+                {{ $t('student_schedules') }}
+                <span>({{ student.studentSchedules.length }})</span>
+              </h2>
+              <button type="button" class="student-show-button">{{ $t('show_details') }}</button>
+            </header>
+          </article>
+
+          <article id="notes" class="student-content-card student-notes-card">
+            <header class="student-card-heading">
+              <h2>
+                {{ $t('notes') }}
+                <span>({{ student.notes.length }})</span>
+              </h2>
+              <span aria-hidden="true">⌃</span>
+            </header>
+            <ul>
+              <li v-for="note in visibleNotes" :key="note.id">
+                <div class="student-note-meta">
+                  <span class="student-note-avatar" aria-hidden="true">
+                    {{ note.createdBy?.name.charAt(0) ?? 'A' }}
+                  </span>
+                  <strong>{{ valueOrDash(note.createdBy?.name) }}</strong>
+                  <time>{{ valueOrDash(note.createdAt) }}</time>
+                </div>
+                <p>{{ note.note }}</p>
+              </li>
+            </ul>
+            <p v-if="student.notes.length === 0" class="student-empty-row">{{ $t('no_notes') }}</p>
+            <button
+              v-if="student.notes.length > 5"
+              type="button"
+              class="student-notes-toggle"
+              @click="showAllNotes = !showAllNotes"
+            >
+              {{ $t(showAllNotes ? 'show_less' : 'show_all') }}
+            </button>
+          </article>
+        </section>
+      </main>
+    </template>
+  </DataStatusBuilder>
 </template>
+
 <style scoped lang="scss">
-  .student-details {
+  .student-details-page {
     display: grid;
-    gap: var(--xl-size-base);
+    grid-template-columns: minmax(260px, 31%) minmax(0, 1fr);
+    gap: 16px;
+    color: var(--standard-black);
+    font-family: var(--font-family);
   }
 
-  .student-details header,
-  article {
-    padding: var(--xl-size-1);
-    background: var(--bg-main);
-    border: 1px solid var(--border-weak);
-    border-radius: var(--radius-lg);
-  }
-
-  .student-details header {
+  .student-details-sidebar,
+  .student-details-content {
+    min-width: 0;
     display: flex;
-    gap: var(--xl-size-base);
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .student-profile-card,
+  .student-info-card,
+  .student-content-card {
+    background: var(--standard-white);
+    border: 1px solid var(--input-border-color);
+    border-radius: 20px;
+  }
+
+  .student-profile-card,
+  .student-info-card {
+    padding: 16px;
+  }
+
+  .student-profile-header {
+    display: flex;
     align-items: center;
+    gap: 12px;
+
+    img,
+    .student-profile-avatar {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 64px;
+      border-radius: 50%;
+    }
+
+    img {
+      object-fit: cover;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: var(--gray-text);
+      font-size: 13px;
+    }
   }
 
-  .student-details header img {
-    width: 80px;
-    height: 80px;
-    border-radius: var(--radius-full);
-    object-fit: cover;
-  }
-
-  .details-grid {
+  .student-profile-avatar {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: var(--xl-size-base);
-  }
-
-  dl {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: var(--xs-size-3) var(--xs-size);
-  }
-
-  dt {
+    place-items: center;
+    color: var(--primary-green);
+    background: var(--PrimaryColor-alpha-8);
+    font-size: 24px;
     font-weight: 700;
+  }
+
+  .student-profile-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    h1 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    span:last-child {
+      color: var(--primary-green);
+      font-size: 12px;
+    }
+  }
+
+  .student-online-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--primary-green);
+    border-radius: 50%;
+  }
+
+  .student-badges {
+    margin-block: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+
+    span {
+      min-height: 34px;
+      padding: 8px 10px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+
+  .student-rank-badge {
+    color: var(--btn-gold);
+    background: var(--warning-light-alpha-50);
+  }
+
+  .student-points-badge {
+    color: var(--primary-green);
+    background: var(--PrimaryColor-alpha-8);
+  }
+
+  .student-profile-list,
+  .student-info-list,
+  .student-subscription-summary {
+    margin: 0;
+
+    div {
+      padding-block: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--input-border-color);
+
+      &:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+      }
+    }
+
+    dt {
+      color: var(--gray-text);
+      font-size: 12px;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: end;
+    }
+  }
+
+  .student-info-card h2,
+  .student-card-heading h2,
+  .student-section-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .student-state-value {
+    color: var(--primary-green);
+  }
+
+  .student-current-offline {
+    color: var(--danger-alt);
+  }
+
+  .student-content-card {
+    padding: 16px;
+  }
+
+  .student-card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    p {
+      margin: 4px 0 0;
+      color: var(--gray-text);
+      font-size: 12px;
+    }
+
+    h2 span {
+      color: var(--primary-green);
+      font-weight: 500;
+    }
+  }
+
+  .student-more-button {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    color: var(--standard-black);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-size: 20px;
+  }
+
+  .student-account-message {
+    margin: 14px 0 0;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--standard-black);
+    background: var(--PrimaryColor-alpha-8);
+    border-radius: 10px;
+    font-size: 12px;
+
+    span {
+      width: 16px;
+      height: 16px;
+      display: grid;
+      place-items: center;
+      color: var(--primary-green);
+      border: 1px solid var(--primary-green);
+      border-radius: 50%;
+      font-size: 10px;
+    }
+
+    &.blocked {
+      background: var(--danger-alpha-15);
+    }
+  }
+
+  .student-section-title {
+    margin-bottom: 14px;
+  }
+
+  .student-finance-grid,
+  .student-performance-grid {
+    display: grid;
+    gap: 12px;
+
+    > div {
+      min-width: 0;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: var(--background-color-soft-light);
+      border-radius: 14px;
+    }
+
+    span,
+    small {
+      color: var(--gray-text);
+      font-size: 12px;
+    }
+
+    strong {
+      font-size: 15px;
+    }
+  }
+
+  .student-finance-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    > div:first-child strong {
+      color: var(--primary-green);
+    }
+  }
+
+  .student-performance-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .student-show-button {
+    min-width: 100px;
+    min-height: 34px;
+    padding: 7px 14px;
+    color: var(--standard-black);
+    background: var(--background-color-soft-light);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .student-subscription-summary {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+
+    div {
+      padding: 10px;
+      align-items: flex-start;
+      flex-direction: column;
+      background: var(--background-color-soft-light);
+      border: 0;
+      border-radius: 10px;
+    }
+
+    dd {
+      text-align: start;
+    }
+  }
+
+  .student-results-table {
+    margin-top: 12px;
+    overflow: hidden;
+    border: 1px solid var(--input-border-color);
+    border-radius: 14px;
+  }
+
+  .student-results-head,
+  .student-results-row {
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(80px, 1fr));
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .student-results-head {
+    background: var(--background-color-soft-light);
+    font-weight: 600;
+  }
+
+  .student-results-row {
+    border-top: 1px solid var(--input-border-color);
+
+    strong:nth-child(2) {
+      color: var(--primary-green);
+    }
+
+    strong:nth-child(3) {
+      color: var(--danger-alt);
+    }
+  }
+
+  .student-notes-card ul {
+    margin: 14px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+    list-style: none;
+
+    li {
+      padding: 12px;
+      border: 1px solid var(--input-border-color);
+      border-radius: 12px;
+
+      p {
+        margin: 8px 0 0;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+    }
+  }
+
+  .student-note-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+
+    time {
+      color: var(--gray-text);
+    }
+  }
+
+  .student-note-avatar {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    color: var(--primary-green);
+    background: var(--PrimaryColor-alpha-8);
+    border-radius: 50%;
+    font-weight: 700;
+  }
+
+  .student-notes-toggle {
+    width: 100%;
+    height: 40px;
+    margin-top: 12px;
+    color: var(--primary-green);
+    background: var(--standard-white);
+    border: 1px solid var(--primary-green);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+  }
+
+  .student-empty-row {
+    margin: 0;
+    padding: 16px;
+    color: var(--gray-text);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 1024px) {
+    .student-details-page {
+      grid-template-columns: 1fr;
+    }
+
+    .student-details-sidebar {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .student-profile-card {
+      grid-row: span 2;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .student-details-sidebar,
+    .student-finance-grid,
+    .student-performance-grid,
+    .student-subscription-summary {
+      grid-template-columns: 1fr;
+    }
+
+    .student-results-head,
+    .student-results-row {
+      grid-template-columns: minmax(0, 1fr) repeat(2, 72px);
+      font-size: 11px;
+    }
+
+    .student-card-heading {
+      align-items: flex-start;
+    }
   }
 </style>

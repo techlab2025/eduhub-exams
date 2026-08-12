@@ -874,8 +874,8 @@
   }
 
   .student-status-option input:checked + .student-status-box {
-    background: currentcolor;
-    border-color: currentcolor;
+    background: currentColor;
+    border-color: currentColor;
 
     &::after {
       position: absolute;
