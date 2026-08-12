@@ -19,6 +19,8 @@ export default class PlanDetailsModel {
   public readonly pricing: PlanPricingModel[];
   public readonly features: PlanFeatureModel[];
   public readonly activeLog: PlanActiveLogModel[];
+  public readonly titles: Record<string, string>[];
+  public readonly descriptions: Record<string, string>[];
 
   constructor(data: {
     id: number;
@@ -33,6 +35,8 @@ export default class PlanDetailsModel {
     pricing: PlanPricingModel[];
     features: PlanFeatureModel[];
     activeLog: PlanActiveLogModel[];
+    titles: Record<string, string>[];
+    descriptions: Record<string, string>[];
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -46,6 +50,8 @@ export default class PlanDetailsModel {
     this.pricing = data.pricing;
     this.features = data.features;
     this.activeLog = data.activeLog;
+    this.titles = data.titles;
+    this.descriptions = data.descriptions;
     Object.freeze(this);
   }
 
@@ -80,6 +86,8 @@ export default class PlanDetailsModel {
             PlanActiveLogModel.fromJson(item as Record<string, unknown>),
           )
         : [],
+      titles: json.title as Record<string, string>[],
+      descriptions: json.description as Record<string, string>[],
     });
   }
 

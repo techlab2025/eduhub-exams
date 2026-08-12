@@ -279,11 +279,16 @@
     (plan) => {
       if (!plan) return;
 
-      title.value = normalizeTranslations(plan.title, 'title');
-      description.value = {};
+      title.value = normalizeTranslations(plan.titles, 'title');
+      description.value = normalizeTranslations(plan.descriptions, 'description');
       status.value =
         statusOptions.value.find((option) => option.id === Number(plan.status)) ?? null;
-      badges.value = plan.highlightBadges;
+      badges.value = plan.highlightBadges.map((el) => {
+        return {
+          id: el.id,
+          name: normalizeTranslations(el.title, 'title'),
+        };
+      });
       hasTrial.value = plan.trialDays > 0;
       trialDays.value = plan.trialDays;
       pricing.value = plan.pricing.map(
@@ -599,6 +604,11 @@
 </template>
 
 <style scoped lang="scss">
+  :deep(.multi-lang-input .field-input) {
+    color: black !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+  }
   .plan-form {
     display: grid;
     gap: var(--xs-size);

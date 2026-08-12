@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import Dialog from 'primevue/dialog';
+  import ArchiveIcon from '@/assets/images/question/ArchiveIcon.gif';
 
   defineProps<{ loading?: boolean }>();
   const visible = defineModel<boolean>({ default: false });
@@ -15,6 +16,7 @@
   >
     <template #container>
       <div class="plan-status-dialog">
+        <img width="200" :src="ArchiveIcon" alt="archive icon" />
         <h3>{{ $t('confirm_deactivate_plan_title') }}</h3>
         <p>{{ $t('confirm_deactivate_plan_message') }}</p>
         <div class="dialog-actions">
@@ -44,6 +46,9 @@
     background: var(--BgWhite);
     border-radius: var(--radius-lg);
 
+    img {
+      margin-inline: auto;
+    }
     h3,
     p {
       margin: 0;

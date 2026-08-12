@@ -270,11 +270,7 @@
             {{ $t('plan_archive_filter') }}
           </button>
         </div>
-        <FilterDialog
-          v-model="filterDialogVisible"
-          dialog-class="plan-filter-dialog"
-          width="40rem"
-        >
+        <FilterDialog v-model="filterDialogVisible" dialog-class="plan-filter-dialog" width="30rem">
           <template #content>
             <div class="filters plan-filters">
               <section class="plan-filter-section plan-price-filter">
@@ -549,9 +545,16 @@
 
   .filter-actions {
     display: flex;
-    gap: var(--xs-size);
-    justify-content: flex-end;
-    grid-column: 1 / -1;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    padding: var(--xs-size);
+    button {
+      width: 100% !important;
+    }
+ 
   }
 
   .plan-list-toggle {
@@ -849,8 +852,7 @@
   }
 
   .plan-filters .filter-actions {
-    display: grid;
-    grid-template-columns: minmax(0, 250px) minmax(0, 144px);
+
     gap: 16px;
     padding-top: 12px;
 

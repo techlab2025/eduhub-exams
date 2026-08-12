@@ -18,7 +18,7 @@ export default class TogglePlanStatusParams implements Params {
 
   toMap(): Record<string, number> {
     return {
-      plan_id: this.planId,
+      subscription_plan_id: this.planId,
       status: this.status,
     };
   }
