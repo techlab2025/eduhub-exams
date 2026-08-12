@@ -119,11 +119,12 @@
     ['en', 'ar'].some((locale) => (value[locale]?.trim().length ?? 0) > 0);
   const isNumberAtLeast = (value: unknown, minimum: number) =>
     Number.isFinite(Number(value)) && Number(value) >= minimum;
+  const hasActiveLimit = (subType: PlanSubFeatureFormItem) =>
+    subType.hasLimit && isNumberAtLeast(subType.limit, 1);
   const isSubFeatureIncluded = (subType: PlanSubFeatureFormItem) =>
-    isFeatureEdit.value ? subType.enabled : subType.hasLimit || subType.enabled;
+    subType.hasLimit ? hasActiveLimit(subType) : subType.enabled;
   const updateLimitSubFeature = (subType: PlanSubFeatureFormItem) => {
-    if (!isFeatureEdit.value) return;
-    subType.enabled = Number(subType.limit ?? 0) > 0;
+    subType.enabled = hasActiveLimit(subType);
   };
 
   const validationErrors = computed<Record<string, string>>(() => {
@@ -160,19 +161,6 @@
     if (validates('features')) {
       const enabledFeatures = planFeatures.value.filter((feature) => feature.enabled);
       if (enabledFeatures.length === 0) errors.features = t('plan_feature_required');
-      enabledFeatures.forEach((feature) => {
-        feature.subTypes.forEach((subType) => {
-          if (
-            subType.hasLimit &&
-            isSubFeatureIncluded(subType) &&
-            !isNumberAtLeast(subType.limit ?? Number.NaN, 1)
-          ) {
-            errors[`feature-${feature.featureType}-limit-${subType.subType}`] = t(
-              'plan_feature_limit_required',
-            );
-          }
-        });
-      });
     }
 
     return errors;
@@ -276,7 +264,6 @@
         ? new EditPlanParams({ id, section: editSection.value, ...data })
         : new AddPlanParams(data),
     );
-    console.log(data, 'data');
     emit('validityChange', isPublishReady.value);
   };
 
@@ -408,6 +395,7 @@
               {{ validationErrors.description }}
             </p>
           </div>
+          <!-- todo:number of subjects field -->
           <div class="validated-field">
             <UpdatedCustomInputSelect
               v-model="badges"

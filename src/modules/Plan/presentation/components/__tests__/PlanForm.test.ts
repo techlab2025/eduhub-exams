@@ -228,4 +228,36 @@ describe('PlanForm', () => {
     await wrapper.vm.$nextTick();
     expect(featureCards[1]?.classes()).not.toContain('edit-selection-inactive');
   });
+
+  it('does not validate or send limited sub-features while their limit is zero', async () => {
+    routeMock.params = {};
+    routeMock.query = {};
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    const firstFeature = wrapper.findAll('.feature-card')[0];
+
+    firstFeature?.findComponent({ name: 'ToggleSwitch' }).vm.$emit('update:modelValue', true);
+    await wrapper.vm.$nextTick();
+
+    const limitInput = firstFeature?.findAll('input.feature-limit')[0];
+    expect((limitInput?.element as HTMLInputElement).value).toBe('0');
+
+    await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate();
+    expect(wrapper.find('.feature-limit-error').exists()).toBe(false);
+
+    const latestParams = wrapper.emitted('updateData')?.at(-1)?.[0] as {
+      toMap: () => Record<string, unknown>;
+    };
+    const payload = latestParams.toMap();
+    expect(payload.features).toBeUndefined();
+
+    await limitInput?.setValue(1);
+    const updatedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as {
+      toMap: () => Record<string, unknown>;
+    };
+    const updatedFeatures = updatedParams.toMap().features as Array<{
+      feature_sub_type: Array<{ sub_type: number; limit?: number }>;
+    }>;
+
+    expect(updatedFeatures[0]?.feature_sub_type).toContainEqual({ sub_type: 6, limit: 1 });
+  });
 });
