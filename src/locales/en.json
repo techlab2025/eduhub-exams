@@ -983,6 +983,7 @@
   "subscription_delete_blocked_title": "This Student Has An Subscription Plan, You Can Not Delete Him Now.",
   "subscription_delete_blocked_message": "You Cannot Delete Him Until He End His Subscribe",
   "subscription_delete_blocked_close": "No",
+  "show_receipt": "Show Receipt",
   "subscription_details": "Subscription Details",
   "student": "Student",
   "plan": "Plan",

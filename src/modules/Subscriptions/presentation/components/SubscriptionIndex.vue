@@ -27,6 +27,7 @@
   import { DeleteSubscriptionParams } from '../../core/params/delete.subscription.params';
   import { IndexSubscriptionParams } from '../../core/params/index.subscription.params';
   import SubscriptionController from '../controllers/subscription.controller';
+  import SubscriptionDetailsDialog from '../subComponents/SubscriptionDetailsDialog.vue';
   import SubscriptionDeleteWarningDialog from '../subComponents/SubscriptionDeleteWarningDialog.vue';
 
   const { t } = useI18n();
@@ -47,6 +48,8 @@
   const expireTo = ref<Date | null>(null);
   const filterDialogVisible = ref(false);
   const deleteWarningDialogVisible = ref(false);
+  const detailsDialogVisible = ref(false);
+  const selectedSubscriptionId = ref<number | null>(null);
   const hasQuickFilters = computed(() => Boolean(education.value || plan.value || status.value));
 
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
@@ -90,6 +93,10 @@
     await controller.delete(new DeleteSubscriptionParams(id));
     await Promise.all([fetchItems(), controller.fetchStats()]);
   };
+  const openDetails = (id: number) => {
+    selectedSubscriptionId.value = id;
+    detailsDialogVisible.value = true;
+  };
   const actionList = (item: SubscriptionModel) => {
     const deleteBlocked = item.status === SubscriptionStatusEnum.ACTIVE;
 
@@ -97,7 +104,7 @@
       {
         text: t('view'),
         icon: PlanViewIcon,
-        link: `/subscriptions/${item.id}`,
+        action: () => openDetails(item.id),
       },
       {
         text: t('delete'),
@@ -267,7 +274,7 @@
       <FilterDialog
         v-model="filterDialogVisible"
         dialog-class="subscription-filter-dialog"
-        width="28.125rem"
+        width="40rem"
       >
         <template #content>
           <div class="subscription-filters">
@@ -478,6 +485,10 @@
       </DataStatusBuilder>
     </div>
     <SubscriptionDeleteWarningDialog v-model="deleteWarningDialogVisible" />
+    <SubscriptionDetailsDialog
+      v-model="detailsDialogVisible"
+      :subscription-id="selectedSubscriptionId"
+    />
   </section>
 </template>
 
@@ -1083,6 +1094,20 @@
     .subscription-status-options {
       align-items: flex-start;
       flex-direction: column;
+    }
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    padding: var(--xs-size);
+
+    button {
+      width: 100% !important;
     }
   }
 </style>

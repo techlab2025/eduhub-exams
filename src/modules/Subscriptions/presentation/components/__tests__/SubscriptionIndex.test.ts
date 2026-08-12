@@ -100,10 +100,16 @@ describe('SubscriptionIndex', () => {
           DropList: {
             props: ['actionList'],
             template: `
-              <button class="delete-action" @click="actionList[1].action()">
-                delete
-              </button>
+              <div>
+                <button class="view-action" @click="actionList[0].action()">view</button>
+                <button class="delete-action" @click="actionList[1].action()">delete</button>
+              </div>
             `,
+          },
+          SubscriptionDetailsDialog: {
+            props: ['modelValue', 'subscriptionId'],
+            template:
+              '<div v-if="modelValue" class="details-dialog-stub">{{ subscriptionId }}</div>',
           },
           SubscriptionDeleteWarningDialog: {
             props: ['modelValue'],
@@ -120,5 +126,45 @@ describe('SubscriptionIndex', () => {
 
     expect(wrapper.find('.warning-dialog-stub').exists()).toBe(true);
     expect(mocks.remove).not.toHaveBeenCalled();
+  });
+
+  it('opens the details dialog with the selected subscription from the view action', async () => {
+    const wrapper = shallowMount(Component, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          DataStatusBuilder: {
+            template: `
+              <slot
+                name="success"
+                :data="[{ id: 7, status: '2', student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+              />
+            `,
+          },
+          AppTable: {
+            props: ['items'],
+            template: '<div><slot name="actions" :item="items[0]" /></div>',
+          },
+          DropList: {
+            props: ['actionList'],
+            template: '<button class="view-action" @click="actionList[0].action()">view</button>',
+          },
+          SubscriptionDetailsDialog: {
+            props: ['modelValue', 'subscriptionId'],
+            template:
+              '<div v-if="modelValue" class="details-dialog-stub">{{ subscriptionId }}</div>',
+          },
+          SubscriptionDeleteWarningDialog: true,
+          FilterDialog: true,
+          UpdatedCustomInputSelect: true,
+          Pagination: true,
+        },
+      },
+    });
+
+    await wrapper.find('.view-action').trigger('click');
+
+    expect(wrapper.find('.details-dialog-stub').exists()).toBe(true);
+    expect(wrapper.find('.details-dialog-stub').text()).toBe('7');
   });
 });

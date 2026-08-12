@@ -5,29 +5,30 @@
   import SubscriptionController from '../controllers/subscription.controller';
   const route = useRoute();
   const controller = SubscriptionController.getInstance();
+  const details = controller.itemData;
   onMounted(() => controller.fetchOne(new ShowSubscriptionParams(Number(route.params.id))));
 </script>
 
 <template>
-  <section v-if="controller.itemData.value" class="details-card">
+  <section v-if="details" class="details-card">
     <h2>{{ $t('subscription_details') }}</h2>
     <dl>
       <dt>{{ $t('student') }}</dt>
-      <dd>{{ controller.itemData.value.student.name }}</dd>
+      <dd>{{ details.user.name }}</dd>
       <dt>{{ $t('serial') }}</dt>
-      <dd>{{ controller.itemData.value.student.serial }}</dd>
+      <dd>{{ details.user.serial }}</dd>
       <dt>{{ $t('education_type') }}</dt>
-      <dd>{{ controller.itemData.value.educationType?.title }}</dd>
+      <dd>{{ details.educationType.title }}</dd>
       <dt>{{ $t('plan') }}</dt>
-      <dd>{{ controller.itemData.value.plan.title }}</dd>
+      <dd>{{ details.plan.title }}</dd>
       <dt>{{ $t('total_paid') }}</dt>
-      <dd>{{ controller.itemData.value.totalPrice }}</dd>
+      <dd>{{ details.plan.totalPaid }}</dd>
       <dt>{{ $t('payment_method') }}</dt>
-      <dd>{{ controller.itemData.value.plan.payment_method }}</dd>
+      <dd>{{ details.plan.paymentMethod }}</dd>
       <dt>{{ $t('subscription_date') }}</dt>
-      <dd>{{ controller.itemData.value.subscriptionDate }}</dd>
+      <dd>{{ details.plan.subscribeDate }}</dd>
       <dt>{{ $t('expire_date') }}</dt>
-      <dd>{{ controller.itemData.value.expireDate }}</dd>
+      <dd>{{ details.plan.expireDate }}</dd>
     </dl>
   </section>
 </template>

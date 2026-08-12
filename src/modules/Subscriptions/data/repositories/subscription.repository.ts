@@ -3,11 +3,12 @@ import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState
 import type Params from '@/base/Core/Params/params';
 import SubscriptionModel from '../../core/models/subscription.model';
 import SubscriptionStatsModel from '../../core/models/subscription.stats.model';
+import SubscriptionDetailsModel from '../../core/models/subscription.details.model';
 import SubscriptionApiService from '../api/subscription.api-service';
 import { SubscriptionStatusEnum } from '../../core/enums/subscription.status.enum';
 
 export default class SubscriptionRepository extends BaseRepository<
-  SubscriptionModel,
+  SubscriptionDetailsModel,
   SubscriptionModel[]
 > {
   private static instance: SubscriptionRepository;
@@ -18,7 +19,7 @@ export default class SubscriptionRepository extends BaseRepository<
     return { hasPagination: true, dataKey: 'data', paginationKey: 'meta' };
   }
   protected get mockItem() {
-    return SubscriptionModel.example;
+    return SubscriptionDetailsModel.example;
   }
   protected get mockList() {
     return [
@@ -33,10 +34,12 @@ export default class SubscriptionRepository extends BaseRepository<
     return this.instance;
   }
   protected parseItem(data: unknown) {
-    return SubscriptionModel.fromJson(data as Record<string, unknown>);
+    return SubscriptionDetailsModel.fromJson(data as Record<string, unknown>);
   }
   protected parseList(data: unknown) {
-    return Array.isArray(data) ? data.map((item) => this.parseItem(item)) : [];
+    return Array.isArray(data)
+      ? data.map((item) => SubscriptionModel.fromJson(item as Record<string, unknown>))
+      : [];
   }
   fetchStats(params: Params): Promise<DataState<SubscriptionStatsModel>> {
     return this.executeCustom(

@@ -3,6 +3,7 @@ import BaseController from '@/base/Presentation/Controller/baseController';
 import type { ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type SubscriptionStatsModel from '../../core/models/subscription.stats.model';
 import type SubscriptionModel from '../../core/models/subscription.model';
+import type SubscriptionDetailsModel from '../../core/models/subscription.details.model';
 import SubscriptionRepository from '../../data/repositories/subscription.repository';
 import { SubscriptionStatsParams } from '../../core/params/index.subscription.params';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
@@ -10,7 +11,7 @@ import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 
 export default class SubscriptionController extends BaseController<
-  SubscriptionModel,
+  SubscriptionDetailsModel,
   SubscriptionModel[]
 > {
   private static instance: SubscriptionController;
@@ -54,5 +55,12 @@ export default class SubscriptionController extends BaseController<
     options?: ApiCallOptions,
   ): Promise<DataState<SubscriptionModel[]>> {
     return super.fetchList(params, { ...options, useStaticData: true });
+  }
+
+  async fetchOne(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<SubscriptionDetailsModel>> {
+    return super.fetchOne(params, { ...options, useStaticData: true });
   }
 }
