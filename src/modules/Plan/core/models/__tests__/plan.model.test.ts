@@ -13,6 +13,7 @@ describe('PlanModel', () => {
       price: 99,
       status: '1',
       trail_days: 7,
+      number_of_subjects: 6,
       last_updated: {
         last_updated_person: { id: 7, name: 'Alice' },
         last_updated_date: '2026-08-11',
@@ -27,6 +28,7 @@ describe('PlanModel', () => {
       price: 99,
       status: PlanStatusEnum.ACTIVE,
       trialDays: 7,
+      numberOfSubjects: 6,
       lastUpdated: {
         lastupdatedBy: { id: 7, name: 'Alice' },
         date: '2026-08-11',

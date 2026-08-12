@@ -71,6 +71,7 @@
 
   const title = ref<Record<string, string>>({});
   const description = ref<Record<string, string>>({});
+  const numberOfSubjects = ref<number>();
   const status = ref<TitleInterface<number> | null>({
     id: PlanStatusEnum.ACTIVE,
     title: t('active'),
@@ -138,6 +139,9 @@
         errors.description = t('plan_description_required');
       }
       if (badges.value.length === 0) errors.badges = t('plan_badge_required');
+      if (!Number.isInteger(Number(numberOfSubjects.value)) || Number(numberOfSubjects.value) < 1) {
+        errors.numberOfSubjects = t('plan_number_of_subjects_required');
+      }
     }
 
     if (validates('pricing')) {
@@ -213,6 +217,7 @@
     title.value = {};
     description.value = {};
     badges.value = [];
+    numberOfSubjects.value = undefined;
   };
   const resetPricing = () => {
     pricing.value = [createPricing()];
@@ -241,6 +246,7 @@
       pricing: pricing.value,
       hasTrail: hasTrial.value,
       trialDays: trialDays.value,
+      numberOfSubjects: numberOfSubjects.value,
       features: planFeatures.value
         .filter((feature) => feature.enabled)
         .map(
@@ -274,6 +280,7 @@
 
       title.value = normalizeTranslations(plan.titles, 'title');
       description.value = normalizeTranslations(plan.descriptions, 'description');
+      numberOfSubjects.value = plan.numberOfSubjects || undefined;
       status.value =
         statusOptions.value.find((option) => option.id === Number(plan.status)) ?? null;
       badges.value = plan.highlightBadges.map((el) => {
@@ -311,7 +318,17 @@
   );
 
   watch(
-    [title, description, status, badges, pricing, hasTrial, trialDays, planFeatures],
+    [
+      title,
+      description,
+      numberOfSubjects,
+      status,
+      badges,
+      pricing,
+      hasTrial,
+      trialDays,
+      planFeatures,
+    ],
     updateData,
     { deep: true, immediate: true },
   );
@@ -395,7 +412,34 @@
               {{ validationErrors.description }}
             </p>
           </div>
-          <!-- todo:number of subjects field -->
+          <div class="validated-field">
+            <label for="plan-number-of-subjects">{{ $t('number_of_subjects') }}</label>
+            <input
+              id="plan-number-of-subjects"
+              v-model.number="numberOfSubjects"
+              type="number"
+              min="1"
+              step="1"
+              :placeholder="$t('enter_number_of_subjects')"
+              :class="{
+                'field-invalid': showValidationErrors && validationErrors.numberOfSubjects,
+              }"
+              :aria-invalid="Boolean(showValidationErrors && validationErrors.numberOfSubjects)"
+              :aria-describedby="
+                showValidationErrors && validationErrors.numberOfSubjects
+                  ? 'plan-number-of-subjects-error'
+                  : undefined
+              "
+            />
+            <p
+              v-if="showValidationErrors && validationErrors.numberOfSubjects"
+              id="plan-number-of-subjects-error"
+              data-plan-validation-error
+              class="field-error"
+            >
+              {{ validationErrors.numberOfSubjects }}
+            </p>
+          </div>
           <div class="validated-field">
             <UpdatedCustomInputSelect
               v-model="badges"
@@ -664,10 +708,8 @@
 </template>
 
 <style scoped lang="scss">
-  :deep(.multi-lang-input .field-input) {
-    color: black !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
+  .validated-field input {
+    width: 100%;
   }
 
   .plan-form {

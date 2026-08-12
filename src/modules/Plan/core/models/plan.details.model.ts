@@ -21,6 +21,7 @@ export default class PlanDetailsModel {
   public readonly activeLog: PlanActiveLogModel[];
   public readonly titles: Record<string, string>[];
   public readonly descriptions: Record<string, string>[];
+  public readonly numberOfSubjects: number;
 
   constructor(data: {
     id: number;
@@ -37,6 +38,7 @@ export default class PlanDetailsModel {
     activeLog: PlanActiveLogModel[];
     titles: Record<string, string>[];
     descriptions: Record<string, string>[];
+    numberOfSubjects: number;
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -52,11 +54,12 @@ export default class PlanDetailsModel {
     this.activeLog = data.activeLog;
     this.titles = data.titles;
     this.descriptions = data.descriptions;
+    this.numberOfSubjects = data.numberOfSubjects;
     Object.freeze(this);
   }
 
   static fromJson(json: Record<string, unknown>) {
-    const createdBy = (json.created_by ?? {}) as Record<string, unknown>;
+    const createdBy = (json.created_by ?? json.craeted_by ?? {}) as Record<string, unknown>;
     const lastUpdated = (json.last_updated ?? {
       last_updated_date: json.last_update_at,
     }) as Record<string, unknown>;
@@ -88,6 +91,7 @@ export default class PlanDetailsModel {
         : [],
       titles: json.title as Record<string, string>[],
       descriptions: json.description as Record<string, string>[],
+      numberOfSubjects: Number(json.number_of_subjects ?? json.numberOfSubjects ?? 0),
     });
   }
 
@@ -104,6 +108,7 @@ export default class PlanDetailsModel {
     },
     'subscribers:': 1245,
     trail_days: 14,
+    number_of_subjects: 8,
     pricing: [
       { price: 499, duration: 1, duration_type: 3 },
       { price: 4999, duration: 1, duration_type: 4 },

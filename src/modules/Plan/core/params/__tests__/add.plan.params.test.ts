@@ -27,6 +27,7 @@ describe('AddPlanParams', () => {
       ],
       hasTrail: true,
       trialDays: 3,
+      numberOfSubjects: 8,
       features: [
         new PlanFeatureParams({
           featureType: PlanFeatureTypeEnum.REPORT,
@@ -68,6 +69,7 @@ describe('AddPlanParams', () => {
       highlight_badge: [2],
       has_trail: true,
       trail_days: 3,
+      number_of_subjects: 8,
       pricing: [{ price: 50, duration: 1, duration_type: 3 }],
       features: [
         {
@@ -96,6 +98,7 @@ describe('AddPlanParams', () => {
       ],
       hasTrail: false,
       trialDays: 0,
+      numberOfSubjects: 8,
       features: [
         new PlanFeatureParams({
           featureType: PlanFeatureTypeEnum.REPORT,
@@ -130,6 +133,7 @@ describe('AddPlanParams', () => {
       pricing: [new PlanPricingParams({ durationType: PlanDurationTypeEnum.MONTH })],
       hasTrail: false,
       trialDays: 0,
+      numberOfSubjects: 0,
       features: [],
     });
 

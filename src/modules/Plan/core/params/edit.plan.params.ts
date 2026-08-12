@@ -20,6 +20,7 @@ export default class EditPlanParams extends AddPlanParams {
     hasTrail: boolean;
     trialDays: number;
     features: PlanFeatureParams[];
+    numberOfSubjects?: number;
     section?: PlanEditSection;
   }) {
     super(data);
@@ -34,14 +35,17 @@ export default class EditPlanParams extends AddPlanParams {
         subscription_plan_id: this.id,
         translations: fullMap.translations,
         highlight_badge: fullMap.highlight_badge,
+        ...(fullMap.number_of_subjects !== undefined && {
+          number_of_subjects: fullMap.number_of_subjects,
+        }),
       };
     }
     if (this.section === 'pricing') {
       return {
         subscription_plan_id: this.id,
         pricing: fullMap.pricing,
-        has_trail: fullMap.has_trail,
-        trail_days: fullMap.trail_days,
+        has_trail: this.hasTrail,
+        trail_days: this.trialDays,
       };
     }
     if (this.section === 'features') {
@@ -56,7 +60,7 @@ export default class EditPlanParams extends AddPlanParams {
   validate(): { isValid: boolean; errors: FieldError[] } {
     const result = super.validate();
     const fieldsBySection: Record<PlanEditSection, string[]> = {
-      basic: ['translations', 'highlightBadge'],
+      basic: ['translations', 'highlightBadge', 'numberOfSubjects'],
       pricing: ['pricing', 'hasTrail', 'trialDays'],
       features: ['features'],
     };

@@ -11,7 +11,7 @@ export default class PlanCreatedByModel {
   static fromJson(json: Record<string, unknown>) {
     return new PlanCreatedByModel({
       id: Number(json.id ?? 0),
-      title: String(json.name ?? ''),
+      title: String(json.name ?? json.title ?? ''),
     });
   }
 

@@ -86,6 +86,35 @@ describe('PlanForm', () => {
     expect(wrapper.text()).not.toContain('plan_description_required');
   });
 
+  it('prefills and maps the number of subjects when editing basic information', async () => {
+    routeMock.params = { id: '8' };
+    routeMock.query = { section: 'basic' };
+    const plan = PlanDetailsModel.fromJson({
+      id: 8,
+      status: 1,
+      number_of_subjects: 6,
+      title: [{ locale: 'en', title: 'Plan' }],
+      description: [{ locale: 'en', description: 'Description' }],
+      highlight_badge: [],
+      pricing: [],
+      features: [],
+    });
+    const wrapper = shallowMount(PlanForm, {
+      props: { plan },
+      global: { plugins: [i18n] },
+    });
+
+    const input = wrapper.get('#plan-number-of-subjects');
+    expect((input.element as HTMLInputElement).value).toBe('6');
+
+    await input.setValue(9);
+    const params = wrapper.emitted('updateData')?.at(-1)?.[0] as {
+      toMap: () => Record<string, unknown>;
+    };
+
+    expect(params.toMap().number_of_subjects).toBe(9);
+  });
+
   it('shows pricing errors below the complete row and defaults duration type to month', async () => {
     routeMock.params = { id: '8' };
     routeMock.query = { section: 'pricing' };

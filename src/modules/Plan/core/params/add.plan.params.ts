@@ -13,6 +13,7 @@ export default class AddPlanParams implements Params {
   public hasTrail: boolean;
   public trialDays: number;
   public features: PlanFeatureParams[];
+  public numberOfSubjects?: number;
 
   public static readonly validation = new ClassValidation().setRules({
     translations: { required: true },
@@ -33,6 +34,12 @@ export default class AddPlanParams implements Params {
     hasTrail: { required: true },
     trialDays: { required: true },
     features: { required: true },
+    numberOfSubjects: {
+      required: true,
+      custom: (value: number) =>
+        (Number.isInteger(Number(value)) && Number(value) >= 1) ||
+        'number of subjects must be a positive integer',
+    },
   });
 
   constructor(data: {
@@ -43,6 +50,7 @@ export default class AddPlanParams implements Params {
     hasTrail: boolean;
     trialDays: number;
     features: PlanFeatureParams[];
+    numberOfSubjects?: number;
   }) {
     this.translations = data.translations;
     this.status = data.status;
@@ -51,6 +59,7 @@ export default class AddPlanParams implements Params {
     this.hasTrail = data.hasTrail;
     this.trialDays = data.trialDays;
     this.features = data.features;
+    this.numberOfSubjects = data.numberOfSubjects;
   }
 
   toMap(): Record<string, unknown> {
@@ -87,8 +96,11 @@ export default class AddPlanParams implements Params {
       }),
       ...(pricing.length > 0 && { pricing }),
       ...(!isDraft || this.hasTrail ? { has_trail: this.hasTrail } : {}),
-      ...((this.hasTrail && this.trialDays > 0) ? { trail_days: this.trialDays } : {}),
+      ...(this.hasTrail && this.trialDays > 0 ? { trail_days: this.trialDays } : {}),
       ...(features.length > 0 && { features }),
+      ...(Number.isInteger(Number(this.numberOfSubjects)) && Number(this.numberOfSubjects) >= 1
+        ? { number_of_subjects: Number(this.numberOfSubjects) }
+        : {}),
     };
   }
 

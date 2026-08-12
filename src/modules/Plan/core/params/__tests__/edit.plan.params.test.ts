@@ -18,10 +18,15 @@ describe('EditPlanParams', () => {
       pricing: [],
       hasTrail: false,
       trialDays: 0,
+      numberOfSubjects: 8,
       features: [],
     });
 
-    expect(params.toMap()).toMatchObject({ subscription_plan_id: 9, status: 1 });
+    expect(params.toMap()).toMatchObject({
+      subscription_plan_id: 9,
+      status: 1,
+      number_of_subjects: 8,
+    });
   });
 
   it('maps and validates only pricing for a pricing edit', () => {
@@ -40,6 +45,7 @@ describe('EditPlanParams', () => {
       ],
       hasTrail: false,
       trialDays: 0,
+      numberOfSubjects: 8,
       features: [],
     });
 
@@ -65,6 +71,7 @@ describe('EditPlanParams', () => {
       pricing: [],
       hasTrail: false,
       trialDays: 0,
+      numberOfSubjects: 12,
       features: [],
     });
 
@@ -75,6 +82,7 @@ describe('EditPlanParams', () => {
         description: { en: 'Description' },
       },
       highlight_badge: [4],
+      number_of_subjects: 12,
     });
     expect(params.validate().isValid).toBe(true);
   });
@@ -89,6 +97,7 @@ describe('EditPlanParams', () => {
       pricing: [],
       hasTrail: false,
       trialDays: 0,
+      numberOfSubjects: 8,
       features: [
         new PlanFeatureParams({
           featureType: PlanFeatureTypeEnum.REPORT,

@@ -15,6 +15,7 @@ describe('PlanDetailsModel', () => {
       last_update_at: '2026-07-05',
       'subscribers:': 1245,
       trail_days: 14,
+      number_of_subjects: 9,
       pricing: [{ price: 499, duration: 1, duration_type: PlanDurationTypeEnum.MONTH }],
       features: [
         {
@@ -39,9 +40,10 @@ describe('PlanDetailsModel', () => {
       highlightBadges: [{ id: 2, title: 'Most Popular' }],
       createdBy: { id: 7, title: 'Ahmed Hawam' },
       createdAt: '2026-06-20',
-      lastUpdateAt: '2026-07-05',
+      lastUpdated: { date: '2026-07-05' },
       subscribers: 1245,
       trialDays: 14,
+      numberOfSubjects: 9,
       pricing: [{ price: 499, duration: 1, durationType: PlanDurationTypeEnum.MONTH }],
       features: [
         {
