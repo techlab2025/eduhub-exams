@@ -49,7 +49,7 @@ export default class PlanDetailsModel {
   }
 
   static fromJson(json: Record<string, unknown>) {
-    const createdBy = (json.craeted_by ?? {}) as Record<string, unknown>;
+    const createdBy = (json.created_by ?? {}) as Record<string, unknown>;
 
     return new PlanDetailsModel({
       id: Number(json.id ?? 0),

@@ -5,6 +5,8 @@
 
   const props = defineProps<{
     modelValue: boolean;
+    dialogClass?: string;
+    width?: string;
   }>();
 
   const emit = defineEmits(['update:modelValue']);
@@ -23,9 +25,9 @@
   <Dialog
     v-model:visible="visible"
     modal
-    :style="{ width: '25rem' }"
+    :style="{ width: props.width ?? '25rem' }"
     :pt="{
-      root: 'filter-dialog',
+      root: ['filter-dialog', props.dialogClass],
     }"
   >
     <template #header>

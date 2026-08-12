@@ -79,7 +79,10 @@ const mountComponent = () =>
           emits: ['update:modelValue', 'confirm'],
           template: '<div />',
         },
-        FilterDialog: { template: '<div />' },
+        FilterDialog: {
+          props: ['modelValue', 'dialogClass', 'width'],
+          template: '<div><slot name="content"></slot></div>',
+        },
         Pagination: true,
         DatePicker: true,
         UpdatedCustomInputSelect: true,
@@ -127,7 +130,7 @@ describe('PlanIndex', () => {
     await flushPromises();
 
     expect(deleteMock).toHaveBeenCalledOnce();
-    expect(deleteMock.mock.calls[0]?.[0].toMap()).toEqual({ plan_id: 1 });
+    expect(deleteMock.mock.calls[0]?.[0].toMap()).toEqual({ subscription_plan_id: 1 });
     expect(fetchListMock).toHaveBeenCalledTimes(2);
   });
 
@@ -164,7 +167,7 @@ describe('PlanIndex', () => {
     await modeButtons[0].trigger('click');
     await flushPromises();
 
-    expect(fetchListMock.mock.calls.at(-1)?.[0].toMap().status).toBeUndefined();
+    expect(fetchListMock.mock.calls.at(-1)?.[0].toMap().status).toBe(1);
     expect(modeButtons[0].attributes('aria-pressed')).toBe('true');
   });
 });

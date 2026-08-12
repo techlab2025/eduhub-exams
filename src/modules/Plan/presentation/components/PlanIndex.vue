@@ -18,7 +18,6 @@
   import DeletePlanParams from '../../core/params/delete.plan.params';
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
   import DropList from '@/shared/HelpersComponents/DropList.vue';
-  import ShowIcon from '@/shared/icons/ShowIcon.vue';
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
   import { PlanDurationTypeEnum } from '../../core/enums/plan.duration.enum';
   import TogglePlanStatusParams from '../../core/params/toggle.plan.status.params';
@@ -27,6 +26,9 @@
   import DeactiveIcon from '@/shared/icons/Plan/DeactiveIcon.vue';
   import ArchiveIcon from '@/shared/icons/Plan/ArchiveIcon.vue';
   import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
+  import ReloadIcon from '@/shared/icons/CustomSelect/ReloadIcon.vue';
+  import PlanViewIcon from '@/shared/icons/Plan/PlanViewIcon.vue';
+  import PlanPriceIcon from '@/shared/icons/Plan/PlanPriceIcon.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -40,12 +42,13 @@
   const toDate = ref<Date | null>(null);
   const status = ref<TitleInterface<number> | null>(null);
   const lastUpdated = ref<TitleInterface<number> | null>(null);
+  const hasTrial = ref<boolean | null>(null);
   const filterDialogVisible = ref(false);
   const deactivateDialogVisible = ref(false);
   const archiveDialogVisible = ref(false);
   const selectedPlanId = ref<number | null>(null);
   const statusLoading = ref(false);
-  const listMode = ref<'active' | 'archived'>('active');
+  const listMode = ref<PlanStatusEnum>(PlanStatusEnum.ACTIVE);
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
     { id: Number(PlanStatusEnum.ACTIVE), title: t('active') },
@@ -75,12 +78,13 @@
       new IndexPlanParams(word, page, perPage.value, {
         fromPrice: fromPrice.value,
         toPrice: toPrice.value,
+        hasTrial: hasTrial.value ?? undefined,
         status:
-          listMode.value === 'archived'
+          listMode.value === PlanStatusEnum.Archived
             ? PlanStatusEnum.Archived
             : status.value
               ? (status.value.id as PlanStatusEnum)
-              : undefined,
+              : PlanStatusEnum.ACTIVE,
         duration: durationType.value?.id || undefined,
         fromDate: dateValue(fromDate.value),
         toDate: dateValue(toDate.value),
@@ -124,12 +128,12 @@
   const actionList = (item: PlanModel) => [
     {
       text: t('view'),
-      icon: ShowIcon,
+      icon: PlanViewIcon,
       link: `/plans/${item.id}`,
     },
     {
       text: t('edit_price'),
-      icon: PlanEditIcon,
+      icon: PlanPriceIcon,
       link: `/plans/edit/${item.id}?section=pricing`,
     },
     {
@@ -165,17 +169,20 @@
   const resetFilters = async () => {
     fromPrice.value = undefined;
     toPrice.value = undefined;
+    hasTrial.value = null;
+    durationType.value = undefined;
     fromDate.value = null;
     toDate.value = null;
     status.value = null;
     lastUpdated.value = null;
     await applyFilters();
   };
-  const setListMode = async (mode: 'active' | 'archived') => {
+  const setListMode = async (mode: PlanStatusEnum) => {
     if (listMode.value === mode) return;
     listMode.value = mode;
     await fetchItems(1, word.value);
   };
+
   onMounted(() => fetchItems());
   const route = useRoute();
   const Search = debounce(() => {
@@ -248,64 +255,134 @@
         <div class="plan-list-toggle" role="group" :aria-label="$t('status')">
           <button
             type="button"
-            :class="{ active: listMode === 'active' }"
-            :aria-pressed="listMode === 'active'"
-            @click="setListMode('active')"
+            :class="{ active: listMode === PlanStatusEnum.ACTIVE }"
+            :aria-pressed="listMode === PlanStatusEnum.ACTIVE"
+            @click="setListMode(PlanStatusEnum.ACTIVE)"
           >
             {{ $t('active') }}
           </button>
           <button
             type="button"
-            :class="{ active: listMode === 'archived' }"
-            :aria-pressed="listMode === 'archived'"
-            @click="setListMode('archived')"
+            :class="{ active: listMode === PlanStatusEnum.Archived }"
+            :aria-pressed="listMode === PlanStatusEnum.Archived"
+            @click="setListMode(PlanStatusEnum.Archived)"
           >
             {{ $t('plan_archive_filter') }}
           </button>
         </div>
-        <FilterDialog v-model="filterDialogVisible">
+        <FilterDialog
+          v-model="filterDialogVisible"
+          dialog-class="plan-filter-dialog"
+          width="28.125rem"
+        >
           <template #content>
-            <div class="filters">
-              <div class="price-container">
-                <h2>price range</h2>
-                <div>
-                  <input v-model.number="fromPrice" type="number" :placeholder="$t('from_price')" />
-                  <input v-model.number="toPrice" type="number" :placeholder="$t('to_price')" />
+            <div class="filters plan-filters">
+              <section class="plan-filter-section plan-price-filter">
+                <h2>{{ $t('price_range') }}</h2>
+                <div class="plan-price-fields">
+                  <label>
+                    <span>{{ $t('from') }}</span>
+                    <input v-model.number="fromPrice" type="number" placeholder="......." />
+                  </label>
+                  <label>
+                    <span>{{ $t('to') }}</span>
+                    <input v-model.number="toPrice" type="number" placeholder="......." />
+                  </label>
                 </div>
-              </div>
-              <UpdatedCustomInputSelect
-                v-model="durationType"
-                :label="$t('duration_type')"
-                :placeholder="$t('select_duration_type')"
-                :static-options="DurationTypeOptions"
-              />
-              <UpdatedCustomInputSelect
-                v-model="status"
-                :label="$t('status')"
-                :placeholder="$t('select_status')"
-                :static-options="statusOptions"
-              />
-              <UpdatedCustomInputSelect
-                v-model="lastUpdated"
-                :label="$t('last_updated')"
-                :placeholder="$t('select_period')"
-                :static-options="updatedOptions"
-              />
-              <DatePicker
-                v-model="fromDate"
-                :placeholder="$t('from_date')"
-                show-icon
-                panel-class="light-datepicker-panel"
-              />
-              <DatePicker
-                v-model="toDate"
-                :placeholder="$t('to_date')"
-                show-icon
-                panel-class="light-datepicker-panel"
-              />
+              </section>
+
+              <section class="plan-filter-section plan-filter-select">
+                <UpdatedCustomInputSelect
+                  v-model="durationType"
+                  label="duration"
+                  :placeholder="$t('select_duration')"
+                  :static-options="DurationTypeOptions"
+                />
+              </section>
+
+              <section class="plan-filter-section">
+                <div class="plan-filter-heading">
+                  <h2>{{ $t('trial_days') }}</h2>
+                  <button
+                    type="button"
+                    class="plan-filter-reset"
+                    :aria-label="$t('reset_trial_filter')"
+                    @click="hasTrial = null"
+                  >
+                    <ReloadIcon />
+                  </button>
+                </div>
+                <div class="plan-choice-row plan-trial-choices">
+                  <label class="plan-choice">
+                    <input v-model="hasTrial" type="radio" :value="true" />
+                    <span class="plan-choice-box"></span>
+                    <span>{{ $t('has_trial') }}</span>
+                  </label>
+                  <label class="plan-choice">
+                    <input v-model="hasTrial" type="radio" :value="false" />
+                    <span class="plan-choice-box"></span>
+                    <span>{{ $t('no_trial') }}</span>
+                  </label>
+                </div>
+              </section>
+
+              <section class="plan-filter-section">
+                <div class="plan-filter-heading">
+                  <h2>{{ $t('status') }}</h2>
+                  <button
+                    type="button"
+                    class="plan-filter-reset"
+                    :aria-label="$t('reset_status_filter')"
+                    @click="status = null"
+                  >
+                    <ReloadIcon />
+                  </button>
+                </div>
+                <div class="plan-choice-row plan-status-choices">
+                  <label
+                    v-for="option in statusOptions"
+                    :key="option.id"
+                    class="plan-choice"
+                    :class="`plan-status-choice-${option.id}`"
+                  >
+                    <input v-model="status" type="radio" :value="option" />
+                    <span class="plan-choice-box"></span>
+                    <span>{{ option.title }}</span>
+                  </label>
+                </div>
+              </section>
+
+              <section class="plan-filter-section plan-last-update-filter">
+                <h2>{{ $t('last_updated') }}</h2>
+                <div class="plan-radio-list">
+                  <label v-for="option in updatedOptions" :key="option.id" class="plan-radio">
+                    <input v-model="lastUpdated" type="radio" :value="option" />
+                    <span class="plan-radio-circle"></span>
+                    <span>{{ option.title }}</span>
+                  </label>
+                </div>
+                <div
+                  v-if="String(lastUpdated?.id) === LastUpdatedEnum.CUSTOM"
+                  class="plan-custom-dates"
+                >
+                  <DatePicker
+                    v-model="fromDate"
+                    :placeholder="$t('from_date')"
+                    show-icon
+                    panel-class="light-datepicker-panel"
+                  />
+                  <DatePicker
+                    v-model="toDate"
+                    :placeholder="$t('to_date')"
+                    show-icon
+                    panel-class="light-datepicker-panel"
+                  />
+                </div>
+              </section>
+
               <div class="filter-actions">
-                <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button
-                ><button class="btn btn-primary" @click="applyFilters">{{ $t('apply') }}</button>
+                <button class="btn btn-primary" @click="applyFilters">{{ $t('apply') }}</button>
+                <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
               </div>
             </div>
           </template>
@@ -376,13 +453,18 @@
 </template>
 
 <style scoped lang="scss">
+  :deep(.list-body .list-item a) {
+    flex-direction: row-reverse !important;
+  }
+
   .action-confirmation {
     h3 {
-      font-family: 'Demi';
+      font-family: var(--font-family);
       display: flex;
       flex-direction: column;
     }
   }
+
   :deep(.input-label) {
     color: var(--SecondText);
     font-size: 18px !important;
@@ -521,8 +603,289 @@
     background: var(--BgWhite);
   }
 
+  :global(.plan-filter-dialog) {
+    max-width: calc(100vw - 24px);
+    border-radius: 24px 0 0 24px;
+    background: var(--standard-white) !important;
+    box-shadow: 0 4px 2px var(--black-alpha-10);
+
+    .p-dialog-header {
+      padding: 24px 20px 0;
+    }
+
+    .p-dialog-content {
+      padding: 24px 20px;
+    }
+
+    .filter-title {
+      margin: 0;
+      color: var(--standard-black);
+      font-family: var(--font-family);
+      font-size: 20px;
+      line-height: normal;
+    }
+  }
+
+  .filters.plan-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .plan-filter-section {
+    padding-block: 20px;
+    border-bottom: 1px solid var(--input-border-color);
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--title-header-color);
+      font-family: var(--font-family);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 26px;
+    }
+  }
+
+  .plan-filter-select {
+    :deep(.input-label) {
+      color: var(--title-header-color) !important;
+      font-size: 16px !important;
+      font-weight: 600 !important;
+    }
+
+    :deep(.input-select) {
+      height: 56px;
+      margin-top: 4px;
+      border: 1px solid var(--input-border-color);
+      border-radius: var(--radius-full);
+      background: var(--standard-white);
+    }
+
+    :deep(.p-select-label) {
+      display: flex;
+      align-items: center;
+      padding-inline: 16px;
+      color: var(--gray-400);
+      font-size: 16px;
+    }
+
+    :deep(.reload-icon) {
+      margin-inline: 0;
+    }
+  }
+
+  .plan-filter-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .plan-filter-reset {
+    display: grid;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--gray-text);
+    cursor: pointer;
+    place-items: center;
+
+    :deep(svg) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .plan-price-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .plan-price-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+
+    label {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--title-header-color);
+      font-size: 16px;
+    }
+
+    input {
+      width: 100%;
+      height: 56px;
+      padding-inline: 16px;
+      border: 1px solid var(--input-border-color);
+      border-radius: var(--radius-full);
+      outline: none;
+
+      &:focus {
+        border-color: var(--primary-green);
+      }
+    }
+  }
+
+  .plan-choice-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .plan-trial-choices {
+    max-width: 277px;
+  }
+
+  .plan-choice,
+  .plan-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--standard-black);
+    font-size: 16px;
+    cursor: pointer;
+
+    input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+  }
+
+  .plan-choice-box {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border: 1px solid var(--gray-300);
+    border-radius: 5px;
+    background: var(--standard-white);
+  }
+
+  .plan-choice input:checked + .plan-choice-box {
+    border-color: var(--primary-green);
+    background: var(--primary-green);
+
+    &::after {
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      width: 4px;
+      height: 8px;
+      border: solid var(--standard-white);
+      border-width: 0 2px 2px 0;
+      content: '';
+      transform: rotate(45deg);
+    }
+  }
+
+  .plan-status-choice-1 {
+    color: var(--primary-green);
+  }
+
+  .plan-status-choice-2 {
+    color: var(--btn-gold);
+  }
+
+  .plan-status-choice-3 {
+    color: var(--title-header-color);
+  }
+
+  .plan-status-choice-4 {
+    color: var(--info);
+  }
+
+  .plan-last-update-filter {
+    border-bottom: 0;
+  }
+
+  .plan-radio-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 16px;
+  }
+
+  .plan-radio-circle {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    border: 1px solid var(--gray-300);
+    border-radius: 50%;
+    background: var(--standard-white);
+  }
+
+  .plan-radio input:checked + .plan-radio-circle {
+    border-color: var(--primary-green);
+
+    &::after {
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--primary-green);
+      content: '';
+    }
+  }
+
+  .plan-custom-dates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .plan-filters .filter-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 250px) minmax(0, 144px);
+    gap: 16px;
+    padding-top: 12px;
+
+    .btn {
+      width: 100%;
+      height: 56px;
+      margin: 0 !important;
+      border-radius: var(--radius-full);
+      font-family: var(--font-family);
+      font-size: 16px;
+    }
+
+    .btn-cancel {
+      border: 1px solid var(--background-btn-hard-color);
+      background: var(--background-btn-outline-color);
+      color: var(--btn-red);
+    }
+  }
+
   :global(.light-datepicker-panel) {
     color-scheme: light;
     background: var(--BgWhite);
+  }
+
+  @media (max-width: 520px) {
+    :global(.plan-filter-dialog) {
+      border-radius: var(--radius-xl);
+    }
+
+    .plan-status-choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .plan-filters .filter-actions {
+      grid-template-columns: minmax(0, 1fr) minmax(110px, 0.58fr);
+    }
   }
 </style>

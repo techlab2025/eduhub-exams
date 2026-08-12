@@ -5,8 +5,9 @@ import FilterDialog from '../FilterDialog.vue';
 const globalConfig = {
   stubs: {
     Dialog: {
+      name: 'Dialog',
       template: '<div v-if="visible"><slot name="header"></slot><slot></slot></div>',
-      props: ['visible'],
+      props: ['visible', 'pt'],
     },
     DialogIconFillter: true,
   },
@@ -63,5 +64,20 @@ describe('FilterDialog.vue', () => {
 
     expect(wrapper.find('.filter-title').exists()).toBe(true);
     expect(wrapper.find('.filter-title').text()).toBe('filter_option');
+  });
+
+  it('passes custom sizing and class options to the dialog', () => {
+    const wrapper = mount(FilterDialog, {
+      props: {
+        modelValue: true,
+        dialogClass: 'plan-filter-dialog',
+        width: '28.125rem',
+      },
+      global: globalConfig,
+    });
+
+    const dialog = wrapper.getComponent({ name: 'Dialog' });
+    expect(dialog.attributes('style')).toContain('width: 28.125rem');
+    expect(dialog.props('pt').root).toEqual(['filter-dialog', 'plan-filter-dialog']);
   });
 });

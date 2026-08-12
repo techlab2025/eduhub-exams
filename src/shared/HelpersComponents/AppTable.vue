@@ -177,7 +177,7 @@
         <!-- Body -->
         <tbody>
           <slot name="CustomRow"></slot>
-          <tr v-if="items.length === 0">
+          <tr v-if="items?.length === 0">
             <td
               :colspan="
                 headers.length +

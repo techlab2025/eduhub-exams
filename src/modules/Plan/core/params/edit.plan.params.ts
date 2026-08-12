@@ -46,11 +46,11 @@ export default class EditPlanParams extends AddPlanParams {
     }
     if (this.section === 'features') {
       return {
-        plan_id: this.id,
+        subscription_plan_id: this.id,
         features: fullMap.features,
       };
     }
-    return { plan_id: this.id, ...fullMap };
+    return { subscription_plan_id: this.id, ...fullMap };
   }
 
   validate(): { isValid: boolean; errors: FieldError[] } {
