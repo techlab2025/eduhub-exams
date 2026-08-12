@@ -2,8 +2,15 @@
   import { computed, onMounted, ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRoute, useRouter } from 'vue-router';
-  import ActionsIcon from '@/shared/icons/ActionsIcon.vue';
   import PricingIcon from '@/shared/icons/PricingIcon.vue';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
+  import PlanViewIcon from '@/shared/icons/Plan/PlanViewIcon.vue';
+  import PlanPriceIcon from '@/shared/icons/Plan/PlanPriceIcon.vue';
+  import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
+  import DeactiveIcon from '@/shared/icons/Plan/DeactiveIcon.vue';
+  import ArchiveIcon from '@/shared/icons/Plan/ArchiveIcon.vue';
+  import IconCheck from '@/shared/icons/IconCheck.vue';
   import PlanController from '../controllers/plan.controller';
   import ShowPlanParams from '../../core/params/show.plan.params';
   import { PlanDurationTypeEnum } from '../../core/enums/plan.duration.enum';
@@ -14,6 +21,12 @@
   import LastUpdatedIcon from '@/shared/icons/Plan/LastUpdatedIcon.vue';
   import PlanSucbscripbersIcon from '@/shared/icons/Plan/PlanSucbscripbersIcon.vue';
   import IncludedFeatureIcon from '@/shared/icons/Plan/IncludedFeatureIcon.vue';
+  import DeletePlanParams from '../../core/params/delete.plan.params';
+  import TogglePlanStatusParams from '../../core/params/toggle.plan.status.params';
+  import DeactivatePlanDialog from '../subCopmnents/DeactivatePlanDialog.vue';
+  import ArchivePlanDialog from '../subCopmnents/ArchivePlanDialog.vue';
+  import ActivatePlanDialog from '../subCopmnents/ActivatePlanDialog.vue';
+  import PlanDeleteWarningDialog from '../subCopmnents/PlanDeleteWarningDialog.vue';
 
   const route = useRoute();
   const router = useRouter();
@@ -21,6 +34,127 @@
   const { locale, t } = useI18n();
   const activeTab = ref<'overview' | 'activity'>('overview');
   const plan = computed(() => controller.itemData.value);
+  const deactivateDialogVisible = ref(false);
+  const archiveDialogVisible = ref(false);
+  const activateDialogVisible = ref(false);
+  const deleteWarningDialogVisible = ref(false);
+  const statusLoading = ref(false);
+
+  const refreshPlan = () => controller.fetchOne(new ShowPlanParams(Number(route.params.id)));
+
+  const remove = async (id: number) => {
+    await controller.delete(new DeletePlanParams(id));
+    await router.push({ name: 'Plans' });
+  };
+
+  const changeStatus = async (nextStatus: PlanStatusEnum) => {
+    if (!plan.value) return;
+    statusLoading.value = true;
+    try {
+      const result = await controller.toggleStatus(
+        new TogglePlanStatusParams({ planId: plan.value.id, status: nextStatus }),
+      );
+      if (result.hasError) return;
+
+      deactivateDialogVisible.value = false;
+      archiveDialogVisible.value = false;
+      activateDialogVisible.value = false;
+
+      await refreshPlan();
+    } finally {
+      statusLoading.value = false;
+      deactivateDialogVisible.value = false;
+      archiveDialogVisible.value = false;
+      activateDialogVisible.value = false;
+      await refreshPlan();
+    }
+  };
+
+  const actionList = computed(() => {
+    const item = plan.value;
+    if (!item) return [];
+
+    // const viewAction = {
+    //   text: t('view'),
+    //   icon: PlanViewIcon,
+    //   link: `/plans/${item.id}`,
+    // };
+    const editActions = [
+      {
+        text: t('edit_price'),
+        icon: PlanPriceIcon,
+        link: `/plans/edit/${item.id}?section=pricing`,
+      },
+      {
+        text: t('edit_basic_info'),
+        icon: PlanEditIcon,
+        link: `/plans/edit/${item.id}?section=basic`,
+      },
+      {
+        text: t('edit_features'),
+        icon: PlanEditIcon,
+        link: `/plans/edit/${item.id}?section=features`,
+      },
+    ];
+    const deleteBlocked = item.subscribers > 0;
+    const deleteAction = {
+      text: t('delete'),
+      icon: DeletIcon,
+      action: deleteBlocked
+        ? () => {
+            deleteWarningDialogVisible.value = true;
+          }
+        : () => remove(item.id),
+      skipDeleteConfirmation: deleteBlocked,
+    };
+
+    if (item.status === PlanStatusEnum.DRAFT) {
+      return [
+        // viewAction,
+        {
+          text: t('complete'),
+          icon: PlanEditIcon,
+          link: `/plans/edit/${item.id}`,
+        },
+        deleteAction,
+      ];
+    }
+
+    if (item.status === PlanStatusEnum.Archived || item.status === PlanStatusEnum.deactivated) {
+      return [
+        // viewAction,
+        ...editActions,
+        {
+          text: t('activate'),
+          icon: item.status === PlanStatusEnum.Archived ? IconCheck : DeactiveIcon,
+          action: () => {
+            activateDialogVisible.value = true;
+          },
+        },
+        deleteAction,
+      ];
+    }
+
+    return [
+      // viewAction,
+      ...editActions,
+      {
+        text: t('deactivate'),
+        icon: DeactiveIcon,
+        action: () => {
+          deactivateDialogVisible.value = true;
+        },
+      },
+      {
+        text: t('archive'),
+        icon: ArchiveIcon,
+        action: () => {
+          archiveDialogVisible.value = true;
+        },
+      },
+      deleteAction,
+    ];
+  });
 
   const formatDate = (value: string) => {
     if (!value) return '--';
@@ -77,7 +211,7 @@
     return subFeature ? t(subFeature.titleKey) : String(subFeatureId);
   };
 
-  onMounted(() => controller.fetchOne(new ShowPlanParams(Number(route.params.id))));
+  onMounted(refreshPlan);
 </script>
 
 <template>
@@ -93,15 +227,13 @@
             {{ badge.title }}
           </span>
         </div>
-        <button
-          type="button"
-          class="icon-button"
-          :aria-label="$t('edit_plan')"
-          :title="$t('edit_plan')"
-          @click="router.push(`/plans/edit/${route.params.id}`)"
-        >
-          <ActionsIcon />
-        </button>
+        <div class="icon-button">
+          <DropList
+            :action-list="actionList"
+            :delete-dialog-title="$t('confirm_delete')"
+            :delete-dialog-message="$t('confirm_delete')"
+          />
+        </div>
       </div>
 
       <dl class="summary-meta">
@@ -212,6 +344,23 @@
       </ol>
       <p v-else class="empty-activity">{{ $t('no_activity_log') }}</p>
     </section>
+
+    <DeactivatePlanDialog
+      v-model="deactivateDialogVisible"
+      :loading="statusLoading"
+      @confirm="changeStatus(PlanStatusEnum.deactivated)"
+    />
+    <ArchivePlanDialog
+      v-model="archiveDialogVisible"
+      :loading="statusLoading"
+      @confirm="changeStatus(PlanStatusEnum.Archived)"
+    />
+    <ActivatePlanDialog
+      v-model="activateDialogVisible"
+      :loading="statusLoading"
+      @confirm="changeStatus(PlanStatusEnum.ACTIVE)"
+    />
+    <PlanDeleteWarningDialog v-model="deleteWarningDialogVisible" />
   </main>
 </template>
 
@@ -285,7 +434,7 @@
     height: 38px;
     display: grid;
     place-items: center;
-    border: 1px solid var(--border-weak);
+    // border: 1px solid var(--border-weak);
     border-radius: var(--radius-md);
     background: var(--BgWhite);
     cursor: pointer;

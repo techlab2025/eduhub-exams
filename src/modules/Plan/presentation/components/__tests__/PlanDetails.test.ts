@@ -1,18 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createI18n } from 'vue-i18n';
 import PlanDetailsModel from '../../../core/models/plan.details.model';
 import PlanDetails from '../PlanDetails.vue';
+import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
 
-const { fetchOneMock, routerPushMock, itemData } = vi.hoisted(() => ({
+const { fetchOneMock, deleteMock, toggleStatusMock, routerPushMock, itemData } = vi.hoisted(() => ({
   fetchOneMock: vi.fn(),
+  deleteMock: vi.fn(),
+  toggleStatusMock: vi.fn(),
   routerPushMock: vi.fn(),
   itemData: { value: null as PlanDetailsModel | null },
 }));
 
 vi.mock('../../controllers/plan.controller', () => ({
   default: {
-    getInstance: () => ({ itemData, fetchOne: fetchOneMock }),
+    getInstance: () => ({
+      itemData,
+      fetchOne: fetchOneMock,
+      delete: deleteMock,
+      toggleStatus: toggleStatusMock,
+    }),
   },
 }));
 
@@ -32,6 +40,35 @@ const mountComponent = () =>
         IconClock: true,
         EditIcon: true,
         PricingIcon: true,
+        DropList: {
+          name: 'DropList',
+          props: ['actionList', 'deleteDialogTitle', 'deleteDialogMessage'],
+          template: '<div class="drop-list-stub" />',
+        },
+        DeactivatePlanDialog: {
+          name: 'DeactivatePlanDialog',
+          props: ['modelValue', 'loading'],
+          emits: ['update:modelValue', 'confirm'],
+          template: '<div />',
+        },
+        ArchivePlanDialog: {
+          name: 'ArchivePlanDialog',
+          props: ['modelValue', 'loading'],
+          emits: ['update:modelValue', 'confirm'],
+          template: '<div />',
+        },
+        ActivatePlanDialog: {
+          name: 'ActivatePlanDialog',
+          props: ['modelValue', 'loading'],
+          emits: ['update:modelValue', 'confirm'],
+          template: '<div />',
+        },
+        PlanDeleteWarningDialog: {
+          name: 'PlanDeleteWarningDialog',
+          props: ['modelValue'],
+          emits: ['update:modelValue'],
+          template: '<div />',
+        },
       },
     },
   });
@@ -40,6 +77,9 @@ describe('PlanDetails', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     itemData.value = PlanDetailsModel.example;
+    fetchOneMock.mockResolvedValue(undefined);
+    deleteMock.mockResolvedValue(undefined);
+    toggleStatusMock.mockResolvedValue({ hasError: false });
   });
 
   it('renders summary, pricing, and included features from the details model', () => {
@@ -50,7 +90,7 @@ describe('PlanDetails', () => {
     expect(wrapper.find('.included-features').exists()).toBe(true);
     expect(wrapper.findAll('.feature-group')).toHaveLength(6);
     expect(wrapper.findAll('.feature-group').at(0)?.findAll('.sub-feature')).toHaveLength(4);
-    expect(fetchOneMock.mock.calls[0]?.[0].toMap()).toEqual({ plan_id: 5 });
+    expect(fetchOneMock.mock.calls[0]?.[0].toMap()).toEqual({ subscription_plan_id: 5 });
   });
 
   it('switches to the activity log tab', async () => {
@@ -66,11 +106,98 @@ describe('PlanDetails', () => {
     expect(wrapper.find('.pricing-details').exists()).toBe(false);
   });
 
-  it('opens the plan edit route from the action button', async () => {
+  it('shows the active-plan action list in DropList', () => {
     const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
 
-    await wrapper.get('.icon-button').trigger('click');
+    expect(actions.map((action: { text: string }) => action.text)).toEqual([
+      'view',
+      'edit_price',
+      'edit_basic_info',
+      'edit_features',
+      'deactivate',
+      'archive',
+      'delete',
+    ]);
+    expect(actions[1].link).toBe('/plans/edit/1?section=pricing');
+  });
 
-    expect(routerPushMock).toHaveBeenCalledWith('/plans/edit/5');
+  it('shows only view, complete, and delete for a draft plan', () => {
+    itemData.value = PlanDetailsModel.fromJson({
+      id: 5,
+      status: PlanStatusEnum.DRAFT,
+      'subscribers:': 0,
+      title: [],
+      description: [],
+    });
+    const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+
+    expect(actions.map((action: { text: string }) => action.text)).toEqual([
+      'view',
+      'complete',
+      'delete',
+    ]);
+    expect(actions[1].link).toBe('/plans/edit/5');
+  });
+
+  it('activates an archived plan only after confirmation', async () => {
+    itemData.value = PlanDetailsModel.fromJson({
+      id: 5,
+      status: PlanStatusEnum.Archived,
+      'subscribers:': 2,
+      title: [],
+      description: [],
+    });
+    const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+
+    actions[4].action();
+    await wrapper.vm.$nextTick();
+
+    const dialog = wrapper.getComponent({ name: 'ActivatePlanDialog' });
+    expect(dialog.props('modelValue')).toBe(true);
+    expect(toggleStatusMock).not.toHaveBeenCalled();
+
+    dialog.vm.$emit('confirm');
+    await flushPromises();
+
+    expect(toggleStatusMock.mock.calls[0]?.[0].toMap()).toEqual({
+      subscription_plan_id: 5,
+      status: PlanStatusEnum.ACTIVE,
+    });
+    expect(fetchOneMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('blocks deletion when the plan has subscribers', async () => {
+    const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+    const deleteAction = actions.at(-1);
+
+    expect(deleteAction.skipDeleteConfirmation).toBe(true);
+    deleteAction.action();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.getComponent({ name: 'PlanDeleteWarningDialog' }).props('modelValue')).toBe(
+      true,
+    );
+    expect(deleteMock).not.toHaveBeenCalled();
+  });
+
+  it('deletes a plan without subscribers and returns to the index', async () => {
+    itemData.value = PlanDetailsModel.fromJson({
+      id: 5,
+      status: PlanStatusEnum.ACTIVE,
+      'subscribers:': 0,
+      title: [],
+      description: [],
+    });
+    const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+
+    await actions.at(-1).action();
+
+    expect(deleteMock.mock.calls[0]?.[0].toMap()).toEqual({ subscription_plan_id: 5 });
+    expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
   });
 });
