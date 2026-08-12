@@ -61,6 +61,7 @@
       ? section
       : undefined;
   });
+  const isFeatureEdit = computed(() => Boolean(id) && editSection.value === 'features');
   const activeTab = ref('basic');
   const planFormRoot = ref<HTMLElement | null>(null);
   const showValidationErrors = ref(false);
@@ -122,6 +123,12 @@
     isNumberAtLeast(item.price, 0) &&
     isNumberAtLeast(item.duration, 1) &&
     Boolean(item.durationType);
+  const isSubFeatureIncluded = (subType: PlanSubFeatureFormItem) =>
+    isFeatureEdit.value ? subType.enabled : subType.hasLimit || subType.enabled;
+  const updateLimitSubFeature = (subType: PlanSubFeatureFormItem) => {
+    if (!isFeatureEdit.value) return;
+    subType.enabled = Number(subType.limit ?? 0) > 0;
+  };
 
   const validationErrors = computed<Record<string, string>>(() => {
     const errors: Record<string, string> = {};
@@ -160,7 +167,11 @@
       if (enabledFeatures.length === 0) errors.features = t('plan_feature_required');
       enabledFeatures.forEach((feature) => {
         feature.subTypes.forEach((subType) => {
-          if (subType.hasLimit && !isNumberAtLeast(subType.limit ?? Number.NaN, 1)) {
+          if (
+            subType.hasLimit &&
+            isSubFeatureIncluded(subType) &&
+            !isNumberAtLeast(subType.limit ?? Number.NaN, 1)
+          ) {
             errors[`feature-${feature.featureType}-limit-${subType.subType}`] = t(
               'plan_feature_limit_required',
             );
@@ -230,8 +241,9 @@
       feature.enabled = false;
       feature.subTypes.forEach((subType, subTypeIndex) => {
         subType.enabled = false;
-        subType.limit =
-          PLAN_FEATURE_DEFINITIONS[featureIndex]?.subTypes[subTypeIndex]?.defaultLimit;
+        subType.limit = isFeatureEdit.value
+          ? 0
+          : PLAN_FEATURE_DEFINITIONS[featureIndex]?.subTypes[subTypeIndex]?.defaultLimit;
       });
     });
   };
@@ -252,15 +264,13 @@
           (feature) =>
             new PlanFeatureParams({
               featureType: feature.featureType,
-              featureSubType: feature.subTypes
-                .filter((subType) => subType.hasLimit || subType.enabled)
-                .map(
-                  (subType) =>
-                    new PlanSubFeatureParams({
-                      subType: subType.subType,
-                      ...(subType.hasLimit ? { limit: subType.limit ?? 0 } : {}),
-                    }),
-                ),
+              featureSubType: feature.subTypes.filter(isSubFeatureIncluded).map(
+                (subType) =>
+                  new PlanSubFeatureParams({
+                    subType: subType.subType,
+                    ...(subType.hasLimit ? { limit: subType.limit ?? 0 } : {}),
+                  }),
+              ),
             }),
         ),
     };
@@ -303,6 +313,7 @@
         const savedFeature = plan.features.find((item) => item.featureId === feature.featureType);
         feature.enabled = Boolean(savedFeature);
         feature.subTypes.forEach((subType) => {
+          if (isFeatureEdit.value && subType.hasLimit) subType.limit = 0;
           const savedSubType = savedFeature?.subFeatures.find(
             (item) => item.id === subType.subType,
           );
@@ -555,6 +566,9 @@
             v-for="(feature, featureIndex) in planFeatures"
             :key="feature.featureType"
             class="feature-card"
+            :class="{
+              'edit-selection-inactive': isFeatureEdit && !feature.enabled,
+            }"
           >
             <header class="feature-row">
               <span class="feature-number">{{ featureIndex + 1 }}</span>
@@ -564,11 +578,14 @@
               </span>
               <ToggleSwitch v-model="feature.enabled" :aria-label="$t(feature.titleKey)" />
             </header>
-            <div v-if="feature.enabled" class="sub-features">
+            <div v-if="feature.enabled || isFeatureEdit" class="sub-features">
               <div
                 v-for="subType in feature.subTypes"
                 :key="subType.subType"
                 class="feature-row validated-field"
+                :class="{
+                  'edit-selection-inactive': isFeatureEdit && !subType.enabled,
+                }"
               >
                 <span class="sub-feature-dot" aria-hidden="true"></span>
                 <span class="feature-copy">
@@ -582,6 +599,7 @@
                   type="number"
                   min="0"
                   :aria-label="$t(subType.titleKey)"
+                  @input="updateLimitSubFeature(subType)"
                 />
                 <ToggleSwitch v-else v-model="subType.enabled" :aria-label="$t(subType.titleKey)" />
                 <span
@@ -609,6 +627,7 @@
     font-size: 14px !important;
     font-weight: 500 !important;
   }
+
   .plan-form {
     display: grid;
     gap: var(--xs-size);
@@ -730,6 +749,16 @@
     border: 1px solid var(--border-weak);
     border-radius: var(--radius-lg);
     background: var(--BgWhite);
+    transition: opacity 0.2s ease;
+  }
+
+  .feature-card.edit-selection-inactive,
+  .sub-features .feature-row.edit-selection-inactive {
+    opacity: 0.42;
+  }
+
+  .sub-features .feature-row {
+    transition: opacity 0.2s ease;
   }
 
   .feature-row {
