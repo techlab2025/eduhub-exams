@@ -1008,4 +1008,12 @@
       grid-template-columns: minmax(0, 1fr) 110px;
     }
   }
+  :deep(.field-label),
+  label,
+  .input-label,
+  .field-label {
+    color: #5d5d5d !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+  }
 </style>
