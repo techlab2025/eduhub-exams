@@ -12,4 +12,8 @@ describe('PlanPricingParams', () => {
       }).toMap(),
     ).toEqual({ price: 10, duration: 2, duration_type: 2 });
   });
+
+  it('omits unset pricing fields', () => {
+    expect(new PlanPricingParams({}).toMap()).toEqual({});
+  });
 });

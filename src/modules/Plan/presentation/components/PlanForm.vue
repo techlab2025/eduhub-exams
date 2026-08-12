@@ -80,8 +80,8 @@
   const trialDays = ref(0);
   const createPricing = () =>
     new PlanPricingParams({
-      price: 0,
-      duration: 1,
+      price: undefined,
+      duration: undefined,
       durationType: PlanDurationTypeEnum.MONTH,
     });
   const pricing = ref<PlanPricingParams[]>([createPricing()]);
@@ -117,12 +117,8 @@
 
   const hasTranslation = (value: Record<string, string>) =>
     ['en', 'ar'].some((locale) => (value[locale]?.trim().length ?? 0) > 0);
-  const isNumberAtLeast = (value: number, minimum: number) =>
+  const isNumberAtLeast = (value: unknown, minimum: number) =>
     Number.isFinite(Number(value)) && Number(value) >= minimum;
-  const isPricingComplete = (item: PlanPricingParams) =>
-    isNumberAtLeast(item.price, 0) &&
-    isNumberAtLeast(item.duration, 1) &&
-    Boolean(item.durationType);
   const isSubFeatureIncluded = (subType: PlanSubFeatureFormItem) =>
     isFeatureEdit.value ? subType.enabled : subType.hasLimit || subType.enabled;
   const updateLimitSubFeature = (subType: PlanSubFeatureFormItem) => {
@@ -144,7 +140,6 @@
     }
 
     if (validates('pricing')) {
-      if (!pricing.value.some(isPricingComplete)) errors.pricing = t('plan_pricing_required');
       pricing.value.forEach((item, index) => {
         if (!isNumberAtLeast(item.price, 0)) {
           errors[`pricing-${index}-price`] = t('plan_price_required');
@@ -281,6 +276,7 @@
         ? new EditPlanParams({ id, section: editSection.value, ...data })
         : new AddPlanParams(data),
     );
+    console.log(data, 'data');
     emit('validityChange', isPublishReady.value);
   };
 
@@ -452,60 +448,81 @@
           </button>
         </div>
         <div class="pricing-list">
-          <p
-            v-if="showValidationErrors && validationErrors.pricing"
-            data-plan-validation-error
-            class="field-error"
-          >
-            {{ validationErrors.pricing }}
-          </p>
           <div v-for="(row, index) in pricing" :key="index" class="pricing-card">
-            <label class="validated-field">
-              {{ $t('price') }}
+            <div class="validated-field pricing-field">
+              <label :for="`pricing-${index}-price`">{{ $t('price') }}</label>
               <input
+                :id="`pricing-${index}-price`"
                 v-model.number="row.price"
                 type="number"
                 min="0"
                 :placeholder="$t('enter_plan_price')"
+                :class="{
+                  'field-invalid':
+                    showValidationErrors && validationErrors[`pricing-${index}-price`],
+                }"
+                :aria-invalid="
+                  Boolean(showValidationErrors && validationErrors[`pricing-${index}-price`])
+                "
+                :aria-describedby="
+                  showValidationErrors && validationErrors[`pricing-${index}-price`]
+                    ? `pricing-${index}-price-error`
+                    : undefined
+                "
               />
-              <span
-                v-if="showValidationErrors && validationErrors[`pricing-${index}-price`]"
-                data-plan-validation-error
-                class="field-error"
-              >
-                {{ validationErrors[`pricing-${index}-price`] }}
-              </span>
-            </label>
-            <label class="validated-field">
-              {{ $t('duration') }}
+            </div>
+            <div class="validated-field pricing-field">
+              <label :for="`pricing-${index}-duration`">{{ $t('duration') }}</label>
               <span class="duration-field">
-                <input
-                  v-model.number="row.duration"
-                  type="number"
-                  min="1"
-                  :placeholder="$t('enter_duration_number')"
-                />
-                <select v-model="row.durationType" :aria-label="$t('duration_type')">
-                  <option v-for="option in durationOptions" :key="option.id" :value="option.id">
-                    {{ option.title }}
-                  </option>
-                </select>
+                <span class="pricing-control">
+                  <input
+                    :id="`pricing-${index}-duration`"
+                    v-model.number="row.duration"
+                    type="number"
+                    min="1"
+                    :placeholder="$t('enter_duration_number')"
+                    :class="{
+                      'field-invalid':
+                        showValidationErrors && validationErrors[`pricing-${index}-duration`],
+                    }"
+                    :aria-invalid="
+                      Boolean(showValidationErrors && validationErrors[`pricing-${index}-duration`])
+                    "
+                    :aria-describedby="
+                      showValidationErrors && validationErrors[`pricing-${index}-duration`]
+                        ? `pricing-${index}-duration-error`
+                        : undefined
+                    "
+                  />
+                </span>
+                <span class="pricing-control">
+                  <select
+                    :id="`pricing-${index}-duration-type`"
+                    v-model="row.durationType"
+                    :aria-label="$t('duration_type')"
+                    :class="{
+                      'field-invalid':
+                        showValidationErrors && validationErrors[`pricing-${index}-duration-type`],
+                    }"
+                    :aria-invalid="
+                      Boolean(
+                        showValidationErrors && validationErrors[`pricing-${index}-duration-type`],
+                      )
+                    "
+                    :aria-describedby="
+                      showValidationErrors && validationErrors[`pricing-${index}-duration-type`]
+                        ? `pricing-${index}-duration-type-error`
+                        : undefined
+                    "
+                  >
+                    <option :value="undefined" disabled>{{ $t('select_duration_type') }}</option>
+                    <option v-for="option in durationOptions" :key="option.id" :value="option.id">
+                      {{ option.title }}
+                    </option>
+                  </select>
+                </span>
               </span>
-              <span
-                v-if="showValidationErrors && validationErrors[`pricing-${index}-duration`]"
-                data-plan-validation-error
-                class="field-error"
-              >
-                {{ validationErrors[`pricing-${index}-duration`] }}
-              </span>
-              <span
-                v-if="showValidationErrors && validationErrors[`pricing-${index}-duration-type`]"
-                data-plan-validation-error
-                class="field-error"
-              >
-                {{ validationErrors[`pricing-${index}-duration-type`] }}
-              </span>
-            </label>
+            </div>
             <button
               v-if="index === pricing.length - 1"
               type="button"
@@ -524,6 +541,32 @@
             >
               &times;
             </button>
+            <div v-if="showValidationErrors" class="pricing-row-errors" aria-live="polite">
+              <span
+                v-if="validationErrors[`pricing-${index}-price`]"
+                :id="`pricing-${index}-price-error`"
+                data-plan-validation-error
+                class="field-error"
+              >
+                {{ validationErrors[`pricing-${index}-price`] }}
+              </span>
+              <span
+                v-if="validationErrors[`pricing-${index}-duration`]"
+                :id="`pricing-${index}-duration-error`"
+                data-plan-validation-error
+                class="field-error"
+              >
+                {{ validationErrors[`pricing-${index}-duration`] }}
+              </span>
+              <span
+                v-if="validationErrors[`pricing-${index}-duration-type`]"
+                :id="`pricing-${index}-duration-type-error`"
+                data-plan-validation-error
+                class="field-error"
+              >
+                {{ validationErrors[`pricing-${index}-duration-type`] }}
+              </span>
+            </div>
           </div>
         </div>
         <div class="trial-section validated-field">
@@ -531,9 +574,20 @@
             <span>{{ $t('trial_days') }}</span>
             <ToggleSwitch v-model="hasTrial" :aria-label="$t('has_trial')" />
           </div>
-          <input v-model.number="trialDays" type="number" min="0" :disabled="!hasTrial" />
+          <input
+            v-model.number="trialDays"
+            type="number"
+            min="0"
+            :disabled="!hasTrial"
+            :class="{ 'field-invalid': showValidationErrors && validationErrors.trialDays }"
+            :aria-invalid="Boolean(showValidationErrors && validationErrors.trialDays)"
+            :aria-describedby="
+              showValidationErrors && validationErrors.trialDays ? 'trial-days-error' : undefined
+            "
+          />
           <p
             v-if="showValidationErrors && validationErrors.trialDays"
+            id="trial-days-error"
             data-plan-validation-error
             class="field-error"
           >
@@ -729,10 +783,22 @@
     min-width: 0;
   }
 
+  .pricing-field,
+  .pricing-control {
+    display: grid;
+    min-width: 0;
+    gap: var(--xs-size-3);
+  }
+
   .field-error {
     margin: var(--xs-size-3) 0 0;
     color: var(--danger-color);
     font-size: 0.85rem;
+  }
+
+  input.field-invalid,
+  select.field-invalid {
+    border-color: var(--danger-color);
   }
 
   .feature-limit-error {
@@ -813,6 +879,16 @@
     padding: var(--xl-size-base);
     background: var(--gray-50);
     border-radius: var(--radius-lg);
+  }
+
+  .pricing-row-errors {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: var(--xs-size-3);
+  }
+
+  .pricing-row-errors .field-error {
+    margin: 0;
   }
 
   label {

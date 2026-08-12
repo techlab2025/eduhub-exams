@@ -1,7 +1,7 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type TranslationParams from '@/modules/about/core/params/translation.params';
-import type { PlanStatusEnum } from '../enums/plan.status.enum';
+import { PlanStatusEnum } from '../enums/plan.status.enum';
 import type PlanPricingParams from './plan.pricing.params';
 import type PlanFeatureParams from './plan.features.params';
 
@@ -54,17 +54,41 @@ export default class AddPlanParams implements Params {
   }
 
   toMap(): Record<string, unknown> {
+    const compactLocales = (value?: Record<string, string>) =>
+      Object.fromEntries(
+        Object.entries(value ?? {}).filter(([, text]) => String(text).trim().length > 0),
+      );
+    const title = compactLocales(this.translations.title);
+    const description = compactLocales(this.translations.description);
+    const translations = {
+      ...(Object.keys(title).length > 0 && { title }),
+      ...(Object.keys(description).length > 0 && { description }),
+    };
+    const pricing = this.pricing
+      .filter(
+        (item) =>
+          Number.isFinite(Number(item.price)) &&
+          Number(item.price) >= 0 &&
+          Number.isFinite(Number(item.duration)) &&
+          Number(item.duration) > 0 &&
+          Boolean(item.durationType),
+      )
+      .map((item) => item.toMap());
+    const features = this.features
+      .filter((item) => item.featureSubType.length > 0)
+      .map((item) => item.toMap());
+    const isDraft = this.status === PlanStatusEnum.DRAFT;
+
     return {
-      translations: {
-        title: this.translations.title,
-        description: this.translations.description,
-      },
+      ...(Object.keys(translations).length > 0 && { translations }),
       status: this.status,
-      highlight_badge: this.highlightBadge,
-      pricing: this.pricing.map((item) => item.toMap()),
-      has_trail: this.hasTrail,
-      trail_days: this.trialDays,
-      features: this.features.map((item) => item.toMap()),
+      ...(this.highlightBadge?.length > 0 && {
+        highlight_badge: this.highlightBadge,
+      }),
+      ...(pricing.length > 0 && { pricing }),
+      ...(!isDraft || this.hasTrail ? { has_trail: this.hasTrail } : {}),
+      ...((this.hasTrail && this.trialDays > 0) ? { trail_days: this.trialDays } : {}),
+      ...(features.length > 0 && { features }),
     };
   }
 

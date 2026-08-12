@@ -3,9 +3,9 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type { PlanDurationTypeEnum } from '../enums/plan.duration.enum';
 
 export default class PlanPricingParams implements Params {
-  public price: number;
-  public duration: number;
-  public durationType: PlanDurationTypeEnum;
+  public price?: number;
+  public duration?: number;
+  public durationType?: PlanDurationTypeEnum;
 
   public static readonly validation = new ClassValidation().setRules({
     price: { required: true },
@@ -13,7 +13,7 @@ export default class PlanPricingParams implements Params {
     durationType: { required: true },
   });
 
-  constructor(data: { price: number; duration: number; durationType: PlanDurationTypeEnum }) {
+  constructor(data: { price?: number; duration?: number; durationType?: PlanDurationTypeEnum }) {
     this.price = data.price;
     this.duration = data.duration;
     this.durationType = data.durationType;
@@ -21,9 +21,9 @@ export default class PlanPricingParams implements Params {
 
   toMap(): Record<string, unknown> {
     return {
-      price: this.price,
-      duration: this.duration,
-      duration_type: this.durationType,
+      ...(this.price !== undefined && { price: this.price }),
+      ...(this.duration !== undefined && { duration: this.duration }),
+      ...(this.durationType !== undefined && { duration_type: this.durationType }),
     };
   }
 

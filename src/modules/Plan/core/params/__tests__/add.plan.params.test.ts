@@ -72,11 +72,11 @@ describe('AddPlanParams', () => {
       features: [
         {
           feature_type: 1,
-          feature_sub_type: [{ sub_type: 1 }, { sub_type: 5, limit: 4 }, { sub_type: 6, limit: 5 }],
+          feature_sub_type: [{ sub_type: 2 }, { sub_type: 6, limit: 4 }, { sub_type: 7, limit: 5 }],
         },
         {
-          feature_type: 3,
-          feature_sub_type: [{ sub_type: 12 }, { sub_type: 13, limit: 1 }],
+          feature_type: 13,
+          feature_sub_type: [{ sub_type: 15 }, { sub_type: 16, limit: 1 }],
         },
       ],
     });
@@ -116,6 +116,26 @@ describe('AddPlanParams', () => {
           message: 'pricing must include at least one complete item',
         },
       ],
+    });
+  });
+
+  it('omits incomplete and empty values from a draft payload', () => {
+    const params = new AddPlanParams({
+      translations: new TranslationParams({
+        title: { en: 'Draft title', ar: '   ' },
+        description: {},
+      }),
+      status: PlanStatusEnum.DRAFT,
+      highlightBadge: [],
+      pricing: [new PlanPricingParams({ durationType: PlanDurationTypeEnum.MONTH })],
+      hasTrail: false,
+      trialDays: 0,
+      features: [],
+    });
+
+    expect(params.toMap()).toEqual({
+      translations: { title: { en: 'Draft title' } },
+      status: PlanStatusEnum.DRAFT,
     });
   });
 });

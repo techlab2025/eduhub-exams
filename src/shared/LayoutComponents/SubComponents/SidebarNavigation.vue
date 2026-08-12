@@ -62,26 +62,17 @@
           name: 'Skills',
           icon: SettingIcon,
         },
-        {
-          link: '/highlight-badges',
-          name: 'highlight_badges',
-          icon: SettingIcon,
-        },
-        {
-          link: '/plans',
-          name: 'plans',
-          icon: SettingIcon,
-        },
-        {
-          link: '/subscriptions',
-          name: 'subscriptions',
-          icon: SettingIcon,
-        },
-        {
-          link: '/students',
-          name: 'students',
-          icon: SettingIcon,
-        },
+
+        // {
+        //   link: '/subscriptions',
+        //   name: 'subscriptions',
+        //   icon: SettingIcon,
+        // },
+        // {
+        //   link: '/students',
+        //   name: 'students',
+        //   icon: SettingIcon,
+        // },
         {
           link: '/subjects',
           name: 'Subjects',
@@ -90,6 +81,16 @@
         {
           link: '/placement-test',
           name: 'Placement Test',
+          icon: SettingIcon,
+        },
+        {
+          link: '/highlight-badges',
+          name: 'highlight_badges',
+          icon: SettingIcon,
+        },
+        {
+          link: '/plans',
+          name: 'plans',
           icon: SettingIcon,
         },
         // {

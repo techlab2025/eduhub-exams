@@ -11,6 +11,7 @@ export default class PlanModel {
   public readonly status: PlanStatusEnum;
   public readonly trialDays: number;
   public readonly lastUpdated: PlanLastUpdatedModel;
+  public readonly subscribers: number;
 
   constructor(data: {
     id: number;
@@ -21,6 +22,7 @@ export default class PlanModel {
     status: PlanStatusEnum;
     trialDays: number;
     lastUpdated: PlanLastUpdatedModel;
+    subscribers: number;
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -30,6 +32,7 @@ export default class PlanModel {
     this.status = data.status;
     this.trialDays = data.trialDays;
     this.lastUpdated = data.lastUpdated;
+    this.subscribers = data.subscribers;
     Object.freeze(this);
   }
 
@@ -47,6 +50,7 @@ export default class PlanModel {
       status: Number(json.status ?? json.plan_status ?? 0) as PlanStatusEnum,
       trialDays: Number(json.trail_days ?? json.trial_days ?? 0),
       lastUpdated: PlanLastUpdatedModel.fromJson(lastUpdated),
+      subscribers: Number(json.subscribers ?? 0),
     });
   }
 
@@ -59,5 +63,6 @@ export default class PlanModel {
     status: PlanStatusEnum.ACTIVE,
     trail_days: 14,
     last_updated: PlanLastUpdatedModel.example,
+    subscribers: 10,
   });
 }

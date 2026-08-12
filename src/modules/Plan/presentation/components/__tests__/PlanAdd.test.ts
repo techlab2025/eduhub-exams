@@ -27,6 +27,12 @@ const global = {
       emits: ['updateData', 'validityChange'],
       template: '<div class="plan-form-stub" />',
     },
+    DraftPlanDialog: {
+      name: 'DraftPlanDialog',
+      props: ['modelValue'],
+      emits: ['update:modelValue', 'acknowledge'],
+      template: '<div class="draft-dialog-stub" />',
+    },
   },
   mocks: { $t: (key: string) => key },
 };
@@ -75,6 +81,13 @@ describe('PlanAdd', () => {
     await flushPromises();
 
     expect(createMock.mock.calls[0]?.[0].status).toBe(PlanStatusEnum.DRAFT);
+    const dialog = wrapper.getComponent({ name: 'DraftPlanDialog' });
+    expect(dialog.props('modelValue')).toBe(true);
+    expect(routerPushMock).not.toHaveBeenCalled();
+
+    dialog.vm.$emit('acknowledge');
+    await flushPromises();
+
     expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
   });
 });

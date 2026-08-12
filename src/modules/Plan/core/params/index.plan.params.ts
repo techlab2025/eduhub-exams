@@ -25,17 +25,19 @@ export default class IndexPlanParams extends IndexParams {
   toMap() {
     return {
       ...super.toMap(),
-      user_id: this.filters.userId,
-      from_price: this.filters.fromPrice,
-      to_price: this.filters.toPrice,
-      ...(this.filters.duration != undefined && {
+      ...(this.filters.userId !== undefined && { user_id: this.filters.userId }),
+      ...(this.filters.fromPrice !== undefined && { from_price: this.filters.fromPrice }),
+      ...(this.filters.toPrice !== undefined && { to_price: this.filters.toPrice }),
+      ...(this.filters.duration !== undefined && {
         duration: String(this.filters.duration),
       }),
-      has_trail: this.filters.hasTrial,
-      status: this.filters.status,
-      from_date: this.filters.fromDate,
-      to_date: this.filters.toDate,
-      last_updated: this.filters.lastUpdated,
+      ...(this.filters.hasTrial !== undefined && { has_trail: this.filters.hasTrial }),
+      ...(this.filters.status !== undefined && { status: this.filters.status }),
+      ...(this.filters.fromDate !== undefined && { from_date: this.filters.fromDate }),
+      ...(this.filters.toDate !== undefined && { to_date: this.filters.toDate }),
+      ...(this.filters.lastUpdated !== undefined && {
+        last_updated: this.filters.lastUpdated,
+      }),
     };
   }
 }

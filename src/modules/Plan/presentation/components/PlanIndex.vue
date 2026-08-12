@@ -23,12 +23,15 @@
   import TogglePlanStatusParams from '../../core/params/toggle.plan.status.params';
   import DeactivatePlanDialog from '../subCopmnents/DeactivatePlanDialog.vue';
   import ArchivePlanDialog from '../subCopmnents/ArchivePlanDialog.vue';
+  import ActivatePlanDialog from '../subCopmnents/ActivatePlanDialog.vue';
+  import PlanDeleteWarningDialog from '../subCopmnents/PlanDeleteWarningDialog.vue';
   import DeactiveIcon from '@/shared/icons/Plan/DeactiveIcon.vue';
   import ArchiveIcon from '@/shared/icons/Plan/ArchiveIcon.vue';
   import PlanEditIcon from '@/shared/icons/Plan/PlanEditIcon.vue';
   import ReloadIcon from '@/shared/icons/CustomSelect/ReloadIcon.vue';
   import PlanViewIcon from '@/shared/icons/Plan/PlanViewIcon.vue';
   import PlanPriceIcon from '@/shared/icons/Plan/PlanPriceIcon.vue';
+  import IconCheck from '@/shared/icons/IconCheck.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -46,9 +49,11 @@
   const filterDialogVisible = ref(false);
   const deactivateDialogVisible = ref(false);
   const archiveDialogVisible = ref(false);
+  const activateDialogVisible = ref(false);
+  const deleteWarningDialogVisible = ref(false);
   const selectedPlanId = ref<number | null>(null);
   const statusLoading = ref(false);
-  const listMode = ref<PlanStatusEnum>(PlanStatusEnum.ACTIVE);
+  const listMode = ref<PlanStatusEnum | null>(null);
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
     { id: Number(PlanStatusEnum.ACTIVE), title: t('active') },
@@ -79,12 +84,7 @@
         fromPrice: fromPrice.value,
         toPrice: toPrice.value,
         hasTrial: hasTrial.value ?? undefined,
-        status:
-          listMode.value === PlanStatusEnum.Archived
-            ? PlanStatusEnum.Archived
-            : status.value
-              ? (status.value.id as PlanStatusEnum)
-              : PlanStatusEnum.ACTIVE,
+        status: listMode.value ?? (status.value?.id as PlanStatusEnum | undefined),
         duration: durationType.value?.id || undefined,
         fromDate: dateValue(fromDate.value),
         toDate: dateValue(toDate.value),
@@ -108,6 +108,7 @@
       await fetchItems();
       deactivateDialogVisible.value = false;
       archiveDialogVisible.value = false;
+      activateDialogVisible.value = false;
       selectedPlanId.value = null;
     } finally {
       statusLoading.value = false;
@@ -121,48 +122,108 @@
     selectedPlanId.value = id;
     archiveDialogVisible.value = true;
   };
+  const openActivateDialog = (id: number) => {
+    selectedPlanId.value = id;
+    activateDialogVisible.value = true;
+  };
   const confirmStatusChange = async (status: PlanStatusEnum) => {
     if (selectedPlanId.value === null) return;
     await changeStatus(selectedPlanId.value, status);
+    activateDialogVisible.value = false;
+    deactivateDialogVisible.value = false;
+    archiveDialogVisible.value = false;
+    await fetchItems();
   };
-  const actionList = (item: PlanModel) => [
-    {
+  const actionList = (item: PlanModel) => {
+    const viewAction = {
       text: t('view'),
       icon: PlanViewIcon,
       link: `/plans/${item.id}`,
-    },
-    {
-      text: t('edit_price'),
-      icon: PlanPriceIcon,
-      link: `/plans/edit/${item.id}?section=pricing`,
-    },
-    {
-      text: t('edit_basic_info'),
-      icon: PlanEditIcon,
-      link: `/plans/edit/${item.id}?section=basic`,
-    },
-    {
-      text: t('edit_features'),
-      icon: PlanEditIcon,
-      link: `/plans/edit/${item.id}?section=features`,
-    },
-    {
-      text: t('deactivate'),
-      icon: DeactiveIcon,
-      action: () => openDeactivateDialog(item.id),
-    },
-    {
-      text: t('archive'),
-      icon: ArchiveIcon,
-      action: () => openArchiveDialog(item.id),
-    },
-    {
+    };
+    const editActions = [
+      {
+        text: t('edit_price'),
+        icon: PlanPriceIcon,
+        link: `/plans/edit/${item.id}?section=pricing`,
+      },
+      {
+        text: t('edit_basic_info'),
+        icon: PlanEditIcon,
+        link: `/plans/edit/${item.id}?section=basic`,
+      },
+      {
+        text: t('edit_features'),
+        icon: PlanEditIcon,
+        link: `/plans/edit/${item.id}?section=features`,
+      },
+    ];
+    const deleteBlocked = item.subscribers > 0;
+    const deleteAction = {
       text: t('delete'),
       icon: DeletIcon,
-      action: () => remove(item.id),
-    },
-  ];
+      action: deleteBlocked
+        ? () => {
+            deleteWarningDialogVisible.value = true;
+          }
+        : () => remove(item.id),
+      skipDeleteConfirmation: deleteBlocked,
+    };
+
+    if (item.status === PlanStatusEnum.DRAFT) {
+      return [
+        viewAction,
+        {
+          text: t('complete'),
+          icon: PlanEditIcon,
+          link: `/plans/edit/${item.id}`,
+        },
+        deleteAction,
+      ];
+    }
+
+    if (item.status === PlanStatusEnum.Archived) {
+      return [
+        viewAction,
+        ...editActions,
+        {
+          text: t('activate'),
+          icon: IconCheck,
+          action: () => openActivateDialog(item.id),
+        },
+        deleteAction,
+      ];
+    }
+    if (item.status === PlanStatusEnum.deactivated) {
+      return [
+        viewAction,
+        ...editActions,
+        {
+          text: t('activate'),
+          icon: DeactiveIcon,
+          action: () => openActivateDialog(item.id),
+        },
+        deleteAction,
+      ];
+    }
+
+    return [
+      viewAction,
+      ...editActions,
+      {
+        text: t('deactivate'),
+        icon: DeactiveIcon,
+        action: () => openDeactivateDialog(item.id),
+      },
+      {
+        text: t('archive'),
+        icon: ArchiveIcon,
+        action: () => openArchiveDialog(item.id),
+      },
+      deleteAction,
+    ];
+  };
   const applyFilters = async () => {
+    if (status.value) listMode.value = null;
     filterDialogVisible.value = false;
     await fetchItems();
   };
@@ -175,11 +236,13 @@
     toDate.value = null;
     status.value = null;
     lastUpdated.value = null;
+    listMode.value = null;
     await applyFilters();
   };
   const setListMode = async (mode: PlanStatusEnum) => {
     if (listMode.value === mode) return;
     listMode.value = mode;
+    status.value = null;
     await fetchItems(1, word.value);
   };
 
@@ -446,6 +509,12 @@
       :loading="statusLoading"
       @confirm="confirmStatusChange(PlanStatusEnum.Archived)"
     />
+    <ActivatePlanDialog
+      v-model="activateDialogVisible"
+      :loading="statusLoading"
+      @confirm="confirmStatusChange(PlanStatusEnum.ACTIVE)"
+    />
+    <PlanDeleteWarningDialog v-model="deleteWarningDialogVisible" />
   </section>
 </template>
 
@@ -551,10 +620,10 @@
     right: 0;
     width: 100%;
     padding: var(--xs-size);
+
     button {
       width: 100% !important;
     }
- 
   }
 
   .plan-list-toggle {
@@ -852,7 +921,6 @@
   }
 
   .plan-filters .filter-actions {
-
     gap: 16px;
     padding-top: 12px;
 

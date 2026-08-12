@@ -5,6 +5,7 @@
   import PlanForm from './PlanForm.vue';
   import type AddPlanParams from '../../core/params/add.plan.params';
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
+  import DraftPlanDialog from '../subCopmnents/DraftPlanDialog.vue';
 
   const controller = PlanController.getInstance();
   const route = useRoute();
@@ -14,6 +15,7 @@
   const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
   const loading = ref(false);
   const publishReady = ref(false);
+  const draftDialogVisible = ref(false);
   const savePlan = async () => {
     const isValid = await planFormRef.value?.validate?.();
     if (isValid === false) return;
@@ -28,7 +30,7 @@
       params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.create(params.value, undefined);
       if (result?.data) {
-        router.push({ name: 'Plans' });
+        await router.push({ name: 'Plans' });
         await controller.fetchList();
       }
     } catch (error) {
@@ -44,7 +46,27 @@
 
   const router = useRouter();
   const saveDraft = async () => {
-    loading.value = true;
+    // loading.value = true;
+    // try {
+    //   if (!params.value) {
+    //     console.error('No plan parameters to save');
+    //     return;
+    //   }
+      // params.value.status = PlanStatusEnum.DRAFT;
+      // const result = await controller.create(params.value, undefined);
+      // if (result?.data) {
+        // await controller.fetchList();
+        draftDialogVisible.value = true;
+      // }
+    // } catch (error) {
+    //   console.error('Error saving plan draft:', error);
+    // } finally {
+    //   loading.value = false;
+    // }
+  };
+  const acknowledgeDraft = async () => {
+    draftDialogVisible.value = false;
+     loading.value = true;
     try {
       if (!params.value) {
         console.error('No plan parameters to save');
@@ -53,7 +75,6 @@
       params.value.status = PlanStatusEnum.DRAFT;
       const result = await controller.create(params.value, undefined);
       if (result?.data) {
-        router.push({ name: 'Plans' });
         await controller.fetchList();
       }
     } catch (error) {
@@ -61,6 +82,7 @@
     } finally {
       loading.value = false;
     }
+    await router.push({ name: 'Plans' });
   };
 </script>
 
@@ -88,10 +110,13 @@
           {{ $t('publish') }}
         </span>
       </button>
-      <button type="button" class="btn btn-draft" :disabled="loading" @click="saveDraft">
+      <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
         {{ $t('save_as_draft') }}
       </button>
+      <!-- <DraftPlanDialog /> -->
     </div>
+
+    <DraftPlanDialog v-model="draftDialogVisible" @acknowledge="acknowledgeDraft" />
   </div>
 </template>
 
@@ -122,15 +147,15 @@
     border-radius: var(--radius-full);
     width: min(240px, 50%);
 
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
+    // &:disabled {
+    //   cursor: not-allowed;
+    //   opacity: 0.5;
+    // }
   }
 
-  .publish-button.is-not-ready:not(:disabled) {
-    opacity: 0.5;
-  }
+  // .publish-button.is-not-ready:not(:disabled) {
+  //   opacity: 0.5;
+  // }
 
   .btn-draft {
     border: 1px solid var(--PrimaryColor-alpha-10);

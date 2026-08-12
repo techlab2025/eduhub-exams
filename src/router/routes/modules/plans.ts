@@ -10,20 +10,20 @@ export const planRoutes: RouteRecordRaw[] = [
     path: 'plans/add',
     name: 'Add Plan',
     component: () => import('@/views/Plan/AddPlan.vue'),
-    meta: { breadcrumb: 'add_plan', parent: 'Plans' },
+    meta: { breadcrumb: 'add plan', parent: 'Plans' },
   },
   {
     path: 'plans/edit/:id',
     name: 'Edit Plan',
     component: () => import('@/views/Plan/EditPlan.vue'),
     props: true,
-    meta: { breadcrumb: 'edit_plan', parent: 'Plans' },
+    meta: { breadcrumb: 'edit plan', parent: 'Plans' },
   },
   {
     path: 'plans/:id',
     name: 'Plan Details',
     component: () => import('@/views/Plan/ShowPlan.vue'),
     props: true,
-    meta: { breadcrumb: 'plan_details', parent: 'Plans' },
+    meta: { breadcrumb: 'plan details', parent: 'Plans' },
   },
 ];

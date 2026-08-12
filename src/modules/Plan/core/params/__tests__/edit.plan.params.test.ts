@@ -21,7 +21,7 @@ describe('EditPlanParams', () => {
       features: [],
     });
 
-    expect(params.toMap()).toMatchObject({ plan_id: 9, status: 1 });
+    expect(params.toMap()).toMatchObject({ subscription_plan_id: 9, status: 1 });
   });
 
   it('maps and validates only pricing for a pricing edit', () => {
@@ -44,7 +44,7 @@ describe('EditPlanParams', () => {
     });
 
     expect(params.toMap()).toEqual({
-      plan_id: 9,
+      subscription_plan_id: 9,
       pricing: [{ price: 20, duration: 1, duration_type: 3 }],
       has_trail: false,
       trail_days: 0,
@@ -69,7 +69,7 @@ describe('EditPlanParams', () => {
     });
 
     expect(params.toMap()).toEqual({
-      plan_id: 9,
+      subscription_plan_id: 9,
       translations: {
         title: { ar: 'خطة' },
         description: { en: 'Description' },
@@ -102,8 +102,8 @@ describe('EditPlanParams', () => {
     });
 
     expect(params.toMap()).toEqual({
-      plan_id: 9,
-      features: [{ feature_type: 1, feature_sub_type: [{ sub_type: 1 }] }],
+      subscription_plan_id: 9,
+      features: [{ feature_type: 1, feature_sub_type: [{ sub_type: 2 }] }],
     });
     expect(params.validate().isValid).toBe(true);
   });

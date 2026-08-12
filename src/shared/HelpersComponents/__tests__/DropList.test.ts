@@ -1,7 +1,8 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { defineComponent, h, ref } from 'vue';
 import DropList from '../DropList.vue';
+import ActionsIcon from '../../icons/ActionsIcon.vue';
 
 const PopoverStub = defineComponent({
   name: 'Popover',
@@ -18,11 +19,7 @@ const PopoverStub = defineComponent({
     });
 
     return () =>
-      h(
-        'div',
-        { class: ['popover-stub', { 'is-visible': visible.value }] },
-        slots.default?.(),
-      );
+      h('div', { class: ['popover-stub', { 'is-visible': visible.value }] }, slots.default?.());
   },
 });
 
@@ -58,5 +55,30 @@ describe('DropList', () => {
     await triggers[1].trigger('click');
     expect(popovers[0].classes()).not.toContain('is-visible');
     expect(popovers[1].classes()).toContain('is-visible');
+  });
+
+  it('runs a blocked delete action without opening the delete confirmation', async () => {
+    const action = vi.fn();
+    const wrapper = mount(DropList, {
+      props: {
+        actionList: [
+          {
+            text: 'Delete',
+            icon: ActionsIcon,
+            action,
+            skipDeleteConfirmation: true,
+          },
+        ],
+      },
+      global: {
+        mocks: { $t: (key: string) => (key === 'delete' ? 'Delete' : key) },
+        stubs: { Popover: PopoverStub },
+      },
+    });
+
+    await wrapper.get('.list-item > button').trigger('click');
+
+    expect(action).toHaveBeenCalledOnce();
+    expect(wrapper.findComponent({ name: 'DeleteDialog' }).exists()).toBe(false);
   });
 });

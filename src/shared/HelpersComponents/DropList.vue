@@ -18,6 +18,7 @@
     icon: Component;
     link?: string;
     action?: () => void;
+    skipDeleteConfirmation?: boolean;
   }
 
   defineEmits(['delete']);
@@ -68,7 +69,10 @@
           </router-link>
 
           <button
-            v-else-if="action.action && action.text != $t('delete')"
+            v-else-if="
+              action.action &&
+              (action.text != $t('delete') || action.skipDeleteConfirmation === true)
+            "
             class="flex items-center gap-sm"
             @click="action.action"
           >

@@ -10,7 +10,9 @@ describe('plan feature enums', () => {
     expect(PLAN_FEATURE_DEFINITIONS).toHaveLength(5);
     expect(PLAN_FEATURE_DEFINITIONS.flatMap((feature) => feature.subTypes)).toHaveLength(20);
     expect(PlanFeatureTypeEnum.REPORT).toBe(1);
-    expect(PlanFeatureSubTypeEnum.MAXIMUM_FLASH_CARD_SETS).toBe(20);
+    expect(PlanFeatureTypeEnum.WHAT_DID_YOU_STUDY).toBe(17);
+    expect(PlanFeatureTypeEnum.LEARNING_RESOURCES).toBe(20);
+    expect(PlanFeatureSubTypeEnum.MAXIMUM_FLASH_CARD_SETS).toBe(25);
   });
 
   it('marks numeric sub-types with their defaults', () => {
