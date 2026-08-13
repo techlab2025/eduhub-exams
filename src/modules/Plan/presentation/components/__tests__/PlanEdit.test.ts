@@ -72,9 +72,14 @@ describe('PlanEdit', () => {
     fetchListMock.mockResolvedValue(undefined);
   });
 
-  it('shows Publish and Save as Draft only for a draft plan', async () => {
+  it('hides edit actions until the plan data changes', async () => {
     const wrapper = mount(PlanEdit, { global });
     await flushPromises();
+
+    expect(wrapper.find('.actions').exists()).toBe(false);
+
+    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', params());
+    await wrapper.vm.$nextTick();
 
     expect(wrapper.findAll('.actions button')).toHaveLength(2);
     expect(wrapper.find('.publish-button').exists()).toBe(true);
@@ -117,14 +122,19 @@ describe('PlanEdit', () => {
     expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
   });
 
-  it('keeps Update Plan and Cancel for a non-draft plan', async () => {
+  it('uses the same change-triggered actions for a non-draft plan', async () => {
     itemData.value = { status: PlanStatusEnum.ACTIVE };
     const wrapper = mount(PlanEdit, { global });
     await flushPromises();
 
-    expect(wrapper.find('.publish-button').exists()).toBe(false);
-    expect(wrapper.find('.btn-draft').exists()).toBe(false);
-    expect(wrapper.get('.btn-primary').text()).toBe('update_plan');
-    expect(wrapper.get('.btn-cancel').text()).toBe('cancel');
+    expect(wrapper.find('.actions').exists()).toBe(false);
+
+    const changedParams = params();
+    changedParams.status = PlanStatusEnum.ACTIVE;
+    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', changedParams);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('.publish-button').exists()).toBe(true);
+    expect(wrapper.find('.btn-draft').exists()).toBe(true);
   });
 });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, nextTick, onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
@@ -18,10 +18,21 @@
   const loading = ref(false);
   const publishReady = ref(false);
   const draftDialogVisible = ref(false);
+  const hasChanges = ref(false);
+  const initialParamsSnapshot = ref<string | null>(null);
+  const isInitialized = ref(false);
   const isDraft = computed(() => controller.itemData.value?.status === PlanStatusEnum.DRAFT);
 
+  const getParamsSnapshot = (value: EditPlanParams | null) =>
+    value ? JSON.stringify(value.toMap()) : null;
+
   const updateData = (updatedParams: AddPlanParams | EditPlanParams) => {
-    if (updatedParams instanceof EditPlanParams) params.value = updatedParams;
+    if (!(updatedParams instanceof EditPlanParams)) return;
+
+    params.value = updatedParams;
+    if (isInitialized.value) {
+      hasChanges.value = getParamsSnapshot(updatedParams) !== initialParamsSnapshot.value;
+    }
   };
 
   const savePlan = async () => {
@@ -81,6 +92,10 @@
     } finally {
       loading.value = false;
     }
+    await nextTick();
+    initialParamsSnapshot.value = getParamsSnapshot(params.value);
+    hasChanges.value = false;
+    isInitialized.value = true;
   });
 </script>
 
@@ -95,7 +110,7 @@
       @validity-change="publishReady = $event"
     />
 
-    <div class="actions">
+    <div v-if="hasChanges" class="actions">
       <button
         class="btn btn-primary publish-button"
         :class="{ 'is-not-ready': !publishReady }"
@@ -104,7 +119,7 @@
         :disabled="loading"
         @click="savePlan"
       >
-        <span >{{ $t('publish') }}</span>
+        <span>{{ $t('publish') }}</span>
       </button>
       <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
         {{ $t('save_as_draft') }}
@@ -144,6 +159,7 @@
     justify-content: flex-end;
     gap: var(--xs-size);
     margin-top: var(--xl-size-base);
+
     button {
       width: 50%;
     }

@@ -928,6 +928,7 @@
   "plan_duration_required": "Duration must be greater than zero.",
   "plan_duration_type_required": "Duration type is required.",
   "plan_trial_days_required": "Trial days must be greater than zero.",
+  "plan_trial_days_exceed_duration": "Trial days cannot exceed the shortest plan duration.",
   "plan_feature_required": "At least one feature is required.",
   "plan_feature_limit_required": "Feature limit must be greater than zero.",
   "basic_info": "Basic Info",

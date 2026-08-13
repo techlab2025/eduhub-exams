@@ -23,6 +23,7 @@
   import PlanFeatureParams from '../../core/params/plan.features.params';
   import PlanPricingParams from '../../core/params/plan.pricing.params';
   import PlanSubFeatureParams from '../../core/params/plan.sub.features.params';
+  import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
   interface PlanSubFeatureFormItem {
     subType: PlanFeatureSubTypeEnum;
@@ -126,6 +127,30 @@
     ['en', 'ar'].some((locale) => (value[locale]?.trim().length ?? 0) > 0);
   const isNumberAtLeast = (value: unknown, minimum: number) =>
     Number.isFinite(Number(value)) && Number(value) >= minimum;
+  const durationInDays = (item: PlanPricingParams) => {
+    const multipliers: Record<PlanDurationTypeEnum, number> = {
+      [PlanDurationTypeEnum.DAY]: 1,
+      [PlanDurationTypeEnum.WEEK]: 7,
+      [PlanDurationTypeEnum.MONTH]: 30,
+      [PlanDurationTypeEnum.YEAR]: 365,
+    };
+    if (!item.durationType || !isNumberAtLeast(item.duration, 1)) return undefined;
+    return Number(item.duration) * multipliers[item.durationType];
+  };
+  const minimumPlanDurationDays = computed(() => {
+    const durations = pricing.value.flatMap((item) => {
+      const days = durationInDays(item);
+      return days === undefined ? [] : [days];
+    });
+    return durations.length ? Math.min(...durations) : undefined;
+  });
+  const trialExceedsPlanDuration = computed(
+    () =>
+      hasTrial.value &&
+      isNumberAtLeast(trialDays.value, 1) &&
+      minimumPlanDurationDays.value !== undefined &&
+      Number(trialDays.value) > minimumPlanDurationDays.value,
+  );
   const hasActiveLimit = (subType: PlanSubFeatureFormItem) =>
     subType.hasLimit && isNumberAtLeast(subType.limit, 1);
   const isSubFeatureIncluded = (subType: PlanSubFeatureFormItem) =>
@@ -165,6 +190,8 @@
 
       if (hasTrial.value && !isNumberAtLeast(trialDays.value, 1)) {
         errors.trialDays = t('plan_trial_days_required');
+      } else if (trialExceedsPlanDuration.value) {
+        errors.trialDays = t('plan_trial_days_exceed_duration');
       }
     }
 
@@ -181,6 +208,12 @@
   const validate = async () => {
     showValidationErrors.value = true;
     if (isPublishReady.value) return true;
+
+    if (trialExceedsPlanDuration.value) {
+      dialogManager.toastWarning(t('plan_trial_days_exceed_duration'), {
+        title: t('invalid_input_warning_title'),
+      });
+    }
 
     await nextTick();
     const firstError = planFormRoot.value?.querySelector<HTMLElement>(
@@ -733,6 +766,7 @@
   .validated-field input {
     width: 100%;
   }
+
   .validated-field label {
     display: flex;
   }

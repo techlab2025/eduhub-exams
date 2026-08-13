@@ -4,6 +4,7 @@ import { createI18n } from 'vue-i18n';
 import PlanForm from '../PlanForm.vue';
 import PlanDetailsModel from '../../../core/models/plan.details.model';
 import { PlanDurationTypeEnum } from '../../../core/enums/plan.duration.enum';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
 const routeMock = vi.hoisted(() => ({
   params: {} as Record<string, string>,
@@ -175,6 +176,38 @@ describe('PlanForm', () => {
     );
     expect(wrapper.findAll('#plan-pricing [data-plan-validation-error]')).toHaveLength(0);
   });
+
+  it.each([
+    [PlanDurationTypeEnum.DAY, 5, 6],
+    [PlanDurationTypeEnum.WEEK, 2, 15],
+    [PlanDurationTypeEnum.MONTH, 1, 31],
+    [PlanDurationTypeEnum.YEAR, 1, 366],
+  ])(
+    'blocks trial days longer than pricing duration type %s',
+    async (durationType, duration, trialDays) => {
+      routeMock.params = { id: '8' };
+      routeMock.query = { section: 'pricing' };
+      const toastWarningSpy = vi
+        .spyOn(dialogManager, 'toastWarning')
+        .mockImplementation(() => 'toast-id');
+      const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+
+      await wrapper.get('#pricing-0-price').setValue(10);
+      await wrapper.get('#pricing-0-duration').setValue(duration);
+      await wrapper.get('#pricing-0-duration-type').setValue(durationType);
+      wrapper.findComponent({ name: 'ToggleSwitch' }).vm.$emit('update:modelValue', true);
+      await wrapper.vm.$nextTick();
+      await wrapper.get('.trial-section input').setValue(trialDays);
+
+      expect(await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate()).toBe(
+        false,
+      );
+      expect(wrapper.get('#trial-days-error').text()).toBe('plan_trial_days_exceed_duration');
+      expect(toastWarningSpy).toHaveBeenCalledWith('plan_trial_days_exceed_duration', {
+        title: 'invalid_input_warning_title',
+      });
+    },
+  );
 
   it.each([
     ['basic', '#plan-basic'],
