@@ -181,9 +181,11 @@ export default class questionsController extends BaseController<
     return result;
   }
 
-  async delete(params: Params) {
-    const result = await super.delete(params);
-    dialogManager.toastSuccess('Question deleted successfully');
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    if (result?.error?.title) {
+      dialogManager.toastError(result?.error?.title);
+    }
     return result;
   }
 

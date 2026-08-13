@@ -31,4 +31,24 @@ describe('RevisionQuestion', () => {
 
     expect(wrapper.emitted('revision')).toEqual([['Update the correct answer']]);
   });
+
+  it('shows a required-note error when confirming without a note', async () => {
+    const wrapper = mount(RevisionQuestion, { global: globalConfig });
+
+    await wrapper.find('.confirm-btn').trigger('click');
+
+    expect(wrapper.find('.note-error').text()).toBe('revision_question_dialog.note_required');
+    expect(wrapper.find('#revision-reason').attributes('aria-invalid')).toBe('true');
+    expect(wrapper.emitted('revision')).toBeUndefined();
+  });
+
+  it('clears the required-note error after entering a note', async () => {
+    const wrapper = mount(RevisionQuestion, { global: globalConfig });
+
+    await wrapper.find('.confirm-btn').trigger('click');
+    await wrapper.find('#revision-reason').setValue('Updated explanation');
+
+    expect(wrapper.find('.note-error').exists()).toBe(false);
+    expect(wrapper.find('#revision-reason').attributes('aria-invalid')).toBe('false');
+  });
 });

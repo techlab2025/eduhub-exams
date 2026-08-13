@@ -158,8 +158,8 @@
         <FilterDialog v-model="FilterDialogShow">
           <template #content>
             <div class="date-remove">
-              <h6>{{ $t('date of remove') }}</h6>
-              <DatePicker v-model="date" class="date-model" :placeholder="$t('Date Remove')" />
+              <h6>{{ $t('date ') }}</h6>
+              <DatePicker v-model="date" class="date-model" :placeholder="$t('Date ')" />
             </div>
             <div class="date-remove">
               <UpdatedCustomInputSelect

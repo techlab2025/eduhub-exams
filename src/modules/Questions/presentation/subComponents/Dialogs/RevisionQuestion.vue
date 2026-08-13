@@ -8,13 +8,22 @@
   const emit = defineEmits(['revision']);
 
   const note = ref<string>();
+  const noteError = ref(false);
 
   const SaveNote = () => {
-    if (!note.value) {
+    if (!note.value?.trim()) {
+      noteError.value = true;
       return;
     }
-    emit('revision', note.value);
+    noteError.value = false;
+    emit('revision', note.value.trim());
     visable.value = false;
+  };
+
+  const clearNoteError = () => {
+    if (note.value?.trim()) {
+      noteError.value = false;
+    }
   };
 </script>
 
@@ -48,9 +57,16 @@
           <textarea
             id="revision-reason"
             v-model="note"
+            :aria-describedby="noteError ? 'revision-reason-error' : undefined"
+            :aria-invalid="noteError"
+            :class="{ 'input-error': noteError }"
             :placeholder="$t('revision_question_dialog.placeholder')"
             rows="7"
+            @input="clearNoteError"
           ></textarea>
+          <p v-if="noteError" id="revision-reason-error" class="note-error" role="alert">
+            {{ $t('revision_question_dialog.note_required') }}
+          </p>
         </div>
       </div>
 
@@ -181,6 +197,19 @@
           border-color: var(--PrimaryColor);
           box-shadow: 0 0 0 3px var(--PrimaryColor-alpha-10);
         }
+
+        &.input-error {
+          border-color: var(--danger-alt);
+        }
+      }
+
+      .note-error {
+        margin: 8px 20px 0;
+        color: var(--danger-alt);
+        font-family: var(--font-family);
+        font-size: 14px;
+        font-weight: 500;
+        text-align: start;
       }
     }
 

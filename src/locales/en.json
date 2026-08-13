@@ -600,6 +600,7 @@
     "subtitle": "A brief explanation of the changes made.",
     "reason": "Revision reason",
     "placeholder": "Enter the reason for revision",
+    "note_required": "A revision note is required.",
     "warning": "The current approved version will be saved in question history before editing begins.",
     "confirm": "Confirm",
     "cancel": "Cancel"
