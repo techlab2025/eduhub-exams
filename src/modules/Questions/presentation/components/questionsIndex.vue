@@ -30,6 +30,7 @@
   import { useI18n } from 'vue-i18n';
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
   import wordSlice from '@/base/Presentation/Utils/word_slice';
+  import ReloadIcon from '@/shared/icons/CustomSelect/ReloadIcon.vue';
 
   // Controller instance
   const controller = questionsController.getInstance();
@@ -319,76 +320,117 @@
           <IndexPluseIcon />
           <span>{{ isDraft ? 'Add Questions' : 'Continue Adding' }}</span>
         </router-link>
-        <FilterDialog v-model="FilterDialogShow">
+        <FilterDialog
+          v-model="FilterDialogShow"
+          dialog-class="questions-filter-dialog"
+          width="min(16rem, 100vw)"
+        >
           <template #content>
-            <div class="filter-body">
-              <div class="form-fields">
-                <div class="field-group">
-                  <label class="field-label" for="question-status">
-                    {{ $t('question_filters.status') }}
-                  </label>
-                  <div class="input-wrap">
-                    <UpdatedCustomInputSelect
-                      id="question-status"
-                      v-model="selectedStatus"
-                      :static-options="statusOptions"
-                      :placeholder="$t('question_filters.select_status')"
-                      :reload="false"
-                    />
-                  </div>
-                </div>
+            <div class="questions-filters">
+              <section class="question-filter-section question-filter-select">
+                <UpdatedCustomInputSelect
+                  id="question-status"
+                  v-model="selectedStatus"
+                  :static-options="statusOptions"
+                  :placeholder="$t('question_filters.select_status')"
+                  :reload="false"
+                  has-header
+                >
+                  <template #Header>
+                    <div class="question-filter-heading">
+                      <h2>{{ $t('question_filters.status') }}</h2>
+                      <button
+                        type="button"
+                        class="question-filter-reset"
+                        :aria-label="$t('reset')"
+                        @click="selectedStatus = undefined"
+                      >
+                        <ReloadIcon />
+                      </button>
+                    </div>
+                  </template>
+                </UpdatedCustomInputSelect>
+              </section>
 
-                <div class="field-group">
-                  <label class="field-label" for="question-type">
-                    {{ $t('question_filters.type') }}
-                  </label>
-                  <div class="input-wrap">
-                    <UpdatedCustomInputSelect
-                      id="question-type"
-                      v-model="selectedQuestionType"
-                      :static-options="questionTypeOptions"
-                      :placeholder="$t('question_filters.select_type')"
-                      :reload="false"
-                    />
-                  </div>
-                </div>
+              <section class="question-filter-section question-filter-select">
+                <UpdatedCustomInputSelect
+                  id="question-type"
+                  v-model="selectedQuestionType"
+                  :static-options="questionTypeOptions"
+                  :placeholder="$t('question_filters.select_type')"
+                  :reload="false"
+                  has-header
+                >
+                  <template #Header>
+                    <div class="question-filter-heading">
+                      <h2>{{ $t('question_filters.type') }}</h2>
+                      <button
+                        type="button"
+                        class="question-filter-reset"
+                        :aria-label="$t('reset')"
+                        @click="selectedQuestionType = undefined"
+                      >
+                        <ReloadIcon />
+                      </button>
+                    </div>
+                  </template>
+                </UpdatedCustomInputSelect>
+              </section>
 
-                <div class="field-group">
-                  <label class="field-label" for="questions-from-date">
-                    {{ $t('question_filters.from_date') }}
-                  </label>
-                  <div class="input-wrap">
-                    <DatePicker
-                      id="questions-from-date"
-                      v-model="fromDate"
-                      date-format="yy-mm-dd"
-                      :max-date="toDate ?? undefined"
-                      :placeholder="$t('question_filters.select_from_date')"
-                      show-icon
-                    />
-                  </div>
+              <section class="question-filter-section question-filter-date">
+                <div class="question-filter-heading">
+                  <h2>{{ $t('question_filters.from_date') }}</h2>
+                  <button
+                    type="button"
+                    class="question-filter-reset"
+                    :aria-label="$t('reset')"
+                    @click="fromDate = null"
+                  >
+                    <ReloadIcon />
+                  </button>
                 </div>
+                <DatePicker
+                  id="questions-from-date"
+                  v-model="fromDate"
+                  date-format="yy-mm-dd"
+                  :max-date="toDate ?? undefined"
+                  :placeholder="$t('question_filters.select_from_date')"
+                  panel-class="light-datepicker-panel"
+                  show-icon
+                />
+              </section>
 
-                <div class="field-group">
-                  <label class="field-label" for="questions-to-date">
-                    {{ $t('question_filters.to_date') }}
-                  </label>
-                  <div class="input-wrap">
-                    <DatePicker
-                      id="questions-to-date"
-                      v-model="toDate"
-                      date-format="yy-mm-dd"
-                      :min-date="fromDate ?? undefined"
-                      :placeholder="$t('question_filters.select_to_date')"
-                      show-icon
-                    />
-                  </div>
+              <section class="question-filter-section question-filter-date">
+                <div class="question-filter-heading">
+                  <h2>{{ $t('question_filters.to_date') }}</h2>
+                  <button
+                    type="button"
+                    class="question-filter-reset"
+                    :aria-label="$t('reset')"
+                    @click="toDate = null"
+                  >
+                    <ReloadIcon />
+                  </button>
                 </div>
+                <DatePicker
+                  id="questions-to-date"
+                  v-model="toDate"
+                  date-format="yy-mm-dd"
+                  :min-date="fromDate ?? undefined"
+                  :placeholder="$t('question_filters.select_to_date')"
+                  panel-class="light-datepicker-panel"
+                  show-icon
+                />
+              </section>
+
+              <div class="question-filter-actions">
+                <button type="button" class="btn btn-primary" @click="ApplayFilter">
+                  {{ $t('apply') }}
+                </button>
+                <button type="button" class="btn btn-cancel" @click="resetFilters">
+                  {{ $t('reset') }}
+                </button>
               </div>
-            </div>
-            <div class="filter-action">
-              <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
-              <button class="btn btn-primary" @click="ApplayFilter">{{ $t('apply') }}</button>
             </div>
           </template>
         </FilterDialog>
@@ -504,7 +546,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   .delete-container {
     width: 100%;
     display: flex;
@@ -540,185 +582,182 @@
     font-family: 'Medium';
   }
 
-  /* filter dilaog styles */
+  :global(.questions-filter-dialog) {
+    inset-block-start: 0 !important;
+    inset-inline-start: auto !important;
+    inset-inline-end: 0 !important;
+    width: min(16rem, 100vw) !important;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+    background: var(--standard-white) !important;
+    border: 0;
+    border-radius: 0;
+    box-shadow: var(--shadow-md);
+    transform: none !important;
 
-  .filter-body {
-    padding: 0;
+    .p-dialog-header {
+      padding: 26px 10px 6px;
+    }
+
+    .p-dialog-header-actions {
+      display: none;
+    }
+
+    .p-dialog-content {
+      height: 100%;
+      padding: 0 10px 18px !important;
+      overflow-y: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .filter-title {
+      margin: 0;
+      color: var(--standard-black);
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 20px;
+    }
   }
 
-  .form-fields {
+  .questions-filters {
+    min-height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 22px;
   }
 
-  .field-group {
-    position: relative;
-    padding-bottom: 18px;
-    border-bottom: 1px solid #ececec;
+  .question-filter-section {
+    padding-block: 17px 13px;
+    border-bottom: 1px solid var(--input-border-color);
   }
 
-  .field-group:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  .field-label {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #444;
-    line-height: 1;
-    font-family: 'Demi';
-  }
-
-  /* Optional reload icon positioning if you add one */
-  .field-group .reload-icon {
-    position: absolute;
-    right: 0;
-    top: 2px;
-    color: #8d8d8d;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .field-group .reload-icon:hover {
-    color: var(--primary-color);
-    transform: rotate(180deg);
-  }
-
-  .input-wrap {
+  .question-filter-heading {
     width: 100%;
-  }
-
-  /* ============================
-   PrimeVue Select
-============================ */
-
-  .input-wrap .p-dropdown,
-  .input-wrap .p-select,
-  .input-wrap .p-calendar {
-    width: 100%;
-  }
-
-  .input-wrap .p-dropdown,
-  .input-wrap .p-select,
-  .input-wrap .p-calendar .p-inputtext,
-  .input-wrap .p-dropdown-label,
-  .input-wrap .p-select-label {
-    border-radius: 999px;
-  }
-
-  .input-wrap .p-dropdown,
-  .input-wrap .p-select,
-  .input-wrap .p-calendar .p-inputtext {
-    height: 48px;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    transition: all 0.25s ease;
-    box-shadow: none;
-  }
-
-  .input-wrap .p-dropdown:hover,
-  .input-wrap .p-select:hover,
-  .input-wrap .p-calendar .p-inputtext:hover {
-    border-color: #d1d5db;
-  }
-
-  .input-wrap .p-dropdown:focus-within,
-  .input-wrap .p-select:focus-within,
-  .input-wrap .p-calendar .p-inputtext:focus {
-    border-color: #53b483;
-    box-shadow: 0 0 0 3px rgba(83, 180, 131, 0.15);
-  }
-
-  .input-wrap .p-dropdown-label,
-  .input-wrap .p-select-label,
-  .input-wrap .p-calendar .p-inputtext {
-    font-size: 13px;
-    color: #6b7280;
-    padding-inline: 18px;
-  }
-
-  .input-wrap .p-dropdown-trigger,
-  .input-wrap .p-select-dropdown {
-    width: 46px;
-    color: #8b8b8b;
-  }
-
-  /* Calendar icon */
-
-  .input-wrap .p-datepicker-trigger {
-    background: transparent;
-    border: none;
-    color: #7a7a7a;
-  }
-
-  .input-wrap .p-datepicker-trigger:hover {
-    background: transparent;
-  }
-
-  /* ============================
-   Footer Buttons
-============================ */
-
-  .filter-action {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    margin-top: 30px;
+    margin-bottom: 8px;
+
+    h2 {
+      margin: 0;
+      color: var(--title-header-color);
+      font-family: var(--font-family);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 17px;
+    }
   }
 
-  .filter-action .btn {
-    flex: 1;
-    height: 46px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: 0.25s;
+  .question-filter-reset {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    color: var(--gray-text);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+
+    :deep(svg) {
+      width: 16px;
+      height: 16px;
+    }
   }
 
-  .filter-action .btn-primary {
-    border: none;
-    background: #53b483;
-    color: #fff;
-  }
-
-  .filter-action .btn-primary:hover {
-    background: #45a473;
-  }
-
-  .filter-action .btn-cancel {
-    background: #fff5f5;
-    border: 1px solid #ffc8c8;
-    color: #ef5b5b;
-  }
-
-  .filter-action .btn-cancel:hover {
-    background: #ffeaea;
-  }
-
-  /* ============================
-   Responsive
-============================ */
-
-  @media (max-width: 640px) {
-    .form-fields {
-      gap: 18px;
+  .question-filter-select {
+    :deep(.input-label) {
+      width: 100%;
     }
 
-    .field-label {
-      font-size: 13px;
+    :deep(.input-select) {
+      width: 100%;
+      height: 34px;
+      border: 1px solid var(--input-border-color);
+      border-radius: var(--radius-full);
+      background: var(--standard-white);
     }
 
-    .filter-action {
-      margin-top: 24px;
+    :deep(.p-select-label) {
+      padding-inline: 12px;
+      display: flex;
+      align-items: center;
+      color: var(--gray-text);
+      font-size: 10px;
     }
 
-    .filter-action .btn {
-      height: 44px;
-      font-size: 13px;
+    :deep(.p-select-dropdown) {
+      width: 34px;
+      color: var(--gray-text);
     }
+  }
+
+  .question-filter-date {
+    :deep(.p-datepicker) {
+      width: 100%;
+    }
+
+    :deep(.p-inputtext) {
+      width: 100%;
+      min-width: 0;
+      height: 34px;
+      padding-inline: 12px 2px;
+      color: var(--gray-text);
+      background: var(--standard-white);
+      border: 1px solid var(--input-border-color);
+      border-inline-end: 0;
+      border-radius: var(--radius-full) 0 0 var(--radius-full) !important;
+      font-size: 10px !important;
+    }
+
+    :deep(.p-datepicker-dropdown) {
+      width: 34px;
+      color: var(--gray-text);
+      background: var(--standard-white);
+      border: 1px solid var(--input-border-color);
+      border-inline-start: 0;
+      border-radius: 0 var(--radius-full) var(--radius-full) 0;
+    }
+  }
+
+  .question-filter-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 2.15fr) minmax(70px, 1fr);
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 20px;
+
+    .btn {
+      width: 100%;
+      height: 30px;
+      margin: 0 !important;
+      border-radius: var(--radius-full);
+      font-family: var(--font-family);
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      color: var(--standard-white);
+      background: var(--primary-green);
+      border: 1px solid var(--primary-green);
+    }
+
+    .btn-cancel {
+      color: var(--btn-red);
+      background: var(--background-btn-outline-color);
+      border: 1px solid var(--background-btn-hard-color);
+    }
+  }
+
+  :global(.light-datepicker-panel) {
+    color-scheme: light;
+    background: var(--standard-white);
   }
 </style>
