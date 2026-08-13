@@ -3,6 +3,7 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import { QuestionStatusEnum } from '../../../core/constant/question.status.enum';
+import { QuestionTypeEnum } from '../../../core/constant/question.type.enum';
 import questionsIndex from '../questionsIndex.vue';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
@@ -54,7 +55,10 @@ const globalConfig = {
   },
 };
 
-const mountWithTableItem = (status: QuestionStatusEnum) =>
+const mountWithTableItem = (
+  status: QuestionStatusEnum,
+  questionType: QuestionTypeEnum = QuestionTypeEnum.mcq,
+) =>
   mount(questionsIndex, {
     global: {
       ...globalConfig,
@@ -66,7 +70,7 @@ const mountWithTableItem = (status: QuestionStatusEnum) =>
         AppTable: {
           name: 'AppTable',
           props: ['rowSelectable', 'rowDisabled'],
-          template: `<div><slot name="actions" :item="{ id: 10, status: ${status} }" /></div>`,
+          template: `<div><slot name="actions" :item="{ id: 10, status: ${status}, questionType: ${questionType} }" /></div>`,
         },
       },
     },
@@ -95,12 +99,55 @@ describe('questionsIndex.vue', () => {
     expect(addButton.exists()).toBe(true);
   });
 
+  it('does not display article records in the questions table', () => {
+    const wrapper = mount(questionsIndex, {
+      global: {
+        ...globalConfig,
+        stubs: {
+          ...globalConfig.stubs,
+          DataStatusBuilder: {
+            data: () => ({
+              questions: [
+                { id: 1, questionType: QuestionTypeEnum.mcq },
+                { id: 2, questionType: QuestionTypeEnum.paragraph },
+              ],
+            }),
+            template: '<div><slot name="success" :data="questions" /></div>',
+          },
+          AppTable: {
+            name: 'AppTable',
+            props: ['items'],
+            template: '<div />',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.findComponent({ name: 'AppTable' }).props('items')).toEqual([
+      { id: 1, questionType: QuestionTypeEnum.mcq },
+    ]);
+  });
+
   it('uses the status query when fetching questions', async () => {
     mount(questionsIndex, { global: globalConfig });
     await flushPromises();
 
     const params = fetchListMock.mock.calls.at(-1)?.[0];
     expect(params.status).toBe(2);
+  });
+
+  it('requests only non-article question types so each page can contain ten rows', async () => {
+    mount(questionsIndex, { global: globalConfig });
+    await flushPromises();
+
+    const params = fetchListMock.mock.calls.at(-1)?.[0];
+    expect(params.question_type).toEqual([
+      QuestionTypeEnum.mcq,
+      QuestionTypeEnum.true_false,
+      QuestionTypeEnum.complate,
+      QuestionTypeEnum.matching,
+      QuestionTypeEnum.ranking,
+    ]);
   });
 
   it('shows only the view action for an approved question', () => {
@@ -131,5 +178,12 @@ describe('questionsIndex.vue', () => {
       'show_question',
       'delete',
     ]);
+  });
+
+  it('routes article records to article edit from the table', () => {
+    const wrapper = mountWithTableItem(QuestionStatusEnum.CREATED, QuestionTypeEnum.paragraph);
+    const actions = wrapper.findComponent({ name: 'DropList' }).props('actionList');
+
+    expect(actions[0].link).toBe('/articles/edit/10');
   });
 });

@@ -13,12 +13,20 @@
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import ArchiveDialog from '../Dialogs/ArchiveDialog.vue';
   import DeleteDialog from '@/base/Presentation/Dialogs/MainDialogs/DeleteDialog.vue';
+  import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
 
   const { questionData } = defineProps<{ questionData: ShowQuestionsModel }>();
   const router = useRouter();
   const { t } = useI18n();
 
   const id = router.currentRoute.value.params.id;
+  const editQuestion = () => {
+    router.push({
+      name:
+        questionData.questionType === QuestionTypeEnum.paragraph ? 'Edit article' : 'Edit question',
+      params: { id },
+    });
+  };
 
   const getStatusText = (reviewStatus: QuestionStatusEnum) => {
     switch (reviewStatus) {
@@ -133,9 +141,9 @@
     </div>
     <div v-if="questionData.review_status != QuestionStatusEnum.APPROVED" class="question-actions">
       <button
-        class="btn btn-primary"
-        @click="router.push({ name: 'Edit question', params: { id } })"
         v-if="questionData.review_status != QuestionStatusEnum.ARCHIVED"
+        class="btn btn-primary"
+        @click="editQuestion"
       >
         <EditIcon /> {{ $t('edit') }}
       </button>
@@ -149,13 +157,13 @@
       />
 
       <DeleteDialog
+        v-if="questionData?.can_delete!"
         class="action-btn delete"
         :aria-label="$t('delete')"
         :title="$t('delete_question_title')"
         :message="$t('delete_question_message')"
         :hasbtn="true"
         @delete="DeleteQuestion"
-        v-if="questionData?.can_delete!"
       >
         <template #btn>
           <svg

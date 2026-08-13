@@ -63,6 +63,7 @@
     disabled?: boolean;
     searchOnEnter?: boolean;
     searchParam?: string;
+    wrapOptionLabels?: boolean;
   }
 
   const emit = defineEmits([
@@ -95,6 +96,8 @@
     searchOnEnter: false,
 
     searchParam: 'word',
+
+    wrapOptionLabels: false,
   });
 
   const {
@@ -392,6 +395,15 @@
           {{ getSelectedTitle(value) || placeholder }}
         </span>
       </template>
+      <template #option="{ option }">
+        <span
+          class="option-label"
+          :class="{ 'option-label--wrapped': wrapOptionLabels }"
+          :title="getFullSelectedTitle(option)"
+        >
+          {{ getFullSelectedTitle(option) }}
+        </span>
+      </template>
     </Select>
 
     <MultiSelect
@@ -411,7 +423,17 @@
       }"
       @filter="handleFilter"
       @keydown.enter="searchOptions"
-    />
+    >
+      <template #option="{ option }">
+        <span
+          class="option-label"
+          :class="{ 'option-label--wrapped': wrapOptionLabels }"
+          :title="getFullSelectedTitle(option)"
+        >
+          {{ getFullSelectedTitle(option) }}
+        </span>
+      </template>
+    </MultiSelect>
 
     <input :id="id" type="text" class="hidden w-full" :value="normalizedValue" />
   </slot>
@@ -497,6 +519,17 @@
       max-width: 100%;
       overflow: hidden;
       white-space: nowrap;
+    }
+
+    .option-label {
+      display: block;
+      max-width: 100%;
+
+      &--wrapped {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        line-height: 1.4;
+      }
     }
 
     &:focus {

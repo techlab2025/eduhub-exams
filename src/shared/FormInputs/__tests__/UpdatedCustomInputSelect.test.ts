@@ -12,7 +12,7 @@ const MultiSelectStub = {
 const SelectStub = {
   name: 'Select',
   template:
-    '<div class="select-stub"><slot name="value" :value="modelValue" :placeholder="placeholder" /></div>',
+    '<div class="select-stub"><slot name="value" :value="modelValue" :placeholder="placeholder" /><slot v-for="option in options" name="option" :option="option" /></div>',
   props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage', 'disabled'],
   emits: ['update:modelValue'],
 };
@@ -149,6 +149,16 @@ describe('UpdatedCustomInputSelect', () => {
 
     expect(wrapper.find('.selected-value').text()).toBe(`${'A'.repeat(47)}...`);
     expect(wrapper.findComponent(SelectStub).props('modelValue')).toEqual(selected);
+  });
+
+  it('wraps long dropdown option labels without truncating their values', () => {
+    const option = makeTitleInterface(1, 'A'.repeat(100));
+    const wrapper = createWrapper({ staticOptions: [option], wrapOptionLabels: true });
+
+    expect(wrapper.find('.option-label').text()).toBe('A'.repeat(100));
+    expect(wrapper.find('.option-label').classes()).toContain('option-label--wrapped');
+    expect(wrapper.find('.option-label').attributes('title')).toBe('A'.repeat(100));
+    expect(wrapper.findComponent(SelectStub).props('options')).toEqual([option]);
   });
 
   it('renders the placeholder when no value is selected', () => {
