@@ -96,9 +96,13 @@
         console.error('No employee parameters to save');
         return;
       }
-      isWithReview
-        ? (params.value.status = QuestionStatusEnum.NOT_REVIEW)
-        : (params.value.status = QuestionStatusEnum.APPROVED);
+      if (props.embedded) {
+        params.value.status = undefined;
+      } else {
+        params.value.status = isWithReview
+          ? QuestionStatusEnum.NOT_REVIEW
+          : QuestionStatusEnum.APPROVED;
+      }
 
       const result = await controller.create(params.value, undefined, formKey);
       if (!(result instanceof DataSuccess)) return;
@@ -187,7 +191,17 @@
       @update-data="updateData"
     />
     <div class="actions">
+      <button
+        v-if="props.embedded"
+        class="btn btn-primary embedded-save-button"
+        type="button"
+        :disabled="loading"
+        @click="saveQuestion(true, false)"
+      >
+        {{ $t('save') }}
+      </button>
       <WithReviewDialog
+        v-else
         class="save-emp"
         :save-status="SaveStatusEnum.Save"
         @with-review="saveQuestion(true, true)"
@@ -254,6 +268,10 @@
   }
 
   .save-emp {
+    width: 100%;
+  }
+
+  .embedded-save-button {
     width: 100%;
   }
 

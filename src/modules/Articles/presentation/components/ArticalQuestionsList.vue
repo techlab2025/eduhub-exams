@@ -7,8 +7,7 @@
   import ShowArticlesParams from '../../core/params/show.Articles.params';
   import ArticleController from '../controllers/Article.controller';
   import ArticleQuestion from './ArticleDetails/ArticleQuestion.vue';
-  import Dialog from 'primevue/dialog';
-  import QuestionsAdd from '@/modules/Questions/presentation/components/questionsAdd.vue';
+  import ArticleQuestionCreateDialog from './ArticleQuestionCreateDialog.vue';
   import WithReviewDialog from '@/modules/Questions/presentation/subComponents/Dialogs/WithReviewDialog.vue';
   import CancelQuestionDialog from '@/modules/Questions/presentation/subComponents/Dialogs/CancelQuestionDialog.vue';
   import QuestionsController from '@/modules/Questions/presentation/controllers/questions.controller';
@@ -32,7 +31,12 @@
   const article = computed(() => controller.itemState.value.data);
   const articleSubjectId = computed(() => {
     const querySubjectId = Number(route.query?.subject_id);
-    return querySubjectId || article.value?.subjectTree?.id || article.value?.e_c_subject?.id;
+    return (
+      querySubjectId ||
+      article.value?.e_c_subject?.id ||
+      article.value?.sequenceTree?.id ||
+      article.value?.subjectTree?.id
+    );
   });
   const articleSequenceId = computed(() => {
     const querySequenceId = Number(route.query?.sequence_id);
@@ -50,6 +54,7 @@
   const questionsController = QuestionsController.getInstance();
 
   const fetchArticle = async (filters?: ArticleQuestionFilters) => {
+    const isInitialFetch = !hasFetched.value;
     try {
       await controller.fetchOne(
         new ShowArticlesParams(
@@ -60,6 +65,9 @@
           filters?.word,
         ),
       );
+      if (isInitialFetch && !hasQuestions.value) {
+        showAddQuestionDialog.value = true;
+      }
     } finally {
       hasFetched.value = true;
     }
@@ -70,7 +78,14 @@
   };
 
   const showArticle = () => {
-    router.push({ name: 'Show article', params: { id: articleId.value } });
+    router.push({
+      name: 'Show article',
+      params: { id: articleId.value },
+      query: {
+        ...(articleSubjectId.value && { subject_id: articleSubjectId.value }),
+        ...(articleSequenceId.value && { sequence_id: articleSequenceId.value }),
+      },
+    });
   };
 
   const addAnotherArticle = () => {
@@ -257,68 +272,13 @@
       </button>
     </div>
 
-    <Dialog
+    <ArticleQuestionCreateDialog
       v-model:visible="showAddQuestionDialog"
-      modal
-      dismissable-mask
-      class="article-question-create-dialog"
-      :style="{ width: 'min(1180px, 96vw)' }"
-      :content-style="{ maxHeight: '82vh', overflowY: 'auto' }"
-    >
-      <template #header>
-        <div class="question-dialog-header">
-          <div class="question-dialog-icon" aria-hidden="true">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M7 3.5h7l4 4V18a2.5 2.5 0 0 1-2.5 2.5h-8A2.5 2.5 0 0 1 5 18V6a2.5 2.5 0 0 1 2-2.45Z"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M14 3.5v4h4M8.5 11h6M8.5 14.5h4"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-              />
-              <path
-                d="M18.5 16v5M16 18.5h5"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-          <div class="question-dialog-heading">
-            <span class="question-dialog-eyebrow">{{ $t('question_management_step') }}</span>
-            <h2>{{ $t('article_questions_dialog_title') }}</h2>
-            <p>{{ $t('article_questions_dialog_description') }}</p>
-          </div>
-          <div class="article-context-badge">
-            <span>{{ $t('article') }}</span>
-            <strong>#{{ articleId }}</strong>
-          </div>
-        </div>
-      </template>
-
-      <div class="question-dialog-body">
-        <div class="question-dialog-tip">
-          <span class="tip-spark" aria-hidden="true">✦</span>
-          <span>{{ $t('article_questions_dialog_tip') }}</span>
-        </div>
-
-        <QuestionsAdd
-          v-if="showAddQuestionDialog"
-          class="dialog-question-form"
-          embedded
-          :article-id="articleId"
-          :subject-id="articleSubjectId"
-          :sequence-id="articleSequenceId"
-          @saved="handleQuestionSaved"
-          @close="showAddQuestionDialog = false"
-        />
-      </div>
-    </Dialog>
+      :article-id="articleId"
+      :subject-id="articleSubjectId"
+      :sequence-id="articleSequenceId"
+      @saved="handleQuestionSaved"
+    />
   </div>
 </template>
 
@@ -335,6 +295,7 @@
       width: 100%;
     }
   }
+
   .article-form-steps {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

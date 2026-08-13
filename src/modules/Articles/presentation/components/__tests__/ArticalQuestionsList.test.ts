@@ -26,17 +26,17 @@ vi.mock('../../controllers/Article.controller', () => ({
   },
 }));
 
-vi.mock('@/modules/Questions/presentation/components/questionsAdd.vue', () => ({
+vi.mock('../ArticleQuestionCreateDialog.vue', () => ({
   default: {
-    name: 'QuestionsAdd',
+    name: 'ArticleQuestionCreateDialog',
     props: {
-      embedded: Boolean,
+      visible: Boolean,
       articleId: Number,
       subjectId: Number,
       sequenceId: Number,
     },
-    emits: ['saved', 'close'],
-    template: '<div class="questions-add-stub" />',
+    emits: ['update:visible', 'saved'],
+    template: '<div v-if="visible" class="question-dialog-stub" />',
   },
 }));
 
@@ -78,12 +78,6 @@ const global = {
   plugins: [i18n],
   stubs: {
     ArticleQuestion: { template: '<div class="article-question-stub" />' },
-    Dialog: {
-      name: 'Dialog',
-      props: ['visible'],
-      emits: ['update:visible'],
-      template: '<div v-if="visible" class="question-dialog-stub"><slot /></div>',
-    },
     WithReviewDialog: {
       name: 'WithReviewDialog',
       props: ['saveStatus'],
@@ -114,14 +108,13 @@ describe('ArticalQuestionsList', () => {
       number_of_questions: 0,
       subjectTree: { id: 361, title: 'mostafa 1' },
       sequenceTree: { id: 284, title: 'mostafa 2' },
+      e_c_subject: { id: 284, title: 'mostafa 2' },
     };
     const wrapper = mount(ArticalQuestionsList, { global });
     await flushPromises();
 
-    await wrapper.get('.add-question-button').trigger('click');
-
-    expect(wrapper.findComponent({ name: 'QuestionsAdd' }).props()).toMatchObject({
-      subjectId: 361,
+    expect(wrapper.findComponent({ name: 'ArticleQuestionCreateDialog' }).props()).toMatchObject({
+      subjectId: 284,
       sequenceId: 284,
     });
   });
@@ -137,17 +130,16 @@ describe('ArticalQuestionsList', () => {
     expect(wrapper.find('.completion-actions').exists()).toBe(false);
     expect(wrapper.findAll('.empty-state-actions button')).toHaveLength(2);
 
-    await wrapper.get('.add-question-button').trigger('click');
-    const questionsAdd = wrapper.findComponent({ name: 'QuestionsAdd' });
-    expect(questionsAdd.exists()).toBe(true);
-    expect(questionsAdd.props()).toMatchObject({
-      embedded: true,
+    const questionDialog = wrapper.findComponent({ name: 'ArticleQuestionCreateDialog' });
+    expect(questionDialog.exists()).toBe(true);
+    expect(questionDialog.props()).toMatchObject({
+      visible: true,
       articleId: 42,
       subjectId: 290,
       sequenceId: 304,
     });
 
-    questionsAdd.vm.$emit('saved');
+    questionDialog.vm.$emit('saved');
     await flushPromises();
 
     expect(wrapper.find('.question-dialog-stub').exists()).toBe(false);
@@ -165,10 +157,10 @@ describe('ArticalQuestionsList', () => {
     expect(wrapper.findAll('.completion-actions > *')).toHaveLength(4);
 
     await wrapper.get('.question-management-toolbar .add-question-button').trigger('click');
-    const questionsAdd = wrapper.findComponent({ name: 'QuestionsAdd' });
-    expect(questionsAdd.exists()).toBe(true);
+    const questionDialog = wrapper.findComponent({ name: 'ArticleQuestionCreateDialog' });
+    expect(questionDialog.props('visible')).toBe(true);
 
-    questionsAdd.vm.$emit('saved');
+    questionDialog.vm.$emit('saved');
     await flushPromises();
 
     expect(wrapper.find('.question-dialog-stub').exists()).toBe(false);
@@ -185,6 +177,7 @@ describe('ArticalQuestionsList', () => {
     expect(routerPushMock).toHaveBeenCalledWith({
       name: 'Show article',
       params: { id: 42 },
+      query: { subject_id: 290, sequence_id: 304 },
     });
   });
 
@@ -215,6 +208,7 @@ describe('ArticalQuestionsList', () => {
     expect(routerPushMock).toHaveBeenNthCalledWith(2, {
       name: 'Show article',
       params: { id: 42 },
+      query: { subject_id: 290, sequence_id: 304 },
     });
   });
 });

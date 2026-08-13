@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import QuestionCard from './QuestionCard.vue';
   import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model.ts';
   import ArticleQuestionIcon from '@/shared/icons/ArticleQuestion.vue';
+  import ArticleQuestionCreateDialog from '../ArticleQuestionCreateDialog.vue';
 
   const props = withDefaults(
     defineProps<{
@@ -17,16 +18,33 @@
   );
 
   const route = useRoute();
+  const emit = defineEmits<{ updateData: [] }>();
+  const showAddQuestionDialog = ref(false);
   const articleId = computed(
     () => props.artical?.id ?? Number(route.params.artical_id ?? route.params.id),
   );
-  const addQuestionRoute = computed(() => ({
-    name: 'Add question',
-    query: {
-      artical_id: articleId.value,
-      ...(props.artical?.e_c_subject?.id && { subject_id: props.artical.e_c_subject.id }),
-    },
-  }));
+  const getQueryId = (key: 'subject_id' | 'sequence_id') => {
+    const value = route.query[key];
+    const parsedValue = Number(Array.isArray(value) ? value[0] : value);
+    return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : undefined;
+  };
+  const articleSubjectId = computed(
+    () =>
+      getQueryId('subject_id') ??
+      props.artical?.e_c_subject?.id ??
+      props.artical?.sequenceTree?.id ??
+      props.artical?.subjectTree?.id,
+  );
+  const articleSequenceId = computed(
+    () =>
+      getQueryId('sequence_id') ??
+      props.artical?.sequenceTree?.id ??
+      props.artical?.e_c_subject?.id,
+  );
+
+  const handleQuestionSaved = () => {
+    emit('updateData');
+  };
 </script>
 <template>
   <!-- <pre>{{ artical }}</pre> -->
@@ -40,19 +58,28 @@
         </div>
       </div>
 
-      <RouterLink
+      <button
+        type="button"
         class="btn btn-primary questions-header__add"
-        :to="addQuestionRoute"
         :aria-label="$t('article_questions_add_button')"
+        @click="showAddQuestionDialog = true"
       >
         <span aria-hidden="true">+</span>
         {{ $t('article_questions_add_button') }}
-      </RouterLink>
+      </button>
     </header>
 
     <div class="question_list">
       <QuestionCard v-if="props.artical?.questions" :allquestion="props.artical.questions" />
     </div>
+
+    <ArticleQuestionCreateDialog
+      v-model:visible="showAddQuestionDialog"
+      :article-id="articleId"
+      :subject-id="articleSubjectId"
+      :sequence-id="articleSequenceId"
+      @saved="handleQuestionSaved"
+    />
   </div>
 </template>
 <style scoped lang="scss">
