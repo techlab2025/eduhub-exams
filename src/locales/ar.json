@@ -215,6 +215,7 @@
     "cancel": "إلغاء"
   },
   "number_of_branches_integer_warning": "يجب أن يكون عدد الفروع عددًا صحيحًا",
+  "branch_count_minimum_error": "يجب ألا يقل العدد عن 1.",
   "unsaved_question_dialog": {
     "title": "هل تريد تجاهل التغييرات غير المحفوظة؟",
     "description": "ستتم إزالة تغييرات السؤال إذا غادرت هذه الصفحة.",

@@ -185,6 +185,39 @@ describe('EducationClassificationConfigurationForm', () => {
       expect(wrapper.emitted('save-education-subjects')).toBeTruthy();
     });
 
+    it.each([
+      [0, 'save-education-classification', 'configuration-branch-error'],
+      [1, 'save-education-subjects', 'subject-branch-error'],
+    ])(
+      'blocks applying zero for branch input %s and shows the minimum error',
+      async (inputIndex, eventName, errorId) => {
+        const wrapper = mountForm();
+        await flushPromises();
+        const input = wrapper.findAll('input[type="number"]')[inputIndex as number];
+        const applyButton = wrapper.findAll('button.save-btn')[inputIndex as number];
+
+        await input.setValue('0');
+        await applyButton.trigger('click');
+
+        expect(wrapper.emitted(eventName as string)).toBeUndefined();
+        expect(wrapper.get(`#${errorId}`).text()).toBe('branch_count_minimum_error');
+        expect(input.attributes('aria-invalid')).toBe('true');
+      },
+    );
+
+    it('clears the minimum error after entering a valid number', async () => {
+      const wrapper = mountForm();
+      await flushPromises();
+      const input = wrapper.findAll('input[type="number"]')[0];
+
+      await input.setValue('0');
+      await wrapper.findAll('button.save-btn')[0].trigger('click');
+      await input.setValue('1');
+
+      expect(wrapper.find('#configuration-branch-error').exists()).toBe(false);
+      expect(input.attributes('aria-invalid')).toBe('false');
+    });
+
     it.each([0, 1])('warns and removes decimals from branch input %s', async (inputIndex) => {
       const toastWarningSpy = vi
         .spyOn(dialogManager, 'toastWarning')

@@ -33,6 +33,8 @@
   }>();
   const ConfigurationnumberOfBranchs = ref<number>(0);
   const SubjectnumberOfBranchs = ref<number>(0);
+  const configurationBranchError = ref(false);
+  const subjectBranchError = ref(false);
   const { t } = useI18n();
 
   const FormStore = useFormsStore();
@@ -104,6 +106,9 @@
     ) {
       return;
     }
+    if (ConfigurationnumberOfBranchs.value >= 1) {
+      configurationBranchError.value = false;
+    }
     updateData();
   };
 
@@ -114,6 +119,9 @@
       })
     ) {
       return;
+    }
+    if (SubjectnumberOfBranchs.value >= 1) {
+      subjectBranchError.value = false;
     }
     updateData();
   };
@@ -126,6 +134,12 @@
     )
       return;
 
+    if (ConfigurationnumberOfBranchs.value < 1) {
+      configurationBranchError.value = true;
+      return;
+    }
+
+    configurationBranchError.value = false;
     emit('save-education-classification');
     ConfigurationNumberOfBranchs.value = ConfigurationnumberOfBranchs.value;
   };
@@ -137,6 +151,12 @@
     )
       return;
 
+    if (SubjectnumberOfBranchs.value < 1) {
+      subjectBranchError.value = true;
+      return;
+    }
+
+    subjectBranchError.value = false;
     emit('save-education-subjects');
     subjectNumberOfBranchs.value = SubjectnumberOfBranchs.value;
   };
@@ -274,18 +294,31 @@
               id="title"
               v-model="ConfigurationnumberOfBranchs"
               type="number"
-              min="0"
+              min="1"
               step="1"
+              :aria-describedby="
+                configurationBranchError ? 'configuration-branch-error' : undefined
+              "
+              :aria-invalid="configurationBranchError"
+              :class="{ 'input-error': configurationBranchError }"
               :placeholder="$t('Enter number of branchs')"
               class="field-input"
               @input="handleConfigurationBranchInput"
             />
           </div>
         </div>
-        <button class="save-btn" @click="ApplyConfigurationBranchs">
+        <button type="button" class="save-btn" @click="ApplyConfigurationBranchs">
           {{ $t('apply') }}
         </button>
       </div>
+      <p
+        v-if="configurationBranchError"
+        id="configuration-branch-error"
+        class="branch-count-error"
+        role="alert"
+      >
+        {{ $t('branch_count_minimum_error') }}
+      </p>
 
       <SingularPluralForm
         v-if="ConfigurationNumberOfBranchs > 0"
@@ -342,19 +375,30 @@
               id="subject_number"
               v-model="SubjectnumberOfBranchs"
               type="number"
-              min="0"
+              min="1"
               step="1"
+              :aria-describedby="subjectBranchError ? 'subject-branch-error' : undefined"
+              :aria-invalid="subjectBranchError"
+              :class="{ 'input-error': subjectBranchError }"
               :placeholder="$t('num_of_levels')"
               class="field-input"
               @input="handleSubjectBranchInput"
             />
           </div>
         </div>
-
-        <button class="save-btn" @click="ApplySubjectBranchs">
+        
+        <button type="button" class="save-btn" @click="ApplySubjectBranchs">
           {{ $t('apply') }}
         </button>
       </div>
+      <p
+        v-if="subjectBranchError"
+        id="subject-branch-error"
+        class="branch-count-error"
+        role="alert"
+      >
+        {{ $t('branch_count_minimum_error') }}
+      </p>
 
       <SingularPluralForm
         v-if="subjectNumberOfBranchs > 0"
@@ -375,5 +419,18 @@
       pointer-events: none;
       opacity: 0.7;
     }
+
+    .field-input.input-error {
+      border-color: var(--danger-alt);
+    }
+
+  }
+  .branch-count-error {
+    margin: 8px 4px 0;
+    color: var(--danger-alt);
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: start;
   }
 </style>

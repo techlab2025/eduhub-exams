@@ -37,6 +37,7 @@
   "employee_type": "Employee Type",
   "unsaved_changes": "Unsaved Changes",
   "number_of_branches_integer_warning": "Number of branches should be an integer",
+  "branch_count_minimum_error": "The number must be at least 1.",
   "unsaved_question_dialog": {
     "title": "Discard unsaved changes?",
     "description": "Your question changes will be removed if you leave this page.",
