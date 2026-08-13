@@ -34,7 +34,7 @@ const global = {
   stubs: {
     PlanForm: {
       name: 'PlanForm',
-      emits: ['updateData', 'validityChange'],
+      emits: ['updateData', 'validityChange', 'featuresLoaded'],
       methods: { validate: () => Promise.resolve(true) },
       template: '<div class="plan-form-stub" />',
     },
@@ -78,8 +78,16 @@ describe('PlanEdit', () => {
 
     expect(wrapper.find('.actions').exists()).toBe(false);
 
-    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', params());
-    await wrapper.vm.$nextTick();
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', params());
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+    expect(wrapper.find('.actions').exists()).toBe(false);
+
+    const changedParams = params();
+    changedParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', changedParams);
+    await flushPromises();
 
     expect(wrapper.findAll('.actions button')).toHaveLength(2);
     expect(wrapper.find('.publish-button').exists()).toBe(true);
@@ -90,8 +98,12 @@ describe('PlanEdit', () => {
   it('publishes a draft as active', async () => {
     const wrapper = mount(PlanEdit, { global });
     await flushPromises();
-    const planParams = params();
     const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', params());
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+    const planParams = params();
+    planParams.status = PlanStatusEnum.ACTIVE;
     form.vm.$emit('updateData', planParams);
     form.vm.$emit('validityChange', true);
     await wrapper.vm.$nextTick();
@@ -106,9 +118,14 @@ describe('PlanEdit', () => {
   it('keeps draft status when saving a draft', async () => {
     const wrapper = mount(PlanEdit, { global });
     await flushPromises();
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', params());
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
     const planParams = params();
-    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', planParams);
-    await wrapper.vm.$nextTick();
+    planParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', planParams);
+    await flushPromises();
 
     await wrapper.get('.btn-draft').trigger('click');
     const dialog = wrapper.getComponent({ name: 'DraftPlanDialog' });
@@ -129,10 +146,16 @@ describe('PlanEdit', () => {
 
     expect(wrapper.find('.actions').exists()).toBe(false);
 
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    const initialParams = params();
+    initialParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', initialParams);
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+
     const changedParams = params();
-    changedParams.status = PlanStatusEnum.ACTIVE;
-    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', changedParams);
-    await wrapper.vm.$nextTick();
+    form.vm.$emit('updateData', changedParams);
+    await flushPromises();
 
     expect(wrapper.find('.publish-button').exists()).toBe(true);
     expect(wrapper.find('.btn-draft').exists()).toBe(true);

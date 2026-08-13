@@ -35,6 +35,9 @@ export default class PlanController extends BaseController<PlanDetailsModel, Pla
   async toggleStatus(params: Params) {
     return this.repository.toggleStatus(params);
   }
+  async fetchFeatures(params: Params) {
+    return this.repository.fetchFeatures(params);
+  }
   async fetchOne(params: Params, options?: ApiCallOptions) {
     return super.fetchOne(params, {
       ...options,

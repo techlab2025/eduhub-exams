@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
+import { flushPromises, shallowMount } from '@vue/test-utils';
 import { createI18n } from 'vue-i18n';
 import PlanForm from '../PlanForm.vue';
 import PlanDetailsModel from '../../../core/models/plan.details.model';
@@ -10,11 +10,74 @@ const routeMock = vi.hoisted(() => ({
   params: {} as Record<string, string>,
   query: {} as Record<string, string>,
 }));
+const fetchPlanFeaturesMock = vi.hoisted(() => vi.fn());
+
+const featureCatalog = [
+  {
+    id: 1,
+    title: 'Report',
+    code: 1,
+    subFeatures: [
+      { id: 2, title: 'Show Overall Score', code: '1.1', hasLimit: false },
+      { id: 3, title: 'Show Skill Analysis', code: '1.2', hasLimit: false },
+      { id: 4, title: 'Show Curriculum Analysis', code: '1.3', hasLimit: false },
+      { id: 5, title: 'Allow Report Download', code: '1.4', hasLimit: false },
+      { id: 6, title: 'Maximum Reports', code: '1.5', hasLimit: true },
+      { id: 7, title: 'Maximum Downloads', code: '1.6', hasLimit: true },
+    ],
+  },
+  {
+    id: 8,
+    title: 'Progress Tracking',
+    code: 2,
+    subFeatures: [
+      { id: 9, title: 'Overall Progress', code: '2.1', hasLimit: false },
+      { id: 10, title: 'Needs Focus', code: '2.2', hasLimit: false },
+      { id: 11, title: 'Tracked Subjects', code: '2.3', hasLimit: true },
+      { id: 12, title: 'Progress History', code: '2.4', hasLimit: true },
+    ],
+  },
+  {
+    id: 13,
+    title: 'Home Study Schedule',
+    code: 3,
+    subFeatures: [
+      { id: 14, title: 'View Schedule', code: '3.1', hasLimit: false },
+      { id: 15, title: 'Set Reminders', code: '3.2', hasLimit: false },
+      { id: 16, title: 'Maximum Schedules', code: '3.3', hasLimit: true },
+    ],
+  },
+  {
+    id: 17,
+    title: 'What Did You Study',
+    code: 4,
+    subFeatures: [
+      { id: 18, title: 'Show Subjects', code: '4.1', hasLimit: false },
+      { id: 19, title: 'Maximum Items', code: '4.2', hasLimit: true },
+    ],
+  },
+  {
+    id: 20,
+    title: 'Learning Resources',
+    code: 5,
+    subFeatures: [
+      { id: 21, title: 'Mind Maps', code: '5.1', hasLimit: false },
+      { id: 22, title: 'Flash Cards', code: '5.2', hasLimit: false },
+      { id: 23, title: 'Practice Exams', code: '5.3', hasLimit: false },
+      { id: 24, title: 'Maximum Mind Maps', code: '5.4', hasLimit: true },
+      { id: 25, title: 'Maximum Flash Cards', code: '5.5', hasLimit: true },
+    ],
+  },
+];
 
 vi.mock('vue-router', () => ({ useRoute: () => routeMock }));
 
 vi.mock('@/modules/HighlightBadge/presentation/controllers/highlightBadge.controller', () => ({
   default: { getInstance: () => ({}) },
+}));
+
+vi.mock('../../controllers/plan.controller', () => ({
+  default: { getInstance: () => ({ fetchFeatures: fetchPlanFeaturesMock }) },
 }));
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
@@ -24,6 +87,17 @@ describe('PlanForm', () => {
     vi.restoreAllMocks();
     routeMock.params = {};
     routeMock.query = {};
+    fetchPlanFeaturesMock.mockReset();
+    fetchPlanFeaturesMock.mockResolvedValue({ data: featureCatalog });
+  });
+
+  it('fetches feature definitions and renders API titles', async () => {
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    await flushPromises();
+
+    expect(fetchPlanFeaturesMock).toHaveBeenCalledOnce();
+    expect(wrapper.findAll('.feature-card')).toHaveLength(5);
+    expect(wrapper.find('.feature-card .feature-copy strong').text()).toBe('Report');
   });
 
   it('renders all three sections at the same time', () => {
@@ -288,7 +362,7 @@ describe('PlanForm', () => {
       props: { plan },
       global: { plugins: [i18n] },
     });
-    await wrapper.vm.$nextTick();
+    await flushPromises();
 
     const featureCards = wrapper.findAll('.feature-card');
     expect(featureCards[0]?.classes()).not.toContain('edit-selection-inactive');
@@ -328,6 +402,7 @@ describe('PlanForm', () => {
     routeMock.params = { id: '8' };
     routeMock.query = { section: 'features' };
     const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    await flushPromises();
     const firstFeature = wrapper.findAll('.feature-card')[0];
 
     firstFeature?.findComponent({ name: 'ToggleSwitch' }).vm.$emit('update:modelValue', true);

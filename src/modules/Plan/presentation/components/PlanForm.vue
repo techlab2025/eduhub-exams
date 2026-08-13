@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, nextTick, ref, watch } from 'vue';
+  import { computed, nextTick, onMounted, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRoute } from 'vue-router';
   import ToggleSwitch from 'primevue/toggleswitch';
@@ -13,31 +13,27 @@
   import type PlanDetailsModel from '../../core/models/plan.details.model';
   import { PlanDurationTypeEnum } from '../../core/enums/plan.duration.enum';
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
-  import {
-    PLAN_FEATURE_DEFINITIONS,
-    type PlanFeatureSubTypeEnum,
-    type PlanFeatureTypeEnum,
-  } from '../../core/enums/planType.enum';
   import AddPlanParams from '../../core/params/add.plan.params';
   import EditPlanParams, { type PlanEditSection } from '../../core/params/edit.plan.params';
   import PlanFeatureParams from '../../core/params/plan.features.params';
   import PlanPricingParams from '../../core/params/plan.pricing.params';
   import PlanSubFeatureParams from '../../core/params/plan.sub.features.params';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+  import PlanController from '../controllers/plan.controller';
+  import IndexPlanFeaturesParams from '../../core/params/index.plan.features.params';
+  import type PlanFeatureCatalogModel from '../../core/models/plan.feature.catalog.model';
 
   interface PlanSubFeatureFormItem {
-    subType: PlanFeatureSubTypeEnum;
-    titleKey: string;
-    descriptionKey: string;
+    subType: number;
+    title: string;
     enabled: boolean;
     hasLimit: boolean;
     limit?: number;
   }
 
   interface PlanFeatureFormItem {
-    featureType: PlanFeatureTypeEnum;
-    titleKey: string;
-    descriptionKey: string;
+    featureType: number;
+    title: string;
     enabled: boolean;
     subTypes: PlanSubFeatureFormItem[];
   }
@@ -50,9 +46,11 @@
   const emit = defineEmits<{
     updateData: [params: AddPlanParams | EditPlanParams];
     validityChange: [isValid: boolean];
+    featuresLoaded: [];
   }>();
   const { t } = useI18n();
   const route = useRoute();
+  const planController = PlanController.getInstance();
   const badgeController = HighlightBadgeController.getInstance();
   const badgeParams = new IndexHighLightsBadgesParams({
     word: '',
@@ -93,22 +91,21 @@
       durationType: PlanDurationTypeEnum.MONTH,
     });
   const pricing = ref<PlanPricingParams[]>([createPricing()]);
-  const planFeatures = ref<PlanFeatureFormItem[]>(
-    PLAN_FEATURE_DEFINITIONS.map((feature) => ({
-      featureType: feature.type,
-      titleKey: feature.titleKey,
-      descriptionKey: feature.descriptionKey,
+  const planFeatures = ref<PlanFeatureFormItem[]>([]);
+
+  const mapFeatureCatalog = (features: PlanFeatureCatalogModel[]): PlanFeatureFormItem[] =>
+    features.map((feature) => ({
+      featureType: feature.id,
+      title: feature.title,
       enabled: false,
-      subTypes: feature.subTypes.map((subType) => ({
-        subType: subType.type,
-        titleKey: subType.titleKey,
-        descriptionKey: subType.descriptionKey,
+      subTypes: feature.subFeatures.map((subType) => ({
+        subType: subType.id,
+        title: subType.title,
         enabled: false,
-        hasLimit: subType.defaultLimit !== undefined,
-        limit: subType.defaultLimit,
+        hasLimit: subType.hasLimit,
+        ...(subType.hasLimit ? { limit: 0 } : {}),
       })),
-    })),
-  );
+    }));
 
   const durationOptions = computed(() => [
     { id: PlanDurationTypeEnum.DAY, title: t('day') },
@@ -268,15 +265,42 @@
     trialDays.value = 0;
   };
   const resetFeatures = () => {
-    planFeatures.value.forEach((feature, featureIndex) => {
+    planFeatures.value.forEach((feature) => {
       feature.enabled = false;
-      feature.subTypes.forEach((subType, subTypeIndex) => {
+      feature.subTypes.forEach((subType) => {
         subType.enabled = false;
-        subType.limit = isFeatureEdit.value
-          ? 0
-          : PLAN_FEATURE_DEFINITIONS[featureIndex]?.subTypes[subTypeIndex]?.defaultLimit;
+        if (subType.hasLimit) subType.limit = 0;
       });
     });
+  };
+
+  const applySavedFeatures = (plan?: PlanDetailsModel) => {
+    if (!plan) return;
+
+    planFeatures.value.forEach((feature) => {
+      const savedFeature = plan.features.find((item) => item.featureId === feature.featureType);
+      feature.enabled = Boolean(savedFeature);
+      feature.subTypes.forEach((subType) => {
+        const savedSubType = savedFeature?.subFeatures.find((item) => item.id === subType.subType);
+        subType.enabled = Boolean(savedSubType?.status);
+        if (subType.hasLimit) {
+          subType.limit = savedSubType?.limit ?? 0;
+          subType.enabled = isNumberAtLeast(subType.limit, 1);
+        }
+      });
+    });
+  };
+
+  const fetchPlanFeatures = async () => {
+    try {
+      const result = await planController.fetchFeatures(new IndexPlanFeaturesParams());
+      if (result.data) {
+        planFeatures.value = mapFeatureCatalog(result.data);
+        applySavedFeatures(props.plan);
+      }
+    } finally {
+      emit('featuresLoaded');
+    }
   };
 
   const updateData = () => {
@@ -342,20 +366,7 @@
             durationType: Number(item.durationType) as PlanDurationTypeEnum,
           }),
       );
-      planFeatures.value.forEach((feature) => {
-        const savedFeature = plan.features.find((item) => item.featureId === feature.featureType);
-        feature.enabled = Boolean(savedFeature);
-        feature.subTypes.forEach((subType) => {
-          if (isFeatureEdit.value && subType.hasLimit) subType.limit = 0;
-          const savedSubType = savedFeature?.subFeatures.find(
-            (item) => item.id === subType.subType,
-          );
-          subType.enabled = Boolean(savedSubType?.status);
-          if (subType.hasLimit && savedSubType?.limit !== undefined) {
-            subType.limit = savedSubType.limit;
-          }
-        });
-      });
+      applySavedFeatures(plan);
     },
     { immediate: true },
   );
@@ -375,6 +386,8 @@
     updateData,
     { deep: true, immediate: true },
   );
+
+  onMounted(fetchPlanFeatures);
 </script>
 
 <template>
@@ -704,10 +717,9 @@
             <header class="feature-row">
               <span class="feature-number">{{ featureIndex + 1 }}</span>
               <span class="feature-copy">
-                <strong>{{ $t(feature.titleKey) }}</strong>
-                <small>{{ $t(feature.descriptionKey) }}</small>
+                <strong>{{ feature.title }}</strong>
               </span>
-              <ToggleSwitch v-model="feature.enabled" :aria-label="$t(feature.titleKey)" />
+              <ToggleSwitch v-model="feature.enabled" :aria-label="feature.title" />
             </header>
             <p
               v-if="
@@ -730,8 +742,7 @@
               >
                 <span class="sub-feature-dot" aria-hidden="true"></span>
                 <span class="feature-copy">
-                  <strong>{{ $t(subType.titleKey) }}</strong>
-                  <small>{{ $t(subType.descriptionKey) }}</small>
+                  <strong>{{ subType.title }}</strong>
                 </span>
                 <input
                   v-if="subType.hasLimit"
@@ -739,10 +750,10 @@
                   class="feature-limit"
                   type="number"
                   min="0"
-                  :aria-label="$t(subType.titleKey)"
+                  :aria-label="subType.title"
                   @input="updateLimitSubFeature(subType)"
                 />
-                <ToggleSwitch v-else v-model="subType.enabled" :aria-label="$t(subType.titleKey)" />
+                <ToggleSwitch v-else v-model="subType.enabled" :aria-label="subType.title" />
                 <span
                   v-if="
                     showValidationErrors &&

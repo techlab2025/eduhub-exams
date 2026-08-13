@@ -6,6 +6,7 @@ import PlanDetailsModel from '../../core/models/plan.details.model';
 import { PlanDurationTypeEnum } from '../../core/enums/plan.duration.enum';
 import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
 import PlanApiService from '../api/plan.api-service';
+import PlanFeatureCatalogModel from '../../core/models/plan.feature.catalog.model';
 
 export default class PlanRepository extends BaseRepository<PlanDetailsModel, PlanModel[]> {
   private static instance: PlanRepository;
@@ -72,6 +73,16 @@ export default class PlanRepository extends BaseRepository<PlanDetailsModel, Pla
     return this.executeCustom(
       () => this.apiService.toggleStatus(params),
       (data) => this.parseItem(data),
+    );
+  }
+
+  async fetchFeatures(params: Params): Promise<DataState<PlanFeatureCatalogModel[]>> {
+    return this.executeCustom(
+      () => this.apiService.fetchFeatures(params),
+      (data) =>
+        Array.isArray(data)
+          ? data.map((item) => PlanFeatureCatalogModel.fromJson(item as Record<string, unknown>))
+          : [],
     );
   }
 }

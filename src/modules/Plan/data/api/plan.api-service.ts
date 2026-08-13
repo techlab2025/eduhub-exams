@@ -23,4 +23,8 @@ export default class PlanApiService extends BaseApiService {
   toggleStatus(params: Params): Promise<ApiResponse> {
     return this.customPost(this.planEndpoints.toggleStatus, params);
   }
+
+  fetchFeatures(params: Params): Promise<ApiResponse> {
+    return this.customPost(this.planEndpoints.features, params);
+  }
 }

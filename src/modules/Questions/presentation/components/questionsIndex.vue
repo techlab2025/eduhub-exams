@@ -323,7 +323,7 @@
         <FilterDialog
           v-model="FilterDialogShow"
           dialog-class="questions-filter-dialog"
-          width="min(16rem, 100vw)"
+          width="30rem"
         >
           <template #content>
             <div class="questions-filters">
@@ -586,9 +586,10 @@
     inset-block-start: 0 !important;
     inset-inline-start: auto !important;
     inset-inline-end: 0 !important;
-    width: min(16rem, 100vw) !important;
-    height: 100dvh;
-    max-height: 100dvh;
+    // width: min(16rem, 100vw) !important;
+    // height: 100dvh;
+    // max-height: 100dvh;
+    max-height: fit-content !important;
     margin: 0;
     overflow: hidden;
     background: var(--standard-white) !important;

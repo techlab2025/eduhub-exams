@@ -21,6 +21,8 @@
   const hasChanges = ref(false);
   const initialParamsSnapshot = ref<string | null>(null);
   const isInitialized = ref(false);
+  const isPlanLoaded = ref(false);
+  const areFeaturesLoaded = ref(false);
   const isDraft = computed(() => controller.itemData.value?.status === PlanStatusEnum.DRAFT);
 
   const getParamsSnapshot = (value: EditPlanParams | null) =>
@@ -33,6 +35,20 @@
     if (isInitialized.value) {
       hasChanges.value = getParamsSnapshot(updatedParams) !== initialParamsSnapshot.value;
     }
+  };
+
+  const initializeChangeTracking = async () => {
+    if (isInitialized.value || !isPlanLoaded.value || !areFeaturesLoaded.value) return;
+
+    await nextTick();
+    initialParamsSnapshot.value = getParamsSnapshot(params.value);
+    hasChanges.value = false;
+    isInitialized.value = true;
+  };
+
+  const handleFeaturesLoaded = () => {
+    areFeaturesLoaded.value = true;
+    initializeChangeTracking();
   };
 
   const savePlan = async () => {
@@ -92,10 +108,8 @@
     } finally {
       loading.value = false;
     }
-    await nextTick();
-    initialParamsSnapshot.value = getParamsSnapshot(params.value);
-    hasChanges.value = false;
-    isInitialized.value = true;
+    isPlanLoaded.value = true;
+    await initializeChangeTracking();
   });
 </script>
 
@@ -108,6 +122,7 @@
       :loading="loading"
       @update-data="updateData"
       @validity-change="publishReady = $event"
+      @features-loaded="handleFeaturesLoaded"
     />
 
     <div v-if="hasChanges" class="actions">
