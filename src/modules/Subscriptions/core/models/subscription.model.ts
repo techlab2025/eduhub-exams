@@ -67,9 +67,7 @@ export default class SubscriptionModel {
       Number(json.total_price ?? rawPlan.total_paied ?? 0),
       String(json.subscription_date ?? rawPlan.subscribe_date ?? ''),
       String(json.expire_date ?? rawPlan.expire_date ?? ''),
-      String(
-        json.status ?? rawPlan.plan_status ?? SubscriptionStatusEnum.ACTIVE,
-      ) as SubscriptionStatus,
+      json.status as SubscriptionStatus,
     );
   }
 
