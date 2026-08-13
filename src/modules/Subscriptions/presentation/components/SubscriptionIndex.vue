@@ -55,6 +55,7 @@
 
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
+    { id: Number(SubscriptionStatusEnum.PENDING), title: t('subscription_status_0') },
     { id: Number(SubscriptionStatusEnum.ACTIVE), title: t('active') },
     { id: Number(SubscriptionStatusEnum.EXPIRED), title: t('expired') },
     { id: Number(SubscriptionStatusEnum.CANCELLED), title: t('cancelled') },
@@ -777,6 +778,10 @@
     font-weight: 500;
   }
 
+  .subscription-status-0 {
+    color: var(--in-active-color);
+  }
+
   .subscription-status-1 {
     color: var(--primary-green);
   }
@@ -1009,6 +1014,10 @@
 
   .subscription-status-option-1 {
     color: var(--primary-green);
+  }
+
+  .subscription-status-option-0 {
+    color: var(--in-active-color);
   }
 
   .subscription-status-option-2 {

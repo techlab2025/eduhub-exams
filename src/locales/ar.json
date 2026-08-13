@@ -492,6 +492,7 @@
   "subscription_to": "الاشتراك إلى",
   "expiry_from": "الانتهاء من",
   "expiry_to": "الانتهاء إلى",
+  "subscription_status_0": "قيد الانتظار",
   "subscription_status_1": "نشط",
   "subscription_status_2": "منتهي",
   "subscription_status_3": "ملغي",

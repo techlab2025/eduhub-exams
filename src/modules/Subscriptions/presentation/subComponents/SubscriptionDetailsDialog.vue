@@ -49,7 +49,7 @@
             <div class="student-details">
               <h3>{{ details.user.name }}</h3>
               <p>{{ details.user.serial }}</p>
-              <div class="education-type-badge" v-if="details.educationType.title">
+              <div v-if="details.educationType.title" class="education-type-badge">
                 <span>{{ $t('education_type') }}:</span>
                 <strong>{{ details.educationType.title }}</strong>
               </div>
@@ -241,6 +241,12 @@
     border-radius: var(--radius-full);
     font-size: 16px;
     font-weight: 600;
+  }
+
+  .details-status-0 {
+    color: var(--in-active-color);
+    background: var(--warning-light);
+    border: 1px solid var(--in-active-color);
   }
 
   .details-status-1 {

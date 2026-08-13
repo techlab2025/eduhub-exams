@@ -30,7 +30,10 @@ vi.mock('../../controllers/subscription.controller', () => ({
 }));
 
 describe('SubscriptionDetailsDialog', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.itemData.value.plan.status = '1';
+  });
 
   it('fetches and renders the selected subscription details, then closes', async () => {
     const wrapper = mount(Component, {
@@ -59,5 +62,27 @@ describe('SubscriptionDetailsDialog', () => {
     await wrapper.find('header button').trigger('click');
 
     expect(wrapper.props('modelValue')).toBe(false);
+  });
+
+  it('renders pending subscriptions with the pending status style', () => {
+    mocks.itemData.value.plan.status = '0';
+
+    const wrapper = mount(Component, {
+      props: { modelValue: true, subscriptionId: 7 },
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          Dialog: {
+            props: ['visible'],
+            template: '<div v-if="visible"><slot name="container" /></div>',
+          },
+        },
+      },
+    });
+
+    const status = wrapper.get('.details-status');
+
+    expect(status.classes()).toContain('details-status-0');
+    expect(status.text()).toBe('subscription_status_0');
   });
 });

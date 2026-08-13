@@ -83,16 +83,16 @@
           name: 'plans',
           icon: SettingIcon,
         },
-        {
-          link: '/subscriptions',
-          name: 'subscriptions',
-          icon: SettingIcon,
-        },
-        {
-          link: '/students',
-          name: 'students',
-          icon: SettingIcon,
-        },
+        // {
+        //   link: '/subscriptions',
+        //   name: 'subscriptions',
+        //   icon: SettingIcon,
+        // },
+        // {
+        //   link: '/students',
+        //   name: 'students',
+        //   icon: SettingIcon,
+        // },
         // {
         //   link: '/placements/show',
         //   name: 'Placement Configuration',
