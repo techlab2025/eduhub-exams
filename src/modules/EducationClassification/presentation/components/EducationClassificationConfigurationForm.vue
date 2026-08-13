@@ -144,6 +144,8 @@
     ConfigurationNumberOfBranchs.value = ConfigurationnumberOfBranchs.value;
   };
   const ApplySubjectBranchs = () => {
+    if (!hasBasicConfiguration.value) return;
+
     if (
       !ensureIntegerBranchCount(SubjectnumberOfBranchs.value, (value) => {
         SubjectnumberOfBranchs.value = value;
@@ -162,6 +164,7 @@
   };
 
   const Configurationloading = ref<boolean>(false);
+  const hasBasicConfiguration = ref(false);
   const GetConfigurationBranchs = async (branches: Branch[]) => {
     Configurationloading.value = true;
     const configurationBranches: ConfigurationParams[] = [];
@@ -181,13 +184,20 @@
       numberOfBranches: ConfigurationNumberOfBranchs.value,
       branches: configurationBranches,
     });
-    const controller = EducationConfigurationController.getInstance();
-    await controller.create(params);
-    Configurationloading.value = false;
+    try {
+      const result = await controller.create(params);
+      if (result instanceof DataSuccess) {
+        hasBasicConfiguration.value = true;
+      }
+    } finally {
+      Configurationloading.value = false;
+    }
   };
 
   const subjectConfigurationloading = ref<boolean>(false);
   const GetSubjectBranchs = async (branches: Branch[]) => {
+    if (!hasBasicConfiguration.value) return;
+
     subjectConfigurationloading.value = true;
     const configurationBranches: ConfigurationParams[] = [];
     branches.forEach((branch, index) => {
@@ -263,6 +273,7 @@
 
     if (configResult instanceof DataSuccess && configResult.data?.[0]) {
       fillConfigurationForm(configResult.data[0]);
+      hasBasicConfiguration.value = true;
     }
 
     if (subjectResult instanceof DataSuccess && subjectResult.data?.[0]) {
@@ -329,7 +340,12 @@
         @update="GetConfigurationBranchs"
       />
     </div>
-    <div class="education-classification-form-card">
+    <div
+      class="education-classification-form-card education-content-card"
+      :class="{ 'configuration-locked': !hasBasicConfiguration }"
+      :aria-disabled="!hasBasicConfiguration"
+      :inert="!hasBasicConfiguration || undefined"
+    >
       <!-- ── Card Header ───────────────────────────────────── -->
       <header class="form-header">
         <div class="header-text">
@@ -386,8 +402,13 @@
             />
           </div>
         </div>
-        
-        <button type="button" class="save-btn" @click="ApplySubjectBranchs">
+
+        <button
+          type="button"
+          class="save-btn"
+          :disabled="!hasBasicConfiguration"
+          @click="ApplySubjectBranchs"
+        >
           {{ $t('apply') }}
         </button>
       </div>
@@ -423,7 +444,6 @@
     .field-input.input-error {
       border-color: var(--danger-alt);
     }
-
   }
   .branch-count-error {
     margin: 8px 4px 0;
@@ -432,5 +452,15 @@
     font-size: 14px;
     font-weight: 500;
     text-align: start;
+  }
+
+  .education-content-card {
+    transition: opacity 0.2s ease;
+
+    &.configuration-locked {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.45;
+    }
   }
 </style>

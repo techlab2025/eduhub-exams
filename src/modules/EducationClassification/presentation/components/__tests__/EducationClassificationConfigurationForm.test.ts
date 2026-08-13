@@ -77,7 +77,11 @@ const mountForm = (props: Record<string, unknown> = {}) =>
       mocks: { $t: (k: string) => k },
       // Stub child components so their buttons don't pollute the DOM
       stubs: {
-        SingularPluralForm: { template: '<div class="singular-plural-stub" />' },
+        SingularPluralForm: {
+          name: 'SingularPluralForm',
+          template: '<div class="singular-plural-stub" />',
+          emits: ['update'],
+        },
         MultiLangInput: { template: '<div class="multi-lang-stub" />' },
       },
     },
@@ -92,6 +96,9 @@ describe('EducationClassificationConfigurationForm', () => {
     );
     mockSubjectFetchList.mockResolvedValue(
       new DataSuccess({ data: [EducationSubjectConfigurationModel.example] }),
+    );
+    mockConfigCreate.mockResolvedValue(
+      new DataSuccess({ data: EducationConfigurationModel.example }),
     );
   });
 
@@ -154,6 +161,38 @@ describe('EducationClassificationConfigurationForm', () => {
       expect(wrapper.exists()).toBe(true);
       const inputs = wrapper.findAll('input[type="number"]');
       expect((inputs[0].element as HTMLInputElement).valueAsNumber).toBe(0);
+    });
+
+    it('disables education content when basic configuration has no data', async () => {
+      mockConfigFetchList.mockResolvedValue({ data: null });
+      const wrapper = mountForm();
+      await flushPromises();
+
+      const educationContent = wrapper.get('.education-content-card');
+      expect(educationContent.classes()).toContain('configuration-locked');
+      expect(educationContent.attributes('aria-disabled')).toBe('true');
+      expect(educationContent.get('button.save-btn').attributes('disabled')).toBeDefined();
+    });
+
+    it('enables education content after basic configuration is successfully saved', async () => {
+      mockConfigFetchList.mockResolvedValue({ data: null });
+      const wrapper = mountForm();
+      await flushPromises();
+
+      await wrapper.get('#title').setValue('1');
+      await wrapper.findAll('button.save-btn')[0].trigger('click');
+      wrapper
+        .getComponent({ name: 'SingularPluralForm' })
+        .vm.$emit('update', [
+          { singular: { en: 'Level', ar: 'مستوى' }, plural: { en: 'Levels', ar: 'مستويات' } },
+        ]);
+      await flushPromises();
+
+      expect(mockConfigCreate).toHaveBeenCalledOnce();
+      expect(wrapper.get('.education-content-card').classes()).not.toContain(
+        'configuration-locked',
+      );
+      expect(wrapper.get('.education-content-card').attributes('aria-disabled')).toBe('false');
     });
   });
 
