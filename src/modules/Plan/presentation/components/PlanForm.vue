@@ -385,7 +385,7 @@
           </button>
         </div>
         <div class="basic-info-fields">
-          <div class="validated-field">
+          <div class="validated-field required-field">
             <MultiLangInput
               field-key="title"
               :label="$t('plan_display_name')"
@@ -401,7 +401,7 @@
               {{ validationErrors.title }}
             </p>
           </div>
-          <div class="validated-field">
+          <div class="validated-field required-field">
             <MultiLangInput
               field-key="description"
               type="description"
@@ -419,7 +419,10 @@
             </p>
           </div>
           <div class="validated-field">
-            <label for="plan-number-of-subjects">{{ $t('number_of_subjects') }}</label>
+            <label for="plan-number-of-subjects">
+              {{ $t('number_of_subjects') }}
+              <span class="required-marker" aria-hidden="true">*</span>
+            </label>
             <input
               id="plan-number-of-subjects"
               v-model.number="numberOfSubjects"
@@ -454,6 +457,7 @@
               :placeholder="$t('highlight_badges_example')"
               :controller="badgeController"
               :params="badgeParams"
+              required
               search-on-enter
             />
             <p
@@ -482,7 +486,10 @@
         <div class="pricing-list">
           <div v-for="(row, index) in pricing" :key="index" class="pricing-card">
             <div class="validated-field pricing-field">
-              <label :for="`pricing-${index}-price`">{{ $t('price') }}</label>
+              <label :for="`pricing-${index}-price`">
+                {{ $t('price') }}
+                <span class="required-marker" aria-hidden="true">*</span>
+              </label>
               <input
                 :id="`pricing-${index}-price`"
                 v-model.number="row.price"
@@ -504,7 +511,10 @@
               />
             </div>
             <div class="validated-field pricing-field">
-              <label :for="`pricing-${index}-duration`">{{ $t('duration') }}</label>
+              <label :for="`pricing-${index}-duration`">
+                {{ $t('duration') }}
+                <span class="required-marker" aria-hidden="true">*</span>
+              </label>
               <span class="duration-field">
                 <span class="pricing-control">
                   <input
@@ -603,7 +613,10 @@
         </div>
         <div class="trial-section validated-field">
           <div class="trial-heading">
-            <span>{{ $t('trial_days') }}</span>
+            <span>
+              {{ $t('trial_days') }}
+              <span v-if="hasTrial" class="required-marker" aria-hidden="true">*</span>
+            </span>
             <ToggleSwitch v-model="hasTrial" :aria-label="$t('has_trial')" />
           </div>
           <input
@@ -635,7 +648,10 @@
         class="plan-section"
       >
         <div class="panel-heading">
-          <h3>{{ $t('features') }}</h3>
+          <h3>
+            {{ $t('features') }}
+            <span class="required-marker" aria-hidden="true">*</span>
+          </h3>
           <button type="button" class="reset-button" @click="resetFeatures">
             {{ $t('reset') }}
           </button>
@@ -716,6 +732,9 @@
 
   .validated-field input {
     width: 100%;
+  }
+  .validated-field label {
+    display: flex;
   }
 
   .plan-form {
@@ -818,6 +837,17 @@
 
   .validated-field {
     min-width: 0;
+  }
+
+  .required-marker,
+  .required-field :deep(.field-label)::after {
+    color: var(--danger-color);
+    font-weight: 700;
+  }
+
+  .required-field :deep(.field-label)::after {
+    margin-inline-start: 4px;
+    content: '*';
   }
 
   .pricing-field,

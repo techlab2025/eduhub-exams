@@ -95,7 +95,7 @@
       @validity-change="publishReady = $event"
     />
 
-    <div v-if="isDraft" class="actions">
+    <div class="actions">
       <button
         class="btn btn-primary publish-button"
         :class="{ 'is-not-ready': !publishReady }"
@@ -104,21 +104,20 @@
         :disabled="loading"
         @click="savePlan"
       >
-        <span v-if="loading" class="loader"></span>
-        <span v-else>{{ $t('publish') }}</span>
+        <span >{{ $t('publish') }}</span>
       </button>
       <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
         {{ $t('save_as_draft') }}
       </button>
     </div>
 
-    <div v-else class="actions" :class="{ disabled: loading }">
+    <!-- <div v-else class="actions" :class="{ disabled: loading }">
       <button class="btn btn-primary w-full" type="button" :disabled="loading" @click="savePlan">
         <span v-if="loading" class="loader"></span>
         <span v-else>{{ $t('update_plan') }}</span>
       </button>
       <router-link to="/plans" class="btn btn-cancel">{{ $t('cancel') }}</router-link>
-    </div>
+    </div> -->
 
     <DraftPlanDialog v-model="draftDialogVisible" @acknowledge="acknowledgeDraft" />
   </div>
@@ -145,6 +144,9 @@
     justify-content: flex-end;
     gap: var(--xs-size);
     margin-top: var(--xl-size-base);
+    button {
+      width: 50%;
+    }
 
     &.disabled {
       pointer-events: none;

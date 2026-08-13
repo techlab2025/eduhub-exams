@@ -55,6 +55,23 @@ describe('PlanForm', () => {
     expect(wrapper.emitted('validityChange')?.at(-1)).toEqual([false]);
   });
 
+  it('marks required plan fields with red asterisks', async () => {
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    const translationFields = wrapper.findAllComponents({ name: 'MultiLangInput' });
+    const badgeField = wrapper.getComponent({ name: 'UpdatedCustomInputSelect' });
+
+    expect(translationFields[0]?.element.parentElement?.classList).toContain('required-field');
+    expect(translationFields[1]?.element.parentElement?.classList).toContain('required-field');
+    expect(badgeField.props('required')).toBe(true);
+    expect(wrapper.findAll('.required-marker').length).toBeGreaterThanOrEqual(4);
+    expect(wrapper.find('.trial-heading .required-marker').exists()).toBe(false);
+
+    await wrapper.findComponent({ name: 'ToggleSwitch' }).vm.$emit('update:modelValue', true);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('.trial-heading .required-marker').exists()).toBe(true);
+  });
+
   it('shows required errors and scrolls to the first invalid field on validation', async () => {
     const scrollIntoView = vi.fn();
     Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
