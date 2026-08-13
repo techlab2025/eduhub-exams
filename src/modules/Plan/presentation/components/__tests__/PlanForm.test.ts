@@ -324,9 +324,9 @@ describe('PlanForm', () => {
     expect(featureCards[1]?.classes()).not.toContain('edit-selection-inactive');
   });
 
-  it('does not validate or send limited sub-features while their limit is zero', async () => {
-    routeMock.params = {};
-    routeMock.query = {};
+  it('requires at least one sub-feature for each enabled feature', async () => {
+    routeMock.params = { id: '8' };
+    routeMock.query = { section: 'features' };
     const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
     const firstFeature = wrapper.findAll('.feature-card')[0];
 
@@ -336,8 +336,11 @@ describe('PlanForm', () => {
     const limitInput = firstFeature?.findAll('input.feature-limit')[0];
     expect((limitInput?.element as HTMLInputElement).value).toBe('0');
 
-    await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate();
+    expect(await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate()).toBe(
+      false,
+    );
     expect(wrapper.find('.feature-limit-error').exists()).toBe(false);
+    expect(wrapper.get('.feature-sub-feature-error').text()).toBe('plan_sub_feature_required');
 
     const latestParams = wrapper.emitted('updateData')?.at(-1)?.[0] as {
       toMap: () => Record<string, unknown>;
@@ -346,6 +349,10 @@ describe('PlanForm', () => {
     expect(payload.features).toBeUndefined();
 
     await limitInput?.setValue(1);
+    expect(await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate()).toBe(
+      true,
+    );
+    expect(wrapper.find('.feature-sub-feature-error').exists()).toBe(false);
     const updatedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as {
       toMap: () => Record<string, unknown>;
     };

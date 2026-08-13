@@ -418,6 +418,7 @@
   "plan_trial_days_required": "يجب أن تكون أيام التجربة أكبر من صفر.",
   "plan_trial_days_exceed_duration": "لا يمكن أن تتجاوز أيام التجربة أقصر مدة للخطة.",
   "plan_feature_required": "يجب اختيار ميزة واحدة على الأقل.",
+  "plan_sub_feature_required": "يجب اختيار ميزة فرعية واحدة على الأقل لكل ميزة مفعلة.",
   "plan_feature_limit_required": "يجب أن يكون حد الميزة أكبر من صفر.",
   "basic_info": "المعلومات الأساسية",
   "features": "المزايا",

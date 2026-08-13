@@ -197,6 +197,11 @@
     if (validates('features')) {
       const enabledFeatures = planFeatures.value.filter((feature) => feature.enabled);
       if (enabledFeatures.length === 0) errors.features = t('plan_feature_required');
+      enabledFeatures.forEach((feature) => {
+        if (!feature.subTypes.some(isSubFeatureIncluded)) {
+          errors[`feature-${feature.featureType}-subfeatures`] = t('plan_sub_feature_required');
+        }
+      });
     }
 
     return errors;
@@ -704,6 +709,16 @@
               </span>
               <ToggleSwitch v-model="feature.enabled" :aria-label="$t(feature.titleKey)" />
             </header>
+            <p
+              v-if="
+                showValidationErrors &&
+                validationErrors[`feature-${feature.featureType}-subfeatures`]
+              "
+              data-plan-validation-error
+              class="field-error feature-sub-feature-error"
+            >
+              {{ validationErrors[`feature-${feature.featureType}-subfeatures`] }}
+            </p>
             <div v-if="feature.enabled || isFeatureEdit" class="sub-features">
               <div
                 v-for="subType in feature.subTypes"
