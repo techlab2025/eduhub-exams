@@ -1,6 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
+import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
 import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
 import QuestionHeader from './QuestionHeader.vue';
 import { createI18n } from 'vue-i18n';
@@ -35,11 +36,15 @@ vi.mock('../../controllers/questions.controller', () => ({
   },
 }));
 
-const mountComponent = (reviewStatus: QuestionStatusEnum) =>
+const mountComponent = (
+  reviewStatus: QuestionStatusEnum,
+  questionType: QuestionTypeEnum = QuestionTypeEnum.mcq,
+) =>
   mount(QuestionHeader, {
     props: {
       questionData: {
         review_status: reviewStatus,
+        questionType,
         approvedBy: 'Reviewer',
         createdAt: '2026-07-29',
       } as ShowQuestionsModel,
@@ -106,5 +111,27 @@ describe('QuestionHeader', () => {
 
     expect(deleteQuestionMock).toHaveBeenCalledOnce();
     expect(pushMock).toHaveBeenCalledWith({ name: 'Questions' });
+  });
+
+  it('routes an article record to article edit', async () => {
+    const wrapper = mountComponent(QuestionStatusEnum.CREATED, QuestionTypeEnum.paragraph);
+
+    await wrapper.get('.question-actions .btn-primary').trigger('click');
+
+    expect(pushMock).toHaveBeenCalledWith({
+      name: 'Edit article',
+      params: { id: '10' },
+    });
+  });
+
+  it('keeps normal records on question edit', async () => {
+    const wrapper = mountComponent(QuestionStatusEnum.CREATED, QuestionTypeEnum.mcq);
+
+    await wrapper.get('.question-actions .btn-primary').trigger('click');
+
+    expect(pushMock).toHaveBeenCalledWith({
+      name: 'Edit question',
+      params: { id: '10' },
+    });
   });
 });

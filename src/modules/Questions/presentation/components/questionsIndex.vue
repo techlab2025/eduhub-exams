@@ -29,7 +29,7 @@
   import DatePicker from 'primevue/datepicker';
   import { useI18n } from 'vue-i18n';
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
-import wordSlice from '@/base/Presentation/Utils/word_slice';
+  import wordSlice from '@/base/Presentation/Utils/word_slice';
 
   // Controller instance
   const controller = questionsController.getInstance();
@@ -40,6 +40,16 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
 
   const FormStore = useFormsStore();
   const formRoute = computed(() => '/questions/add');
+  const nonArticleQuestionTypes: QuestionTypeEnum[] = [
+    QuestionTypeEnum.mcq,
+    QuestionTypeEnum.true_false,
+    QuestionTypeEnum.complate,
+    QuestionTypeEnum.matching,
+    QuestionTypeEnum.ranking,
+  ];
+
+  const getNonArticleQuestions = (items: questionsModel[]) =>
+    items.filter((item) => item.questionType !== QuestionTypeEnum.paragraph);
 
   // Table headers
   const headers: TableHeader[] = [
@@ -72,7 +82,7 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
           : {}),
         ...(selectedQuestionType.value?.id
           ? { question_type: Number(selectedQuestionType.value.id) as QuestionTypeEnum }
-          : {}),
+          : { question_type: nonArticleQuestionTypes }),
         ...(fromDate.value ? { from_date: formatDate(fromDate.value) } : {}),
         ...(toDate.value ? { to_date: formatDate(toDate.value) } : {}),
       }),
@@ -135,7 +145,10 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
       {
         text: t('Edit'),
         icon: EditIcon,
-        link: `/questions/edit/${questionId}`,
+        link:
+          item.questionType === QuestionTypeEnum.paragraph
+            ? `/articles/edit/${questionId}`
+            : `/questions/edit/${questionId}`,
       },
       viewAction,
       {
@@ -262,7 +275,6 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
     }),
     new TitleInterface({ id: QuestionTypeEnum.complate, title: t('question_filters.complete') }),
     new TitleInterface({ id: QuestionTypeEnum.matching, title: t('question_filters.matching') }),
-    new TitleInterface({ id: QuestionTypeEnum.paragraph, title: t('question_filters.paragraph') }),
     new TitleInterface({ id: QuestionTypeEnum.ranking, title: t('question_filters.ranking') }),
   ]);
 
@@ -388,7 +400,7 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
         <div class="table-frame">
           <AppTable
             :headers="headers"
-            :items="data as questionsModel[]"
+            :items="getNonArticleQuestions(data as questionsModel[])"
             :hoverable="true"
             :striped="true"
             show-index
@@ -396,7 +408,7 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
             :row-selectable="(item) => item.status !== QuestionStatusEnum.APPROVED"
             @selection-change="selectedRows = $event"
           >
-          <!-- :row-disabled="
+            <!-- :row-disabled="
   (item) => selectedRows.length > 0 &&
     item.status === QuestionStatusEnum.APPROVED
 "
@@ -404,9 +416,10 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
   (item) => !(selectedRows.length > 0 &&
     item.status === QuestionStatusEnum.APPROVED)
 " -->
+
             <template #cell-title="{ item }">
               <div class="question-type">
-                {{ wordSlice(item.title , 35) || '--' }}
+                {{ wordSlice(item.title, 35) || '--' }}
               </div>
             </template>
             <template #cell-questionType="{ item }">
@@ -501,11 +514,13 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
     border-radius: 24px;
     margin-block: 10px;
     padding: 10px;
+
     .btn-danger {
       margin-left: auto;
       color: white;
       background-color: var(--Red);
     }
+
     .selected-count {
       color: #121212;
       font-size: 14px;
@@ -513,9 +528,11 @@ import wordSlice from '@/base/Presentation/Utils/word_slice';
       font-family: 'bold';
     }
   }
+
   .form-fields {
     padding: 0 !important;
   }
+
   .question-type {
     color: #121212;
     font-size: 16px;

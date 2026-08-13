@@ -5,6 +5,10 @@ import { createI18n } from 'vue-i18n';
 import questionsForm from '../questionsForm.vue';
 
 const toastWarningMock = vi.hoisted(() => vi.fn());
+const routeMock = vi.hoisted(() => ({
+  query: {} as Record<string, string>,
+  params: {} as Record<string, string>,
+}));
 
 vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
   dialogManager: {
@@ -23,10 +27,7 @@ vi.mock('vue-router', () => ({
     replace: vi.fn(),
     resolve: vi.fn(),
   }),
-  useRoute: () => ({
-    query: {},
-    params: {},
-  }),
+  useRoute: () => routeMock,
   createRouter: vi.fn(() => ({
     install: vi.fn(),
     push: vi.fn(),
@@ -48,6 +49,8 @@ describe('questionsForm', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    routeMock.query = {};
+    routeMock.params = {};
   });
 
   it('renders without crashing', () => {
@@ -166,6 +169,32 @@ describe('questionsForm', () => {
     expect(wrapper.findComponent({ name: 'BasicQuestionDataForm' }).props()).toMatchObject({
       subjectId: 290,
       sequenceId: 304,
+    });
+  });
+
+  it('stays in add mode inside an article show route', () => {
+    routeMock.params = { id: '497' };
+    const wrapper = mount(questionsForm, {
+      props: { articleId: 497, subjectId: 361, sequenceId: 284 },
+      global: {
+        plugins: [i18n],
+        stubs: {
+          BasicQuestionDataForm: {
+            name: 'BasicQuestionDataForm',
+            props: ['editMode', 'subjectId', 'sequenceId'],
+            template: '<div />',
+          },
+          QuestionAnswersDataForm: true,
+          FolderIcon: true,
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain('Add question');
+    expect(wrapper.findComponent({ name: 'BasicQuestionDataForm' }).props()).toMatchObject({
+      editMode: false,
+      subjectId: 361,
+      sequenceId: 284,
     });
   });
 });

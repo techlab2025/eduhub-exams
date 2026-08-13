@@ -325,7 +325,7 @@
           <template #toggleicon>
             <div class="article-solution-steps-header">
               <div class="toggll-container">
-                <div>{{ $t('basic artical data') }}</div>
+                <div>{{ $t('basic article data') }}</div>
                 <AccordionToggleIcon :class="{ 'rotate-180': isSolutionSteps }" />
               </div>
               <span class="dashed-border"></span>
@@ -336,7 +336,7 @@
         <AccordionContent>
           <div class="input-wrapper" data-required-field="description">
             <label for="descreption">
-              {{ $t('artical ') }}<span class="required-marker" aria-hidden="true">*</span>
+              {{ $t('article ') }}<span class="required-marker" aria-hidden="true">*</span>
             </label>
             <div class="description-container">
               <div class="description-header">
@@ -375,7 +375,7 @@
                     id="article-title"
                     v-model="question"
                     type="text"
-                    :placeholder="$t('enter title of artical ')"
+                    :placeholder="$t('enter title of article ')"
                     class="field-input"
                     @input="updateData"
                   />
@@ -394,6 +394,7 @@
                     v-model="SelectedQuestionSequence"
                     :label="`subject`"
                     :static-options="subjectOptions"
+                    wrap-option-labels
                     placeholder="select subject"
                     @update:model-value="handelSubjectUpdate"
                     @reload="FetchBranches"
@@ -422,7 +423,7 @@
           <template #toggleicon>
             <div class="article-solution-steps-header">
               <div class="toggll-container">
-                <div>{{ $t('artical source') }}</div>
+                <div>{{ $t('article source') }}</div>
                 <AccordionToggleIcon />
               </div>
               <span class="dashed-border"></span>

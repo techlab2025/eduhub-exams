@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
 import questionsAdd from '../questionsAdd.vue';
 
 const createMock = vi.hoisted(() => vi.fn());
@@ -143,11 +144,14 @@ describe('questionsAdd.vue', () => {
       props: { embedded: true, articleId: 42 },
       global: globalConfig,
     });
-    wrapper.findComponent({ name: 'questionsForm' }).vm.$emit('update-data', { parentId: 42 });
+    const params = { parentId: 42, status: QuestionStatusEnum.NOT_REVIEW };
+    wrapper.findComponent({ name: 'questionsForm' }).vm.$emit('update-data', params);
 
-    await wrapper.get('[data-save-status="1"] .without-review').trigger('click');
+    await wrapper.get('.embedded-save-button').trigger('click');
     await flushPromises();
 
+    expect(params.status).toBeUndefined();
+    expect(createMock).toHaveBeenCalledWith(params, undefined, '/eg/questions/add');
     expect(wrapper.emitted('saved')).toHaveLength(1);
     expect(routerPushMock).not.toHaveBeenCalled();
     expect(routerBackMock).not.toHaveBeenCalled();
@@ -164,6 +168,17 @@ describe('questionsAdd.vue', () => {
       subjectId: 290,
       sequenceId: 304,
     });
+  });
+
+  it('shows direct Save and Cancel actions without review choices when embedded', () => {
+    const wrapper = mount(questionsAdd, {
+      props: { embedded: true, articleId: 42 },
+      global: globalConfig,
+    });
+
+    expect(wrapper.find('.embedded-save-button').exists()).toBe(true);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
+    expect(wrapper.findComponent({ name: 'WithReviewDialog' }).exists()).toBe(false);
   });
 
   it('does not navigate when saving a draft returns no result', async () => {

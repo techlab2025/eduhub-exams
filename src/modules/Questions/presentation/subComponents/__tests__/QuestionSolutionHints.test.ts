@@ -73,6 +73,18 @@ describe('QuestionSolutionHints', () => {
     expect(wrapper.find('.accordion-stub').exists()).toBe(true);
   });
 
+  it('keeps solution hints closed when the edit response contains an empty object', () => {
+    const wrapper = mount(QuestionSolutionHints, {
+      props: {
+        SolutionHintsData: solutionHintsData,
+        isSolutionHintsData: true,
+      },
+      global: globalConfig,
+    });
+
+    expect(wrapper.findComponent(stubAccordion).props('value')).toBe(0);
+  });
+
   it('renders description textarea when active', () => {
     const wrapper = mount(QuestionSolutionHints, {
       props: {

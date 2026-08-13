@@ -10,7 +10,7 @@ import type TopicsParams from './subParams/topics.params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import { AnswerEvaluationTypeEnum } from '../constant/answer.evaluation.type.enum';
 import type AttachmentsParams from './subParams/attachments.params';
-import type { QuestionStatusEnum } from '../constant/question.status.enum';
+import { QuestionStatusEnum } from '../constant/question.status.enum';
 
 /**
  * Parameters for adding a new employee
@@ -35,7 +35,7 @@ export default class AddquestionsParams implements Params {
   public answerEvaluation?: AnswerEvaluationTypeEnum;
   public similarPrecentage?: string;
   public parentId?: number | null;
-  public status?:QuestionStatusEnum| null;
+  public status?: QuestionStatusEnum | null;
 
   public static readonly validation = new ClassValidation().setRules({
     title: { required: true },
@@ -121,9 +121,8 @@ export default class AddquestionsParams implements Params {
 
     return {
       // Always send question
-      ...(this.title?.length! > 0 &&{
-
-        question: this.title
+      ...(this.title?.length! > 0 && {
+        question: this.title,
       }),
 
       // Send only when selected
@@ -222,10 +221,9 @@ export default class AddquestionsParams implements Params {
         }),
 
       // Draft
-      ...(this.status !== undefined &&
-        this.status !== null && {
-          review_status: this.status,
-        }),
+      ...(((this.status !== undefined && this.status !== null) || this.parentId) && {
+        review_status: this.parentId ? QuestionStatusEnum.CREATED : this.status,
+      }),
     };
   }
 

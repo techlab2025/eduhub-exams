@@ -8,7 +8,7 @@ import OrderEnum from '@/base/Core/Constants/IndexFetchOrderEnum';
 export default class IndexQuestionsParams extends IndexParams {
   public status?: QuestionStatusEnum;
   public generated_by?: QuestionGeneratedByEnum;
-  public question_type?: QuestionTypeEnum;
+  public question_type?: QuestionTypeEnum | QuestionTypeEnum[];
   public difficulty?: QuestionDifficultyEnum;
   public subjectId?: number;
   public branchId?: number;
@@ -22,7 +22,7 @@ export default class IndexQuestionsParams extends IndexParams {
     withPage: number;
     status?: QuestionStatusEnum;
     generated_by?: QuestionGeneratedByEnum;
-    question_type?: QuestionTypeEnum;
+    question_type?: QuestionTypeEnum | QuestionTypeEnum[];
     difficulty?: QuestionDifficultyEnum;
     subjectId?: number;
     branchId?: number;
@@ -40,7 +40,7 @@ export default class IndexQuestionsParams extends IndexParams {
     this.to_date = data.to_date;
   }
 
-  toMap(): Record<string, string | number> {
+  toMap(): Record<string, string | number | number[]> {
     return {
       ...super.toMap(),
       ...(this.status ? { review_status: this.status } : {}),

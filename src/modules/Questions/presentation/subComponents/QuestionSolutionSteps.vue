@@ -42,6 +42,8 @@
 
   const description = ref('');
   const file = ref();
+  const hasSolutionStepsContent = (data?: SolutionStepsModel) =>
+    Boolean(data?.step?.trim() || data?.attachments?.length);
   // const handleFile = (f: any) => {
   //   file.value = f[0]?.base64 ? [f[0].base64] : [];
   //   updateData();
@@ -52,9 +54,9 @@
   };
 
   watch(
-    [() => SolutionStepsData, () => isSolutionStepsData],
-    ([newSolutionStepsdata, newIsSolution]) => {
-      isSolutionSteps.value = newIsSolution || !!newSolutionStepsdata;
+    () => SolutionStepsData,
+    (newSolutionStepsdata) => {
+      isSolutionSteps.value = hasSolutionStepsContent(newSolutionStepsdata);
       description.value = newSolutionStepsdata?.step;
       // file.value = newSolutionStepsdata?.attachments?.[0]?.file;
       file.value = newSolutionStepsdata?.attachments?.map((a: any) => a.file).filter(Boolean) ?? [];

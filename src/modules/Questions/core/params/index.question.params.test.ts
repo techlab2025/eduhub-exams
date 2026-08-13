@@ -10,14 +10,14 @@ describe('IndexQuestionsParams', () => {
       pageNumber: 1,
       perPage: 10,
       withPage: 1,
-      status: QuestionStatusEnum.aproved,
+      status: QuestionStatusEnum.APPROVED,
       question_type: QuestionTypeEnum.matching,
       from_date: '2026-07-01',
       to_date: '2026-07-28',
     });
 
     expect(params.toMap()).toMatchObject({
-      status: QuestionStatusEnum.aproved,
+      review_status: QuestionStatusEnum.APPROVED,
       question_type: QuestionTypeEnum.matching,
       from_date: '2026-07-01',
       to_date: '2026-07-28',
@@ -35,5 +35,18 @@ describe('IndexQuestionsParams', () => {
     expect(params.toMap()).not.toHaveProperty('question_type');
     expect(params.toMap()).not.toHaveProperty('from_date');
     expect(params.toMap()).not.toHaveProperty('to_date');
+  });
+
+  it('maps multiple question types for server-side pagination filtering', () => {
+    const questionTypes = [QuestionTypeEnum.mcq, QuestionTypeEnum.matching];
+    const params = new IndexQuestionsParams({
+      word: '',
+      pageNumber: 1,
+      perPage: 10,
+      withPage: 1,
+      question_type: questionTypes,
+    });
+
+    expect(params.toMap()).toMatchObject({ question_type: questionTypes });
   });
 });

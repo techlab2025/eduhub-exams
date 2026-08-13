@@ -23,15 +23,20 @@
   import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
 
   const emit = defineEmits(['updateData']);
-  const { ContentData, draftData, validationErrors, subjectId, sequenceId } = defineProps<{
-    ContentData?: ShowQuestionsModel;
-    draftData?: AddquestionsParams;
-    subjectId?: number;
-    sequenceId?: number;
-    validationErrors?: Partial<
-      Record<'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
-    >;
-  }>();
+  const { ContentData, draftData, validationErrors, subjectId, sequenceId, editMode } =
+    defineProps<{
+      ContentData?: ShowQuestionsModel;
+      draftData?: AddquestionsParams;
+      subjectId?: number;
+      sequenceId?: number;
+      editMode?: boolean;
+      validationErrors?: Partial<
+        Record<'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
+      >;
+    }>();
+  const isEditMode = computed(
+    () => Boolean(editMode) || Boolean(ContentData && route.params.id && !subjectId),
+  );
   const route = useRoute();
 
   const routeSubjectId = computed(() => {
@@ -149,7 +154,10 @@
     selected: TitleInterface<number> | null | undefined,
     shouldEmit = true,
   ) => {
-    selectedBranchTitle.value = selected ?? undefined;
+    const resolvedSelection = selected?.id
+      ? (branchOptions.value.find((option) => option.id === selected.id) ?? selected)
+      : selected;
+    selectedBranchTitle.value = resolvedSelection ?? undefined;
     SelectedQuestionSequence.value = null;
     SelectedTopic.value = [];
     AllSubjectTree.value = [];
@@ -224,7 +232,7 @@
   watch(
     [lockedSubjectId, lockedSequenceId, stagesLoaded],
     async ([currentSubjectId, currentSequenceId, areStagesLoaded], _previousValues, onCleanup) => {
-      if (!currentSubjectId || !areStagesLoaded || route.params.id) return;
+      if (!currentSubjectId || !areStagesLoaded || isEditMode.value) return;
 
       let isCurrent = true;
       onCleanup(() => {
@@ -249,9 +257,15 @@
       }
       if (!isCurrent || !currentSequenceId) return;
 
-      const selectedSequence = subjectOptions.value.find(
-        (option) => option.id === currentSequenceId,
-      );
+      const sequenceNode = findSubjectById(AllSubjectTree.value, currentSequenceId);
+      const selectedSequence =
+        subjectOptions.value.find((option) => option.id === currentSequenceId) ??
+        (sequenceNode
+          ? new TitleInterface<number>({
+              id: sequenceNode.e_c_subject_id ?? sequenceNode.id!,
+              title: sequenceNode.full_title || sequenceNode.title,
+            })
+          : undefined);
       if (selectedSequence) await handelSubjectUpdate(selectedSequence);
     },
     { immediate: true },
@@ -304,7 +318,7 @@
   watch(
     [() => ContentData, skillsOptions],
     ([content, options]) => {
-      if (!route.params.id || !content?.skills?.length || !options?.length) return;
+      if (!isEditMode.value || !content?.skills?.length || !options?.length) return;
 
       SelectedSkill.value = content.skills.flatMap((skill) => {
         if (skill.id == null) return [];
@@ -325,7 +339,7 @@
   watch(
     () => draftData,
     () => {
-      if (route.params.id || !draftData) return;
+      if (isEditMode.value || !draftData) return;
       SelectedDifficultyLevel.value = new TitleInterface<number>({
         id: draftData?.difficultyLevel || 0,
         title: DifficultLevels.value.find((item) => item.id === draftData?.difficultyLevel)
@@ -387,7 +401,7 @@
   );
 
   watch(topicsOptions, (options) => {
-    if (route.params.id) return;
+    if (isEditMode.value) return;
     if (!draftData?.topics?.length || !options?.length) return;
     SelectedTopic.value = draftData?.topics.map(
       (item) =>

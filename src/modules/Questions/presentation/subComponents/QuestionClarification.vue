@@ -63,9 +63,17 @@
   };
   const DocumentSource = ref<QuestionDocumentModel | null>(null);
 
+  const hasClarificationContent = (data?: QuestionClarificationModel) =>
+    Boolean(
+      data?.documents?.id ||
+      data?.source?.trim() ||
+      data?.clarification?.trim() ||
+      data?.attachments?.length,
+    );
+
   watch(
-    [() => ClarificationData, () => isclarification],
-    ([newValue, neIsClarification]) => {
+    () => ClarificationData,
+    (newValue) => {
       DocumentSource.value = new QuestionDocumentModel({
         id: newValue?.documents?.id,
         title: newValue?.documents?.title,
@@ -75,10 +83,10 @@
       // file.value = newValue?.attachments?.map((a) => a.file).filter(Boolean) as string[];
       file.value = newValue?.attachments?.map((a: any) => a.file).filter(Boolean) ?? [];
 
-      isClarification.value = neIsClarification || !!newValue;
+      isClarification.value = hasClarificationContent(newValue);
       updateData();
     },
-    // { immediate: true, deep: true },
+    { immediate: true, deep: true },
   );
 
   watch(
