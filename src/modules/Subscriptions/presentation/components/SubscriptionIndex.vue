@@ -29,6 +29,7 @@
   import SubscriptionController from '../controllers/subscription.controller';
   import SubscriptionDetailsDialog from '../subComponents/SubscriptionDetailsDialog.vue';
   import SubscriptionDeleteWarningDialog from '../subComponents/SubscriptionDeleteWarningDialog.vue';
+  import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
 
   const { t } = useI18n();
   const controller = SubscriptionController.getInstance();
@@ -480,6 +481,12 @@
                 fetchItems();
               }
             "
+          />
+        </template>
+        <template #empty>
+          <NoItemContainer
+            :title="'No subscriptions yet'"
+            :description="'No students have signed up for your plans yet. Subscriptions will appear here once the first student joins.'"
           />
         </template>
       </DataStatusBuilder>

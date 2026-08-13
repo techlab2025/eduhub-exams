@@ -75,6 +75,7 @@
     { key: 'price', label: t('price') },
     { key: 'status', label: t('status') },
     { key: 'trialDays', label: t('trial_days') },
+    { key: 'numberOfSubjects', label: t('number_of_subjects') },
     { key: 'lastUpdated', label: t('lastUpdated') },
   ]);
   const durationType = ref<TitleInterface<string>>();
