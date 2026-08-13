@@ -1002,6 +1002,7 @@
   "subscription_to": "Subscription to",
   "expiry_from": "Expiry from",
   "expiry_to": "Expiry to",
+  "subscription_status_0": "Pending",
   "subscription_status_1": "Active",
   "subscription_status_2": "Expired",
   "subscription_status_3": "Cancelled",

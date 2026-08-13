@@ -6,6 +6,8 @@ export default class SubscriptionDetailsModel {
   public readonly user: SubscriptionUserModel;
   public readonly educationType: SubscriptionEducationTypeModel;
   public readonly plan: SubscriptionPlanModel;
+
+  
   constructor(data: Partial<SubscriptionDetailsModel>) {
     this.user = data.user as SubscriptionUserModel;
     this.educationType = data.educationType as SubscriptionEducationTypeModel;

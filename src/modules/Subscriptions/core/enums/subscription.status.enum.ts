@@ -1,7 +1,8 @@
 export const SubscriptionStatusEnum = {
-  ACTIVE: '1',
-  EXPIRED: '2',
-  CANCELLED: '3',
+  PENDING: 0,
+  ACTIVE: 1,
+  EXPIRED: 2,
+  CANCELLED: 3,
 } as const;
 
 export type SubscriptionStatusEnum =

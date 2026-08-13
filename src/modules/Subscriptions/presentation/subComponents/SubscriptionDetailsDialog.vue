@@ -10,7 +10,7 @@
     subscriptionId: number | null;
   }>();
 
-  const emit = defineEmits<{
+  defineEmits<{
     showReceipt: [details: SubscriptionDetailsModel];
   }>();
   const visible = defineModel<boolean>({ default: false });
@@ -20,9 +20,9 @@
 
   watch(
     [visible, () => props.subscriptionId],
-    ([isVisible, subscriptionId]) => {
+    async ([isVisible, subscriptionId]) => {
       if (isVisible && subscriptionId !== null) {
-        void controller.fetchOne(new ShowSubscriptionParams(subscriptionId));
+        await controller.fetchOne(new ShowSubscriptionParams(subscriptionId));
       }
     },
     { immediate: true },
@@ -49,7 +49,7 @@
             <div class="student-details">
               <h3>{{ details.user.name }}</h3>
               <p>{{ details.user.serial }}</p>
-              <div class="education-type-badge">
+              <div class="education-type-badge" v-if="details.educationType.title">
                 <span>{{ $t('education_type') }}:</span>
                 <strong>{{ details.educationType.title }}</strong>
               </div>
@@ -70,7 +70,7 @@
                 </div>
                 <div>
                   <dt>{{ $t('payment_method') }}</dt>
-                  <dd>{{ details.plan.paymentMethod }}</dd>
+                  <dd>{{ details.plan.paymentMethod || `--` }}</dd>
                 </div>
                 <div>
                   <dt>{{ $t('subscribe_date') }}</dt>
