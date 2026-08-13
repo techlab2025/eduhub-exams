@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { nextTick, ref, watch } from 'vue';
+  import { computed, nextTick, ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import type ShowQuestionsModel from '../../core/models/show.questions.model';
@@ -26,6 +26,7 @@
     subjectId?: number;
     sequenceId?: number;
   }>();
+  const isEditMode = computed(() => Boolean(question));
 
   type QuestionValidationErrors = Partial<
     Record<
@@ -112,7 +113,7 @@
 
   const updateData = () => {
     let params: EditquestionsParams | AddquestionsParams;
-    if (route.params.id) {
+    if (isEditMode.value) {
       params = new EditquestionsParams({
         id: Number(route.params.id),
         title: BasicData.value?.title,
@@ -229,7 +230,7 @@
           <h3>
             <FolderIcon />
             <span>
-              {{ route.params.id ? 'Edit Question' : 'Add question' }}
+              {{ isEditMode ? 'Edit Question' : 'Add question' }}
             </span>
           </h3>
         </div>
@@ -239,6 +240,7 @@
     <!-- :draft-data="QuestionDraftData" -->
     <BasicQuestionDataForm
       :question-data="question"
+      :edit-mode="isEditMode"
       :subject-id="subjectId"
       :sequence-id="sequenceId"
       :validation-errors="validationErrors"

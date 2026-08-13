@@ -40,8 +40,8 @@ const mountComponent = (showHeader = true) =>
         id: 42,
         questions: [],
         subjectTree: { id: 361, title: 'Branch' },
-        sequenceTree: { id: 18, title: 'Sequence' },
-        e_c_subject: { id: 17, title: 'Subject' },
+        sequenceTree: { id: 284, title: 'mostafa 2' },
+        e_c_subject: { id: 284, title: 'mostafa 2' },
       } as unknown as ShowQuestionsModel,
       showHeader,
     },
@@ -67,8 +67,8 @@ describe('ArticleQuestion', () => {
     expect(wrapper.getComponent({ name: 'ArticleQuestionCreateDialog' }).props()).toMatchObject({
       visible: true,
       articleId: 42,
-      subjectId: 17,
-      sequenceId: 18,
+      subjectId: 361,
+      sequenceId: 284,
     });
   });
 
@@ -80,15 +80,15 @@ describe('ArticleQuestion', () => {
     expect(wrapper.emitted('updateData')).toHaveLength(1);
   });
 
-  it('preserves the originally selected subject and sequence from the route', async () => {
+  it('uses the show response selection instead of stale route ids', async () => {
     routeMock.query = { subject_id: '284', sequence_id: '308' };
     const wrapper = mountComponent();
 
     await wrapper.get('.questions-header__add').trigger('click');
 
     expect(wrapper.getComponent({ name: 'ArticleQuestionCreateDialog' }).props()).toMatchObject({
-      subjectId: 284,
-      sequenceId: 308,
+      subjectId: 361,
+      sequenceId: 284,
     });
   });
 

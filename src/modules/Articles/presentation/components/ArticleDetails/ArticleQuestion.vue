@@ -30,16 +30,16 @@
   };
   const articleSubjectId = computed(
     () =>
+      props.artical?.subjectTree?.id ??
       getQueryId('subject_id') ??
       props.artical?.e_c_subject?.id ??
-      props.artical?.sequenceTree?.id ??
-      props.artical?.subjectTree?.id,
+      props.artical?.sequenceTree?.id,
   );
   const articleSequenceId = computed(
     () =>
-      getQueryId('sequence_id') ??
       props.artical?.sequenceTree?.id ??
-      props.artical?.e_c_subject?.id,
+      props.artical?.e_c_subject?.id ??
+      getQueryId('sequence_id'),
   );
 
   const handleQuestionSaved = () => {

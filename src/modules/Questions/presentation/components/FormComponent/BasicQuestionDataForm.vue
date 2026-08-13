@@ -27,13 +27,14 @@
   const emit = defineEmits(['updateData']);
   const route = useRoute();
 
-  const { loading, questionData, draftData, validationErrors, subjectId, sequenceId } =
+  const { loading, questionData, draftData, validationErrors, subjectId, sequenceId, editMode } =
     defineProps<{
       loading?: boolean;
       questionData?: ShowQuestionsModel;
       draftData?: AddquestionsParams;
       subjectId?: number;
       sequenceId?: number;
+      editMode?: boolean;
       validationErrors?: Partial<
         Record<'title' | 'subject' | 'sequence' | 'topics' | 'difficulty' | 'skills', string>
       >;
@@ -48,7 +49,7 @@
 
   const updateData = () => {
     let params: any;
-    if (route.params.id) {
+    if (editMode) {
       params = new EditquestionsParams({
         id: Number(route.params.id),
         title: title.value,
@@ -320,6 +321,7 @@
             :ContentData="ContentData!"
             :subject-id="subjectId"
             :sequence-id="sequenceId"
+            :edit-mode="editMode"
             class="field-group col-span-2"
             :validation-errors="validationErrors"
             @update-data="getQuestionCOntent"

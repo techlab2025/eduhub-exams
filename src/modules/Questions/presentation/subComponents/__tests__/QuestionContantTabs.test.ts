@@ -212,6 +212,63 @@ describe('QuestionContantTabs.vue', () => {
     });
   });
 
+  it('selects a returned parent subject by id when it has child subjects', async () => {
+    routeMock.params = {};
+    if (!stageListData.current) throw new Error('Stage controller mock was not initialized');
+    stageListData.current.value = [
+      {
+        branches: [
+          {
+            id: 361,
+            e_c_branch_id: 361,
+            title: 'mostafa 1',
+            full_title: 'mostafa 1',
+            subjects: [],
+            children: [],
+          },
+        ],
+      },
+    ];
+    fetchFullSubjectTree.mockResolvedValueOnce({
+      data: [
+        {
+          id: 284,
+          e_c_subject_id: 284,
+          title: 'mostafa 2',
+          full_title: 'mostafa 1 -> mostafa 2',
+          children: [
+            {
+              id: 308,
+              e_c_subject_id: 308,
+              title: 'mostafaf 2.1',
+              full_title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1',
+              children: [],
+            },
+          ],
+        },
+      ],
+    });
+
+    const wrapper = mount(QuestionContantTabs, {
+      props: { subjectId: 361, sequenceId: 284 },
+      global: globalConfig,
+    });
+    await flushPromises();
+
+    expect(fetchFullSubjectTree.mock.calls[0]?.[0].toMap()).toEqual({
+      education_classification_branch_id: 361,
+    });
+    expect(wrapper.findComponent('#doc-branch').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 361, title: 'mostafa 1' }),
+    );
+    expect(wrapper.findComponent('#question-sequence').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 284, title: 'mostafa 1 -> mostafa 2' }),
+    );
+    expect(fetchTopics.mock.calls[0]?.[0].toMap()).toEqual({
+      education_classification_subject_id: 284,
+    });
+  });
+
   it('uses the subject-tree title when a branch option has the same id', async () => {
     routeMock.params = {};
     routeMock.query = { artical_id: '42', subject_id: '284', sequence_id: '308' };
