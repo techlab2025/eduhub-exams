@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import UpdatedCustomInputSelect from '../UpdatedCustomInputSelect.vue';
 
 // Stubs
@@ -7,7 +7,7 @@ const MultiSelectStub = {
   name: 'MultiSelect',
   template: '<div class="multiselect-stub" />',
   props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage', 'disabled'],
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'filter'],
 };
 const SelectStub = {
   name: 'Select',
@@ -177,5 +177,42 @@ describe('UpdatedCustomInputSelect', () => {
     const wrapper = createWrapper({ disabled: true });
 
     expect(wrapper.findComponent(SelectStub).props('disabled')).toBe(true);
+  });
+
+  it('fetches search results only on Enter and explicit reload', async () => {
+    const fetchAsOptions = vi.fn().mockResolvedValue([]);
+    const controller = {
+      fetchAsOptions,
+      isListFailed: vi.fn(() => false),
+      isListSuccess: vi.fn(() => true),
+    };
+    const params = {
+      word: '',
+      toMap: vi.fn(),
+      validate: vi.fn(),
+      validateOrThrow: vi.fn(),
+    };
+    const wrapper = createWrapper({
+      type: 2,
+      controller,
+      params,
+      searchOnEnter: true,
+    });
+    await flushPromises();
+
+    expect(fetchAsOptions).toHaveBeenCalledTimes(1);
+
+    wrapper.findComponent(MultiSelectStub).vm.$emit('filter', { value: 'popular' });
+    await flushPromises();
+    expect(fetchAsOptions).toHaveBeenCalledTimes(1);
+
+    await wrapper.findComponent(MultiSelectStub).trigger('keydown', { key: 'Enter' });
+    await flushPromises();
+    expect(params.word).toBe('popular');
+    expect(fetchAsOptions).toHaveBeenCalledTimes(2);
+
+    await wrapper.get('.reload-icon').trigger('click');
+    await flushPromises();
+    expect(fetchAsOptions).toHaveBeenCalledTimes(3);
   });
 });

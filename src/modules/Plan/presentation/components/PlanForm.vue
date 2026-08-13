@@ -53,6 +53,12 @@
   const { t } = useI18n();
   const route = useRoute();
   const badgeController = HighlightBadgeController.getInstance();
+  const badgeParams = new IndexHighLightsBadgesParams({
+    word: '',
+    pageNumber: 1,
+    perPage: 100,
+    withPage: 0,
+  });
   const id = Number(route.params.id || 0);
   const editSection = computed<PlanEditSection | undefined>(() => {
     if (!id) return undefined;
@@ -447,14 +453,8 @@
               :label="$t('highlight_badges')"
               :placeholder="$t('highlight_badges_example')"
               :controller="badgeController"
-              :params="
-                new IndexHighLightsBadgesParams({
-                  word: '',
-                  pageNumber: 1,
-                  perPage: 100,
-                  withPage: 0,
-                })
-              "
+              :params="badgeParams"
+              search-on-enter
             />
             <p
               v-if="showValidationErrors && validationErrors.badges"
@@ -1008,11 +1008,12 @@
       grid-template-columns: minmax(0, 1fr) 110px;
     }
   }
+
   :deep(.field-label),
   label,
   .input-label,
   .field-label {
-    color: #5d5d5d !important;
+    color: var(--color-dark-gray) !important;
     font-size: 14px !important;
     font-weight: 500 !important;
   }

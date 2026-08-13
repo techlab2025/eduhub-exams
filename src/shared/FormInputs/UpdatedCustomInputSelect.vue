@@ -61,6 +61,8 @@
     dialogVisible?: boolean;
     onclick?: () => void;
     disabled?: boolean;
+    searchOnEnter?: boolean;
+    searchParam?: string;
   }
 
   const emit = defineEmits([
@@ -89,6 +91,10 @@
     optional: false,
 
     disabled: false,
+
+    searchOnEnter: false,
+
+    searchParam: 'word',
   });
 
   const {
@@ -120,6 +126,8 @@
   const localValue = ref(props.modelValue);
 
   const dynamicOptions = ref<TitleInterface<string | number>[]>([]);
+
+  const filterValue = ref('');
 
   // Computed properties
 
@@ -294,6 +302,18 @@
     normalizedValue.value = isMultiselect.value ? [] : null;
     emit('reload');
   }
+
+  function handleFilter(event: { value: string }): void {
+    filterValue.value = event.value;
+  }
+
+  async function searchOptions(): Promise<void> {
+    if (!props.searchOnEnter || loading.value || !params?.value) return;
+
+    const searchableParams = params.value as unknown as Record<string, unknown>;
+    searchableParams[props.searchParam] = filterValue.value.trim();
+    await fetchOptions();
+  }
   const DialogVisable = computed({
     get() {
       return props.dialogVisible;
@@ -360,6 +380,8 @@
       :pt="{
         overlay: { class: 'custom-select-overlay' },
       }"
+      @filter="handleFilter"
+      @keydown.enter="searchOptions"
     >
       <template #value="{ value }">
         <span
@@ -387,6 +409,8 @@
       :pt="{
         overlay: { class: 'custom-select-overlay' },
       }"
+      @filter="handleFilter"
+      @keydown.enter="searchOptions"
     />
 
     <input :id="id" type="text" class="hidden w-full" :value="normalizedValue" />
