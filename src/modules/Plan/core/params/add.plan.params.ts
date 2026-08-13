@@ -18,7 +18,7 @@ export default class AddPlanParams implements Params {
   public static readonly validation = new ClassValidation().setRules({
     translations: { required: true },
     status: { required: true },
-    highlightBadge: { required: true },
+    // highlightBadge: { required: true },
     pricing: {
       required: true,
       custom: (value: PlanPricingParams[]) =>

@@ -63,7 +63,7 @@ describe('PlanForm', () => {
 
     expect(translationFields[0]?.element.parentElement?.classList).toContain('required-field');
     expect(translationFields[1]?.element.parentElement?.classList).toContain('required-field');
-    expect(badgeField.props('required')).toBe(true);
+    expect(badgeField.props('required')).toBe(false);
     expect(wrapper.findAll('.required-marker').length).toBeGreaterThanOrEqual(4);
     expect(wrapper.find('.trial-heading .required-marker').exists()).toBe(false);
 
@@ -102,6 +102,22 @@ describe('PlanForm', () => {
 
     expect(wrapper.text()).not.toContain('plan_title_required');
     expect(wrapper.text()).not.toContain('plan_description_required');
+  });
+
+  it('allows basic plan information without highlight badges', async () => {
+    routeMock.params = { id: '8' };
+    routeMock.query = { section: 'basic' };
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    const translationInputs = wrapper.findAllComponents({ name: 'MultiLangInput' });
+
+    translationInputs[0]?.vm.$emit('update:modelValue', { en: 'English title' });
+    translationInputs[1]?.vm.$emit('update:modelValue', { en: 'English description' });
+    await wrapper.get('#plan-number-of-subjects').setValue(1);
+
+    expect(await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate()).toBe(
+      true,
+    );
+    expect(wrapper.text()).not.toContain('plan_badge_required');
   });
 
   it('prefills and maps the number of subjects when editing basic information', async () => {

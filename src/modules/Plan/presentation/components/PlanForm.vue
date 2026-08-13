@@ -169,7 +169,6 @@
       if (!hasTranslation(description.value)) {
         errors.description = t('plan_description_required');
       }
-      if (badges.value.length === 0) errors.badges = t('plan_badge_required');
       if (!Number.isInteger(Number(numberOfSubjects.value)) || Number(numberOfSubjects.value) < 1) {
         errors.numberOfSubjects = t('plan_number_of_subjects_required');
       }
@@ -490,16 +489,8 @@
               :placeholder="$t('highlight_badges_example')"
               :controller="badgeController"
               :params="badgeParams"
-              required
               search-on-enter
             />
-            <p
-              v-if="showValidationErrors && validationErrors.badges"
-              data-plan-validation-error
-              class="field-error"
-            >
-              {{ validationErrors.badges }}
-            </p>
           </div>
         </div>
       </section>
