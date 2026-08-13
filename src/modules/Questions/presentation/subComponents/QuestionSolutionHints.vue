@@ -42,6 +42,8 @@
   const isSolutionSteps = ref(isSolutionHintsData);
   const description = ref('');
   const file = ref();
+  const hasSolutionHintContent = (data?: SolutionHintModel) =>
+    Boolean(data?.hint?.trim() || data?.attachments?.length);
   // const handleFile = (f: any) => {
   //   file.value = f[0]?.base64 ? [f[0].base64] : [];
   //   updateData();
@@ -53,9 +55,9 @@
   };
 
   watch(
-    [() => SolutionHintsData, () => isSolutionHintsData],
-    ([newSolutionHinrdata, newIsSolution]) => {
-      isSolutionSteps.value = newIsSolution || !!newSolutionHinrdata;
+    () => SolutionHintsData,
+    (newSolutionHinrdata) => {
+      isSolutionSteps.value = hasSolutionHintContent(newSolutionHinrdata);
       description.value = newSolutionHinrdata?.hint;
       // file.value = newSolutionHinrdata?.attachments[0]?.file;
       file.value = newSolutionHinrdata?.attachments?.map((a: any) => a.file).filter(Boolean) ?? [];

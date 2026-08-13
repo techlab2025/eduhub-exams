@@ -78,6 +78,18 @@ describe('QuestionClarification', () => {
     expect(wrapper.find('.accordion-stub').exists()).toBe(true);
   });
 
+  it('keeps clarification closed when the edit response contains an empty object', () => {
+    const wrapper = mount(QuestionClarification, {
+      props: {
+        ClarificationData: clarificationData,
+        isclarification: true,
+      },
+      global: globalConfig,
+    });
+
+    expect(wrapper.findComponent(stubAccordion).props('value')).toBe(0);
+  });
+
   it('renders description textarea', () => {
     const wrapper = mount(QuestionClarification, {
       props: {
