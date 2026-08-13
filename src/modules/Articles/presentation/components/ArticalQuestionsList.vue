@@ -54,7 +54,6 @@
   const questionsController = QuestionsController.getInstance();
 
   const fetchArticle = async (filters?: ArticleQuestionFilters) => {
-    const isInitialFetch = !hasFetched.value;
     try {
       await controller.fetchOne(
         new ShowArticlesParams(
@@ -65,9 +64,6 @@
           filters?.word,
         ),
       );
-      if (isInitialFetch && !hasQuestions.value) {
-        showAddQuestionDialog.value = true;
-      }
     } finally {
       hasFetched.value = true;
     }

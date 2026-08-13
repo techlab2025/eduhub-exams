@@ -113,6 +113,8 @@ describe('ArticalQuestionsList', () => {
     const wrapper = mount(ArticalQuestionsList, { global });
     await flushPromises();
 
+    await wrapper.get('.add-question-button').trigger('click');
+
     expect(wrapper.findComponent({ name: 'ArticleQuestionCreateDialog' }).props()).toMatchObject({
       subjectId: 284,
       sequenceId: 284,
@@ -129,7 +131,9 @@ describe('ArticalQuestionsList', () => {
     expect(wrapper.find('.empty-questions-card').exists()).toBe(true);
     expect(wrapper.find('.completion-actions').exists()).toBe(false);
     expect(wrapper.findAll('.empty-state-actions button')).toHaveLength(2);
+    expect(wrapper.find('.question-dialog-stub').exists()).toBe(false);
 
+    await wrapper.get('.add-question-button').trigger('click');
     const questionDialog = wrapper.findComponent({ name: 'ArticleQuestionCreateDialog' });
     expect(questionDialog.exists()).toBe(true);
     expect(questionDialog.props()).toMatchObject({
