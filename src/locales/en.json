@@ -918,6 +918,8 @@
   "annual_subscription": "Annual subscription",
   "subscription_price": "Subscription price",
   "trial_period": "Trial period",
+  "daily_subscription": "Daily subscription",
+  "weekly_subscription": "Weekly subscription",
   "currency_egp": "EGP",
   "no_activity_log": "No activity has been recorded yet.",
   "plan_title_required": "A plan title is required in English or Arabic.",

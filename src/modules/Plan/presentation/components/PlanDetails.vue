@@ -188,7 +188,9 @@
   const pricingLabel = (durationType: PlanDurationTypeEnum) => {
     if (durationType === PlanDurationTypeEnum.MONTH) return t('monthly_subscription');
     if (durationType === PlanDurationTypeEnum.YEAR) return t('annual_subscription');
-    return t('subscription_price');
+    if (durationType === PlanDurationTypeEnum.DAY) return t('daily_subscription');
+    if (durationType === PlanDurationTypeEnum.WEEK) return t('weekly_subscription');
+    return t('subscriptions');
   };
 
   const durationLabel = (duration: number, durationType: PlanDurationTypeEnum) => {
