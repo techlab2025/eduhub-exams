@@ -580,10 +580,10 @@
                   {{ $t('price') }}
                   <span class="required-marker" aria-hidden="true">*</span>
                 </span>
-                <span class="pricing-language" aria-hidden="true">
+                <!-- <span class="pricing-language" aria-hidden="true">
                   <strong>EN</strong>
                   <span>AR</span>
-                </span>
+                </span> -->
               </label>
               <input
                 :id="`pricing-${index}-price`"

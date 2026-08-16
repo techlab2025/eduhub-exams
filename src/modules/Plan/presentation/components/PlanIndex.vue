@@ -567,8 +567,8 @@
           <template #actions="{ item }">
             <DropList
               :action-list="actionList(item)"
-              :delete-dialog-title="$t('confirm_delete')"
-              :delete-dialog-message="$t('confirm_delete')"
+              :delete-dialog-title="$t('delete_plan_title')"
+              :delete-dialog-message="$t('delete_plan_message')"
             />
           </template>
         </AppTable>
