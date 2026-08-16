@@ -61,6 +61,7 @@ const global = {
 const params = () =>
   new EditPlanParams({
     id: 8,
+    section: 'features',
     translations: new TranslationParams({}),
     status: PlanStatusEnum.DRAFT,
     highlightBadge: [],
@@ -123,6 +124,7 @@ describe('PlanEdit', () => {
       name: 'Plans',
       query: { listMode: '3', page: '2' },
     });
+    expect(fetchListMock).not.toHaveBeenCalled();
   });
 
   it('keeps draft status when saving a draft', async () => {
@@ -146,10 +148,15 @@ describe('PlanEdit', () => {
     await flushPromises();
 
     expect(updateMock.mock.calls[0]?.[0].status).toBe(PlanStatusEnum.DRAFT);
+    expect(updateMock.mock.calls[0]?.[0].toMap()).toMatchObject({
+      subscription_plan_id: 8,
+      status: PlanStatusEnum.DRAFT,
+    });
     expect(routerPushMock).toHaveBeenCalledWith({
       name: 'Plans',
       query: { listMode: '3', page: '2' },
     });
+    expect(fetchListMock).not.toHaveBeenCalled();
   });
 
   it('uses the same change-triggered actions for a non-draft plan', async () => {

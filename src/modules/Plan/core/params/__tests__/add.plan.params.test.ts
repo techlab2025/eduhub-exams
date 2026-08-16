@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import TranslationParams from '@/modules/about/core/params/translation.params';
 import { PlanDurationTypeEnum } from '../../enums/plan.duration.enum';
 import { PlanStatusEnum } from '../../enums/plan.status.enum';
-import { PlanFeatureTypeEnum } from '../../enums/planType.enum';
 import AddPlanParams from '../add.plan.params';
 import PlanFeatureParams from '../plan.features.params';
 import PlanPricingParams from '../plan.pricing.params';
@@ -30,7 +29,7 @@ describe('AddPlanParams', () => {
       numberOfSubjects: 8,
       features: [
         new PlanFeatureParams({
-          featureType: PlanFeatureTypeEnum.REPORT,
+          featureType: '1',
           featureSubType: [
             new PlanSubFeatureParams({
               subType: '1.1',
@@ -46,7 +45,7 @@ describe('AddPlanParams', () => {
           ],
         }),
         new PlanFeatureParams({
-          featureType: PlanFeatureTypeEnum.HOME_STUDY_SCHEDULE,
+          featureType: '3',
           featureSubType: [
             new PlanSubFeatureParams({
               subType: '3.2',
@@ -73,7 +72,7 @@ describe('AddPlanParams', () => {
       pricing: [{ price: 50, duration: 1, duration_type: 3 }],
       features: [
         {
-          feature_type: 1,
+          feature_type: '1',
           feature_sub_type: [
             { sub_type: '1.1' },
             { sub_type: '1.5', limit: 4 },
@@ -81,7 +80,7 @@ describe('AddPlanParams', () => {
           ],
         },
         {
-          feature_type: 13,
+          feature_type: '3',
           feature_sub_type: [{ sub_type: '3.2' }, { sub_type: '3.3', limit: 1 }],
         },
       ],
@@ -105,7 +104,7 @@ describe('AddPlanParams', () => {
       numberOfSubjects: 8,
       features: [
         new PlanFeatureParams({
-          featureType: PlanFeatureTypeEnum.REPORT,
+          featureType: '1',
           featureSubType: [
             new PlanSubFeatureParams({
               subType: '1.1',

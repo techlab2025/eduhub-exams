@@ -15,6 +15,7 @@
   const formKey = route.fullPath;
   const plansQuery = () =>
     Object.fromEntries(Object.entries(route.query).filter(([key]) => key !== 'section'));
+  const returnToPlanIndex = () => router.push({ name: 'Plans', query: plansQuery() });
   const params = ref<EditPlanParams | null>(null);
   const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
   const loading = ref(false);
@@ -66,10 +67,9 @@
     try {
       if (isDraft.value) params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.update(params.value, undefined, undefined, false);
-      if (result?.data || !result?.hasError) {
-        await router.push({ name: 'Plans', query: plansQuery() });
-        await controller.fetchList();
-      }
+      if (result?.hasError) return;
+
+      await returnToPlanIndex();
     } catch (error) {
       console.error('Error updating plan:', error);
     } finally {
@@ -92,10 +92,9 @@
     try {
       params.value.status = PlanStatusEnum.DRAFT;
       const result = await controller.update(params.value, undefined, undefined, false);
-      if (result?.data || !result?.hasError) {
-        await controller.fetchList();
-        await router.push({ name: 'Plans', query: plansQuery() });
-      }
+      if (result?.hasError) return;
+
+      await returnToPlanIndex();
     } catch (error) {
       console.error('Error saving plan draft:', error);
     } finally {

@@ -26,6 +26,7 @@
   import ArchivePlanDialog from '../subCopmnents/ArchivePlanDialog.vue';
   import ActivatePlanDialog from '../subCopmnents/ActivatePlanDialog.vue';
   import PlanDeleteWarningDialog from '../subCopmnents/PlanDeleteWarningDialog.vue';
+  import NUmberOfSUbjectsIcon from '@/shared/icons/Plan/NUmberOfSUbjectsIcon.vue';
 
   const route = useRoute();
   const router = useRouter();
@@ -242,6 +243,11 @@
           <dd>{{ plan.createdBy.title || '--' }}</dd>
         </div>
         <div>
+          <span class="meta-icon"><NUmberOfSUbjectsIcon /></span>
+          <dt>{{ $t('number_of_subjects') }}</dt>
+          <dd>{{ plan.numberOfSubjects || '--' }}</dd>
+        </div>
+        <div>
           <span class="meta-icon"><CreatedDateicon /></span>
           <dt>{{ $t('created_date') }}</dt>
           <dd>{{ formatDate(plan.createdAt) }}</dd>
@@ -443,7 +449,7 @@
     margin: 0;
     padding: 0 var(--xl-size-base) var(--xl-size-base);
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 
     > div {
       min-width: 0;

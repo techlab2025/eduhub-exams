@@ -30,14 +30,14 @@ export default class PlanFeatureCatalogModel {
   public readonly id: number;
   public readonly title: string;
   public readonly description: string;
-  public readonly code: number;
+  public readonly code: string;
   public readonly subFeatures: PlanSubFeatureCatalogModel[];
 
   constructor(data: {
     id: number;
     title: string;
     description: string;
-    code: number;
+    code: string;
     subFeatures: PlanSubFeatureCatalogModel[];
   }) {
     this.id = data.id;
@@ -53,7 +53,7 @@ export default class PlanFeatureCatalogModel {
       id: Number(json.id ?? 0),
       title: String(json.title ?? ''),
       description: String(json.description ?? ''),
-      code: Number(json.code ?? 0),
+      code: String(json.code ?? ''),
       subFeatures: Array.isArray(json.sub_features)
         ? json.sub_features.map((item) =>
             PlanSubFeatureCatalogModel.fromJson(item as Record<string, unknown>),

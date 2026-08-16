@@ -1,4 +1,4 @@
-import BaseController from '@/base/Presentation/Controller/baseController';
+import BaseController, { type ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type PlanModel from '../../core/models/plan.model';
@@ -16,6 +16,17 @@ export default class PlanController extends BaseController<PlanDetailsModel, Pla
     if (!this.instance) this.instance = new PlanController();
     return this.instance;
   }
+    protected get config(): ControllerConfig {
+      return {
+        showLoadingDialog: false,
+        showSuccessDialog: false,
+        showErrorDialog: false,
+        showErrorTosat: true,
+        showSuccessTosat: true,
+        autoRetry: false,
+        maxAutoRetries: 1,
+      };
+    }
   async create(params: AddPlanParams, options?: ApiCallOptions) {
     return super.create(
       params,

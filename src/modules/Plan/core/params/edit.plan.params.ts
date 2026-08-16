@@ -33,6 +33,7 @@ export default class EditPlanParams extends AddPlanParams {
     if (this.section === 'basic') {
       return {
         subscription_plan_id: this.id,
+        status: fullMap.status,
         translations: fullMap.translations,
         highlight_badge: fullMap.highlight_badge,
         ...(fullMap.number_of_subjects !== undefined && {
@@ -43,14 +44,16 @@ export default class EditPlanParams extends AddPlanParams {
     if (this.section === 'pricing') {
       return {
         subscription_plan_id: this.id,
+        status: fullMap.status,
         pricing: fullMap.pricing,
         has_trail: this.hasTrail,
-        trail_days: this.trialDays,
+        ...(this.hasTrail && { trail_days: this.trialDays }),
       };
     }
     if (this.section === 'features') {
       return {
         subscription_plan_id: this.id,
+        status: fullMap.status,
         features: fullMap.features,
       };
     }

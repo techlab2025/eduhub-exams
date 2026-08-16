@@ -6,7 +6,6 @@ import { PlanDurationTypeEnum } from '../../enums/plan.duration.enum';
 import PlanPricingParams from '../plan.pricing.params';
 import PlanFeatureParams from '../plan.features.params';
 import PlanSubFeatureParams from '../plan.sub.features.params';
-import { PlanFeatureTypeEnum } from '../../enums/planType.enum';
 
 describe('EditPlanParams', () => {
   it('adds the plan id to the update request', () => {
@@ -51,9 +50,9 @@ describe('EditPlanParams', () => {
 
     expect(params.toMap()).toEqual({
       subscription_plan_id: 9,
+      status: PlanStatusEnum.ACTIVE,
       pricing: [{ price: 20, duration: 1, duration_type: 3 }],
       has_trail: false,
-      trail_days: 0,
     });
     expect(params.validate().isValid).toBe(true);
   });
@@ -77,6 +76,7 @@ describe('EditPlanParams', () => {
 
     expect(params.toMap()).toEqual({
       subscription_plan_id: 9,
+      status: PlanStatusEnum.ACTIVE,
       translations: {
         title: { ar: 'خطة' },
         description: { en: 'Description' },
@@ -92,7 +92,7 @@ describe('EditPlanParams', () => {
       id: 9,
       section: 'features',
       translations: new TranslationParams({}),
-      status: PlanStatusEnum.ACTIVE,
+      status: PlanStatusEnum.DRAFT,
       highlightBadge: [],
       pricing: [],
       hasTrail: false,
@@ -100,7 +100,7 @@ describe('EditPlanParams', () => {
       numberOfSubjects: 8,
       features: [
         new PlanFeatureParams({
-          featureType: PlanFeatureTypeEnum.REPORT,
+          featureType: '1',
           featureSubType: [
             new PlanSubFeatureParams({
               subType: '1.1',
@@ -112,7 +112,8 @@ describe('EditPlanParams', () => {
 
     expect(params.toMap()).toEqual({
       subscription_plan_id: 9,
-      features: [{ feature_type: 1, feature_sub_type: [{ sub_type: '1.1' }] }],
+      status: PlanStatusEnum.DRAFT,
+      features: [{ feature_type: '1', feature_sub_type: [{ sub_type: '1.1' }] }],
     });
     expect(params.validate().isValid).toBe(true);
   });

@@ -24,8 +24,8 @@
   import type PlanFeatureCatalogModel from '../../core/models/plan.feature.catalog.model';
 
   interface PlanSubFeatureFormItem {
-    subType: number;
-    code: string;
+    subType: string;
+    legacyId: number;
     title: string;
     description: string;
     enabled: boolean;
@@ -34,7 +34,8 @@
   }
 
   interface PlanFeatureFormItem {
-    featureType: number;
+    featureType: string;
+    legacyId: number;
     title: string;
     description: string;
     enabled: boolean;
@@ -99,13 +100,14 @@
 
   const mapFeatureCatalog = (features: PlanFeatureCatalogModel[]): PlanFeatureFormItem[] =>
     features.map((feature) => ({
-      featureType: feature.id,
+      featureType: feature.code,
+      legacyId: feature.id,
       title: feature.title,
       description: feature.description,
       enabled: false,
       subTypes: feature.subFeatures.map((subType) => ({
-        subType: subType.id,
-        code: subType.code,
+        subType: subType.code,
+        legacyId: subType.id,
         title: subType.title,
         description: subType.description,
         enabled: false,
@@ -180,6 +182,10 @@
 
     if (validates('pricing')) {
       pricing.value.forEach((item, index) => {
+        const isEmptyEditor =
+          pricing.value.length > 1 && index === pricingEditorIndex.value && isPricingRowEmpty(item);
+        if (isEmptyEditor) return;
+
         if (!isNumberAtLeast(item.price, 0)) {
           errors[`pricing-${index}-price`] = t('plan_price_required');
         }
@@ -259,7 +265,29 @@
         ? { en: value }
         : ((value as Record<string, string>) ?? {});
 
-  const addPricing = () => pricing.value.push(createPricing());
+  const isPricingRowEmpty = (item: PlanPricingParams) =>
+    item.price === undefined && item.duration === undefined;
+  const isPricingRowComplete = (item: PlanPricingParams) =>
+    isNumberAtLeast(item.price, 0) &&
+    isNumberAtLeast(item.duration, 1) &&
+    Boolean(item.durationType);
+  const pricingEditorIndex = computed(() => Math.max(0, pricing.value.length - 1));
+  const committedPricing = computed(() =>
+    pricing.value
+      .slice(0, -1)
+      .flatMap((item, index) => (isPricingRowComplete(item) ? [{ item, index }] : [])),
+  );
+  const pricingDurationTitle = (durationType?: PlanDurationTypeEnum) =>
+    durationOptions.value.find((option) => option.id === durationType)?.title ?? '';
+  const addPricing = () => {
+    const editor = pricing.value.at(-1);
+    if (!editor || !isPricingRowComplete(editor)) {
+      showValidationErrors.value = true;
+      return;
+    }
+    pricing.value.push(createPricing());
+  };
+  const removePricing = (index: number) => pricing.value.splice(index, 1);
   const resetBasicInfo = () => {
     title.value = {};
     description.value = {};
@@ -285,10 +313,16 @@
     if (!plan) return;
 
     planFeatures.value.forEach((feature) => {
-      const savedFeature = plan.features.find((item) => item.featureId === feature.featureType);
+      const savedFeature = plan.features.find(
+        (item) =>
+          item.featureCode === feature.featureType ||
+          (!item.featureCode && item.featureId === feature.legacyId),
+      );
       feature.enabled = Boolean(savedFeature);
       feature.subTypes.forEach((subType) => {
-        const savedSubType = savedFeature?.subFeatures.find((item) => item.id === subType.subType);
+        const savedSubType = savedFeature?.subFeatures.find(
+          (item) => item.code === subType.subType || (!item.code && item.id === subType.legacyId),
+        );
         subType.enabled = Boolean(savedSubType?.status);
         if (subType.hasLimit) {
           subType.limit = savedSubType?.limit ?? 0;
@@ -330,7 +364,7 @@
               featureSubType: feature.subTypes.filter(isSubFeatureIncluded).map(
                 (subType) =>
                   new PlanSubFeatureParams({
-                    subType: subType.code,
+                    subType: subType.subType,
                     ...(subType.hasLimit ? { limit: subType.limit ?? 0 } : {}),
                   }),
               ),
@@ -365,7 +399,7 @@
       });
       hasTrial.value = plan.trialDays > 0;
       trialDays.value = plan.trialDays;
-      pricing.value = plan.pricing.map(
+      const savedPricing = plan.pricing.map(
         (item) =>
           new PlanPricingParams({
             price: item.price,
@@ -373,6 +407,7 @@
             durationType: Number(item.durationType) as PlanDurationTypeEnum,
           }),
       );
+      pricing.value = [...savedPricing, createPricing()];
       applySavedFeatures(plan);
     },
     { immediate: true },
@@ -533,11 +568,22 @@
           </button>
         </div>
         <div class="pricing-list">
-          <div v-for="(row, index) in pricing" :key="index" class="pricing-card">
+          <div
+            v-for="(row, index) in pricing"
+            :key="index"
+            class="pricing-card"
+            :class="{ 'pricing-card--committed': index < pricing.length - 1 }"
+          >
             <div class="validated-field pricing-field">
-              <label :for="`pricing-${index}-price`">
-                {{ $t('price') }}
-                <span class="required-marker" aria-hidden="true">*</span>
+              <label class="pricing-label" :for="`pricing-${index}-price`">
+                <span>
+                  {{ $t('price') }}
+                  <span class="required-marker" aria-hidden="true">*</span>
+                </span>
+                <span class="pricing-language" aria-hidden="true">
+                  <strong>EN</strong>
+                  <span>AR</span>
+                </span>
               </label>
               <input
                 :id="`pricing-${index}-price`"
@@ -657,6 +703,24 @@
               >
                 {{ validationErrors[`pricing-${index}-duration-type`] }}
               </span>
+            </div>
+          </div>
+          <div v-if="committedPricing.length" class="pricing-summary">
+            <div v-for="entry in committedPricing" :key="entry.index" class="pricing-chip">
+              <span>
+                <strong>{{ entry.item.price }}</strong>
+                <span>
+                  / {{ entry.item.duration }} {{ pricingDurationTitle(entry.item.durationType) }}
+                </span>
+              </span>
+              <button
+                type="button"
+                class="pricing-chip-remove"
+                :aria-label="$t('remove')"
+                @click="removePricing(entry.index)"
+              >
+                &times;
+              </button>
             </div>
           </div>
         </div>
@@ -790,15 +854,17 @@
   .feature-copy strong {
     font-size: 18px;
     font-weight: 600;
-    color: #111827;
+    color: var(--title-card-color);
     line-height: var(--lh-h5);
   }
+
   .feature-description {
     font-size: 14px;
     font-weight: 500;
-    color: #8a8a8a;
+    color: var(--second-text);
     line-height: var(--lh-p);
   }
+
   :global(.content-wrapper:has(.plan-form)),
   :global(.main-content:has(.plan-form)) {
     overflow-x: clip;
@@ -1016,12 +1082,100 @@
 
   .pricing-card {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) auto;
+    grid-template-columns: minmax(240px, 0.75fr) minmax(360px, 1.25fr) 56px;
     align-items: end;
-    gap: var(--xl-size-base);
-    padding: var(--xl-size-base);
-    background: var(--gray-50);
-    border-radius: var(--radius-lg);
+    gap: 24px;
+  }
+
+  .pricing-list {
+    gap: 24px;
+    padding: 16px;
+    background: var(--gray-50-std);
+    border-radius: 20px;
+  }
+
+  .pricing-card--committed {
+    display: none;
+  }
+
+  .pricing-label {
+    min-height: 24px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pricing-language {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px;
+    color: var(--GrayText);
+    background: var(--border-weak);
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    line-height: 1;
+
+    strong,
+    span {
+      display: grid;
+      min-width: 25px;
+      min-height: 19px;
+      place-items: center;
+      border-radius: var(--radius-full);
+    }
+
+    strong {
+      color: var(--PrimaryColor);
+      background: var(--BgWhite);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  .pricing-summary {
+    display: flex;
+    min-height: 64px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+    background: var(--BgWhite);
+    border: 1px solid var(--border-weak);
+    border-radius: 24px;
+  }
+
+  .pricing-chip {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px 8px 16px;
+    color: var(--Black);
+    background: var(--PrimaryColor-alpha-10);
+    border-radius: var(--radius-full);
+    font-size: 14px;
+    white-space: nowrap;
+
+    strong {
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+
+  .pricing-chip-remove {
+    display: grid;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    place-items: center;
+    color: var(--PrimaryColor);
+    background: var(--PrimaryColor-alpha-10);
+    border: 0;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
   }
 
   .pricing-row-errors {
@@ -1042,7 +1196,7 @@
   input,
   select {
     min-width: 0;
-    min-height: 52px;
+    min-height: 56px;
     padding: var(--xs-size) var(--xl-size-base);
     border: 1px solid var(--border-weak);
     border-radius: var(--radius-full);
@@ -1067,8 +1221,8 @@
 
   .pricing-action {
     display: grid;
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     place-items: center;
     border-radius: var(--radius-full);
     cursor: pointer;
@@ -1078,6 +1232,12 @@
     color: var(--PrimaryColor);
     background: var(--BgWhite);
     border: 2px solid var(--PrimaryColor);
+
+    :deep(svg) {
+      width: 30px;
+      height: 30px;
+      stroke-width: 1.8;
+    }
   }
 
   .pricing-action--remove {
@@ -1104,6 +1264,7 @@
   @media (max-width: 768px) {
     .pricing-card {
       grid-template-columns: 1fr;
+      gap: 16px;
     }
 
     .pricing-action {
@@ -1112,6 +1273,14 @@
 
     .duration-field {
       grid-template-columns: minmax(0, 1fr) 110px;
+    }
+
+    .pricing-summary {
+      align-items: stretch;
+    }
+
+    .pricing-chip {
+      width: 100%;
     }
   }
 

@@ -192,7 +192,8 @@
   };
   const confirmStatusChange = async (status: PlanStatusEnum) => {
     if (selectedPlanId.value === null) return;
-    const changed = await changeStatus(selectedPlanId.value, status);
+    // const changed =
+    await changeStatus(selectedPlanId.value, status);
     // if (!changed) return;
 
     closeStatusDialogs();

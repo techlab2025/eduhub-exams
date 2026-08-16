@@ -7,7 +7,7 @@ describe('PlanFeatureCatalogModel', () => {
       id: 1,
       title: 'Report',
       description: 'Detailed student performance reports',
-      code: 1,
+      code: '1',
       sub_features: [
         {
           id: 2,
@@ -23,7 +23,7 @@ describe('PlanFeatureCatalogModel', () => {
       id: 1,
       title: 'Report',
       description: 'Detailed student performance reports',
-      code: 1,
+      code: '1',
     });
     expect(model.subFeatures).toEqual([
       expect.objectContaining({

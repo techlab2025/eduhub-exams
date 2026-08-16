@@ -17,7 +17,7 @@ const featureCatalog = [
     id: 1,
     title: 'Report',
     description: 'Detailed student performance reports',
-    code: 1,
+    code: '1',
     subFeatures: [
       {
         id: 2,
@@ -36,7 +36,7 @@ const featureCatalog = [
   {
     id: 8,
     title: 'Progress Tracking',
-    code: 2,
+    code: '2',
     subFeatures: [
       { id: 9, title: 'Overall Progress', code: '2.1', hasLimit: false },
       { id: 10, title: 'Needs Focus', code: '2.2', hasLimit: false },
@@ -47,7 +47,7 @@ const featureCatalog = [
   {
     id: 13,
     title: 'Home Study Schedule',
-    code: 3,
+    code: '3',
     subFeatures: [
       { id: 14, title: 'View Schedule', code: '3.1', hasLimit: false },
       { id: 15, title: 'Set Reminders', code: '3.2', hasLimit: false },
@@ -57,7 +57,7 @@ const featureCatalog = [
   {
     id: 17,
     title: 'What Did You Study',
-    code: 4,
+    code: '4',
     subFeatures: [
       { id: 18, title: 'Show Subjects', code: '4.1', hasLimit: false },
       { id: 19, title: 'Maximum Items', code: '4.2', hasLimit: true },
@@ -66,7 +66,7 @@ const featureCatalog = [
   {
     id: 20,
     title: 'Learning Resources',
-    code: 5,
+    code: '5',
     subFeatures: [
       { id: 21, title: 'Mind Maps', code: '5.1', hasLimit: false },
       { id: 22, title: 'Flash Cards', code: '5.2', hasLimit: false },
@@ -270,6 +270,24 @@ describe('PlanForm', () => {
     expect(wrapper.find('#pricing-0-duration-type-error').exists()).toBe(false);
   });
 
+  it('shows added pricing tiers as removable summary chips', async () => {
+    routeMock.params = {};
+    routeMock.query = { section: 'pricing' };
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+
+    await wrapper.get('#pricing-0-price').setValue(150);
+    await wrapper.get('#pricing-0-duration').setValue(1);
+    await wrapper.get('.pricing-action--add').trigger('click');
+
+    expect(wrapper.get('.pricing-chip').text()).toContain('150');
+    expect(wrapper.get('.pricing-chip').text()).toContain('1 month');
+    expect(wrapper.find('#pricing-1-price').exists()).toBe(true);
+
+    await wrapper.get('.pricing-chip-remove').trigger('click');
+    expect(wrapper.find('.pricing-chip').exists()).toBe(false);
+    expect(wrapper.find('#pricing-0-price').exists()).toBe(true);
+  });
+
   it('accepts valid price, duration, and duration type values', async () => {
     routeMock.params = { id: '8' };
     routeMock.query = { section: 'pricing' };
@@ -337,18 +355,18 @@ describe('PlanForm', () => {
       id: 2,
       features: [
         {
-          feature_id: 1,
+          feature_type: '1',
           feature_title: [
             { locale: 'ar', title: 'التقارير' },
             { locale: 'en', title: 'Report' },
           ],
           sub_features: [
-            { sub_feature_id: 2, is_active: true, limit: -1 },
-            { sub_feature_id: 3, is_active: true, limit: -1 },
-            { sub_feature_id: 4, is_active: true, limit: -1 },
-            { sub_feature_id: 5, is_active: true, limit: -1 },
-            { sub_feature_id: 6, is_active: true, limit: 10 },
-            { sub_feature_id: 7, is_active: true, limit: 20 },
+            { sub_type: '1.1', is_active: true, limit: -1 },
+            { sub_type: '1.2', is_active: true, limit: -1 },
+            { sub_type: '1.3', is_active: true, limit: -1 },
+            { sub_type: '1.4', is_active: true, limit: -1 },
+            { sub_type: '1.5', is_active: true, limit: 10 },
+            { sub_type: '1.6', is_active: true, limit: 20 },
           ],
         },
         {
@@ -450,9 +468,11 @@ describe('PlanForm', () => {
       toMap: () => Record<string, unknown>;
     };
     const updatedFeatures = updatedParams.toMap().features as Array<{
+      feature_type: string;
       feature_sub_type: Array<{ sub_type: string; limit?: number }>;
     }>;
 
+    expect(updatedFeatures[0]?.feature_type).toBe('1');
     expect(updatedFeatures[0]?.feature_sub_type).toContainEqual({ sub_type: '1.5', limit: 1 });
   });
 });

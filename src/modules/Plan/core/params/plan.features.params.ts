@@ -3,7 +3,7 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type PlanSubFeatureParams from './plan.sub.features.params';
 
 export default class PlanFeatureParams implements Params {
-  public featureType: number;
+  public featureType: string;
   public featureSubType: PlanSubFeatureParams[];
 
   public static readonly validation = new ClassValidation().setRules({
@@ -11,7 +11,7 @@ export default class PlanFeatureParams implements Params {
     featureSubType: { required: true },
   });
 
-  constructor(data: { featureType: number; featureSubType: PlanSubFeatureParams[] }) {
+  constructor(data: { featureType: string; featureSubType: PlanSubFeatureParams[] }) {
     this.featureType = data.featureType;
     this.featureSubType = data.featureSubType;
   }
