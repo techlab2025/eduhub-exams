@@ -288,12 +288,12 @@ describe('PlanForm', () => {
     expect(wrapper.find('#pricing-0-price').exists()).toBe(true);
   });
 
-  it('accepts valid price, duration, and duration type values', async () => {
+  it('accepts a positive price with valid duration values', async () => {
     routeMock.params = { id: '8' };
     routeMock.query = { section: 'pricing' };
     const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
 
-    await wrapper.get('#pricing-0-price').setValue(0);
+    await wrapper.get('#pricing-0-price').setValue(0.5);
     await wrapper.get('#pricing-0-duration').setValue(3);
     await wrapper.get('#pricing-0-duration-type').setValue(PlanDurationTypeEnum.MONTH);
 
@@ -302,6 +302,24 @@ describe('PlanForm', () => {
     );
     expect(wrapper.findAll('#plan-pricing [data-plan-validation-error]')).toHaveLength(0);
   });
+
+  it.each([0, -1, 'not-a-number'])(
+    'rejects a non-positive or non-numeric price: %s',
+    async (price) => {
+      routeMock.params = { id: '8' };
+      routeMock.query = { section: 'pricing' };
+      const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+
+      await wrapper.get('#pricing-0-price').setValue(price);
+      await wrapper.get('#pricing-0-duration').setValue(3);
+
+      expect(await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate()).toBe(
+        false,
+      );
+      expect(wrapper.get('#pricing-0-price-error').text()).toBe('plan_price_required');
+      expect(wrapper.get('#pricing-0-price').attributes('aria-invalid')).toBe('true');
+    },
+  );
 
   it.each([
     [PlanDurationTypeEnum.DAY, 5, 6],

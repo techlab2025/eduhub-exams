@@ -133,6 +133,7 @@
     ['en', 'ar'].some((locale) => (value[locale]?.trim().length ?? 0) > 0);
   const isNumberAtLeast = (value: unknown, minimum: number) =>
     Number.isFinite(Number(value)) && Number(value) >= minimum;
+  const isPositiveNumber = (value: unknown) => Number.isFinite(Number(value)) && Number(value) > 0;
   const durationInDays = (item: PlanPricingParams) => {
     const multipliers: Record<PlanDurationTypeEnum, number> = {
       [PlanDurationTypeEnum.DAY]: 1,
@@ -186,7 +187,7 @@
           pricing.value.length > 1 && index === pricingEditorIndex.value && isPricingRowEmpty(item);
         if (isEmptyEditor) return;
 
-        if (!isNumberAtLeast(item.price, 0)) {
+        if (!isPositiveNumber(item.price)) {
           errors[`pricing-${index}-price`] = t('plan_price_required');
         }
         if (!isNumberAtLeast(item.duration, 1)) {
@@ -589,7 +590,8 @@
                 :id="`pricing-${index}-price`"
                 v-model.number="row.price"
                 type="number"
-                min="0"
+                min="0.01"
+                step="any"
                 :placeholder="$t('enter_plan_price')"
                 :class="{
                   'field-invalid':

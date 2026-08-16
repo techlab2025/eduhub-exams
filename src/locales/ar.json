@@ -412,7 +412,7 @@
   "plan_description_required": "وصف الخطة مطلوب باللغة الإنجليزية أو العربية.",
   "plan_badge_required": "يجب اختيار شارة تمييز واحدة على الأقل.",
   "plan_pricing_required": "يجب إضافة خيار تسعير مكتمل واحد على الأقل.",
-  "plan_price_required": "السعر مطلوب ولا يمكن أن يكون سالبًا.",
+  "plan_price_required": "يجب أن يكون السعر رقمًا أكبر من صفر.",
   "plan_duration_required": "يجب أن تكون المدة أكبر من صفر.",
   "plan_duration_type_required": "نوع المدة مطلوب.",
   "plan_trial_days_required": "يجب أن تكون أيام التجربة أكبر من صفر.",

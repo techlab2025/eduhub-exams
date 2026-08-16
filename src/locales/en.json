@@ -926,7 +926,7 @@
   "plan_description_required": "A plan description is required in English or Arabic.",
   "plan_badge_required": "At least one highlight badge is required.",
   "plan_pricing_required": "At least one complete pricing option is required.",
-  "plan_price_required": "Price is required and cannot be negative.",
+  "plan_price_required": "Price must be a number greater than zero.",
   "plan_duration_required": "Duration must be greater than zero.",
   "plan_duration_type_required": "Duration type is required.",
   "plan_trial_days_required": "Trial days must be greater than zero.",
