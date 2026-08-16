@@ -27,6 +27,8 @@
   import ActivatePlanDialog from '../subCopmnents/ActivatePlanDialog.vue';
   import PlanDeleteWarningDialog from '../subCopmnents/PlanDeleteWarningDialog.vue';
   import NUmberOfSUbjectsIcon from '@/shared/icons/Plan/NUmberOfSUbjectsIcon.vue';
+  import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+  import PLanDetailsSkelaton from '../subCopmnents/PLanDetailsSkelaton.vue';
 
   const route = useRoute();
   const router = useRouter();
@@ -217,158 +219,176 @@
 </script>
 
 <template>
-  <main v-if="plan" class="plan-details">
-    <section class="plan-summary">
-      <div class="summary-heading">
-        <div class="title-line">
-          <h1>{{ plan.title }}</h1>
-          <span class="status-badge" :class="`status-${plan.status}`">
-            {{ statusLabel(plan.status) }}
-          </span>
-          <span v-for="badge in plan.highlightBadges" :key="badge.id" class="highlight-badge">
-            {{ badge.title }}
-          </span>
-        </div>
-        <div class="icon-button">
-          <DropList
-            :action-list="actionList"
-            :delete-dialog-title="$t('confirm_delete')"
-            :delete-dialog-message="$t('confirm_delete')"
-          />
-        </div>
-      </div>
-
-      <dl class="summary-meta">
-        <div>
-          <span class="meta-icon"><CreatedByIcon /></span>
-          <dt>{{ $t('created_by') }}</dt>
-          <dd>{{ plan.createdBy.title || '--' }}</dd>
-        </div>
-        <div>
-          <span class="meta-icon"><NUmberOfSUbjectsIcon /></span>
-          <dt>{{ $t('number_of_subjects') }}</dt>
-          <dd>{{ plan.numberOfSubjects || '--' }}</dd>
-        </div>
-        <div>
-          <span class="meta-icon"><CreatedDateicon /></span>
-          <dt>{{ $t('created_date') }}</dt>
-          <dd>{{ formatDate(plan.createdAt) }}</dd>
-        </div>
-        <div>
-          <span class="meta-icon"><LastUpdatedIcon /></span>
-          <dt>{{ $t('last_updated') }}</dt>
-          <dd class="last-updated-meta">
-            <!-- <span v-if="plan.lastUpdated.lastupdatedBy.name">
-              {{ plan.lastUpdated.lastupdatedBy.name }}
-            </span> -->
-            <span>{{ formatDate(plan.lastUpdated.date ?? '') }}</span>
-          </dd>
-        </div>
-        <div>
-          <span class="meta-icon"><PlanSucbscripbersIcon /></span>
-          <dt>{{ $t('subscribers') }}</dt>
-          <dd>{{ formatNumber(plan.subscribers) }}</dd>
-        </div>
-      </dl>
-    </section>
-
-    <nav class="details-tabs" :aria-label="$t('plan_details_sections')">
-      <button
-        type="button"
-        :class="{ active: activeTab === 'overview' }"
-        @click="activeTab = 'overview'"
-      >
-        {{ $t('overview') }}
-      </button>
-      <button
-        type="button"
-        :class="{ active: activeTab === 'activity' }"
-        @click="activeTab = 'activity'"
-      >
-        {{ $t('activity_log') }}
-      </button>
-    </nav>
-
-    <template v-if="activeTab === 'overview'">
-      <section class="details-section pricing-details">
-        <header class="section-heading">
-          <PricingIcon />
-          <h2>{{ $t('pricing_details') }}</h2>
-        </header>
-        <div class="pricing-grid">
-          <dl v-for="(item, index) in plan.pricing" :key="index" class="pricing-item">
-            <dt>{{ pricingLabel(item.durationType) }}</dt>
-            <dd>
-              {{ formatNumber(item.price) }} {{ $t('currency_egp') }} /
-              {{ durationLabel(item.duration, item.durationType) }}
-            </dd>
-          </dl>
-          <dl class="pricing-item">
-            <dt>{{ $t('trial_period') }}</dt>
-            <dd>{{ plan.trialDays }} {{ $t(plan.trialDays === 1 ? 'day' : 'days') }}</dd>
-          </dl>
-        </div>
-      </section>
-
-      <section class="details-section included-features">
-        <header class="section-heading">
-          <IncludedFeatureIcon />
-          <h2>{{ $t('included_features') }}</h2>
-        </header>
-        <div class="feature-groups">
-          <article v-for="feature in plan.features" :key="feature.featureId" class="feature-group">
-            <h3>{{ feature.featureTitle }}</h3>
-            <div class="sub-feature-list">
-              <span
-                v-for="subFeature in feature.subFeatures.filter((item) => item.status)"
-                :key="subFeature.id"
-                class="sub-feature"
-              >
-                {{ subFeatureTitle(feature.featureId, subFeature.id) }}
-                <strong v-if="subFeature.limit > 0">{{ subFeature.limit }}</strong>
+  <DataStatusBuilder
+    :controller="controller.itemState.value"
+    :on-retry="
+      async () => {
+        await refreshPlan();
+      }
+    "
+  >
+    <template #success>
+      <main v-if="plan" class="plan-details">
+        <section class="plan-summary">
+          <div class="summary-heading">
+            <div class="title-line">
+              <h1>{{ plan.title }}</h1>
+              <span class="status-badge" :class="`status-${plan.status}`">
+                {{ statusLabel(plan.status) }}
+              </span>
+              <span v-for="badge in plan.highlightBadges" :key="badge.id" class="highlight-badge">
+                {{ badge.title }}
               </span>
             </div>
-          </article>
-        </div>
-      </section>
-    </template>
+            <div class="icon-button">
+              <DropList
+                :action-list="actionList"
+                :delete-dialog-title="$t('confirm_delete')"
+                :delete-dialog-message="$t('confirm_delete')"
+              />
+            </div>
+          </div>
 
-    <section v-else class="activity-log">
-      <ol v-if="plan.activeLog.length" class="activity-list">
-        <li v-for="(activity, index) in plan.activeLog" :key="`${activity.user.id}-${index}`">
-          <span class="activity-dot" aria-hidden="true"></span>
-          <article class="activity-entry">
-            <header class="activity-user">
-              <span class="activity-avatar" aria-hidden="true">
-                {{ userInitials(activity.user.name) }}
-              </span>
-              <strong>{{ activity.user.name }}</strong>
-              <time>{{ formatDate(activity.date) }}</time>
+          <dl class="summary-meta">
+            <div>
+              <span class="meta-icon"><CreatedByIcon /></span>
+              <dt>{{ $t('created_by') }}</dt>
+              <dd>{{ plan.createdBy.title || '--' }}</dd>
+            </div>
+            <div>
+              <span class="meta-icon"><NUmberOfSUbjectsIcon /></span>
+              <dt>{{ $t('number_of_subjects') }}</dt>
+              <dd>{{ plan.numberOfSubjects || '--' }}</dd>
+            </div>
+            <div>
+              <span class="meta-icon"><CreatedDateicon /></span>
+              <dt>{{ $t('created_date') }}</dt>
+              <dd>{{ formatDate(plan.createdAt) }}</dd>
+            </div>
+            <div>
+              <span class="meta-icon"><LastUpdatedIcon /></span>
+              <dt>{{ $t('last_updated') }}</dt>
+              <dd class="last-updated-meta">
+                <!-- <span v-if="plan.lastUpdated.lastupdatedBy.name">
+              {{ plan.lastUpdated.lastupdatedBy.name }}
+            </span> -->
+                <span>{{ formatDate(plan.lastUpdated.date ?? '') }}</span>
+              </dd>
+            </div>
+            <div>
+              <span class="meta-icon"><PlanSucbscripbersIcon /></span>
+              <dt>{{ $t('subscribers') }}</dt>
+              <dd>{{ formatNumber(plan.subscribers) }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <nav class="details-tabs" :aria-label="$t('plan_details_sections')">
+          <button
+            type="button"
+            :class="{ active: activeTab === 'overview' }"
+            @click="activeTab = 'overview'"
+          >
+            {{ $t('overview') }}
+          </button>
+          <button
+            type="button"
+            :class="{ active: activeTab === 'activity' }"
+            @click="activeTab = 'activity'"
+          >
+            {{ $t('activity_log') }}
+          </button>
+        </nav>
+
+        <template v-if="activeTab === 'overview'">
+          <section class="details-section pricing-details">
+            <header class="section-heading">
+              <PricingIcon />
+              <h2>{{ $t('pricing_details') }}</h2>
             </header>
-            <p>{{ activity.text }}</p>
-          </article>
-        </li>
-      </ol>
-      <p v-else class="empty-activity">{{ $t('no_activity_log') }}</p>
-    </section>
+            <div class="pricing-grid">
+              <dl v-for="(item, index) in plan.pricing" :key="index" class="pricing-item">
+                <dt>{{ pricingLabel(item.durationType) }}</dt>
+                <dd>
+                  {{ formatNumber(item.price) }} {{ $t('currency_egp') }} /
+                  {{ durationLabel(item.duration, item.durationType) }}
+                </dd>
+              </dl>
+              <dl class="pricing-item">
+                <dt>{{ $t('trial_period') }}</dt>
+                <dd>{{ plan.trialDays }} {{ $t(plan.trialDays === 1 ? 'day' : 'days') }}</dd>
+              </dl>
+            </div>
+          </section>
 
-    <DeactivatePlanDialog
-      v-model="deactivateDialogVisible"
-      :loading="statusLoading"
-      @confirm="changeStatus(PlanStatusEnum.deactivated)"
-    />
-    <ArchivePlanDialog
-      v-model="archiveDialogVisible"
-      :loading="statusLoading"
-      @confirm="changeStatus(PlanStatusEnum.Archived)"
-    />
-    <ActivatePlanDialog
-      v-model="activateDialogVisible"
-      :loading="statusLoading"
-      @confirm="changeStatus(PlanStatusEnum.ACTIVE)"
-    />
-    <PlanDeleteWarningDialog v-model="deleteWarningDialogVisible" />
-  </main>
+          <section class="details-section included-features">
+            <header class="section-heading">
+              <IncludedFeatureIcon />
+              <h2>{{ $t('included_features') }}</h2>
+            </header>
+            <div class="feature-groups">
+              <article
+                v-for="feature in plan.features"
+                :key="feature.featureId"
+                class="feature-group"
+              >
+                <h3>{{ feature.featureTitle }}</h3>
+                <div class="sub-feature-list">
+                  <span
+                    v-for="subFeature in feature.subFeatures.filter((item) => item.status)"
+                    :key="subFeature.id"
+                    class="sub-feature"
+                  >
+                    {{ subFeatureTitle(feature.featureId, subFeature.id) }}
+                    <strong v-if="subFeature.limit > 0">{{ subFeature.limit }}</strong>
+                  </span>
+                </div>
+              </article>
+            </div>
+          </section>
+        </template>
+
+        <section v-else class="activity-log">
+          <ol v-if="plan.activeLog.length" class="activity-list">
+            <li v-for="(activity, index) in plan.activeLog" :key="`${activity.user.id}-${index}`">
+              <span class="activity-dot" aria-hidden="true"></span>
+              <article class="activity-entry">
+                <header class="activity-user">
+                  <span class="activity-avatar" aria-hidden="true">
+                    {{ userInitials(activity.user.name) }}
+                  </span>
+                  <strong>{{ activity.user.name }}</strong>
+                  <time>{{ formatDate(activity.date) }}</time>
+                </header>
+                <p>{{ activity.text }}</p>
+              </article>
+            </li>
+          </ol>
+          <p v-else class="empty-activity">{{ $t('no_activity_log') }}</p>
+        </section>
+
+        <DeactivatePlanDialog
+          v-model="deactivateDialogVisible"
+          :loading="statusLoading"
+          @confirm="changeStatus(PlanStatusEnum.deactivated)"
+        />
+        <ArchivePlanDialog
+          v-model="archiveDialogVisible"
+          :loading="statusLoading"
+          @confirm="changeStatus(PlanStatusEnum.Archived)"
+        />
+        <ActivatePlanDialog
+          v-model="activateDialogVisible"
+          :loading="statusLoading"
+          @confirm="changeStatus(PlanStatusEnum.ACTIVE)"
+        />
+        <PlanDeleteWarningDialog v-model="deleteWarningDialogVisible" />
+      </main>
+    </template>
+    <template #loader>
+      <PLanDetailsSkelaton />
+    </template>
+  </DataStatusBuilder>
 </template>
 
 <style scoped lang="scss">

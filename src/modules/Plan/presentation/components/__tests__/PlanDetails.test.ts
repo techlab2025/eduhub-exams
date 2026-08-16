@@ -5,18 +5,21 @@ import PlanDetailsModel from '../../../core/models/plan.details.model';
 import PlanDetails from '../PlanDetails.vue';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
 
-const { fetchOneMock, deleteMock, toggleStatusMock, routerPushMock, itemData } = vi.hoisted(() => ({
-  fetchOneMock: vi.fn(),
-  deleteMock: vi.fn(),
-  toggleStatusMock: vi.fn(),
-  routerPushMock: vi.fn(),
-  itemData: { value: null as PlanDetailsModel | null },
-}));
+const { fetchOneMock, deleteMock, toggleStatusMock, routerPushMock, itemData, itemState } =
+  vi.hoisted(() => ({
+    fetchOneMock: vi.fn(),
+    deleteMock: vi.fn(),
+    toggleStatusMock: vi.fn(),
+    routerPushMock: vi.fn(),
+    itemData: { value: null as PlanDetailsModel | null },
+    itemState: { value: {} },
+  }));
 
 vi.mock('../../controllers/plan.controller', () => ({
   default: {
     getInstance: () => ({
       itemData,
+      itemState,
       fetchOne: fetchOneMock,
       delete: deleteMock,
       toggleStatus: toggleStatusMock,
@@ -35,6 +38,10 @@ const mountComponent = () =>
     global: {
       plugins: [i18n],
       stubs: {
+        DataStatusBuilder: {
+          name: 'DataStatusBuilder',
+          template: '<div><slot name="success" /></div>',
+        },
         ActionsIcon: true,
         EmployeeIcon: true,
         IconClock: true,
@@ -111,7 +118,6 @@ describe('PlanDetails', () => {
     const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
 
     expect(actions.map((action: { text: string }) => action.text)).toEqual([
-      'view',
       'edit_price',
       'edit_basic_info',
       'edit_features',
@@ -119,10 +125,10 @@ describe('PlanDetails', () => {
       'archive',
       'delete',
     ]);
-    expect(actions[1].link).toBe('/plans/edit/1?section=pricing');
+    expect(actions[0].link).toBe('/plans/edit/1?section=pricing');
   });
 
-  it('shows only view, complete, and delete for a draft plan', () => {
+  it('shows only complete and delete for a draft plan', () => {
     itemData.value = PlanDetailsModel.fromJson({
       id: 5,
       status: PlanStatusEnum.DRAFT,
@@ -133,12 +139,8 @@ describe('PlanDetails', () => {
     const wrapper = mountComponent();
     const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
 
-    expect(actions.map((action: { text: string }) => action.text)).toEqual([
-      'view',
-      'complete',
-      'delete',
-    ]);
-    expect(actions[1].link).toBe('/plans/edit/5');
+    expect(actions.map((action: { text: string }) => action.text)).toEqual(['complete', 'delete']);
+    expect(actions[0].link).toBe('/plans/edit/5');
   });
 
   it('activates an archived plan only after confirmation', async () => {
@@ -152,7 +154,7 @@ describe('PlanDetails', () => {
     const wrapper = mountComponent();
     const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
 
-    actions[4].action();
+    actions[3].action();
     await wrapper.vm.$nextTick();
 
     const dialog = wrapper.getComponent({ name: 'ActivatePlanDialog' });
@@ -166,7 +168,7 @@ describe('PlanDetails', () => {
       subscription_plan_id: 5,
       status: PlanStatusEnum.ACTIVE,
     });
-    expect(fetchOneMock).toHaveBeenCalledTimes(2);
+    expect(fetchOneMock).toHaveBeenCalledTimes(3);
   });
 
   it('blocks deletion when the plan has subscribers', async () => {
