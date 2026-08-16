@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import TranslationParams from '@/modules/about/core/params/translation.params';
 import { PlanDurationTypeEnum } from '../../enums/plan.duration.enum';
 import { PlanStatusEnum } from '../../enums/plan.status.enum';
-import { PlanFeatureSubTypeEnum, PlanFeatureTypeEnum } from '../../enums/planType.enum';
+import { PlanFeatureTypeEnum } from '../../enums/planType.enum';
 import AddPlanParams from '../add.plan.params';
 import PlanFeatureParams from '../plan.features.params';
 import PlanPricingParams from '../plan.pricing.params';
@@ -33,14 +33,14 @@ describe('AddPlanParams', () => {
           featureType: PlanFeatureTypeEnum.REPORT,
           featureSubType: [
             new PlanSubFeatureParams({
-              subType: PlanFeatureSubTypeEnum.SHOW_OVERALL_SCORE,
+              subType: '1.1',
             }),
             new PlanSubFeatureParams({
-              subType: PlanFeatureSubTypeEnum.MAXIMUM_REPORTS_PER_STUDENT,
+              subType: '1.5',
               limit: 4,
             }),
             new PlanSubFeatureParams({
-              subType: PlanFeatureSubTypeEnum.MAX_DOWNLOADS_PER_MONTH,
+              subType: '1.6',
               limit: 5,
             }),
           ],
@@ -49,10 +49,10 @@ describe('AddPlanParams', () => {
           featureType: PlanFeatureTypeEnum.HOME_STUDY_SCHEDULE,
           featureSubType: [
             new PlanSubFeatureParams({
-              subType: PlanFeatureSubTypeEnum.ALLOW_STUDENTS_TO_SET_REMINDERS,
+              subType: '3.2',
             }),
             new PlanSubFeatureParams({
-              subType: PlanFeatureSubTypeEnum.MAXIMUM_SCHEDULES_PER_DAY,
+              subType: '3.3',
               limit: 1,
             }),
           ],
@@ -74,11 +74,15 @@ describe('AddPlanParams', () => {
       features: [
         {
           feature_type: 1,
-          feature_sub_type: [{ sub_type: 2 }, { sub_type: 6, limit: 4 }, { sub_type: 7, limit: 5 }],
+          feature_sub_type: [
+            { sub_type: '1.1' },
+            { sub_type: '1.5', limit: 4 },
+            { sub_type: '1.6', limit: 5 },
+          ],
         },
         {
           feature_type: 13,
-          feature_sub_type: [{ sub_type: 15 }, { sub_type: 16, limit: 1 }],
+          feature_sub_type: [{ sub_type: '3.2' }, { sub_type: '3.3', limit: 1 }],
         },
       ],
     });
@@ -104,7 +108,7 @@ describe('AddPlanParams', () => {
           featureType: PlanFeatureTypeEnum.REPORT,
           featureSubType: [
             new PlanSubFeatureParams({
-              subType: PlanFeatureSubTypeEnum.SHOW_OVERALL_SCORE,
+              subType: '1.1',
             }),
           ],
         }),

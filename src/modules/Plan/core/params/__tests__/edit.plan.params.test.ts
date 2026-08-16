@@ -6,7 +6,7 @@ import { PlanDurationTypeEnum } from '../../enums/plan.duration.enum';
 import PlanPricingParams from '../plan.pricing.params';
 import PlanFeatureParams from '../plan.features.params';
 import PlanSubFeatureParams from '../plan.sub.features.params';
-import { PlanFeatureSubTypeEnum, PlanFeatureTypeEnum } from '../../enums/planType.enum';
+import { PlanFeatureTypeEnum } from '../../enums/planType.enum';
 
 describe('EditPlanParams', () => {
   it('adds the plan id to the update request', () => {
@@ -103,7 +103,7 @@ describe('EditPlanParams', () => {
           featureType: PlanFeatureTypeEnum.REPORT,
           featureSubType: [
             new PlanSubFeatureParams({
-              subType: PlanFeatureSubTypeEnum.SHOW_OVERALL_SCORE,
+              subType: '1.1',
             }),
           ],
         }),
@@ -112,7 +112,7 @@ describe('EditPlanParams', () => {
 
     expect(params.toMap()).toEqual({
       subscription_plan_id: 9,
-      features: [{ feature_type: 1, feature_sub_type: [{ sub_type: 2 }] }],
+      features: [{ feature_type: 1, feature_sub_type: [{ sub_type: '1.1' }] }],
     });
     expect(params.validate().isValid).toBe(true);
   });

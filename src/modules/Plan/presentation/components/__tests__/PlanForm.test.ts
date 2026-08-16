@@ -16,9 +16,16 @@ const featureCatalog = [
   {
     id: 1,
     title: 'Report',
+    description: 'Detailed student performance reports',
     code: 1,
     subFeatures: [
-      { id: 2, title: 'Show Overall Score', code: '1.1', hasLimit: false },
+      {
+        id: 2,
+        title: 'Show Overall Score',
+        description: 'Shows the total assessment score',
+        code: '1.1',
+        hasLimit: false,
+      },
       { id: 3, title: 'Show Skill Analysis', code: '1.2', hasLimit: false },
       { id: 4, title: 'Show Curriculum Analysis', code: '1.3', hasLimit: false },
       { id: 5, title: 'Allow Report Download', code: '1.4', hasLimit: false },
@@ -98,6 +105,17 @@ describe('PlanForm', () => {
     expect(fetchPlanFeaturesMock).toHaveBeenCalledOnce();
     expect(wrapper.findAll('.feature-card')).toHaveLength(5);
     expect(wrapper.find('.feature-card .feature-copy strong').text()).toBe('Report');
+    expect(wrapper.find('.feature-card .feature-description').text()).toBe(
+      'Detailed student performance reports',
+    );
+
+    wrapper
+      .find('.feature-card')
+      .findComponent({ name: 'ToggleSwitch' })
+      .vm.$emit('update:modelValue', true);
+    await wrapper.vm.$nextTick();
+    const descriptions = wrapper.findAll('.feature-card .feature-description');
+    expect(descriptions[1]?.text()).toBe('Shows the total assessment score');
   });
 
   it('renders all three sections at the same time', () => {
@@ -432,9 +450,9 @@ describe('PlanForm', () => {
       toMap: () => Record<string, unknown>;
     };
     const updatedFeatures = updatedParams.toMap().features as Array<{
-      feature_sub_type: Array<{ sub_type: number; limit?: number }>;
+      feature_sub_type: Array<{ sub_type: string; limit?: number }>;
     }>;
 
-    expect(updatedFeatures[0]?.feature_sub_type).toContainEqual({ sub_type: 6, limit: 1 });
+    expect(updatedFeatures[0]?.feature_sub_type).toContainEqual({ sub_type: '1.5', limit: 1 });
   });
 });

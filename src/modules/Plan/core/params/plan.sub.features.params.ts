@@ -2,7 +2,7 @@ import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export default class PlanSubFeatureParams implements Params {
-  public subType: number;
+  public subType: string;
   public limit?: number;
 
   public static readonly validation = new ClassValidation().setRules({
@@ -10,7 +10,7 @@ export default class PlanSubFeatureParams implements Params {
     limit: { required: false },
   });
 
-  constructor(data: { subType: number; limit?: number }) {
+  constructor(data: { subType: string; limit?: number }) {
     this.subType = data.subType;
     this.limit = data.limit;
   }

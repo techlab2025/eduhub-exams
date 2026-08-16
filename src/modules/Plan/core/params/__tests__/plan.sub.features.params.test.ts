@@ -3,6 +3,6 @@ import PlanSubFeatureParams from '../plan.sub.features.params';
 
 describe('PlanSubFeatureParams', () => {
   it('omits an unused optional limit', () => {
-    expect(new PlanSubFeatureParams({ subType: 3 }).toMap()).toEqual({ sub_type: 3 });
+    expect(new PlanSubFeatureParams({ subType: '2.3' }).toMap()).toEqual({ sub_type: '2.3' });
   });
 });

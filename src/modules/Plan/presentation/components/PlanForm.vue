@@ -25,7 +25,9 @@
 
   interface PlanSubFeatureFormItem {
     subType: number;
+    code: string;
     title: string;
+    description: string;
     enabled: boolean;
     hasLimit: boolean;
     limit?: number;
@@ -34,6 +36,7 @@
   interface PlanFeatureFormItem {
     featureType: number;
     title: string;
+    description: string;
     enabled: boolean;
     subTypes: PlanSubFeatureFormItem[];
   }
@@ -43,6 +46,7 @@
     loading?: boolean;
     formKey?: string;
   }>();
+
   const emit = defineEmits<{
     updateData: [params: AddPlanParams | EditPlanParams];
     validityChange: [isValid: boolean];
@@ -97,10 +101,13 @@
     features.map((feature) => ({
       featureType: feature.id,
       title: feature.title,
+      description: feature.description,
       enabled: false,
       subTypes: feature.subFeatures.map((subType) => ({
         subType: subType.id,
+        code: subType.code,
         title: subType.title,
+        description: subType.description,
         enabled: false,
         hasLimit: subType.hasLimit,
         ...(subType.hasLimit ? { limit: 0 } : {}),
@@ -323,7 +330,7 @@
               featureSubType: feature.subTypes.filter(isSubFeatureIncluded).map(
                 (subType) =>
                   new PlanSubFeatureParams({
-                    subType: subType.subType,
+                    subType: subType.code,
                     ...(subType.hasLimit ? { limit: subType.limit ?? 0 } : {}),
                   }),
               ),
@@ -718,6 +725,9 @@
               <span class="feature-number">{{ featureIndex + 1 }}</span>
               <span class="feature-copy">
                 <strong>{{ feature.title }}</strong>
+                <span v-if="feature.description" class="feature-description">{{
+                  feature.description
+                }}</span>
               </span>
               <ToggleSwitch v-model="feature.enabled" :aria-label="feature.title" />
             </header>
@@ -743,6 +753,9 @@
                 <span class="sub-feature-dot" aria-hidden="true"></span>
                 <span class="feature-copy">
                   <strong>{{ subType.title }}</strong>
+                  <span v-if="subType.description" class="feature-description">{{
+                    subType.description
+                  }}</span>
                 </span>
                 <input
                   v-if="subType.hasLimit"
@@ -774,6 +787,18 @@
 </template>
 
 <style scoped lang="scss">
+  .feature-copy strong {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    line-height: var(--lh-h5);
+  }
+  .feature-description {
+    font-size: 14px;
+    font-weight: 500;
+    color: #8a8a8a;
+    line-height: var(--lh-p);
+  }
   :global(.content-wrapper:has(.plan-form)),
   :global(.main-content:has(.plan-form)) {
     overflow-x: clip;
