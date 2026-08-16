@@ -82,6 +82,12 @@
           link: '/plans',
           name: 'plans',
           icon: SettingIcon,
+          children: [
+            {
+              link: '/plans/add',
+              name: 'add plan',
+            },
+          ],
         },
         // {
         //   link: '/subscriptions',

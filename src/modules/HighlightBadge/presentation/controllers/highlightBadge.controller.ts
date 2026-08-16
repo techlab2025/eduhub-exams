@@ -1,8 +1,9 @@
-import BaseController from '@/base/Presentation/Controller/baseController';
+import BaseController, { type ControllerConfig } from '@/base/Presentation/Controller/baseController';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
 import type HighlightBadgeModel from '../../core/models/highlightBadge.model';
 import HighlightBadgeRepository from '../../data/repositories/highlightBadge.repository';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
 export default class HighlightBadgeController extends BaseController<
   HighlightBadgeModel,
@@ -11,6 +12,17 @@ export default class HighlightBadgeController extends BaseController<
   private static instance: HighlightBadgeController;
   protected get repository() {
     return HighlightBadgeRepository.getInstance();
+  }
+  protected get config(): ControllerConfig {
+    return {
+      showLoadingDialog: false,
+      showSuccessDialog: false,
+      showErrorDialog: false,
+      showErrorTosat: true,
+      showSuccessTosat: true,
+      autoRetry: false,
+      maxAutoRetries: 1,
+    };
   }
   static getInstance() {
     if (!this.instance) this.instance = new HighlightBadgeController();
@@ -30,5 +42,12 @@ export default class HighlightBadgeController extends BaseController<
   }
   async fetchList(params?: Params, options?: ApiCallOptions) {
     return super.fetchList(params, { ...options });
+  }
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    if (result?.error?.title) {
+      dialogManager.toastError(result?.error?.title);
+    }
+    return result;
   }
 }

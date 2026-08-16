@@ -489,7 +489,7 @@
                     v-for="option in statusOptions"
                     :key="option.id"
                     class="plan-choice"
-                    :class="`plan-status-choice-${option.id}`"
+                    :class="`plan-status-choice-${option.id} ${option.title}`"
                   >
                     <input v-model="status" type="radio" :value="option" />
                     <span class="plan-choice-box"></span>
@@ -902,6 +902,29 @@
 
   .plan-trial-choices {
     max-width: 277px;
+  }
+  .plan-choice {
+    &.Active {
+      span{
+      color: #18a957;
+      }
+    }
+    &.Inactive {
+      span{
+      color: #d99100;
+      }
+    }
+    &.Archived {
+      span{
+      color: #4b4b4b;
+      }
+    }
+    &.Draft {
+      span{
+
+      color: #2f7bff;
+      }
+    }
   }
 
   .plan-choice,
