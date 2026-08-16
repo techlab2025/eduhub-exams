@@ -122,7 +122,7 @@
       ];
     }
 
-    if (item.status === PlanStatusEnum.Archived || item.status === PlanStatusEnum.deactivated) {
+    if (item.status === PlanStatusEnum.Archived) {
       return [
         // viewAction,
         ...editActions,
@@ -131,6 +131,28 @@
           icon: item.status === PlanStatusEnum.Archived ? IconCheck : DeactiveIcon,
           action: () => {
             activateDialogVisible.value = true;
+          },
+        },
+        deleteAction,
+      ];
+    }
+
+    if (item.status === PlanStatusEnum.deactivated) {
+      return [
+        // viewAction,
+        ...editActions,
+        {
+          text: t('activate'),
+          icon: DeactiveIcon,
+          action: () => {
+            activateDialogVisible.value = true;
+          },
+        },
+        {
+          text: t('archive'),
+          icon: ArchiveIcon,
+          action: () => {
+            archiveDialogVisible.value = true;
           },
         },
         deleteAction,

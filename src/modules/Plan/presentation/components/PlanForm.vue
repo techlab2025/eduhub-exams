@@ -134,6 +134,13 @@
   const isNumberAtLeast = (value: unknown, minimum: number) =>
     Number.isFinite(Number(value)) && Number(value) >= minimum;
   const isPositiveNumber = (value: unknown) => Number.isFinite(Number(value)) && Number(value) > 0;
+  const pricingCombinationKey = (item: PlanPricingParams) => {
+    if (!isPositiveNumber(item.price) || !isNumberAtLeast(item.duration, 1) || !item.durationType) {
+      return undefined;
+    }
+
+    return `${Number(item.price)}-${Number(item.duration)}-${item.durationType}`;
+  };
   const durationInDays = (item: PlanPricingParams) => {
     const multipliers: Record<PlanDurationTypeEnum, number> = {
       [PlanDurationTypeEnum.DAY]: 1,
@@ -182,6 +189,8 @@
     }
 
     if (validates('pricing')) {
+      const pricingCombinations = new Set<string>();
+
       pricing.value.forEach((item, index) => {
         const isEmptyEditor =
           pricing.value.length > 1 && index === pricingEditorIndex.value && isPricingRowEmpty(item);
@@ -195,6 +204,13 @@
         }
         if (!item.durationType) {
           errors[`pricing-${index}-duration-type`] = t('plan_duration_type_required');
+        }
+
+        const combinationKey = pricingCombinationKey(item);
+        if (combinationKey && pricingCombinations.has(combinationKey)) {
+          errors[`pricing-${index}-duplicate`] = t('plan_pricing_duplicate');
+        } else if (combinationKey) {
+          pricingCombinations.add(combinationKey);
         }
       });
 
@@ -269,9 +285,7 @@
   const isPricingRowEmpty = (item: PlanPricingParams) =>
     item.price === undefined && item.duration === undefined;
   const isPricingRowComplete = (item: PlanPricingParams) =>
-    isNumberAtLeast(item.price, 0) &&
-    isNumberAtLeast(item.duration, 1) &&
-    Boolean(item.durationType);
+    isPositiveNumber(item.price) && isNumberAtLeast(item.duration, 1) && Boolean(item.durationType);
   const pricingEditorIndex = computed(() => Math.max(0, pricing.value.length - 1));
   const committedPricing = computed(() =>
     pricing.value
@@ -280,9 +294,23 @@
   );
   const pricingDurationTitle = (durationType?: PlanDurationTypeEnum) =>
     durationOptions.value.find((option) => option.id === durationType)?.title ?? '';
+  const pricingFieldError = (index: number, field: 'price' | 'duration' | 'duration-type') =>
+    validationErrors.value[`pricing-${index}-${field}`] ??
+    validationErrors.value[`pricing-${index}-duplicate`];
+  const pricingFieldErrorId = (index: number, field: 'price' | 'duration' | 'duration-type') =>
+    validationErrors.value[`pricing-${index}-${field}`]
+      ? `pricing-${index}-${field}-error`
+      : validationErrors.value[`pricing-${index}-duplicate`]
+        ? `pricing-${index}-duplicate-error`
+        : undefined;
   const addPricing = () => {
-    const editor = pricing.value.at(-1);
-    if (!editor || !isPricingRowComplete(editor)) {
+    const editor = pricing.value?.at(-1);
+    const editorIndex = pricingEditorIndex.value;
+    if (
+      !editor ||
+      !isPricingRowComplete(editor) ||
+      validationErrors.value[`pricing-${editorIndex}-duplicate`]
+    ) {
       showValidationErrors.value = true;
       return;
     }
@@ -594,16 +622,11 @@
                 step="any"
                 :placeholder="$t('enter_plan_price')"
                 :class="{
-                  'field-invalid':
-                    showValidationErrors && validationErrors[`pricing-${index}-price`],
+                  'field-invalid': showValidationErrors && pricingFieldError(index, 'price'),
                 }"
-                :aria-invalid="
-                  Boolean(showValidationErrors && validationErrors[`pricing-${index}-price`])
-                "
+                :aria-invalid="Boolean(showValidationErrors && pricingFieldError(index, 'price'))"
                 :aria-describedby="
-                  showValidationErrors && validationErrors[`pricing-${index}-price`]
-                    ? `pricing-${index}-price-error`
-                    : undefined
+                  showValidationErrors ? pricingFieldErrorId(index, 'price') : undefined
                 "
               />
             </div>
@@ -621,16 +644,13 @@
                     min="1"
                     :placeholder="$t('enter_duration_number')"
                     :class="{
-                      'field-invalid':
-                        showValidationErrors && validationErrors[`pricing-${index}-duration`],
+                      'field-invalid': showValidationErrors && pricingFieldError(index, 'duration'),
                     }"
                     :aria-invalid="
-                      Boolean(showValidationErrors && validationErrors[`pricing-${index}-duration`])
+                      Boolean(showValidationErrors && pricingFieldError(index, 'duration'))
                     "
                     :aria-describedby="
-                      showValidationErrors && validationErrors[`pricing-${index}-duration`]
-                        ? `pricing-${index}-duration-error`
-                        : undefined
+                      showValidationErrors ? pricingFieldErrorId(index, 'duration') : undefined
                     "
                   />
                 </span>
@@ -641,17 +661,13 @@
                     :aria-label="$t('duration_type')"
                     :class="{
                       'field-invalid':
-                        showValidationErrors && validationErrors[`pricing-${index}-duration-type`],
+                        showValidationErrors && pricingFieldError(index, 'duration-type'),
                     }"
                     :aria-invalid="
-                      Boolean(
-                        showValidationErrors && validationErrors[`pricing-${index}-duration-type`],
-                      )
+                      Boolean(showValidationErrors && pricingFieldError(index, 'duration-type'))
                     "
                     :aria-describedby="
-                      showValidationErrors && validationErrors[`pricing-${index}-duration-type`]
-                        ? `pricing-${index}-duration-type-error`
-                        : undefined
+                      showValidationErrors ? pricingFieldErrorId(index, 'duration-type') : undefined
                     "
                   >
                     <option :value="undefined" disabled>{{ $t('select_duration_type') }}</option>
@@ -704,6 +720,14 @@
                 class="field-error"
               >
                 {{ validationErrors[`pricing-${index}-duration-type`] }}
+              </span>
+              <span
+                v-if="validationErrors[`pricing-${index}-duplicate`]"
+                :id="`pricing-${index}-duplicate-error`"
+                data-plan-validation-error
+                class="field-error"
+              >
+                {{ validationErrors[`pricing-${index}-duplicate`] }}
               </span>
             </div>
           </div>

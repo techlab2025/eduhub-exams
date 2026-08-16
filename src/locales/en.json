@@ -927,6 +927,7 @@
   "plan_badge_required": "At least one highlight badge is required.",
   "plan_pricing_required": "At least one complete pricing option is required.",
   "plan_price_required": "Price must be a number greater than zero.",
+  "plan_pricing_duplicate": "This price, duration, and duration type combination already exists.",
   "plan_duration_required": "Duration must be greater than zero.",
   "plan_duration_type_required": "Duration type is required.",
   "plan_trial_days_required": "Trial days must be greater than zero.",

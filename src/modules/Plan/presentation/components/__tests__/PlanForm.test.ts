@@ -288,6 +288,31 @@ describe('PlanForm', () => {
     expect(wrapper.find('#pricing-0-price').exists()).toBe(true);
   });
 
+  it('rejects a duplicate price, duration, and duration type combination', async () => {
+    routeMock.params = {};
+    routeMock.query = { section: 'pricing' };
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+
+    await wrapper.get('#pricing-0-price').setValue(150);
+    await wrapper.get('#pricing-0-duration').setValue(1);
+    await wrapper.get('.pricing-action--add').trigger('click');
+    await wrapper.get('#pricing-1-price').setValue(150);
+    await wrapper.get('#pricing-1-duration').setValue(1);
+    await wrapper.get('.pricing-action--add').trigger('click');
+
+    expect(wrapper.find('#pricing-2-price').exists()).toBe(false);
+    expect(wrapper.get('#pricing-1-duplicate-error').text()).toBe('plan_pricing_duplicate');
+    expect(wrapper.get('#pricing-1-price').classes()).toContain('field-invalid');
+    expect(wrapper.get('#pricing-1-duration').classes()).toContain('field-invalid');
+    expect(wrapper.get('#pricing-1-duration-type').classes()).toContain('field-invalid');
+    expect(wrapper.get('#pricing-1-price').attributes('aria-describedby')).toBe(
+      'pricing-1-duplicate-error',
+    );
+    expect(await (wrapper.vm as unknown as { validate: () => Promise<boolean> }).validate()).toBe(
+      false,
+    );
+  });
+
   it('accepts a positive price with valid duration values', async () => {
     routeMock.params = { id: '8' };
     routeMock.query = { section: 'pricing' };
