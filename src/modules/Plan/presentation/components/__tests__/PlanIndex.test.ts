@@ -5,11 +5,20 @@ import PlanIndex from '../PlanIndex.vue';
 import PlanModel from '../../../core/models/plan.model';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
 
-const { fetchListMock, deleteMock, toggleStatusMock, routerPushMock } = vi.hoisted(() => ({
+const {
+  fetchListMock,
+  deleteMock,
+  toggleStatusMock,
+  routerPushMock,
+  routerReplaceMock,
+  routeMock,
+} = vi.hoisted(() => ({
   fetchListMock: vi.fn(),
   deleteMock: vi.fn(),
   toggleStatusMock: vi.fn(),
   routerPushMock: vi.fn(),
+  routerReplaceMock: vi.fn(),
+  routeMock: { query: {} as Record<string, string> },
 }));
 
 vi.mock('../../controllers/plan.controller', () => ({
@@ -25,8 +34,8 @@ vi.mock('../../controllers/plan.controller', () => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ query: {} }),
-  useRouter: () => ({ push: routerPushMock }),
+  useRoute: () => routeMock,
+  useRouter: () => ({ push: routerPushMock, replace: routerReplaceMock }),
 }));
 
 const i18n = createI18n({
@@ -119,6 +128,8 @@ describe('PlanIndex', () => {
     fetchListMock.mockResolvedValue(undefined);
     deleteMock.mockResolvedValue(undefined);
     toggleStatusMock.mockResolvedValue({ hasError: false });
+    routerReplaceMock.mockResolvedValue(undefined);
+    routeMock.query = {};
   });
 
   it('provides the complete plan action menu through DropList', () => {
@@ -211,6 +222,7 @@ describe('PlanIndex', () => {
       status: PlanStatusEnum.ACTIVE,
     });
     expect(activateDialog.props('modelValue')).toBe(false);
+    expect(fetchListMock).toHaveBeenCalledTimes(2);
   });
 
   it('changes the plan status and refreshes the list', async () => {
@@ -236,6 +248,27 @@ describe('PlanIndex', () => {
     expect(archiveDialog.props('modelValue')).toBe(false);
   });
 
+  it('closes the deactivate dialog and refreshes the list after deactivation', async () => {
+    const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+
+    actions[4].action();
+    await wrapper.vm.$nextTick();
+
+    const deactivateDialog = wrapper.getComponent({ name: 'DeactivatePlanDialog' });
+    expect(deactivateDialog.props('modelValue')).toBe(true);
+
+    deactivateDialog.vm.$emit('confirm');
+    await flushPromises();
+
+    expect(toggleStatusMock.mock.calls[0]?.[0].toMap()).toEqual({
+      subscription_plan_id: 1,
+      status: PlanStatusEnum.deactivated,
+    });
+    expect(deactivateDialog.props('modelValue')).toBe(false);
+    expect(fetchListMock).toHaveBeenCalledTimes(2);
+  });
+
   it('fetches archived plans and restores the normal list from the segmented control', async () => {
     const wrapper = mountComponent();
     const modeButtons = wrapper.findAll('.plan-list-toggle button');
@@ -244,6 +277,10 @@ describe('PlanIndex', () => {
     await flushPromises();
 
     expect(fetchListMock.mock.calls.at(-1)?.[0].toMap().status).toBe(3);
+    expect(routerReplaceMock).toHaveBeenLastCalledWith({
+      name: 'Plans',
+      query: { listMode: PlanStatusEnum.Archived },
+    });
     expect(modeButtons[1].attributes('aria-pressed')).toBe('true');
 
     await modeButtons[0].trigger('click');
@@ -260,6 +297,54 @@ describe('PlanIndex', () => {
       with_pagination: 1,
       page: 1,
       per_page: 10,
+    });
+  });
+
+  it('restores filters from the query and carries them into edit links', async () => {
+    routeMock.query = {
+      page: '3',
+      perPage: '25',
+      word: 'premium',
+      fromPrice: '100',
+      hasTrial: 'false',
+      listMode: String(PlanStatusEnum.Archived),
+      duration: '3',
+      lastUpdated: '2',
+    };
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    const request = fetchListMock.mock.calls[0]?.[0].toMap();
+    const editLink = wrapper.getComponent({ name: 'DropList' }).props('actionList')[1].link;
+
+    expect(request).toMatchObject({
+      page: 3,
+      per_page: 25,
+      word: 'premium',
+      from_price: 100,
+      has_trail: false,
+      status: PlanStatusEnum.Archived,
+      duration: '3',
+      last_updated: '2',
+    });
+    expect(editLink).toContain('/plans/edit/1?');
+    expect(editLink).toContain('page=3');
+    expect(editLink).toContain('listMode=3');
+    expect(editLink).toContain('section=pricing');
+
+    await wrapper.get('.plan-page > .btn-primary').trigger('click');
+    expect(routerPushMock).toHaveBeenLastCalledWith({
+      name: 'Add Plan',
+      query: {
+        page: 3,
+        perPage: 25,
+        word: 'premium',
+        fromPrice: 100,
+        hasTrial: 'false',
+        listMode: PlanStatusEnum.Archived,
+        duration: 3,
+        lastUpdated: 2,
+      },
     });
   });
 });

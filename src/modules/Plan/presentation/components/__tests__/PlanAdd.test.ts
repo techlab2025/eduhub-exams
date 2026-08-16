@@ -3,10 +3,14 @@ import { flushPromises, mount } from '@vue/test-utils';
 import PlanAdd from '../PlanAdd.vue';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
 
-const { createMock, fetchListMock, routerPushMock } = vi.hoisted(() => ({
+const { createMock, fetchListMock, routerPushMock, routeMock } = vi.hoisted(() => ({
   createMock: vi.fn(),
   fetchListMock: vi.fn(),
   routerPushMock: vi.fn(),
+  routeMock: {
+    fullPath: '/plans/add?status=3&page=2',
+    query: { status: '3', page: '2' },
+  },
 }));
 
 vi.mock('../../controllers/plan.controller', () => ({
@@ -16,7 +20,7 @@ vi.mock('../../controllers/plan.controller', () => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ fullPath: '/plans/add' }),
+  useRoute: () => routeMock,
   useRouter: () => ({ push: routerPushMock }),
 }));
 
@@ -68,7 +72,10 @@ describe('PlanAdd', () => {
     await flushPromises();
 
     expect(createMock.mock.calls[0]?.[0].status).toBe(PlanStatusEnum.ACTIVE);
-    expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
+    expect(routerPushMock).toHaveBeenCalledWith({
+      name: 'Plans',
+      query: { status: '3', page: '2' },
+    });
   });
 
   it('sends incomplete work to the API as DRAFT', async () => {
@@ -80,14 +87,18 @@ describe('PlanAdd', () => {
     await wrapper.get('.btn-draft').trigger('click');
     await flushPromises();
 
-    expect(createMock.mock.calls[0]?.[0].status).toBe(PlanStatusEnum.DRAFT);
     const dialog = wrapper.getComponent({ name: 'DraftPlanDialog' });
     expect(dialog.props('modelValue')).toBe(true);
+    expect(createMock).not.toHaveBeenCalled();
     expect(routerPushMock).not.toHaveBeenCalled();
 
     dialog.vm.$emit('acknowledge');
     await flushPromises();
 
-    expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
+    expect(createMock.mock.calls[0]?.[0].status).toBe(PlanStatusEnum.DRAFT);
+    expect(routerPushMock).toHaveBeenCalledWith({
+      name: 'Plans',
+      query: { status: '3', page: '2' },
+    });
   });
 });

@@ -13,6 +13,8 @@
   const route = useRoute();
   const router = useRouter();
   const formKey = route.fullPath;
+  const plansQuery = () =>
+    Object.fromEntries(Object.entries(route.query).filter(([key]) => key !== 'section'));
   const params = ref<EditPlanParams | null>(null);
   const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
   const loading = ref(false);
@@ -65,7 +67,7 @@
       if (isDraft.value) params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.update(params.value, undefined, undefined, false);
       if (result?.data || !result?.hasError) {
-        await router.push({ name: 'Plans' });
+        await router.push({ name: 'Plans', query: plansQuery() });
         await controller.fetchList();
       }
     } catch (error) {
@@ -92,7 +94,7 @@
       const result = await controller.update(params.value, undefined, undefined, false);
       if (result?.data || !result?.hasError) {
         await controller.fetchList();
-        await router.push({ name: 'Plans' });
+        await router.push({ name: 'Plans', query: plansQuery() });
       }
     } catch (error) {
       console.error('Error saving plan draft:', error);

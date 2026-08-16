@@ -3,14 +3,14 @@ import type { ArticleStatusEnum } from '../constant/Article.status.enum';
 import type { ArticleGeneratedByEnum } from '../constant/Article.generatedby.enum';
 import type { ArticleTypeEnum } from '../constant/Article.type.enum';
 import type { ArticleDifficultyEnum } from '../constant/Article.difficulty.enum';
-import { ArticleQuestionTypeEnum } from '../constant/Article.question.type.enum';
+import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
 
 export default class IndexArticleParams extends IndexParams {
   public status?: ArticleStatusEnum;
   public generated_by?: ArticleGeneratedByEnum;
   public article_type?: ArticleTypeEnum;
   public difficulty?: ArticleDifficultyEnum;
-  public question_type?: ArticleQuestionTypeEnum;
+  public question_type?: QuestionTypeEnum[];
   constructor(data: {
     word: string;
     pageNumber: number;
@@ -20,14 +20,14 @@ export default class IndexArticleParams extends IndexParams {
     generated_by?: ArticleGeneratedByEnum;
     article_type?: ArticleTypeEnum;
     difficulty?: ArticleDifficultyEnum;
-    question_type?: ArticleQuestionTypeEnum;
+    question_type?: QuestionTypeEnum[];
   }) {
     super(data.word, data.pageNumber, data.perPage, data.withPage);
     this.status = data.status;
     this.generated_by = data.generated_by;
     this.article_type = data.article_type;
     this.difficulty = data.difficulty;
-    this.question_type = data.question_type??ArticleQuestionTypeEnum.PARAGRAPH; 
+    this.question_type = data.question_type ?? [QuestionTypeEnum.paragraph];
   }
 
   toMap(): Record<string, any> {
@@ -38,8 +38,7 @@ export default class IndexArticleParams extends IndexParams {
       ...(this.article_type ? { article_type: this.article_type } : {}),
       ...(this.difficulty ? { difficulty: this.difficulty } : {}),
       ...(this.question_type ? { question_type: this.question_type } : {}),
-      order_dir:1
+      order_dir: 1,
     };
   }
 }
- 

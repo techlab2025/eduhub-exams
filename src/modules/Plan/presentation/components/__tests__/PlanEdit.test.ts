@@ -5,13 +5,20 @@ import EditPlanParams from '../../../core/params/edit.plan.params';
 import TranslationParams from '@/modules/about/core/params/translation.params';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
 
-const { itemData, fetchOneMock, updateMock, fetchListMock, routerPushMock } = vi.hoisted(() => ({
-  itemData: { value: { status: 4 } },
-  fetchOneMock: vi.fn(),
-  updateMock: vi.fn(),
-  fetchListMock: vi.fn(),
-  routerPushMock: vi.fn(),
-}));
+const { itemData, fetchOneMock, updateMock, fetchListMock, routerPushMock, routeMock } = vi.hoisted(
+  () => ({
+    itemData: { value: { status: 4 } },
+    fetchOneMock: vi.fn(),
+    updateMock: vi.fn(),
+    fetchListMock: vi.fn(),
+    routerPushMock: vi.fn(),
+    routeMock: {
+      params: { id: '8' },
+      fullPath: '/plans/edit/8?section=features&listMode=3&page=2',
+      query: { section: 'features', listMode: '3', page: '2' },
+    },
+  }),
+);
 
 vi.mock('../../controllers/plan.controller', () => ({
   default: {
@@ -25,7 +32,7 @@ vi.mock('../../controllers/plan.controller', () => ({
 }));
 
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ params: { id: '8' }, fullPath: '/plans/edit/8' }),
+  useRoute: () => routeMock,
   useRouter: () => ({ push: routerPushMock }),
 }));
 
@@ -112,7 +119,10 @@ describe('PlanEdit', () => {
     await flushPromises();
 
     expect(updateMock.mock.calls[0]?.[0].status).toBe(PlanStatusEnum.ACTIVE);
-    expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
+    expect(routerPushMock).toHaveBeenCalledWith({
+      name: 'Plans',
+      query: { listMode: '3', page: '2' },
+    });
   });
 
   it('keeps draft status when saving a draft', async () => {
@@ -136,7 +146,10 @@ describe('PlanEdit', () => {
     await flushPromises();
 
     expect(updateMock.mock.calls[0]?.[0].status).toBe(PlanStatusEnum.DRAFT);
-    expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
+    expect(routerPushMock).toHaveBeenCalledWith({
+      name: 'Plans',
+      query: { listMode: '3', page: '2' },
+    });
   });
 
   it('uses the same change-triggered actions for a non-draft plan', async () => {

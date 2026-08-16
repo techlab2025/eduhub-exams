@@ -10,6 +10,7 @@
   const controller = PlanController.getInstance();
   const route = useRoute();
   const formKey = route.fullPath;
+  const plansQuery = () => ({ ...route.query });
 
   const params = ref<AddPlanParams | null>(null);
   const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
@@ -30,7 +31,7 @@
       params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.create(params.value, undefined);
       if (result?.data) {
-        await router.push({ name: 'Plans' });
+        await router.push({ name: 'Plans', query: plansQuery() });
         await controller.fetchList();
       }
     } catch (error) {
@@ -82,7 +83,7 @@
     } finally {
       loading.value = false;
     }
-    await router.push({ name: 'Plans' });
+    await router.push({ name: 'Plans', query: plansQuery() });
   };
 </script>
 

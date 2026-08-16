@@ -34,11 +34,13 @@
   import IconCheck from '@/shared/icons/IconCheck.vue';
 
   const { t } = useI18n();
+  const route = useRoute();
   const router = useRouter();
   const controller = PlanController.getInstance();
   const state = computed(() => controller.listState.value);
   const word = ref('');
   const perPage = ref(10);
+  const currentPage = ref(1);
   const fromPrice = ref<number>();
   const toPrice = ref<number>();
   const fromDate = ref<Date | null>(null);
@@ -79,9 +81,70 @@
     { key: 'lastUpdated', label: t('lastUpdated') },
   ]);
   const durationType = ref<TitleInterface<string>>();
-  const fetchItems = (page = 1, word = '') =>
-    controller.fetchList(
-      new IndexPlanParams(word, page, perPage.value, {
+  const queryValue = (key: string) => {
+    const value = route.query[key];
+    return Array.isArray(value) ? value[0] : value;
+  };
+  const queryNumber = (key: string) => {
+    const value = Number(queryValue(key));
+    return Number.isFinite(value) ? value : undefined;
+  };
+  const queryDate = (key: string) => {
+    const value = queryValue(key);
+    if (!value) return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  };
+  const buildPlanQuery = () => ({
+    ...(currentPage.value === 1 ? {} : { page: currentPage.value }),
+    ...(perPage.value === 10 ? {} : { perPage: perPage.value }),
+    ...(word.value ? { word: word.value } : {}),
+    ...(fromPrice.value === undefined ? {} : { fromPrice: fromPrice.value }),
+    ...(toPrice.value === undefined ? {} : { toPrice: toPrice.value }),
+    ...(hasTrial.value === null ? {} : { hasTrial: String(hasTrial.value) }),
+    ...(status.value ? { status: status.value.id } : {}),
+    ...(listMode.value === null ? {} : { listMode: listMode.value }),
+    ...(durationType.value ? { duration: durationType.value.id } : {}),
+    ...(fromDate.value ? { fromDate: dateValue(fromDate.value) } : {}),
+    ...(toDate.value ? { toDate: dateValue(toDate.value) } : {}),
+    ...(lastUpdated.value ? { lastUpdated: lastUpdated.value.id } : {}),
+  });
+  const replacePlanQuery = () => router.replace({ name: 'Plans', query: buildPlanQuery() });
+  const planRouteLink = (path: string, extraQuery: Record<string, string> = {}) => {
+    const searchParams = new URLSearchParams();
+    Object.entries({ ...buildPlanQuery(), ...extraQuery }).forEach(([key, value]) => {
+      if (value !== undefined) searchParams.set(key, String(value));
+    });
+    const query = searchParams.toString();
+    return query ? `${path}?${query}` : path;
+  };
+  const restoreFiltersFromQuery = () => {
+    word.value = queryValue('word') ?? '';
+    currentPage.value = Math.max(1, queryNumber('page') ?? 1);
+    perPage.value = Math.max(1, queryNumber('perPage') ?? 10);
+    fromPrice.value = queryNumber('fromPrice');
+    toPrice.value = queryNumber('toPrice');
+    hasTrial.value =
+      queryValue('hasTrial') === 'true' ? true : queryValue('hasTrial') === 'false' ? false : null;
+    const statusId = queryNumber('status');
+    status.value = statusOptions.value.find((option) => option.id === statusId) ?? null;
+    const mode = queryNumber('listMode');
+    listMode.value = Object.values(PlanStatusEnum).includes(mode as PlanStatusEnum)
+      ? (mode as PlanStatusEnum)
+      : null;
+    const duration = queryNumber('duration');
+    durationType.value = DurationTypeOptions.value.find((option) => option.id === duration);
+    fromDate.value = queryDate('fromDate');
+    toDate.value = queryDate('toDate');
+    const updated = queryValue('lastUpdated');
+    lastUpdated.value =
+      updatedOptions.value.find((option) => String(option.id) === updated) ?? null;
+  };
+  const fetchItems = (page = currentPage.value, searchWord = word.value) => {
+    currentPage.value = page;
+    word.value = searchWord;
+    return controller.fetchList(
+      new IndexPlanParams(searchWord, page, perPage.value, {
         fromPrice: fromPrice.value,
         toPrice: toPrice.value,
         hasTrial: hasTrial.value ?? undefined,
@@ -94,6 +157,7 @@
           : undefined,
       }),
     );
+  };
   const remove = async (id: number) => {
     await controller.delete(new DeletePlanParams(id));
     await fetchItems();
@@ -104,13 +168,7 @@
       const result = await controller.toggleStatus(
         new TogglePlanStatusParams({ planId: id, status: nextStatus }),
       );
-      if (result.hasError) return;
-
-      await fetchItems();
-      deactivateDialogVisible.value = false;
-      archiveDialogVisible.value = false;
-      activateDialogVisible.value = false;
-      selectedPlanId.value = null;
+      return !result.hasError;
     } finally {
       statusLoading.value = false;
     }
@@ -127,35 +185,41 @@
     selectedPlanId.value = id;
     activateDialogVisible.value = true;
   };
-  const confirmStatusChange = async (status: PlanStatusEnum) => {
-    if (selectedPlanId.value === null) return;
-    await changeStatus(selectedPlanId.value, status);
+  const closeStatusDialogs = () => {
     activateDialogVisible.value = false;
     deactivateDialogVisible.value = false;
     archiveDialogVisible.value = false;
-    await fetchItems();
+  };
+  const confirmStatusChange = async (status: PlanStatusEnum) => {
+    if (selectedPlanId.value === null) return;
+    const changed = await changeStatus(selectedPlanId.value, status);
+    // if (!changed) return;
+
+    closeStatusDialogs();
+    selectedPlanId.value = null;
+    await fetchItems(currentPage.value, word.value);
   };
   const actionList = (item: PlanModel) => {
     const viewAction = {
       text: t('view'),
       icon: PlanViewIcon,
-      link: `/plans/${item.id}`,
+      link: planRouteLink(`/plans/${item.id}`),
     };
     const editActions = [
       {
         text: t('edit_price'),
         icon: PlanPriceIcon,
-        link: `/plans/edit/${item.id}?section=pricing`,
+        link: planRouteLink(`/plans/edit/${item.id}`, { section: 'pricing' }),
       },
       {
         text: t('edit_basic_info'),
         icon: PlanEditIcon,
-        link: `/plans/edit/${item.id}?section=basic`,
+        link: planRouteLink(`/plans/edit/${item.id}`, { section: 'basic' }),
       },
       {
         text: t('edit_features'),
         icon: PlanEditIcon,
-        link: `/plans/edit/${item.id}?section=features`,
+        link: planRouteLink(`/plans/edit/${item.id}`, { section: 'features' }),
       },
     ];
     const deleteBlocked = item.subscribers > 0;
@@ -176,7 +240,7 @@
         {
           text: t('complete'),
           icon: PlanEditIcon,
-          link: `/plans/edit/${item.id}`,
+          link: planRouteLink(`/plans/edit/${item.id}`),
         },
         deleteAction,
       ];
@@ -203,6 +267,11 @@
           icon: DeactiveIcon,
           action: () => openActivateDialog(item.id),
         },
+        {
+          text: t('archive'),
+          icon: ArchiveIcon,
+          action: () => openArchiveDialog(item.id),
+        },
         deleteAction,
       ];
     }
@@ -226,7 +295,9 @@
   const applyFilters = async () => {
     if (status.value) listMode.value = null;
     filterDialogVisible.value = false;
-    await fetchItems();
+    currentPage.value = 1;
+    await replacePlanQuery();
+    await fetchItems(1);
   };
   const resetFilters = async () => {
     fromPrice.value = undefined;
@@ -244,21 +315,31 @@
     if (listMode.value === mode) return;
     listMode.value = mode;
     status.value = null;
+    currentPage.value = 1;
+    await replacePlanQuery();
     await fetchItems(1, word.value);
   };
 
-  onMounted(() => fetchItems());
-  const route = useRoute();
-  const Search = debounce(() => {
-    router.push({
-      query: {
-        ...route.query,
-        page: 1,
-        word: word.value || undefined,
-      },
-    });
+  onMounted(() => {
+    restoreFiltersFromQuery();
+    fetchItems(currentPage.value, word.value);
+  });
+  const Search = debounce(async () => {
+    currentPage.value = 1;
+    await replacePlanQuery();
     fetchItems(1, word.value);
   });
+  const changePage = async (page: number) => {
+    currentPage.value = page;
+    await replacePlanQuery();
+    await fetchItems(page);
+  };
+  const changePerPage = async (count: number) => {
+    perPage.value = count;
+    currentPage.value = 1;
+    await replacePlanQuery();
+    await fetchItems(1);
+  };
 
   const GetDuarationType = (durationType: PlanDurationTypeEnum) => {
     switch (durationType) {
@@ -299,7 +380,10 @@
 
 <template>
   <section class="plan-page">
-    <button class="btn btn-primary" @click="router.push('/plans/add')">
+    <button
+      class="btn btn-primary"
+      @click="router.push({ name: 'Add Plan', query: buildPlanQuery() })"
+    >
       <span class="plus">+</span> {{ $t('Add New Plan') }}
     </button>
     <header class="index-header">
@@ -490,13 +574,8 @@
         <Pagination
           v-if="controller.pagination.value"
           :pagination="controller.pagination.value"
-          @change-page="fetchItems"
-          @count-per-page="
-            (count) => {
-              perPage = count;
-              fetchItems();
-            }
-          "
+          @change-page="changePage"
+          @count-per-page="changePerPage"
         />
       </template>
     </DataStatusBuilder>

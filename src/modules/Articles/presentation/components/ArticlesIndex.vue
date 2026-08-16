@@ -65,7 +65,7 @@
         pageNumber: page,
         perPage: perPage.value,
         withPage: 1,
-        // question_type: ArticleQuestionTypeEnum.PARAGRAPH,
+        question_type: [QuestionTypeEnum.paragraph],
       }),
     );
   };
