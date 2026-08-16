@@ -46,7 +46,7 @@
 
   const remove = async (id: number) => {
     await controller.delete(new DeletePlanParams(id));
-    await router.push({ name: 'Plans' });
+    await router.replace({ name: 'Plans' });
   };
 
   const changeStatus = async (nextStatus: PlanStatusEnum) => {
