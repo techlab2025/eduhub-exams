@@ -903,7 +903,7 @@
   "close": "Close",
   "deactivate": "Deactivate",
   "archive": "Archive",
-  "confirm_deactivate_plan_title": "Are you sure you want to deactive this plan ?",
+  "confirm_deactivate_plan_title": "Are you sure you want to deactivate this plan ?",
   "confirm_deactivate_plan_message": "This plan has no active subscribers, so it can be safely Deactive .This plan will no longer be available for new subscriptions. ",
   "confirm_archive_plan_title": "Move this plan to archive?",
   "confirm_archive_plan_message": "This plan has no active subscribers, so it can be safely archive .This plan will no longer be available for new subscriptions. ",
