@@ -549,7 +549,13 @@
             >{{ item.duration }} {{ GetDuarationType(item.durationType) }}</template
           >
           <template #cell-title="{ item }">
-            {{ item.title?.length > 30 ? `${item.title?.slice(0, 30)}...` : item.title }}
+            {{
+              item.title?.length > 30
+                ? `${item.title?.slice(0, 30)}...`
+                : item.title
+                  ? item.title
+                  : `--`
+            }}
           </template>
           <template #cell-status="{ item }">
             <p :class="`status-${GetStatusText(item.status)}`">
@@ -905,24 +911,23 @@
   }
   .plan-choice {
     &.Active {
-      span{
-      color: #18a957;
+      span {
+        color: #18a957;
       }
     }
     &.Inactive {
-      span{
-      color: #d99100;
+      span {
+        color: #d99100;
       }
     }
     &.Archived {
-      span{
-      color: #4b4b4b;
+      span {
+        color: #4b4b4b;
       }
     }
     &.Draft {
-      span{
-
-      color: #2f7bff;
+      span {
+        color: #2f7bff;
       }
     }
   }

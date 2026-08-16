@@ -95,7 +95,7 @@
             <div class="row-actions">
               <DropList
                 :action-list="actionList(item)"
-                :delete-dialog-title="$t('confirm_delete')"
+                :delete-dialog-title="$t('highlight_badge_confirm_delete')"
                 :delete-dialog-message="$t('delete_highlight_badge_message')"
               />
             </div>

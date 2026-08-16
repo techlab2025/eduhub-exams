@@ -1122,6 +1122,7 @@
   "employee_ID": "Employee ID",
   "subscription_confirm_delete": "Are you sure you want to remove this subscription details ?",
   "subscription_confirm_delete_message": "This action will permanently delete the subscription details and cannot be undone.",
-  "delete_plan_title":"Permanently delete this plan?",
-  "delete_plan_message": "This plan has no active subscribers, so it can be safely deleted. Once deleted, its entitlement settings will be removed permanently."
+  "delete_plan_title": "Permanently delete this plan?",
+  "delete_plan_message": "This plan has no active subscribers, so it can be safely deleted. Once deleted, its entitlement settings will be removed permanently.",
+  "highlight_badge_confirm_delete": "Permanently delete this highlight badge?"
 }
