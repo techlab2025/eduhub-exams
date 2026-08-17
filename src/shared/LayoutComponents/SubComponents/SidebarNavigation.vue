@@ -78,11 +78,11 @@
           name: 'highlight_badges',
           icon: SettingIcon,
         },
-        {
-          link: '/block-reasons',
-          name: 'block_reasons',
-          icon: SettingIcon,
-        },
+        // {
+        //   link: '/block-reasons',
+        //   name: 'block_reasons',
+        //   icon: SettingIcon,
+        // },
         {
           link: '/plans',
           name: 'plans',
