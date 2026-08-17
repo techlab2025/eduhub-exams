@@ -9,6 +9,7 @@ import { SubscriptionStatsParams } from '../../core/params/index.subscription.pa
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
 export default class SubscriptionController extends BaseController<
   SubscriptionDetailsModel,
@@ -62,5 +63,12 @@ export default class SubscriptionController extends BaseController<
     options?: ApiCallOptions,
   ): Promise<DataState<SubscriptionDetailsModel>> {
     return super.fetchOne(params, { ...options });
+  }
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    if (result?.error?.title) {
+      dialogManager.toastError(result?.error?.title);
+    }
+    return result;
   }
 }
