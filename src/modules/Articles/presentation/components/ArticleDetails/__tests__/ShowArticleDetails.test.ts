@@ -4,9 +4,14 @@ import ShowArticleDetails from '../ShowArticleDetails.vue';
 
 const { fetchOneMock } = vi.hoisted(() => ({ fetchOneMock: vi.fn() }));
 
-vi.mock('vue-router', () => ({
-  useRoute: () => ({ params: { id: '17' } }),
-}));
+vi.mock('vue-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('vue-router')>();
+
+  return {
+    ...actual,
+    useRoute: () => ({ params: { id: '17' } }),
+  };
+});
 
 vi.mock('../../../controllers/Article.controller', () => ({
   default: {
