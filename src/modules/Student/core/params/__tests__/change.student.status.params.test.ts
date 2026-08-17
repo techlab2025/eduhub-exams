@@ -10,4 +10,11 @@ describe('ChangeStudentStatusParams', () => {
       block_reason: 'policy',
     });
   });
+
+  it('omits block_reason when it is not supplied', () => {
+    expect(new ChangeStudentStatusParams(6, StudentStatusEnum.ACTIVE).toMap()).toEqual({
+      student_id: 6,
+      status: '1',
+    });
+  });
 });

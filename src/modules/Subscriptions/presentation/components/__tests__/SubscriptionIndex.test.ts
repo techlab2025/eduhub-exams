@@ -78,6 +78,35 @@ describe('SubscriptionIndex', () => {
     expect(mocks.fetchList).toHaveBeenCalled();
   });
 
+  it('allows selecting only subscriptions that are not active', () => {
+    const wrapper = shallowMount(Component, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          DataStatusBuilder: {
+            template: '<div><slot name="success" :data="[]" /></div>',
+          },
+          AppTable: {
+            props: ['rowSelectable'],
+            template: '<div class="app-table-stub" />',
+          },
+          FilterDialog: true,
+          UpdatedCustomInputSelect: true,
+          Pagination: true,
+        },
+      },
+    });
+
+    const rowSelectable = wrapper.getComponent('.app-table-stub').props('rowSelectable') as (item: {
+      status: number;
+    }) => boolean;
+
+    expect(rowSelectable({ status: 1 })).toBe(false);
+    expect(rowSelectable({ status: 0 })).toBe(true);
+    expect(rowSelectable({ status: 2 })).toBe(true);
+    expect(rowSelectable({ status: 3 })).toBe(true);
+  });
+
   it('blocks deleting an active subscription and opens the warning dialog', async () => {
     const wrapper = shallowMount(Component, {
       global: {
@@ -88,7 +117,7 @@ describe('SubscriptionIndex', () => {
               <div>
                 <slot
                   name="success"
-                  :data="[{ id: 7, status: '1', student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+                  :data="[{ id: 7, status: 1, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
                 />
               </div>
             `,
@@ -137,7 +166,7 @@ describe('SubscriptionIndex', () => {
             template: `
               <slot
                 name="success"
-                :data="[{ id: 7, status: '2', student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+                  :data="[{ id: 7, status: 2, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
               />
             `,
           },

@@ -3,8 +3,30 @@ import StudentModel, { StudentStatusEnum } from '../student.model';
 describe('StudentModel', () => {
   it('maps the documented student list response', () => {
     expect(
-      StudentModel.fromJson({ id: 5, name: 'Ali', serial: 'ST-5', status: '3', num_of_exams: 8 }),
-    ).toMatchObject({ id: 5, status: StudentStatusEnum.BLOCK, examsCount: 8 });
+      StudentModel.fromJson({
+        id: 5,
+        name: 'Ali',
+        image: 'student.png',
+        serial: 'ST-5',
+        education_type: { id: 2, title: 'National' },
+        current_plan: { id: 7, title: 'Premium' },
+        num_of_exams: 8,
+        num_of_study_plan: 3,
+        status: '3',
+        join_date: '2026-01-05',
+      }),
+    ).toMatchObject({
+      id: 5,
+      name: 'Ali',
+      image: 'student.png',
+      serial: 'ST-5',
+      educationType: { id: 2, title: 'National' },
+      currentPlan: { id: 7, title: 'Premium' },
+      examsCount: 8,
+      studyPlanCount: 3,
+      status: StudentStatusEnum.BLOCK,
+      joinDate: '2026-01-05',
+    });
   });
 
   it('provides a complete example for the students table', () => {

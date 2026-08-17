@@ -1,5 +1,9 @@
 import { StudentStatusEnum, type StudentTitleModel } from './student.model';
 
+export interface StudentEducationModel extends StudentTitleModel {
+  children: StudentEducationModel[];
+}
+
 export interface StudentRegistrationModel {
   registerDate: string;
   authenticationMethod: string;
@@ -53,6 +57,20 @@ const titleValue = (value: unknown): StudentTitleModel | null => {
   return { id: Number(json.id ?? 0), title: String(json.title ?? '') };
 };
 
+const educationValue = (value: unknown): StudentEducationModel | null => {
+  if (!value || typeof value !== 'object') return null;
+  const json = objectValue(value);
+  return {
+    id: Number(json.id ?? 0),
+    title: String(json.title ?? ''),
+    children: Array.isArray(json.children)
+      ? json.children
+          .map(educationValue)
+          .filter((item): item is StudentEducationModel => item !== null)
+      : [],
+  };
+};
+
 const resultList = (value: unknown): StudentResultModel[] =>
   Array.isArray(value)
     ? value.map((item) => {
@@ -75,7 +93,7 @@ export default class ShowStudentModel {
   public readonly points!: number;
   public readonly rank!: string;
   public readonly phone!: string;
-  public readonly educationType!: StudentTitleModel | null;
+  public readonly educationType!: StudentEducationModel | null;
   public readonly educationStage!: StudentTitleModel | null;
   public readonly grade!: StudentTitleModel | null;
   public readonly parentName!: string;
@@ -114,7 +132,7 @@ export default class ShowStudentModel {
       points: Number(json.points ?? 0),
       rank: String(json.rank ?? ''),
       phone: String(json.phone ?? ''),
-      educationType: titleValue(json.education_type),
+      educationType: educationValue(json.education_type),
       educationStage: titleValue(json.education_stage),
       grade: titleValue(json.grade),
       parentName: String(json.parent_name ?? ''),
@@ -193,7 +211,11 @@ export default class ShowStudentModel {
     points: 1200,
     rank: 'Golden Rank',
     phone: '+2010203040',
-    education_type: { id: 1, title: 'Basic Education' },
+    education_type: {
+      id: 1,
+      title: 'Basic Education',
+      children: [{ id: 2, title: 'Primary', children: [] }],
+    },
     education_stage: { id: 2, title: 'Primary' },
     grade: { id: 3, title: 'First' },
     parent_name: 'Hawam Ali',

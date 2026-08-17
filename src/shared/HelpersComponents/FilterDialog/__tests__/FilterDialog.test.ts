@@ -6,7 +6,8 @@ const globalConfig = {
   stubs: {
     Dialog: {
       name: 'Dialog',
-      template: '<div v-if="visible"><slot name="header"></slot><slot></slot></div>',
+      template:
+        '<div v-if="visible"><slot name="header"></slot><slot></slot><slot name="footer"></slot></div>',
       props: ['visible', 'pt'],
     },
     DialogIconFillter: true,
@@ -52,6 +53,21 @@ describe('FilterDialog.vue', () => {
 
     expect(wrapper.find('.test-content').exists()).toBe(true);
     expect(wrapper.find('.test-content').text()).toBe('Slot Content');
+  });
+
+  it('renders footer content outside the scrollable content slot', () => {
+    const wrapper = mount(FilterDialog, {
+      props: { modelValue: true },
+      slots: {
+        content: '<div class="test-content">Content</div>',
+        footer: '<button class="test-footer">Apply</button>',
+      },
+      global: globalConfig,
+    });
+
+    expect(wrapper.find('.filter-content .test-content').exists()).toBe(true);
+    expect(wrapper.find('.filter-content .test-footer').exists()).toBe(false);
+    expect(wrapper.find('.test-footer').text()).toBe('Apply');
   });
 
   it('renders header correctly', () => {

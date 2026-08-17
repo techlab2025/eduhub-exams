@@ -39,5 +39,9 @@
     <div class="filter-content">
       <slot name="content"></slot>
     </div>
+
+    <template v-if="$slots.footer" #footer>
+      <slot name="footer"></slot>
+    </template>
   </Dialog>
 </template>

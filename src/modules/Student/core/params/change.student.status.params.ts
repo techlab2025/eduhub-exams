@@ -15,7 +15,7 @@ export class ChangeStudentStatusParams extends ShowStudentParams {
     return {
       ...super.toMap(),
       status: this.status,
-      block_reason: this.blockReason,
+      ...(this.blockReason !== undefined && { block_reason: this.blockReason }),
     };
   }
 }

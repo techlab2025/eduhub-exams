@@ -155,6 +155,8 @@
   const updateSelectedRows = (rows: SubscriptionModel[]) => {
     selectedRows.value = rows;
   };
+  const isSubscriptionSelectable = (item: SubscriptionModel) =>
+    item.status !== SubscriptionStatusEnum.ACTIVE;
 
   const DeleteItems = async () => {
     if (selectedRows.value.some((item) => item.status === SubscriptionStatusEnum.ACTIVE)) {
@@ -422,11 +424,12 @@
                 </label>
               </div>
             </section>
-
-            <div class="filter-actions">
-              <button class="btn btn-primary" @click="applyFilters">{{ $t('apply') }}</button>
-              <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
-            </div>
+          </div>
+        </template>
+        <template #footer>
+          <div class="filter-actions">
+            <button class="btn btn-primary" @click="applyFilters">{{ $t('apply') }}</button>
+            <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
           </div>
         </template>
       </FilterDialog>
@@ -447,6 +450,7 @@
             :items="data as SubscriptionModel[]"
             row-key="id"
             :selectable="true"
+            :row-selectable="isSubscriptionSelectable"
             @selection-change="updateSelectedRows"
           >
             <template #cell-student="{ item }">{{ item.student.name }}</template>
@@ -867,8 +871,8 @@
   }
 
   .subscription-filter-section {
-    padding-block: 20px;
-    border-bottom: 1px solid var(--input-border-color);
+    padding-block: 6px;
+
 
     &:first-child {
       padding-top: 0;
@@ -889,7 +893,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    /* margin-bottom: 16px; */
 
     h2 {
       margin: 0;
