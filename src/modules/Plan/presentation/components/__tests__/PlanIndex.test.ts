@@ -54,6 +54,8 @@ const i18n = createI18n({
       activate: 'Activate',
       delete: 'Delete',
       confirm_delete: 'Confirm delete',
+      delete_plan_title: 'Permanently delete this plan?',
+      delete_plan_message: 'This plan can be safely deleted.',
       active: 'Active',
       archived: 'Archived',
       plan_archive_filter: 'Archive',
@@ -105,7 +107,7 @@ const mountComponent = (plan: PlanModel = PlanModel.example) =>
         },
         FilterDialog: {
           props: ['modelValue', 'dialogClass', 'width'],
-          template: '<div><slot name="content"></slot></div>',
+          template: '<div><slot name="content"></slot><slot name="footer"></slot></div>',
         },
         Pagination: true,
         DatePicker: true,
@@ -152,7 +154,7 @@ describe('PlanIndex', () => {
     expect(actions[3].link).toBe('/plans/edit/1?section=features');
     expect(actions[4].confirmation).toBeUndefined();
     expect(actions[5].confirmation).toBeUndefined();
-    expect(dropList.props('deleteDialogTitle')).toBe('Confirm delete');
+    expect(dropList.props('deleteDialogTitle')).toBe('Permanently delete this plan?');
   });
 
   it('deletes the selected plan and refreshes the list', async () => {

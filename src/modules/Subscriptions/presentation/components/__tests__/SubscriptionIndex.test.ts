@@ -45,7 +45,8 @@ describe('SubscriptionIndex', () => {
         },
         stubs: {
           FilterDialog: {
-            template: '<div class="filter-dialog-stub"><slot name="content" /></div>',
+            template:
+              '<div class="filter-dialog-stub"><slot name="content" /><slot name="footer" /></div>',
           },
           UpdatedCustomInputSelect: {
             props: ['modelValue', 'placeholder'],

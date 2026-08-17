@@ -419,7 +419,7 @@
             {{ $t('plan_archive_filter') }}
           </button>
         </div>
-        <FilterDialog v-model="filterDialogVisible" dialog-class="plan-filter-dialog" width="30rem">
+        <FilterDialog v-model="filterDialogVisible" dialog-class="plan-filter-dialog" width="40rem">
           <template #content>
             <div class="filters plan-filters">
               <section class="plan-filter-section plan-price-filter">
@@ -439,7 +439,7 @@
               <section class="plan-filter-section plan-filter-select">
                 <UpdatedCustomInputSelect
                   v-model="durationType"
-                  label="duration"
+                  :label="$t('duration')"
                   :placeholder="$t('select_duration')"
                   :static-options="DurationTypeOptions"
                   :reload="false"
@@ -525,13 +525,14 @@
                   />
                 </div>
               </section>
-
-              <div class="filter-actions">
-                <button class="btn btn-primary" @click="applyFilters">{{ $t('apply') }}</button>
-                <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
-              </div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" @click="applyFilters">{{ $t('apply') }}</button>
+              <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
             </div>
           </template>
+          <!-- <template #footer>
+          </template> -->
         </FilterDialog>
       </div>
     </header>
@@ -703,16 +704,13 @@
   }
 
   .filter-actions {
-    display: flex;
-    justify-content: space-between;
-    position: fixed;
-    bottom: 0;
-    right: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(112px, 1fr);
+    gap: 12px;
     width: 100%;
-    padding: var(--xs-size);
 
     button {
-      width: 100% !important;
+      width: 100%;
     }
   }
 
@@ -766,74 +764,135 @@
     background: var(--BgWhite);
   }
 
-  :global(.plan-filter-dialog) {
+  :global(.plan-filter-dialog.p-dialog) {
+    display: flex;
+    flex-direction: column;
     max-width: calc(100vw - 24px);
-    border-radius: 24px 0 0 24px;
+    max-height: calc(100dvh - 24px);
+    overflow: hidden;
+    border: 1px solid var(--border-weak);
+    border-radius: 28px;
     background: var(--standard-white) !important;
-    box-shadow: 0 4px 2px var(--black-alpha-10);
+    box-shadow: var(--shadow-xl);
+  }
 
-    .p-dialog-header {
-      padding: 24px 20px 0;
-    }
+  :global(.plan-filter-dialog.p-dialog .p-dialog-header) {
+    flex: 0 0 auto;
+    padding: 22px 24px 18px;
+    background: linear-gradient(135deg, var(--standard-white), var(--PrimaryColor-alpha-4));
+    border-bottom: 1px solid var(--border-weak);
+  }
 
-    .p-dialog-content {
-      padding: 24px 20px;
-    }
+  :global(.plan-filter-dialog.p-dialog .p-dialog-header-actions) {
+    display: flex;
+  }
 
-    .filter-title {
-      margin: 0;
-      color: var(--standard-black);
-      font-family: var(--font-family);
-      font-size: 20px;
-      line-height: normal;
-    }
+  :global(.plan-filter-dialog.p-dialog .p-dialog-close-button) {
+    width: 36px;
+    height: 36px;
+    color: var(--gray-500);
+    border-radius: var(--radius-full);
+  }
+
+  :global(.plan-filter-dialog.p-dialog .p-dialog-close-button:hover) {
+    color: var(--PrimaryColor);
+    background: var(--PrimaryColor-alpha-8);
+  }
+
+  :global(.plan-filter-dialog.p-dialog .p-dialog-content) {
+    min-height: 0;
+    flex: 0 1 auto;
+    padding: 0 20px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--gray-50-std);
+    scrollbar-color: var(--gray-300) transparent;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  :global(.plan-filter-dialog.p-dialog .p-dialog-content::-webkit-scrollbar) {
+    width: 6px;
+  }
+
+  :global(.plan-filter-dialog.p-dialog .p-dialog-content::-webkit-scrollbar-thumb) {
+    background: var(--gray-300);
+    border-radius: var(--radius-full);
+  }
+
+  :global(.plan-filter-dialog.p-dialog .p-dialog-content::-webkit-scrollbar-track) {
+    background: transparent;
+  }
+
+  :global(.plan-filter-dialog.p-dialog .p-dialog-footer) {
+    flex: 0 0 auto;
+    padding: 16px 24px 20px;
+    background: var(--standard-white);
+    border-top: 1px solid var(--border-weak);
+    box-shadow: var(--shadow-sm);
+  }
+
+  :global(.plan-filter-dialog.p-dialog .filter-title) {
+    margin: 0;
+    color: var(--gray-900);
+    font-family: var(--font-family);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
   }
 
   .filters.plan-filters {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-block: 18px;
+    font-family: 'Demi' !important;
   }
 
   .plan-filter-section {
-    padding-block: 20px;
-    border-bottom: 1px solid var(--input-border-color);
-
-    &:first-child {
-      padding-top: 0;
-    }
+    min-width: 0;
+    padding: 18px;
+    background: var(--standard-white);
+    border: 1px solid var(--border-weak);
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
 
     h2 {
       margin: 0;
-      color: var(--title-header-color);
+      color: var(--gray-800);
       font-family: var(--font-family);
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 26px;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
     }
   }
 
   .plan-filter-select {
     :deep(.input-label) {
-      color: var(--title-header-color) !important;
-      font-size: 16px !important;
-      font-weight: 600 !important;
+      color: var(--gray-800) !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
     }
 
     :deep(.input-select) {
-      height: 56px;
-      margin-top: 4px;
-      border: 1px solid var(--input-border-color);
-      border-radius: var(--radius-full);
-      background: var(--standard-white);
+      height: 52px;
+      margin-top: 7px;
+      border: 1px solid var(--border-weak);
+      border-radius: 14px;
+      background: var(--gray-50-std);
+      box-shadow: none;
+
+      &:hover {
+        border-color: var(--PrimaryColor-alpha-40);
+      }
     }
 
     :deep(.p-select-label) {
       display: flex;
       align-items: center;
-      padding-inline: 16px;
+      padding-inline: 14px;
       color: var(--gray-400);
-      font-size: 16px;
+      font-size: 14px;
     }
 
     :deep(.reload-icon) {
@@ -845,101 +904,108 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   .plan-filter-reset {
-    display: grid;
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
     padding: 0;
-    border: 0;
-    background: transparent;
+    display: grid;
     color: var(--gray-text);
+    background: var(--gray-50-std);
+    border: 1px solid var(--border-weak);
+    border-radius: var(--radius-full);
     cursor: pointer;
     place-items: center;
 
+    &:hover {
+      color: var(--PrimaryColor);
+      background: var(--PrimaryColor-alpha-8);
+      border-color: var(--PrimaryColor-alpha-30);
+    }
+
     :deep(svg) {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
   }
 
   .plan-price-filter {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: grid;
+    gap: 14px;
   }
 
   .plan-price-fields {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+    gap: 14px;
 
     label {
       display: flex;
       min-width: 0;
       flex-direction: column;
-      gap: 4px;
-      color: var(--title-header-color);
-      font-size: 16px;
+      gap: 7px;
+      color: var(--gray-600);
+      font-size: 14px;
+      font-weight: 600;
     }
 
     input {
       width: 100%;
-      height: 56px;
-      padding-inline: 16px;
-      border: 1px solid var(--input-border-color);
-      border-radius: var(--radius-full);
+      height: 50px;
+      padding-inline: 14px;
+      background: var(--gray-50-std);
+      border: 1px solid var(--border-weak);
+      border-radius: 14px;
       outline: none;
 
       &:focus {
-        border-color: var(--primary-green);
+        background: var(--standard-white);
+        border-color: var(--PrimaryColor);
+        box-shadow: 0 0 0 3px var(--PrimaryColor-alpha-12);
       }
     }
   }
 
   .plan-choice-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    gap: 10px;
   }
 
   .plan-trial-choices {
-    max-width: 277px;
-  }
-  .plan-choice {
-    &.Active {
-      span {
-        color: #18a957;
-      }
-    }
-    &.Inactive {
-      span {
-        color: #d99100;
-      }
-    }
-    &.Archived {
-      span {
-        color: #4b4b4b;
-      }
-    }
-    &.Draft {
-      span {
-        color: #2f7bff;
-      }
-    }
+    max-width: none;
   }
 
   .plan-choice,
   .plan-radio {
-    display: inline-flex;
+    min-width: 0;
+    min-height: 46px;
+    padding: 10px 12px;
+    display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--standard-black);
-    font-size: 16px;
+    color: var(--gray-700);
+    background: var(--gray-50-std);
+    border: 1px solid var(--border-weak);
+    border-radius: 13px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
+
+    &:hover,
+    &:has(input:checked) {
+      background: var(--standard-white);
+      border-color: currentColor;
+      box-shadow: var(--shadow-sm);
+    }
+
+    &:has(input:focus-visible) {
+      outline: 3px solid var(--PrimaryColor-alpha-20);
+      outline-offset: 2px;
+    }
 
     input {
       position: absolute;
@@ -955,24 +1021,23 @@
     height: 18px;
     flex: 0 0 18px;
     border: 1px solid var(--gray-300);
-    border-radius: 5px;
+    border-radius: var(--radius-full);
     background: var(--standard-white);
   }
 
   .plan-choice input:checked + .plan-choice-box {
-    border-color: var(--primary-green);
-    background: var(--primary-green);
+    border-color: currentColor;
+    background: var(--standard-white);
 
     &::after {
       position: absolute;
-      top: 3px;
-      left: 6px;
-      width: 4px;
+      top: 4px;
+      left: 4px;
+      width: 8px;
       height: 8px;
-      border: solid var(--standard-white);
-      border-width: 0 2px 2px 0;
+      background: currentColor;
+      border-radius: var(--radius-full);
       content: '';
-      transform: rotate(45deg);
     }
   }
 
@@ -993,14 +1058,13 @@
   }
 
   .plan-last-update-filter {
-    border-bottom: 0;
+    margin-bottom: 0;
   }
 
   .plan-radio-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 16px;
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
   }
 
   .plan-radio-circle {
@@ -1009,7 +1073,7 @@
     height: 20px;
     flex: 0 0 20px;
     border: 1px solid var(--gray-300);
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     background: var(--standard-white);
   }
 
@@ -1019,8 +1083,8 @@
     &::after {
       position: absolute;
       inset: 3px;
-      border-radius: 50%;
-      background: var(--primary-green);
+      border-radius: var(--radius-full);
+      background: var(--PrimaryColor);
       content: '';
     }
   }
@@ -1029,20 +1093,73 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
-    margin-top: 16px;
+    margin-top: 12px;
+
+    :deep(.p-datepicker) {
+      position: relative;
+      width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      background: var(--gray-50-std);
+      border: 1px solid var(--border-weak);
+      border-radius: 14px;
+
+      &:focus-within {
+        background: var(--standard-white);
+        border-color: var(--PrimaryColor);
+        box-shadow: 0 0 0 3px var(--PrimaryColor-alpha-12);
+      }
+    }
+
+    :deep(.p-inputtext) {
+      min-width: 0;
+      height: 100%;
+      flex: 1 1 auto;
+      padding-inline: 12px 6px;
+      background: transparent;
+      border: 0 !important;
+      border-radius: 14px !important;
+      box-shadow: none !important;
+      font-size: 12px !important;
+    }
+
+    :deep(.p-datepicker-dropdown) {
+      position: static;
+      width: 42px;
+      height: 100%;
+      flex: 0 0 42px;
+      color: var(--PrimaryColor);
+      background: var(--PrimaryColor-alpha-8);
+      border: 0;
+      border-inline-start: 1px solid var(--border-weak);
+      border-radius: 0 !important;
+    }
   }
 
-  .plan-filters .filter-actions {
-    gap: 16px;
-    padding-top: 12px;
+  .filter-actions {
+    gap: 12px;
 
     .btn {
       width: 100%;
-      height: 56px;
+      height: 50px;
       margin: 0 !important;
       border-radius: var(--radius-full);
       font-family: var(--font-family);
       font-size: 16px;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      color: var(--standard-white);
+      background: var(--PrimaryColor);
+      border: 1px solid var(--PrimaryColor);
+      box-shadow: var(--shadow-sm);
+
+      &:hover {
+        background: var(--PrimaryColor-hover);
+      }
     }
 
     .btn-cancel {
@@ -1058,8 +1175,26 @@
   }
 
   @media (max-width: 520px) {
-    :global(.plan-filter-dialog) {
-      border-radius: var(--radius-xl);
+    :global(.plan-filter-dialog.p-dialog) {
+      border-radius: 20px;
+    }
+
+    :global(.plan-filter-dialog.p-dialog .p-dialog-header),
+    :global(.plan-filter-dialog.p-dialog .p-dialog-footer) {
+      padding-inline: 16px;
+    }
+
+    :global(.plan-filter-dialog.p-dialog .p-dialog-content) {
+      padding-inline: 12px;
+    }
+
+    .filters.plan-filters {
+      gap: 10px;
+      padding-block: 12px;
+    }
+
+    .plan-filter-section {
+      padding: 16px;
     }
 
     .plan-status-choices {
@@ -1067,8 +1202,8 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .plan-filters .filter-actions {
-      grid-template-columns: minmax(0, 1fr) minmax(110px, 0.58fr);
+    .filter-actions {
+      grid-template-columns: minmax(0, 1.35fr) minmax(104px, 1fr);
     }
   }
 </style>
