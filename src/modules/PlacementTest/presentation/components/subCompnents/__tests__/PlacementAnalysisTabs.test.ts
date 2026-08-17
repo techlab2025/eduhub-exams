@@ -62,16 +62,15 @@ const placementTest = new ShowPlcaementTestModel({
 });
 
 describe('PlacementAnalysisTabs', () => {
-  it('renders skills analysis by default', () => {
+  it('renders question analysis by default', () => {
     const wrapper = mount(PlacementAnalysisTabs, {
       props: { placementTest },
       global: { plugins: [i18n] },
     });
 
-    expect(wrapper.text()).toContain('Understanding');
-    expect(wrapper.text()).toContain('90%');
-    expect(wrapper.text()).toContain('Application');
-    expect(wrapper.get('[data-tab="skills"]').classes()).toContain(
+    expect(wrapper.text()).toContain('Strong question');
+    expect(wrapper.text()).toContain('Weak question');
+    expect(wrapper.get('[data-tab="questions"]').classes()).toContain(
       'placement-analysis-tabs__tab--active',
     );
   });

@@ -206,7 +206,11 @@ describe('SubscriptionIndex', () => {
             template: `
               <slot
                 name="success"
+<<<<<<< HEAD
                   :data="[{ id: 7, status: 2, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+=======
+                :data="[{ id: 7, status: 2, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+>>>>>>> ci/cd
               />
             `,
           },

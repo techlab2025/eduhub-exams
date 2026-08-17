@@ -47,6 +47,7 @@ const mountComponent = (
         questionType,
         approvedBy: 'Reviewer',
         createdAt: '2026-07-29',
+        can_delete: true,
       } as ShowQuestionsModel,
     },
     global: {
@@ -76,7 +77,7 @@ describe('QuestionHeader', () => {
     [QuestionStatusEnum.APPROVED, 'Approved', 'available for publishing'],
     [QuestionStatusEnum.REJECTED, 'Rejected', 'rejection reason'],
     [QuestionStatusEnum.DRAFT, 'Draft', 'saved as a draft'],
-    [QuestionStatusEnum.NOT_REVIEW, 'Under Review', 'being reviewed'],
+    [QuestionStatusEnum.NOT_REVIEW, 'Not Reviewed', 'not reviewed yet'],
     [QuestionStatusEnum.ARCHIVED, 'Archived', 'no longer available'],
     [QuestionStatusEnum.REVISION, 'Revision Required', 'requires revision'],
   ])('shows the title and description for status %s', (status, title, description) => {
@@ -90,7 +91,7 @@ describe('QuestionHeader', () => {
     const wrapper = mountComponent(QuestionStatusEnum.APPROVED);
 
     expect(wrapper.find('.revision-action').exists()).toBe(true);
-    expect(wrapper.text()).toContain('archive');
+    expect(wrapper.text().toLowerCase()).toContain('archive');
     expect(wrapper.text()).not.toContain('edit');
     expect(wrapper.find('.action-btn.delete').exists()).toBe(false);
   });

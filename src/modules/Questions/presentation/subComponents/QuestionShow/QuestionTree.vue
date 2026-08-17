@@ -96,12 +96,15 @@
 <style scoped>
   .document {
     position: relative;
+
     h5 {
       padding: 0 1rem;
     }
+
     p {
       padding: 0 1.5rem;
     }
+
     .arrow-next {
       position: absolute;
       left: 5px;

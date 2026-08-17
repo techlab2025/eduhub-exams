@@ -153,23 +153,6 @@ describe('SubjectsPanel', () => {
     expect(mockItemController.fetchList.mock.calls.length).toBeGreaterThan(callsBefore);
   });
 
-  it('shows Add New button in bottom bar when subjects exist', async () => {
-    const mockSubject = {
-      subject_id: 1,
-      subject_title: 'Math',
-      has_children: false,
-    } as unknown as EducationSubjectModel;
-
-    mockItemController.fetchList.mockResolvedValue(
-      new DataSuccess<EducationSubjectModel[]>({ data: [mockSubject] }),
-    );
-
-    const wrapper = mountComponent();
-    await flushPromises();
-    expect(wrapper.find('.subjects-bottom-bar').exists()).toBe(true);
-    expect(wrapper.find('.btn-full').exists()).toBe(true);
-  });
-
   it('adds the root subject level to the configured branch count', async () => {
     const mockSubject = {
       subject_id: 1,

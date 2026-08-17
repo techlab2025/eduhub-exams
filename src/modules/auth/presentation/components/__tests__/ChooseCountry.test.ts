@@ -5,6 +5,7 @@ import CountryController from '@/modules/country/presentation/controllers/countr
 import { ref } from 'vue';
 import CountryModel from '@/modules/country/core/models/country.model';
 import IndexCountryParams from '@/modules/country/core/params/index.country.params';
+import { createPinia } from 'pinia';
 
 const mockPush = vi.fn();
 const mockQuery = ref({ page: '1', word: '' });
@@ -48,6 +49,7 @@ describe('ChooseCountry.vue', () => {
 
   const mountOptions = {
     global: {
+      plugins: [createPinia()],
       mocks: {
         $t: (msg: string) => msg,
       },
@@ -70,7 +72,7 @@ describe('ChooseCountry.vue', () => {
 
   it('renders properly and fetches countries on mount', async () => {
     const wrapper = mount(ChooseCountry, mountOptions);
-    expect(wrapper.find('h3.title').text()).toBe('Choose your country');
+    expect(wrapper.find('h3.title').text()).toBe('Select Your Country');
 
     // The component fetches on mounted
     expect(mockFetchList).toHaveBeenCalledTimes(1);
@@ -97,11 +99,6 @@ describe('ChooseCountry.vue', () => {
     const continueButton = wrapper.find('button.btn-primary');
     await continueButton.trigger('click');
 
-    expect(mockPush).toHaveBeenCalledWith({
-      name: 'Login',
-      params: {
-        country_code: 'eg',
-      },
-    });
+    expect(mockPush).toHaveBeenCalledWith({ name: 'Login' });
   });
 });

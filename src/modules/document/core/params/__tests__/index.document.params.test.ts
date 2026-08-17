@@ -19,7 +19,7 @@ describe('IndexDocumentParams', () => {
     expect(map.page).toBe(2);
     expect(map.per_page).toBe(20);
     expect(map.with_pagination).toBe(1);
-    expect(map.date_remove).toBe('2023-01-01');
+    expect(map.created_at).toBe('2023-01-01');
     expect(map.document_type_id).toBe(5);
   });
 
@@ -30,7 +30,7 @@ describe('IndexDocumentParams', () => {
     expect(map.page).toBe(1);
     expect(map.per_page).toBe(10);
     expect(map.with_pagination).toBe(1);
-    expect(map.date_remove).toBeUndefined();
+    expect(map.created_at).toBeUndefined();
     expect(map.document_type_id).toBeUndefined();
   });
 });

@@ -5,12 +5,12 @@ import PlanDetailsModel from '../../../core/models/plan.details.model';
 import PlanDetails from '../PlanDetails.vue';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
 
-const { fetchOneMock, deleteMock, toggleStatusMock, routerPushMock, itemData, itemState } =
+const { fetchOneMock, deleteMock, toggleStatusMock, routerReplaceMock, itemData, itemState } =
   vi.hoisted(() => ({
     fetchOneMock: vi.fn(),
     deleteMock: vi.fn(),
     toggleStatusMock: vi.fn(),
-    routerPushMock: vi.fn(),
+    routerReplaceMock: vi.fn(),
     itemData: { value: null as PlanDetailsModel | null },
     itemState: { value: {} },
   }));
@@ -29,7 +29,7 @@ vi.mock('../../controllers/plan.controller', () => ({
 
 vi.mock('vue-router', () => ({
   useRoute: () => ({ params: { id: '5' } }),
-  useRouter: () => ({ push: routerPushMock }),
+  useRouter: () => ({ replace: routerReplaceMock }),
 }));
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
@@ -200,6 +200,6 @@ describe('PlanDetails', () => {
     await actions.at(-1).action();
 
     expect(deleteMock.mock.calls[0]?.[0].toMap()).toEqual({ subscription_plan_id: 5 });
-    expect(routerPushMock).toHaveBeenCalledWith({ name: 'Plans' });
+    expect(routerReplaceMock).toHaveBeenCalledWith({ name: 'Plans' });
   });
 });

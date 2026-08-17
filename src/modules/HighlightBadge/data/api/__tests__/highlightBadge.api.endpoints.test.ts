@@ -8,7 +8,7 @@ describe('HighlightBadgeEndpoints', () => {
         expect.stringContaining('fetch_highlight_badges'),
         expect.stringContaining('store_highlight_badge'),
         expect.stringContaining('show_highlight_badge'),
-        expect.stringContaining('edit_highlight_badge'),
+        expect.stringContaining('update_highlight_badge'),
         expect.stringContaining('delete_highlight_badge'),
       ]),
     );

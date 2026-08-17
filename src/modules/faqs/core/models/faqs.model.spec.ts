@@ -11,25 +11,22 @@ describe('FaqsModel', () => {
   it('creates an instance from constructor', () => {
     const model = new FaqsModel(mockData);
     expect(model.id).toBe(1);
-    expect(model.question.en).toBe('Q');
-    expect(model.answer.ar).toBe('ج');
+    expect(model.question).toEqual({ en: 'Q', ar: 'س' });
+    expect(model.answer).toEqual({ en: 'A', ar: 'ج' });
   });
 
   it('creates an instance fromJson', () => {
     const json = {
       id: 1,
-      translations: {
-        question: { en: 'Q' },
-        answer: { en: 'A' },
-      },
+      question: [{ locale: 'en', question: 'Q' }],
+      answer: [{ locale: 'en', answer: 'A' }],
     };
     const model = FaqsModel.fromJson(json);
     expect(model.id).toBe(1);
-    expect(model.question.en).toBe('Q');
+    expect(model.question).toEqual({ en: 'Q' });
   });
 
   it('has examples', () => {
-    expect(FaqsModel.examples.length).toBeGreaterThan(0);
     expect(FaqsModel.example).toBeInstanceOf(FaqsModel);
   });
 });

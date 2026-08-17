@@ -3,6 +3,7 @@
 
 .placement-page {
   @include flex-column(nowrap, flex-start, flex-start);
+
   gap: $XlSize2;
 
   .index-header {
@@ -20,6 +21,7 @@
 
     .btns-container {
       @include flex-row(nowrap, flex-start, center);
+
       gap: $XsSize4;
     }
   }
@@ -32,6 +34,7 @@
     &.completed {
       color: var(--success);
     }
+
     &.not_reviewed {
       color: var(--warning);
     }
@@ -39,11 +42,14 @@
 
   .employee-name {
     @include flex-row(nowrap, flex-start, center);
+
     gap: $MdSize;
+
     img {
       width: $XlSize3;
       height: $XlSize3;
     }
+
     span {
       color: var(--standard-black);
       font-size: $MdSize;
@@ -52,11 +58,13 @@
 
   .row-actions {
     @include flex-row(nowrap, center, center);
+
     gap: $XsSize3;
   }
 
   .action-btn {
     @include flex-row(nowrap, center, center);
+
     width: calc($XlSize3 + 2px);
     height: calc($XlSize3 + 2px);
     border-radius: $XsSize2;

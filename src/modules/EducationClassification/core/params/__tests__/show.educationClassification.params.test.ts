@@ -10,7 +10,7 @@ describe('ShowEducationClassificationParams', () => {
   it('should map to an object correctly', () => {
     const params = new ShowEducationClassificationParams({ id: 20 });
     const map = params.toMap();
-    expect(map).toEqual({ id: 20 });
+    expect(map).toEqual({ education_classification_id: 20 });
   });
 
   it('should validate correctly with valid data', () => {

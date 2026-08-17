@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { ref } from 'vue';
 import faqsIndex from '../faqsIndex.vue';
 import FaqsController from '../../controllers/faqs.controller';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { DataEmpty, DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import FaqsModel from '../../../core/models/faqs.model';
 
 // Mock vue-router
@@ -70,8 +70,8 @@ describe('faqsIndex', () => {
   it('displays faqs when data is present', async () => {
     const controller = FaqsController.getInstance();
     const mockFaqs = [
-      new FaqsModel({ id: 1, question: { en: 'Q1' }, answer: { en: 'A1' } }),
-      new FaqsModel({ id: 2, question: { en: 'Q2' }, answer: { en: 'A2' } }),
+      new FaqsModel({ id: 1, question: 'Q1', answer: 'A1' }),
+      new FaqsModel({ id: 2, question: 'Q2', answer: 'A2' }),
     ];
     vi.mocked(controller.fetchList).mockImplementation(() => {
       controller.listState.value = new DataSuccess({ data: mockFaqs });
@@ -88,7 +88,7 @@ describe('faqsIndex', () => {
   it('shows empty state when no data is present', async () => {
     const controller = FaqsController.getInstance();
     vi.mocked(controller.fetchList).mockImplementation(() => {
-      controller.listState.value = new DataSuccess({ data: [] });
+      controller.listState.value = new DataEmpty(null as never);
       return Promise.resolve();
     });
 
@@ -100,7 +100,7 @@ describe('faqsIndex', () => {
 
   it('calls controller.delete when delete button is clicked', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaqs = [new FaqsModel({ id: 1, question: { en: 'Q1' }, answer: { en: 'A1' } })];
+    const mockFaqs = [new FaqsModel({ id: 1, question: 'Q1', answer: 'A1' })];
     vi.mocked(controller.fetchList).mockImplementation(() => {
       controller.listState.value = new DataSuccess({ data: mockFaqs });
       return Promise.resolve();
@@ -116,7 +116,7 @@ describe('faqsIndex', () => {
 
   it('toggles expand state when clicking a row', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaqs = [new FaqsModel({ id: 1, question: { en: 'Q1' }, answer: { en: 'A1' } })];
+    const mockFaqs = [new FaqsModel({ id: 1, question: 'Q1', answer: 'A1' })];
     vi.mocked(controller.fetchList).mockImplementation(() => {
       controller.listState.value = new DataSuccess({ data: mockFaqs });
       return Promise.resolve();

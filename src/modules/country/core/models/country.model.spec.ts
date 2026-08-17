@@ -35,7 +35,7 @@ describe('CountryModel', () => {
         id: 5,
         title: 'Saudi Arabia',
         code: 'SA',
-        flag: '🇸🇦',
+        image: '🇸🇦',
       };
 
       const model = CountryModel.fromJson(json);

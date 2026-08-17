@@ -167,7 +167,9 @@
               <span class="" :class="GetPlasmentStatus(value)">{{ GetPlasmentStatus(value) }}</span>
             </template>
             <template #cell-in_plan="{ value }">
-              <span class="" :class="value ? 'text-success' : 'text-danger'">{{ value ? 'Yes' : 'No' }}</span>
+              <span class="" :class="value ? 'text-success' : 'text-danger'">{{
+                value ? 'Yes' : 'No'
+              }}</span>
             </template>
             <template #cell-result="{ value }">
               <span class="">{{ value }} </span>
@@ -275,10 +277,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
+
     img {
       width: 50px;
     }
   }
+
   .empty-state {
     display: flex;
     flex-direction: column;

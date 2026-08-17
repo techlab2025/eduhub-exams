@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import AddDeleteResonsParams from './add.delete.reasons.params';
 import EditDeleteResonsParams from './edit.delete.reasons.params';
 import DeleteDeleteResonsParams from './delete.delete.reasons.params';
+import TranslationParams from '@/modules/about/core/params/translation.params';
 
 describe('DeleteReasons Params', () => {
   describe('AddDeleteResonsParams', () => {
@@ -14,7 +15,7 @@ describe('DeleteReasons Params', () => {
     });
 
     it('toMap returns an object', () => {
-      const params = new AddDeleteResonsParams({ translations: {} as any });
+      const params = new AddDeleteResonsParams({ translations: new TranslationParams({}) });
       expect(params.toMap()).toBeTypeOf('object');
     });
 
@@ -36,7 +37,10 @@ describe('DeleteReasons Params', () => {
     });
 
     it('toMap returns an object', () => {
-      const params = new EditDeleteResonsParams({ id: 1, translations: {} as any });
+      const params = new EditDeleteResonsParams({
+        id: 1,
+        translations: new TranslationParams({}),
+      });
       expect(params.toMap()).toBeTypeOf('object');
     });
 

@@ -52,7 +52,8 @@
       border-radius: 50%;
       opacity: 0.7;
     }
-     &::before {
+
+    &::before {
       position: absolute;
       right: -40px;
       top: -110px;
@@ -127,6 +128,7 @@
     z-index: 1;
     display: flex;
     gap: 10px;
+
     &::after {
       position: absolute;
       right: 75px;

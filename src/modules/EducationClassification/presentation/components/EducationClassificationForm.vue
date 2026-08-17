@@ -120,6 +120,7 @@
       font-family: 'Demi';
     }
   }
+
   .field-group {
     &.disabled {
       cursor: not-allowed;

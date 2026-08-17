@@ -9,7 +9,10 @@ describe('TogglePlanStatusParams', () => {
       status: PlanStatusEnum.Archived,
     });
 
-    expect(params.toMap()).toEqual({ plan_id: 12, status: PlanStatusEnum.Archived });
+    expect(params.toMap()).toEqual({
+      subscription_plan_id: 12,
+      status: PlanStatusEnum.Archived,
+    });
     expect(params.validate().isValid).toBe(true);
   });
 });

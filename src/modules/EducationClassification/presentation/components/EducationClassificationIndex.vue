@@ -293,6 +293,7 @@
     width: 100% !important;
     height: 100% !important;
   }
+
   .status-toggle {
     display: flex;
     align-items: center;

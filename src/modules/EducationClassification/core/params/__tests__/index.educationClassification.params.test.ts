@@ -9,7 +9,11 @@ describe('IndexEducationClassificationParams', () => {
   });
 
   it('should map to an object correctly', () => {
-    const params = new IndexEducationClassificationParams('test', 2, 20);
+    const params = new IndexEducationClassificationParams({
+      word: 'test',
+      pageNumber: 2,
+      perPage: 20,
+    });
     const map = params.toMap();
     expect(map).toMatchObject({
       word: 'test',

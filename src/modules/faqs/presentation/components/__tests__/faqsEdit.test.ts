@@ -20,9 +20,9 @@ vi.mock('vue-router', () => ({
 
 // Create a stable mock instance with reactive refs
 const mockInstance = {
-  fetchList: vi.fn(),
+  fetchOne: vi.fn(),
   update: vi.fn(),
-  listState: ref(null),
+  itemState: ref(new DataSuccess({ data: new FaqsModel({ id: 1, question: 'q', answer: 'a' }) })),
   errorMessage: ref(''),
 };
 
@@ -39,7 +39,10 @@ describe('faqsEdit', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    mockInstance.listState.value = null;
+    mockInstance.itemState.value = new DataSuccess({
+      data: new FaqsModel({ id: 1, question: 'q', answer: 'a' }),
+    });
+    mockInstance.fetchOne.mockResolvedValue(mockInstance.itemState.value);
     mockInstance.errorMessage.value = '';
   });
 
@@ -56,53 +59,33 @@ describe('faqsEdit', () => {
 
   it('renders and fetches FAQ on mount', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaq = new FaqsModel({ id: 1, question: { en: 'q' }, answer: { en: 'a' } });
-    vi.mocked(controller.fetchList).mockImplementation(() => {
-      controller.listState.value = new DataSuccess({ data: [mockFaq] });
-      return Promise.resolve();
-    });
-
     const wrapper = mount(faqsEdit, mountOptions);
     await flushPromises();
 
-    expect(controller.fetchList).toHaveBeenCalled();
+    expect(controller.fetchOne).toHaveBeenCalled();
     expect(wrapper.find('.faqs-title').text()).toBe('faqs');
   });
 
   it('calls controller.update when save is clicked', async () => {
     const controller = FaqsController.getInstance();
-    const mockFaq = new FaqsModel({ id: 1, question: { en: 'q' }, answer: { en: 'a' } });
-    vi.mocked(controller.fetchList).mockImplementation(() => {
-      controller.listState.value = new DataSuccess({ data: [mockFaq] });
-      return Promise.resolve();
-    });
-
     const wrapper = mount(faqsEdit, mountOptions);
     await flushPromises();
 
-    // Directly set formParams if possible, or trigger updateData
     const mockParams = { question: { en: 'new q' }, answer: { en: 'new a' } };
-    // @ts-expect-error - updateData is internal
-    await wrapper.vm.updateData(mockParams);
+    wrapper.getComponent({ name: 'FaqsForm' }).vm.$emit('update-data', mockParams);
 
-    await wrapper.find('.btn-save').trigger('click');
+    await wrapper.find('.btn-primary').trigger('click');
 
     expect(controller.update).toHaveBeenCalled();
-    expect(pushMock).toHaveBeenCalledWith('/eg/faqs');
+    expect(pushMock).toHaveBeenCalledWith('/faqs');
   });
 
   it('redirects to list when cancel is clicked', async () => {
-    const controller = FaqsController.getInstance();
-    vi.mocked(controller.fetchList).mockImplementation(() => {
-      controller.listState.value = new DataSuccess({ data: [] });
-      return Promise.resolve();
-    });
-
     const wrapper = mount(faqsEdit, mountOptions);
     await flushPromises();
 
     await wrapper.find('.btn-cancel').trigger('click');
 
-    expect(pushMock).toHaveBeenCalledWith('/eg/faqs');
+    expect(pushMock).toHaveBeenCalledWith('/faqs');
   });
 });

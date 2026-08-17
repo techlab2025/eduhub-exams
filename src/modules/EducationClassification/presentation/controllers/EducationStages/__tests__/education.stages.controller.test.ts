@@ -35,7 +35,10 @@ describe('EducationStageController', () => {
 
   it('should call super.create in create method', async () => {
     const controller = EducationStageController.getInstance();
-    const params = { toMap: () => ({}) } as any;
+    const params = {
+      translations: { title: { en: 'Stage' } },
+      toMap: () => ({}),
+    } as any;
 
     mockSuperCreate.mockResolvedValue({ isSuccess: true });
 

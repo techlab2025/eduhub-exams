@@ -1,52 +1,52 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import AddDocumentParams from '../add.document.params';
 import DocumentTranslationParams from '../translation.params';
 
 const makeParams = (overrides: Partial<ConstructorParameters<typeof AddDocumentParams>[0]> = {}) =>
   new AddDocumentParams({
-    title: 'Doc Title',
     refNumber: 'REF-001',
     documentTypeId: 1,
-    subjects: [1, 2],
-    translations: new DocumentTranslationParams({ description: { en: 'Desc', ar: 'وصف' } }),
+    stage_id: 2,
+    subjects: 3,
+    translations: new DocumentTranslationParams({
+      title: { en: 'Document title', ar: 'عنوان المستند' },
+      description: { en: 'Description', ar: 'الوصف' },
+    }),
     tags: ['tag1'],
-    images: [],
-    files: [],
+    images: 'data:image/png;base64,aW1hZ2U=',
+    files: 'data:application/pdf;base64,ZmlsZQ==',
     ...overrides,
   });
 
 describe('AddDocumentParams', () => {
-  it('should create an instance with correct data', () => {
+  it('stores the document form fields', () => {
     const params = makeParams();
-    expect(params.title).toBe('Doc Title');
+
     expect(params.refNumber).toBe('REF-001');
     expect(params.documentTypeId).toBe(1);
-    expect(params.subjects).toEqual([1, 2]);
+    expect(params.stage_id).toBe(2);
+    expect(params.subjects).toBe(3);
     expect(params.tags).toEqual(['tag1']);
   });
 
-  it('should map to an object correctly', () => {
-    const params = makeParams();
-    const map = params.toMap();
-    expect(map.title).toBe('Doc Title');
-    expect(map.refrance_number).toBe('REF-001');
-    expect(map.document_type_id).toBe(1);
-    expect(map.subjects).toEqual([1, 2]);
-    expect(map.tags).toEqual(['tag1']);
+  it('maps the current backend payload keys', () => {
+    expect(makeParams().toMap()).toEqual({
+      reference_number: 'REF-001',
+      document_type_id: 1,
+      stage_id: 2,
+      subject_id: 3,
+      translations: {
+        title: { en: 'Document title', ar: 'عنوان المستند' },
+        description: { en: 'Description', ar: 'الوصف' },
+      },
+      document_tags: ['tag1'],
+      image: 'data:image/png;base64,aW1hZ2U=',
+      document_file: 'data:application/pdf;base64,ZmlsZQ==',
+    });
   });
 
-  it('should validate correctly with valid data', () => {
-    const result = makeParams().validate();
-    expect(result.isValid).toBe(true);
-  });
-
-  it('should fail validation with short title', () => {
-    const result = makeParams({ title: 'A' }).validate();
-    expect(result.isValid).toBe(false);
-  });
-
-  it('should fail validation with missing title', () => {
-    const result = makeParams({ title: '' }).validate();
-    expect(result.isValid).toBe(false);
+  it('validates required fields', () => {
+    expect(makeParams().validate().isValid).toBe(true);
+    expect(makeParams({ refNumber: '' }).validate().isValid).toBe(false);
   });
 });

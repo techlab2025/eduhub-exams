@@ -4,17 +4,18 @@
 
 .question-review-reject-wrapper {
   @include flex-column(wrap, start, start);
+
   gap: $XlSize2;
   width: 100%;
   padding: $XlSize2 0;
+
   .card-content {
     @include flex-column();
+
     background-color: var(--bg-rejected);
-    padding: $MdSize;
     border-radius: $MdSize;
     padding: $MdSize;
     width: 100%;
-
     gap: $SmSize;
   }
 
@@ -64,14 +65,15 @@
 
   .actions {
     @include flex-row(nowrap, start, center);
-    width: 100%;
 
+    width: 100%;
     gap: $XsSize2;
 
     .btn {
       cursor: pointer;
       width: 100%;
     }
+
     .btn-edit {
       background: white;
       border: 1px solid var(--primary-green);

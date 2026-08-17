@@ -68,8 +68,8 @@ describe('QuestionLogHistory', () => {
     });
 
     expect(wrapper.findAll('.log-content h4').map((item) => item.text())).toEqual([
-      'Latest',
-      'Oldest',
+      'approved',
+      'created',
     ]);
     expect(logs.map((log) => log.status?.name)).toEqual(['Oldest', 'Latest']);
   });

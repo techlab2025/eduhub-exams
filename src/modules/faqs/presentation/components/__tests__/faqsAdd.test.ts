@@ -59,12 +59,10 @@ describe('faqsAdd', () => {
     const wrapper = mount(faqsAdd, mountOptions);
     const controller = FaqsController.getInstance();
 
-    // Simulate updating form data
     const mockParams = { question: { en: 'q' }, answer: { en: 'a' } };
-    // @ts-expect-error - updateData is internal but we want to trigger it
-    wrapper.vm.updateData(mockParams);
+    wrapper.getComponent({ name: 'FaqsForm' }).vm.$emit('update-data', mockParams);
 
-    await wrapper.find('.btn-save').trigger('click');
+    await wrapper.find('.btn-primary').trigger('click');
 
     expect(controller.create).toHaveBeenCalled();
   });
@@ -74,6 +72,6 @@ describe('faqsAdd', () => {
 
     await wrapper.find('.btn-cancel').trigger('click');
 
-    expect(pushMock).toHaveBeenCalledWith('/eg/faqs');
+    expect(pushMock).toHaveBeenCalledWith({ name: 'Faqs' });
   });
 });

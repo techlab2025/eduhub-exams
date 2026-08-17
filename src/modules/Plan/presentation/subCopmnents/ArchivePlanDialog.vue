@@ -45,6 +45,7 @@
     text-align: center;
     background: var(--BgWhite);
     border-radius: var(--radius-lg);
+
     img {
       margin-inline: auto;
     }
@@ -60,6 +61,7 @@
       font-size: 20px;
       font-weight: 600;
     }
+
     p {
       color: #5d5d5d;
       font-size: 16px;
@@ -72,6 +74,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--xs-size);
   }
+
   button {
     width: 100% !important;
   }

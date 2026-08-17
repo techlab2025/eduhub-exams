@@ -19,7 +19,7 @@ describe('subscription params', () => {
       per_page: 20,
       education_type_id: 4,
       plan_id: 8,
-      status: '1',
+      status: 1,
       paied_from: 100,
       paied_to: 500,
       subscription_date_from: '2026-06-01',

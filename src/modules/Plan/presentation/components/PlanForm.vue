@@ -304,7 +304,7 @@
         ? `pricing-${index}-duplicate-error`
         : undefined;
   const addPricing = () => {
-    const editor = pricing.value?.at(-1);
+    const editor = pricing.value[pricing.value.length - 1];
     const editorIndex = pricingEditorIndex.value;
     if (
       !editor ||

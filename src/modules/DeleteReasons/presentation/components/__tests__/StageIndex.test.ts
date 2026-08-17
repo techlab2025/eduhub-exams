@@ -108,8 +108,9 @@ describe('DeletedReasonesDialog', () => {
     expect(wrapper.find('button.btn.btn-primary').text()).toContain('Deleted Reason');
   });
 
-  it('calls fetchList on mount', async () => {
-    createWrapper();
+  it('calls fetchList when the dialog is opened', async () => {
+    const wrapper = createWrapper();
+    await wrapper.find('button.btn.btn-primary').trigger('click');
     await flushPromises();
     expect(mockFetchList).toHaveBeenCalledOnce();
   });

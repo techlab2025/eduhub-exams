@@ -1,33 +1,20 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import TranslationParams from '@/modules/about/core/params/translation.params';
 import AddFaqsParams from '../add.faqs.params';
 import DeleteFaqsParams from '../delete.faqs.params';
 import EditFaqsParams from '../edit.faqs.params';
-import FaqsDetailsParams from '../faqs.details.params';
 import IndexFaqsParams from '../index.faqs.params';
 
+const translations = new TranslationParams({ question: { en: 'q' }, answer: { en: 'a' } });
+
 describe('Faqs Parameters', () => {
-  it('AddFaqsParams converts to Map correctly', () => {
-    const details = new FaqsDetailsParams({ question: { en: 'q' }, answer: { en: 'a' } });
-    const params = new AddFaqsParams({ faqs: [details] });
-    const map = params.toMap();
-    expect(map.faqs[0].translations.question.en).toBe('q');
-  });
-
-  it('DeleteFaqsParams converts to Map correctly', () => {
-    const params = new DeleteFaqsParams({ id: 1 });
-    const map = params.toMap();
-    expect(map.id).toBe(1);
-  });
-
-  it('EditFaqsParams converts to Map correctly', () => {
-    const params = new EditFaqsParams({ id: 1, question: { en: 'q' }, answer: { en: 'a' } });
-    const map = params.toMap();
-    expect(map.translations.question.en).toBe('q');
-  });
-
-  it('IndexFaqsParams converts to Map correctly', () => {
-    const params = new IndexFaqsParams();
-    const map = params.toMap();
-    expect(map.page).toBe(1);
+  it('serializes create, edit, delete, and index contracts', () => {
+    expect(new AddFaqsParams({ translations }).toMap().translations.question.en).toBe('q');
+    expect(new DeleteFaqsParams({ id: 1 }).toMap().faq_id).toBe(1);
+    expect(new EditFaqsParams({ id: 1, translations }).toMap()).toMatchObject({
+      faq_id: 1,
+      translations: { answer: { en: 'a' } },
+    });
+    expect(new IndexFaqsParams().toMap().page).toBe(1);
   });
 });

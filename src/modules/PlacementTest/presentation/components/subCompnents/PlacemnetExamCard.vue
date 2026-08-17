@@ -8,7 +8,7 @@
   }>();
 
   const { t } = useI18n();
-  
+
   const examDetails = computed(() =>
     [
       props.placementTest.EducationClassificationBranch?.title,
@@ -20,7 +20,10 @@
 <template>
   <section class="placement-exam-card" aria-labelledby="placement-exam-title">
     <div class="placement-exam-card__content">
-      <span class="placement-exam-card__id"><span> {{ t('placement_test.id') }}</span>: {{ placementTest.id }} </span>
+      <span class="placement-exam-card__id"
+        ><span> {{ t('placement_test.id') }}</span
+        >: {{ placementTest.id }}
+      </span>
 
       <div class="placement-exam-card__details">
         <h2 id="placement-exam-title">{{ t('placement_test.exam') }}</h2>
@@ -36,7 +39,7 @@
       </div>
     </div>
 
-    <time class="placement-exam-card__date" >
+    <time class="placement-exam-card__date">
       {{ placementTest.createdAt }}
     </time>
   </section>
@@ -61,18 +64,16 @@
       min-width: 0;
     }
 
-   
     &__id {
       color: black;
       font-size: var(--sm-size);
       font-weight: 600;
       font-family: 'Demi';
-        span{
-     
-       color: var(--title-header-color);
+
+      span {
+        color: var(--title-header-color);
+      }
     }
-    }
-   
 
     &__details {
       display: flex;
