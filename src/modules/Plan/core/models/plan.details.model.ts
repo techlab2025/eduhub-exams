@@ -76,7 +76,7 @@ export default class PlanDetailsModel {
       createdBy: PlanCreatedByModel.fromJson(createdBy),
       createdAt: String(json.created_at ?? ''),
       lastUpdated: PlanLastUpdatedModel.fromJson(lastUpdated),
-      subscribers: Number(json['subscribers:'] ?? 0),
+      subscribers: Number(json['subscribers'] ?? 0),
       trialDays: Number(json.trail_days ?? 0),
       pricing: Array.isArray(json.pricing)
         ? json.pricing.map((item) => PlanPricingModel.fromJson(item as Record<string, unknown>))
