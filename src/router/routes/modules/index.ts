@@ -19,6 +19,7 @@ import { PackagesRoutes } from './package';
 import { PlacementTestRoutes } from './placement_test';
 import { placementsRoutes } from './placements';
 import { highlightBadgeRoutes } from './highlight-badge';
+import { blockReasonRoutes } from './block-reasons';
 import { planRoutes } from './plans';
 import { subscriptionRoutes } from './subscriptions';
 import { studentRoutes } from './students';
@@ -44,6 +45,7 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...PlacementTestRoutes,
   ...placementsRoutes,
   ...highlightBadgeRoutes,
+  ...blockReasonRoutes,
   ...planRoutes,
   ...subscriptionRoutes,
   ...studentRoutes,
