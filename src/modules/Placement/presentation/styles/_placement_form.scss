@@ -4,6 +4,7 @@
 
 .placement-form-card {
   @include flex-column(nowrap, space-between, start);
+
   background-color: var(--gray-soft);
   padding: $MdSize;
   border-radius: $XlSize;
@@ -11,6 +12,7 @@
 
   .form-fields {
     padding: 0;
+
     @include grid(
       2,
       $XlSize,
@@ -18,6 +20,7 @@
         480px: 1,
       )
     );
+
     label {
       font-size: $MdSize;
       font-family: 'Light';
@@ -25,6 +28,7 @@
       text-transform: none;
       font-weight: $BaseFontSemiBoldWeight !important;
     }
+
     .field-input {
       width: 100%;
       padding: $MdSize;
@@ -36,6 +40,7 @@
       outline: none;
       transition: all 0.25s ease;
       font-family: 'Medium';
+
       &:focus {
         border-color: var(--PrimaryColor);
         background: var(--bg-main);
@@ -46,8 +51,10 @@
 
   .form-header {
     @include flex-row(nowrap, flex-start, center);
+
     gap: $XsSize2;
     padding: $MdSize 0;
+
     .title {
       font-family: 'Medium';
       font-size: $XlSize2;
@@ -57,36 +64,45 @@
 
   .difficulty-selection {
     @include flex-column(nowrap, flex-start, flex-start);
+
     gap: $MdSize;
     width: 100%;
+
     .difficulty-option-row {
       @include flex-row(nowrap, space-between, center);
+
       gap: $XlSize3;
       border-radius: $MdSize;
       width: 100%;
 
       .input {
         @include flex-column(nowrap, flex-start, start);
+
         &.easy {
           background-color: var(--bg-approved);
         }
+
         &.medium {
           background-color: var(--caution-bg);
         }
+
         &.hard {
           background-color: var(--bg-rejected);
         }
+
         padding: $MdSize;
         border-radius: $MdSize;
         flex: 1;
         width: 100%;
         gap: $XsSize;
+
         label {
           font-size: $SmSize;
           color: var(--color-dark-gray);
           font-family: 'Light';
           text-transform: capitalize;
         }
+
         input {
           width: 100%;
           padding: $MdSize;
@@ -98,6 +114,7 @@
           outline: none;
           transition: all 0.25s ease;
           font-family: 'Medium';
+
           &:focus {
             border-color: var(--PrimaryColor);
             background: var(--bg-main);
@@ -108,6 +125,7 @@
 
       .percentage {
         @include flex-column(nowrap, center, center);
+
         gap: $XsSize2;
         background: var(--color-light-gray);
         border-radius: $XsSize3;
@@ -117,27 +135,34 @@
         border: $BaseBorderWidth solid var(--border-color);
         min-height: calc($XlSize4 * 2);
         min-width: calc($XlSize4 * 2.5);
+
         p {
           color: var(--color-dark-gray);
           font-size: $XsSize;
           font-family: 'Light';
         }
+
         h6 {
           color: var(--standard-black);
           font-size: $MdSize;
           font-family: 'Light';
+
           span {
             font-family: 'Medium';
           }
         }
       }
+
       .image-input {
         width: 100%;
+
         .upload-area {
           background-color: $StandardWhite !important;
         }
+
         .add-imaegs-data {
           @include flex-column(nowrap, center, center);
+
           gap: $XsSize5;
 
           .first-text {
@@ -167,13 +192,16 @@
       }
     }
   }
+
   .summary {
     @include flex-column(nowrap, flex-start, start);
+
     gap: $XsSize;
     padding: $MdSize;
     border-radius: $MdSize;
     background-color: var(--bg-high);
     color: $PrimaryColor;
+
     .error {
       color: var(--high-color);
       font-size: $MdSize;

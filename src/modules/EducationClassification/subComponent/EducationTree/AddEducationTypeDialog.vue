@@ -115,6 +115,7 @@
     align-items: center;
     gap: 15px;
   }
+
   :global(.p-dialog.add-education-type-dialog .multi-lang-input .field-input) {
     background: var(--standard-white) !important;
     border-color: var(--gray-200-std) !important;

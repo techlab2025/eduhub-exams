@@ -909,22 +909,26 @@
   .plan-trial-choices {
     max-width: 277px;
   }
+
   .plan-choice {
     &.Active {
       span {
         color: #18a957;
       }
     }
+
     &.Inactive {
       span {
         color: #d99100;
       }
     }
+
     &.Archived {
       span {
         color: #4b4b4b;
       }
     }
+
     &.Draft {
       span {
         color: #2f7bff;

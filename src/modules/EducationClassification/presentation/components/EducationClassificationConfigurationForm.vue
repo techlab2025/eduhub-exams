@@ -445,6 +445,7 @@
       border-color: var(--danger-alt);
     }
   }
+
   .branch-count-error {
     margin: 8px 4px 0;
     color: var(--danger-alt);

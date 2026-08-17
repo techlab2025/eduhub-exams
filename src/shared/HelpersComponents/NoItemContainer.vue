@@ -23,11 +23,13 @@
     height: 500px;
     gap: 10px;
   }
+
   h2 {
     color: #1a1a1a;
     font-size: 24px;
     font-weight: 600;
   }
+
   p {
     color: #4b4b4b;
     max-width: 442px;
@@ -35,6 +37,7 @@
     font-weight: 500;
     text-align: center;
   }
+
   .empty-items img {
     width: 300px;
     height: 300px;

@@ -4,7 +4,6 @@
 .subject-page {
   display: flex;
   flex-direction: column;
-
   gap: 10px;
 
   .flex {
@@ -14,7 +13,6 @@
   .gap-10 {
     gap: 10px;
   }
-
 
   /* ── Page Header ───────────────────────────────────────────── */
   .page-header {
@@ -202,9 +200,11 @@
 
   .row-actions {
     @include flex-row(nowrap, center, center);
+
     display: flex !important;
     gap: $XsSize3;
   }
+
   .action-btn {
     display: flex;
     align-items: center;

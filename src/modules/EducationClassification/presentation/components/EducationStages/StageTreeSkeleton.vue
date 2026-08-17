@@ -49,9 +49,11 @@
     .left-panel {
       padding-inline: 20px;
     }
+
     .right-panel {
       margin-inline: 20px;
     }
+
     .skeleton {
       position: relative;
       overflow: hidden;
