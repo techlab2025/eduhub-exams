@@ -526,13 +526,13 @@
                 </div>
               </section>
             </div>
+          </template>
+          <template #footer>
             <div class="filter-actions">
               <button class="btn btn-primary" @click="applyFilters">{{ $t('apply') }}</button>
               <button class="btn btn-cancel" @click="resetFilters">{{ $t('reset') }}</button>
             </div>
           </template>
-          <!-- <template #footer>
-          </template> -->
         </FilterDialog>
       </div>
     </header>
@@ -705,7 +705,7 @@
 
   .filter-actions {
     display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(112px, 1fr);
+    grid-template-columns: minmax(0, 1.65fr) minmax(120px, 1fr);
     gap: 12px;
     width: 100%;
 
@@ -767,6 +767,7 @@
   :global(.plan-filter-dialog.p-dialog) {
     display: flex;
     flex-direction: column;
+    height: min(52rem, calc(100dvh - 24px));
     max-width: calc(100vw - 24px);
     max-height: calc(100dvh - 24px);
     overflow: hidden;
@@ -801,7 +802,7 @@
 
   :global(.plan-filter-dialog.p-dialog .p-dialog-content) {
     min-height: 0;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     padding: 0 20px;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -809,6 +810,13 @@
     scrollbar-color: var(--gray-300) transparent;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+  }
+  .filter-content {
+    width: 100%;
   }
 
   :global(.plan-filter-dialog.p-dialog .p-dialog-content::-webkit-scrollbar) {
@@ -846,7 +854,7 @@
     grid-template-columns: 1fr;
     gap: 12px;
     padding-block: 18px;
-    font-family: 'Demi' !important;
+    font-family: var(--font-family);
   }
 
   .plan-filter-section {
@@ -1117,19 +1125,20 @@
       min-width: 0;
       height: 100%;
       flex: 1 1 auto;
-      padding-inline: 12px 6px;
+      padding-inline: 14px 8px;
+      color: var(--gray-text) !important;
       background: transparent;
       border: 0 !important;
       border-radius: 14px !important;
       box-shadow: none !important;
-      font-size: 12px !important;
+      font-size: 14px !important;
     }
 
     :deep(.p-datepicker-dropdown) {
       position: static;
-      width: 42px;
+      width: 46px;
       height: 100%;
-      flex: 0 0 42px;
+      flex: 0 0 46px;
       color: var(--PrimaryColor);
       background: var(--PrimaryColor-alpha-8);
       border: 0;
@@ -1163,9 +1172,9 @@
     }
 
     .btn-cancel {
-      border: 1px solid var(--background-btn-hard-color);
-      background: var(--background-btn-outline-color);
-      color: var(--btn-red);
+      color: var(--danger-alt);
+      background: var(--danger-light);
+      border: 1px solid var(--danger-border-light);
     }
   }
 
@@ -1174,7 +1183,7 @@
     background: var(--BgWhite);
   }
 
-  @media (max-width: 520px) {
+  @media (max-width: 600px) {
     :global(.plan-filter-dialog.p-dialog) {
       border-radius: 20px;
     }

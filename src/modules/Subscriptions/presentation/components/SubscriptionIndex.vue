@@ -913,7 +913,7 @@
     display: grid;
     gap: 12px;
     padding-block: 18px;
-    font-family: 'Demi' !important;
+    font-family: var(--font-family);
   }
 
   .subscription-filter-section {
