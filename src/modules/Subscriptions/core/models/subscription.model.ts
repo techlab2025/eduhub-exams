@@ -12,6 +12,7 @@ export default class SubscriptionModel {
   public readonly subscriptionDate: string;
   public readonly expireDate: string;
   public readonly status: SubscriptionStatus;
+  public readonly numberOfSubjects: number;
 
   constructor(
     id: number,
@@ -22,6 +23,7 @@ export default class SubscriptionModel {
     subscriptionDate: string,
     expireDate: string,
     status: SubscriptionStatus,
+    numberOfSubjects: number,
   ) {
     this.id = id;
     this.student = student;
@@ -31,6 +33,7 @@ export default class SubscriptionModel {
     this.subscriptionDate = subscriptionDate;
     this.expireDate = expireDate;
     this.status = status;
+    this.numberOfSubjects = numberOfSubjects;
     Object.freeze(this);
   }
 
@@ -39,7 +42,7 @@ export default class SubscriptionModel {
       json.user && typeof json.user === 'object'
         ? (json.user as Record<string, unknown>)
         : { name: json.stident_name ?? json.student_name ?? '' };
-    const planSource = json.plan ?? json.plane;
+    const planSource = json.plan ??   json.plane;
     const rawPlan =
       planSource && typeof planSource === 'object' ? (planSource as Record<string, unknown>) : {};
     const plan = {
@@ -68,6 +71,7 @@ export default class SubscriptionModel {
       String(json.subscription_date ?? rawPlan.subscribe_date ?? ''),
       String(json.expire_date ?? rawPlan.expire_date ?? ''),
       json.status as SubscriptionStatus,
+      Number(json.number_of_subjects ?? rawPlan.number_of_subjects ?? 0),
     );
   }
 
@@ -79,5 +83,6 @@ export default class SubscriptionModel {
     subscription_date: '20-6-2026',
     expire_date: '20-7-2026',
     status: SubscriptionStatusEnum.ACTIVE,
+    number_of_subjects: 3,
   });
 }

@@ -55,7 +55,7 @@
 
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
-    { id: Number(SubscriptionStatusEnum.PENDING), title: t('subscription_status_0') },
+    // { id: Number(SubscriptionStatusEnum.PENDING), title: t('subscription_status_0') },
     { id: Number(SubscriptionStatusEnum.ACTIVE), title: t('active') },
     { id: Number(SubscriptionStatusEnum.EXPIRED), title: t('expired') },
     { id: Number(SubscriptionStatusEnum.CANCELLED), title: t('cancelled') },
@@ -70,6 +70,7 @@
     { key: 'id', label: t('ID'), sortable: true, width: '9%' },
     { key: 'student', label: t('student_name'), sortable: true, width: '18%' },
     { key: 'plan', label: t('plan_name'), sortable: true, width: '18%' },
+    { key: 'numberOfSubjects', label: t('number_of_subjects'), width: '11%' },
     { key: 'totalPrice', label: t('total_paid'), width: '12%' },
     { key: 'subscriptionDate', label: t('subscribe_date'), width: '15%' },
     { key: 'expireDate', label: t('expire_date'), width: '15%' },
@@ -368,7 +369,7 @@
                 <label
                   v-for="option in statusOptions"
                   :key="option.id"
-                  :class="`subscription-status-option-${option.id}`"
+                  :class="`subscription-status-option-${option.id} ${option.title}`"
                 >
                   <input v-model="status" type="radio" :value="option" />
                   <span class="subscription-filter-checkbox"></span>
@@ -505,6 +506,22 @@
 </template>
 
 <style scoped lang="scss">
+  .Active {
+    span {
+      color: #18a957;
+    }
+  }
+  .Expired {
+    span{
+
+    color: #d64545;
+    }
+  }
+  .Cancelled {
+    span {
+      color: #d99100;
+    }
+  }
   .items-deleted {
     padding: 12px 16px;
     border-radius: 12px;
