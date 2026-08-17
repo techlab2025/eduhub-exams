@@ -55,7 +55,7 @@ export default class SubscriptionController extends BaseController<
     params?: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<SubscriptionModel[]>> {
-    return super.fetchList(params, { ...options, useStaticData: true });
+    return super.fetchList(params, { ...options });
   }
 
   async fetchOne(

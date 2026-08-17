@@ -28,6 +28,7 @@
   import { IndexSubscriptionParams } from '../../core/params/index.subscription.params';
   import SubscriptionController from '../controllers/subscription.controller';
   import SubscriptionDetailsDialog from '../subComponents/SubscriptionDetailsDialog.vue';
+  import SubscriptionBulkDeleteWarningDialog from '../subComponents/SubscriptionBulkDeleteWarningDialog.vue';
   import SubscriptionDeleteWarningDialog from '../subComponents/SubscriptionDeleteWarningDialog.vue';
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
 
@@ -48,6 +49,7 @@
   const expireFrom = ref<Date | null>(null);
   const expireTo = ref<Date | null>(null);
   const filterDialogVisible = ref(false);
+  const bulkDeleteWarningDialogVisible = ref(false);
   const deleteWarningDialogVisible = ref(false);
   const detailsDialogVisible = ref(false);
   const selectedSubscriptionId = ref<number | null>(null);
@@ -156,12 +158,9 @@
   const updateSelectedRows = (rows: SubscriptionModel[]) => {
     selectedRows.value = rows;
   };
-  const isSubscriptionSelectable = (item: SubscriptionModel) =>
-    item.status !== SubscriptionStatusEnum.ACTIVE;
-
   const DeleteItems = async () => {
     if (selectedRows.value.some((item) => item.status === SubscriptionStatusEnum.ACTIVE)) {
-      deleteWarningDialogVisible.value = true;
+      bulkDeleteWarningDialogVisible.value = true;
       return;
     }
 
@@ -451,7 +450,6 @@
             :items="data as SubscriptionModel[]"
             row-key="id"
             :selectable="true"
-            :row-selectable="isSubscriptionSelectable"
             @selection-change="updateSelectedRows"
           >
             <template #cell-student="{ item }">{{ item.student.name }}</template>
@@ -497,6 +495,7 @@
         </template>
       </DataStatusBuilder>
     </div>
+    <SubscriptionBulkDeleteWarningDialog v-model="bulkDeleteWarningDialogVisible" />
     <SubscriptionDeleteWarningDialog v-model="deleteWarningDialogVisible" />
     <SubscriptionDetailsDialog
       v-model="detailsDialogVisible"
@@ -511,17 +510,19 @@
       color: #18a957;
     }
   }
-  .Expired {
-    span{
 
-    color: #d64545;
+  .Expired {
+    span {
+      color: #d64545;
     }
   }
+
   .Cancelled {
     span {
       color: #d99100;
     }
   }
+
   .items-deleted {
     padding: 12px 16px;
     border-radius: 12px;
