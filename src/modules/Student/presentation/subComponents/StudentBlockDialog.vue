@@ -1,6 +1,17 @@
 <script setup lang="ts">
+  import { computed, ref, watch } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import Dialog from 'primevue/dialog';
+  import Select from 'primevue/select';
   import BlockImage from '@/assets/images/Student/BlockImage.gif';
+  import ReloadIcon from '@/shared/icons/CustomSelect/ReloadIcon.vue';
+
+  type ReasonLanguage = 'en' | 'ar';
+
+  interface BlockReasonOption {
+    id: string;
+    title: string;
+  }
 
   withDefaults(
     defineProps<{
@@ -10,9 +21,49 @@
   );
 
   const emit = defineEmits<{
-    confirm: [];
+    confirm: [reason: string];
   }>();
   const visible = defineModel<boolean>({ default: false });
+  const { t } = useI18n();
+  const selectedReason = ref<BlockReasonOption | null>(null);
+  const explanation = ref('');
+  const language = ref<ReasonLanguage>('en');
+  const bold = ref(false);
+  const underlined = ref(false);
+  const hasReasonError = ref(false);
+
+  const reasonOptions = computed<BlockReasonOption[]>(() => [
+    { id: 'policy_violation', title: t('block_reason_policy_violation') },
+    { id: 'inappropriate_behavior', title: t('block_reason_inappropriate_behavior') },
+    { id: 'suspicious_activity', title: t('block_reason_suspicious_activity') },
+    { id: 'other', title: t('block_reason_other') },
+  ]);
+
+  const reset = () => {
+    selectedReason.value = null;
+    explanation.value = '';
+    language.value = 'en';
+    bold.value = false;
+    underlined.value = false;
+    hasReasonError.value = false;
+  };
+
+  const confirm = () => {
+    if (!selectedReason.value) {
+      hasReasonError.value = true;
+      return;
+    }
+
+    const details = explanation.value.trim();
+    const reason = details
+      ? `${selectedReason.value.title}: ${details}`
+      : selectedReason.value.title;
+    emit('confirm', reason);
+  };
+
+  watch(visible, (isVisible) => {
+    if (!isVisible) reset();
+  });
 </script>
 
 <template>
@@ -23,23 +74,111 @@
     :style="{ width: 'min(32.0625rem, calc(100vw - 2rem))' }"
   >
     <template #container>
-      <article class="student-confirm-dialog student-block-dialog">
-        <div class="student-confirm-image" aria-hidden="true">
+      <article class="student-block-dialog">
+        <div class="student-block-image" aria-hidden="true">
           <img :src="BlockImage" alt="" />
         </div>
 
-        <div class="student-confirm-copy">
+        <div class="student-block-copy">
           <h2>{{ $t('block_student_dialog_title') }}</h2>
           <p>{{ $t('block_student_dialog_message') }}</p>
         </div>
 
-        <div class="student-confirm-actions">
-          <button
-            type="button"
-            class="confirm-button block-button"
-            :disabled="loading"
-            @click="emit('confirm')"
-          >
+        <section class="student-block-category">
+          <div class="student-block-label-row">
+            <label for="student-block-category">
+              {{ $t('block_reason') }} <span aria-hidden="true">*</span>
+            </label>
+            <button
+              type="button"
+              class="student-block-reset"
+              :aria-label="$t('reset_block_reason')"
+              @click="selectedReason = null"
+            >
+              <ReloadIcon />
+            </button>
+          </div>
+
+          <Select
+            input-id="student-block-category"
+            v-model="selectedReason"
+            :options="reasonOptions"
+            option-label="title"
+            :placeholder="$t('select_block_reason')"
+            append-to="self"
+            class="student-block-select"
+            :class="{ invalid: hasReasonError }"
+            :aria-invalid="hasReasonError"
+            :aria-describedby="hasReasonError ? 'student-block-category-error' : undefined"
+            @change="hasReasonError = false"
+          />
+          <small v-if="hasReasonError" id="student-block-category-error" role="alert">
+            {{ $t('block_reason_required') }}
+          </small>
+        </section>
+
+        <section class="student-block-details">
+          <div class="student-block-label-row">
+            <label for="student-block-explanation">{{ $t('block_reason_details') }}</label>
+            <div class="student-block-language" role="group" :aria-label="$t('note_language')">
+              <button
+                type="button"
+                :class="{ active: language === 'en' }"
+                :aria-pressed="language === 'en'"
+                @click="language = 'en'"
+              >
+                EN
+              </button>
+              <button
+                type="button"
+                :class="{ active: language === 'ar' }"
+                :aria-pressed="language === 'ar'"
+                @click="language = 'ar'"
+              >
+                AR
+              </button>
+            </div>
+          </div>
+
+          <div class="student-block-editor">
+            <div class="student-block-toolbar" role="toolbar" :aria-label="$t('note_formatting')">
+              <button
+                type="button"
+                :class="{ active: bold }"
+                :aria-pressed="bold"
+                :aria-label="$t('bold')"
+                @click="bold = !bold"
+              >
+                B
+              </button>
+              <span aria-hidden="true">/</span>
+              <button
+                type="button"
+                :class="{ active: underlined }"
+                :aria-pressed="underlined"
+                :aria-label="$t('underline')"
+                @click="underlined = !underlined"
+              >
+                U
+              </button>
+            </div>
+            <textarea
+              id="student-block-explanation"
+              v-model="explanation"
+              :dir="language === 'ar' ? 'rtl' : 'ltr'"
+              :class="{ bold, underlined }"
+              :placeholder="$t('block_reason_placeholder')"
+            />
+          </div>
+        </section>
+
+        <p class="student-block-notice">
+          <span aria-hidden="true">!</span>
+          {{ $t('block_reversible_notice') }}
+        </p>
+
+        <div class="student-block-actions">
+          <button type="button" class="block-button" :disabled="loading" @click="confirm">
             {{ $t('block_student_dialog_confirm') }}
           </button>
           <button type="button" class="cancel-button" :disabled="loading" @click="visible = false">
@@ -52,71 +191,250 @@
 </template>
 
 <style scoped lang="scss">
-  .student-confirm-dialog {
+  .student-block-dialog {
     width: 100%;
     padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 18px;
+    color: var(--standard-black);
     text-align: center;
     background: var(--BgWhite);
     border-radius: 30px;
+    font-family: var(--font-family);
   }
 
-  .student-confirm-image {
-    width: 141px;
-    height: 120px;
+  .student-block-image {
+    width: 110px;
+    height: 96px;
     overflow: hidden;
 
     img {
-      width: 141px;
-      height: 141px;
+      width: 110px;
+      height: 110px;
       display: block;
       object-fit: cover;
     }
   }
 
-  .student-confirm-copy {
+  .student-block-copy {
     width: 100%;
     display: grid;
     justify-items: center;
-    gap: 10px;
+    gap: 8px;
 
     h2,
     p {
       margin: 0;
-      font-family: var(--font-family);
     }
 
     h2 {
-      color: var(--standard-black);
       font-size: 20px;
       font-weight: 700;
       line-height: 1.2;
     }
 
     p {
+      max-width: 420px;
       color: var(--gray-5);
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 500;
       line-height: 1.5;
     }
   }
 
-  .student-confirm-actions {
+  .student-block-category,
+  .student-block-details {
+    width: 100%;
+    display: grid;
+    gap: 8px;
+    text-align: start;
+
+    small {
+      color: var(--danger-alt);
+      font-size: 13px;
+    }
+  }
+
+  .student-block-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    label {
+      color: var(--gray-5);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    label span {
+      color: var(--danger-alt);
+    }
+  }
+
+  .student-block-reset {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    color: var(--gray-text);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+
+    :deep(svg) {
+      width: 19px;
+      height: 19px;
+    }
+  }
+
+  .student-block-select {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--radius-full);
+
+    &.invalid {
+      border-color: var(--danger-alt);
+    }
+
+    :deep(.p-select-label) {
+      padding-inline: 16px;
+      display: flex;
+      align-items: center;
+      color: var(--standard-black);
+      font-size: 14px;
+    }
+
+    :deep(.p-select-label.p-placeholder) {
+      color: var(--gray-text);
+    }
+
+    :deep(.p-select-overlay) {
+      max-width: 100%;
+    }
+
+    :deep(.p-select-option-label) {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .student-block-language {
+    padding: 3px;
+    display: flex;
+    background: var(--background-color-soft-light);
+    border-radius: var(--radius-full);
+
+    button {
+      min-width: 28px;
+      min-height: 22px;
+      padding: 2px 6px;
+      color: var(--gray-text);
+      background: transparent;
+      border: 0;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      font-size: 11px;
+
+      &.active {
+        color: var(--primary-green);
+        background: var(--BgWhite);
+      }
+    }
+  }
+
+  .student-block-editor {
+    overflow: hidden;
+    border: 1px solid var(--input-border-color);
+    border-radius: 12px;
+
+    textarea {
+      width: 100%;
+      min-height: 88px;
+      padding: 12px;
+      display: block;
+      resize: vertical;
+      color: var(--standard-black);
+      background: var(--BgWhite);
+      border: 0;
+      outline: 0;
+      font-family: var(--font-family);
+      font-size: 14px;
+      line-height: 1.5;
+
+      &.bold {
+        font-weight: 700;
+      }
+
+      &.underlined {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .student-block-toolbar {
+    min-height: 32px;
+    padding-inline: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--gray-text);
+    background: var(--background-color-soft-light);
+
+    button {
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+
+      &.active {
+        color: var(--standard-black);
+      }
+    }
+  }
+
+  .student-block-notice {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--in-active-color);
+    text-align: start;
+    font-size: 13px;
+    line-height: 1.4;
+
+    span {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+    }
+  }
+
+  .student-block-actions {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
 
     button {
-      height: 56px;
+      height: 52px;
       padding: 0 16px;
       border-radius: var(--radius-full);
       cursor: pointer;
       font-family: var(--font-family);
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
 
       &:disabled {
@@ -139,7 +457,11 @@
   }
 
   @media (max-width: 520px) {
-    .student-confirm-actions {
+    .student-block-dialog {
+      padding: 20px;
+    }
+
+    .student-block-actions {
       grid-template-columns: 1fr;
       gap: 12px;
     }
