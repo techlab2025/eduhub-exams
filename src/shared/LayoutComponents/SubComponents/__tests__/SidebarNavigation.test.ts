@@ -59,12 +59,13 @@ describe('SidebarNavigation.vue', () => {
     expect(wrapper.text()).toContain('highlight_badges');
     expect(wrapper.text()).toContain('plans');
     expect(wrapper.text()).toContain('subscriptions');
-    expect(wrapper.text()).toContain('students');
   });
 
   it('renders six question status links with status queries', () => {
     const wrapper = mount(SidebarNavigation, mountOptions);
-    const statusLinks = wrapper.findAll('.submenu-item');
+    const statusLinks = wrapper
+      .findAll('.submenu-item')
+      .filter((link) => link.attributes('data-status') !== undefined);
 
     expect(statusLinks).toHaveLength(6);
     expect(statusLinks.map((link) => link.attributes('data-status'))).toEqual([

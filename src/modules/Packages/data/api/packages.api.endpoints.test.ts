@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { ArticleEndpoints } from './Artical.api.endpoints';
+import { ArticleEndpoints } from './packages.api.endpoints';
 
-describe('ArticleEndpoints', () => {
-  it('should have the correct prefix', () => {
+describe('package endpoints', () => {
+  it('preserves the package CRUD URLs', () => {
     const endpoints = new ArticleEndpoints();
     expect(endpoints.index).toContain('fetch_packages');
     expect(endpoints.show).toContain('show_package');

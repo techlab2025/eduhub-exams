@@ -61,7 +61,7 @@ describe('EducationConfigurationController', () => {
   });
 
   describe('create', () => {
-    it('should call repository.create and redirect on success', async () => {
+    it('should call repository.create without changing the current route', async () => {
       const translation = new TranslationParams({
         SingularTitle: { en: 'Stage', ar: 'مرحلة' },
         PluralTitle: { en: 'Stages', ar: 'مراحل' },
@@ -78,7 +78,7 @@ describe('EducationConfigurationController', () => {
       const result = await controller.create(params);
 
       expect(mockRepository.create).toHaveBeenCalled();
-      expect(router.push).toHaveBeenCalledWith({ name: 'EducationClassifications' });
+      expect(router.push).not.toHaveBeenCalled();
       expect(result).toBe(successState);
     });
   });

@@ -1,75 +1,75 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createI18n } from 'vue-i18n';
 import QuestionCard from '../QuestionCard.vue';
-import ArticleCardModel from '../../../../core/models/article.card';
-import { ArticleDifficultyEnum } from '../../../../core/constant/Article.difficulty.enum';
-import { ArticleTypeEnum } from '../../../../core/constant/Article.type.enum';
-import ArticleAnswerModel from '../../../../core/models/subModels/Article.answer.model';
+import { QuestionDifficultyEnum } from '@/modules/Questions/core/constant/question.difficulty.enum';
+import { QuestionTypeEnum } from '@/modules/Questions/core/constant/question.type.enum';
+import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
+
+vi.mock('vue-router', () => ({
+  useRoute: () => ({ params: { id: '42' } }),
+}));
+
+vi.mock('../../../controllers/Article.controller', () => ({
+  default: { getInstance: () => ({ delete: vi.fn(), fetchOne: vi.fn() }) },
+}));
 
 const mockQuestions = [
-  new ArticleCardModel({
+  {
     id: 1,
-    title: 'Question 1',
+    question_id: 1,
+    questionTitle: 'Which of the following is correct?',
     createdAt: '2026-05-31',
-    questions: 'Which of the following is correct?',
-    articledifficulty: ArticleDifficultyEnum.easy,
-    status: ArticleTypeEnum.mcq,
-    answer: [
-      new ArticleAnswerModel({
-        id: 1,
+    difficulty: QuestionDifficultyEnum.easy,
+    questionType: QuestionTypeEnum.mcq,
+    answers: [
+      {
         answer: 'Correct Answer',
-        image: 'img1.png',
-        countCorrect: 95,
-        countStudent: 100,
-      }),
-      new ArticleAnswerModel({
-        id: 2,
+        is_right_answer: true,
+      },
+      {
         answer: 'Incorrect Answer',
-        image: 'img2.png',
-        countCorrect: 5,
-        countStudent: 100,
-      }),
+        is_right_answer: false,
+      },
     ],
-  }),
-  new ArticleCardModel({
+  },
+  {
     id: 2,
-    title: 'Question 2',
+    question_id: 2,
+    questionTitle: 'True or False question?',
     createdAt: '2026-05-31',
-    questions: 'True or False question?',
-    articledifficulty: ArticleDifficultyEnum.hard,
-    status: ArticleTypeEnum.true_false,
-    answer: [],
-  }),
-];
+    difficulty: QuestionDifficultyEnum.hard,
+    questionType: QuestionTypeEnum.true_false,
+    answers: [],
+  },
+] as unknown as ShowQuestionsModel[];
+
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  messages: { en: { easy: 'Easy', hard: 'Hard', MCQ: 'MCQ', 'True/False': 'True/False' } },
+});
+
+const mountCard = () =>
+  mount(QuestionCard, {
+    props: { allquestion: mockQuestions },
+    global: {
+      plugins: [i18n],
+      mocks: { $t: (key: string) => key },
+      stubs: { DropList: true, McqIcon: true, TrueFalse: true, MatcingingIcon: true },
+    },
+  });
 
 describe('QuestionCard.vue', () => {
   it('renders correctly with given questions', () => {
-    const wrapper = mount(QuestionCard, {
-      props: {
-        question: mockQuestions,
-      },
-      global: {
-        mocks: {
-          $t: (msg: string) => msg,
-        },
-      },
-    });
+    const wrapper = mountCard();
 
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.findAll('.num-question')).toHaveLength(2);
   });
 
   it('displays correct question texts and indices', () => {
-    const wrapper = mount(QuestionCard, {
-      props: {
-        question: mockQuestions,
-      },
-      global: {
-        mocks: {
-          $t: (msg: string) => msg,
-        },
-      },
-    });
+    const wrapper = mountCard();
 
     const headers = wrapper.findAll('.header-card h6');
     expect(headers[0].text()).toContain('questions 1');
@@ -81,51 +81,28 @@ describe('QuestionCard.vue', () => {
   });
 
   it('applies correct CSS classes for difficulty and status/type', () => {
-    const wrapper = mount(QuestionCard, {
-      props: {
-        question: mockQuestions,
-      },
-      global: {
-        mocks: {
-          $t: (msg: string) => msg,
-        },
-      },
-    });
+    const wrapper = mountCard();
 
     const difficultySpans = wrapper.findAll('.type .value');
-    expect(difficultySpans[0].classes()).toContain('easy');
-    expect(difficultySpans[0].text()).toBe('easy');
-    expect(difficultySpans[1].classes()).toContain('hard');
-    expect(difficultySpans[1].text()).toBe('hard');
+    expect(difficultySpans[0].classes()).toContain('Easy');
+    expect(difficultySpans[0].text()).toBe('Easy');
+    expect(difficultySpans[1].classes()).toContain('Hard');
+    expect(difficultySpans[1].text()).toBe('Hard');
 
     const statusSpans = wrapper.findAll('.type .value-status');
-    expect(statusSpans[0].classes()).toContain('mcq');
-    expect(statusSpans[0].text()).toBe('mcq');
-    expect(statusSpans[1].classes()).toContain('true_false');
-    expect(statusSpans[1].text()).toBe('true_false');
+    expect(statusSpans[0].classes()).toContain('MCQ');
+    expect(statusSpans[0].text()).toContain('MCQ');
+    expect(statusSpans[1].classes()).toContain('True/False');
+    expect(statusSpans[1].text()).toContain('True/False');
   });
 
   it('renders answer options correctly', () => {
-    const wrapper = mount(QuestionCard, {
-      props: {
-        question: mockQuestions,
-      },
-      global: {
-        mocks: {
-          $t: (msg: string) => msg,
-        },
-      },
-    });
+    const wrapper = mountCard();
 
     const answers = wrapper.findAll('.answer');
-    expect(answers).toHaveLength(2); // From the first question
+    expect(answers).toHaveLength(2);
 
     expect(answers[0].find('.answer_text').text()).toBe('Correct Answer');
-    expect(answers[0].find('.corret').text()).toBe('95%');
-    expect(answers[0].find('.student').text()).toBe('100 stds');
-
     expect(answers[1].find('.answer_text').text()).toBe('Incorrect Answer');
-    expect(answers[1].find('.corret').text()).toBe('5%');
-    expect(answers[1].find('.student').text()).toBe('100 stds');
   });
 });

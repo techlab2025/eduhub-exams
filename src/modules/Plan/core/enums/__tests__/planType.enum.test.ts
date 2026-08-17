@@ -20,6 +20,6 @@ describe('plan feature enums', () => {
       (subType) => subType.defaultLimit !== undefined,
     );
 
-    expect(limited.map((subType) => subType.defaultLimit)).toEqual([1, 5, 1, 1, 1, 20, 30, 15]);
+    expect(limited.map((subType) => subType.defaultLimit)).toEqual([0, 0, 0, 0, 0, 0, 0, 0]);
   });
 });

@@ -37,17 +37,13 @@ describe('EducationConfigurationModel', () => {
         branches: [
           {
             level_number: 1,
-            translation: {
-              SingularTitle: { en: 'Stage', ar: 'مرحلة' },
-              PluralTitle: { en: 'Stages', ar: 'مراحل' },
-            },
+            singular_title: { en: 'Stage', ar: 'مرحلة' },
+            plural_title: { en: 'Stages', ar: 'مراحل' },
           },
           {
             level_number: 2,
-            translation: {
-              SingularTitle: { en: 'Grade', ar: 'صف' },
-              PluralTitle: { en: 'Grades', ar: 'صفوف' },
-            },
+            singular_title: { en: 'Grade', ar: 'صف' },
+            plural_title: { en: 'Grades', ar: 'صفوف' },
           },
         ],
       };
@@ -69,17 +65,21 @@ describe('EducationConfigurationModel', () => {
       expect(model.branches).toEqual([]);
     });
 
-    it('should support translations key instead of translation', () => {
+    it('should support locale arrays for branch titles', () => {
       const json = {
         education_classification_id: 1,
         number_of_branches: 1,
         branches: [
           {
             level_number: 1,
-            translations: {
-              SingularTitle: { en: 'Stage', ar: 'مرحلة' },
-              PluralTitle: { en: 'Stages', ar: 'مراحل' },
-            },
+            singular_title: [
+              { locale: 'en', singular_title: 'Stage' },
+              { locale: 'ar', singular_title: 'مرحلة' },
+            ],
+            plural_title: [
+              { locale: 'en', plural_title: 'Stages' },
+              { locale: 'ar', plural_title: 'مراحل' },
+            ],
           },
         ],
       };

@@ -19,14 +19,12 @@ describe('ConfigurationBranchesModel', () => {
       expect(model.pluralTitle).toEqual({ en: 'Stages', ar: 'مراحل' });
     });
 
-    it('should parse JSON with nested translation object', () => {
+    it('should parse camel-case level numbers with flat translated titles', () => {
       const json = {
         id: 2,
         levelNumber: 2,
-        translation: {
-          SingularTitle: { en: 'Year', ar: 'سنة' },
-          PluralTitle: { en: 'Years', ar: 'سنوات' },
-        },
+        singular_title: { en: 'Year', ar: 'سنة' },
+        plural_title: { en: 'Years', ar: 'سنوات' },
       };
 
       const model = ConfigurationBranchesModel.fromJson(json);
@@ -37,13 +35,17 @@ describe('ConfigurationBranchesModel', () => {
       expect(model.pluralTitle).toEqual({ en: 'Years', ar: 'سنوات' });
     });
 
-    it('should parse JSON with translations array', () => {
+    it('should parse locale arrays used by the API', () => {
       const json = {
         id: 3,
         levelNumber: 3,
-        translations: [
-          { locale: 'en', singular_title: 'Level', plural_title: 'Levels' },
-          { locale: 'ar', singular_title: 'مستوى', plural_title: 'مستويات' },
+        singular_title: [
+          { locale: 'en', singular_title: 'Level' },
+          { locale: 'ar', singular_title: 'مستوى' },
+        ],
+        plural_title: [
+          { locale: 'en', plural_title: 'Levels' },
+          { locale: 'ar', plural_title: 'مستويات' },
         ],
       };
 

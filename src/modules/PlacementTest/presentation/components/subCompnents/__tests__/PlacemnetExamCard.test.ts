@@ -23,7 +23,7 @@ describe('PlacemnetExamCard', () => {
   it('renders the exam data from ShowPlcaementTestModel', () => {
     const placementTest = new ShowPlcaementTestModel({
       id: 1,
-      date: '2022-05-09',
+      createdAt: '09-05-2022',
       EducationClassificationBranch: new EducationClassificationBranchModel({
         id: 2,
         title: 'Arabic',
@@ -39,7 +39,7 @@ describe('PlacemnetExamCard', () => {
       global: { plugins: [i18n] },
     });
 
-    expect(wrapper.text()).toContain('Ex-001');
+    expect(wrapper.text()).toContain('Id: 1');
     expect(wrapper.text()).toContain('Placement Exam');
     expect(wrapper.text()).toContain('Arabic');
     expect(wrapper.text()).toContain('Part Of Subject');

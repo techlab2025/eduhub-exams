@@ -84,13 +84,13 @@ describe('AboutModel', () => {
   describe('fromJson', () => {
     it('should throw when json is null', () => {
       expect(() => AboutModel.fromJson(null)).toThrow(
-        'Cannot create EmployeeModel from null or undefined',
+        'Cannot create AboutModel from null or undefined',
       );
     });
 
     it('should throw when json is undefined', () => {
       expect(() => AboutModel.fromJson(undefined)).toThrow(
-        'Cannot create EmployeeModel from null or undefined',
+        'Cannot create AboutModel from null or undefined',
       );
     });
   });

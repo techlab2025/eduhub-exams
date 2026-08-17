@@ -4,6 +4,10 @@ import EducationClassificationTree from '../EducationClassificationTree.vue';
 import EducationTreeController from '../../../controllers/EducationTree/education.configuration.tree.controller';
 import { ref } from 'vue';
 
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({ locale: ref('en'), t: (key: string) => key }),
+}));
+
 // Mock vue-router
 vi.mock('vue-router', () => ({
   useRoute: () => ({
@@ -14,11 +18,7 @@ vi.mock('vue-router', () => ({
 const mockController = {
   fetchList: vi.fn(),
   create: vi.fn(),
-  listState: ref({
-    value: {
-      data: [],
-    },
-  }),
+  listState: ref({ data: [] }),
 };
 
 // Mock controller

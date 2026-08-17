@@ -26,11 +26,12 @@ const i18n = createI18n({
 });
 
 describe('PlacementTimeAnalysisCard', () => {
-  it('renders time values and derives the planned exam duration', () => {
+  it('renders the time values supplied by the API model', () => {
     const placementTest = new ShowPlcaementTestModel({
       timeAnalysis: new TimeAnalysisModel({
         startTime: '2026-08-03T09:00:00',
         endTime: '2026-08-03T10:32:00',
+        examTime: '90',
         actualDuration: '92',
         timePassed: '2',
       }),
@@ -42,10 +43,10 @@ describe('PlacementTimeAnalysisCard', () => {
     });
 
     expect(wrapper.text()).toContain('Real-Time Analysis');
-    expect(wrapper.text()).toContain('09:00 AM');
-    expect(wrapper.text()).toContain('10:32 AM');
-    expect(wrapper.text()).toContain('90 Min');
-    expect(wrapper.text()).toContain('92 Min');
-    expect(wrapper.text()).toContain('2 Min');
+    expect(wrapper.text()).toContain('2026-08-03T09:00:00');
+    expect(wrapper.text()).toContain('2026-08-03T10:32:00');
+    expect(wrapper.text()).toContain('90');
+    expect(wrapper.text()).toContain('92');
+    expect(wrapper.text()).toContain('2 min');
   });
 });

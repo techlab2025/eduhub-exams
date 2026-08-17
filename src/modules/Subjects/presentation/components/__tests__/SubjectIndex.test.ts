@@ -93,7 +93,6 @@ describe('SubjectIndex.vue', () => {
   let mockFetchList: ReturnType<typeof vi.fn>;
   let mockIndexSubjects: ReturnType<typeof vi.fn>;
   let mockDeleteSubject: ReturnType<typeof vi.fn>;
-  let mockDeleteBranch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -101,12 +100,10 @@ describe('SubjectIndex.vue', () => {
     mockFetchList = vi.fn().mockResolvedValue({ data: educationTree });
     mockIndexSubjects = vi.fn().mockResolvedValue({ data: educationTree });
     mockDeleteSubject = vi.fn().mockResolvedValue({});
-    mockDeleteBranch = vi.fn().mockResolvedValue({});
     vi.mocked(SubjectController.getInstance).mockReturnValue({
       fetchList: mockFetchList,
       indexSubjects: mockIndexSubjects,
       delete: mockDeleteSubject,
-      deleteBranch: mockDeleteBranch,
       pagination: ref(null),
       listState: ref({ status: 'success', data: educationTree }),
     } as unknown as ReturnType<typeof SubjectController.getInstance>);
@@ -172,27 +169,21 @@ describe('SubjectIndex.vue', () => {
     const filter = wrapper.find('.education-filter');
     expect(wrapper.findAll('.education-filter')).toHaveLength(1);
     expect(filter.exists()).toBe(true);
-    expect(filter.attributes('data-label')).toBe('education_classification');
+    expect(filter.attributes('data-placeholder')).toBe('select subject ');
   });
 
-  it('shows the selected path inside the select placeholder', async () => {
+  it('updates the selected classification value', async () => {
     const wrapper = mount(SubjectIndex, mountOptions);
     await flushPromises();
 
     await wrapper.find('.education-filter').trigger('click');
 
-    expect(wrapper.find('.education-filter').attributes('data-placeholder')).toBe(
+    expect(wrapper.find('.education-filter').attributes('data-selected')).toBe(
       'New EducationClassification',
-    );
-
-    await wrapper.find('.education-filter').trigger('click');
-
-    expect(wrapper.find('.education-filter').attributes('data-placeholder')).toBe(
-      'New EducationClassification -> branch 1',
     );
   });
 
-  it('deletes subjects and branches with their matching endpoints', async () => {
+  it('deletes the selected subject with the subject endpoint', async () => {
     const wrapper = mount(SubjectIndex, mountOptions);
     await flushPromises();
 
@@ -202,28 +193,18 @@ describe('SubjectIndex.vue', () => {
 
     expect(mockDeleteSubject).toHaveBeenCalledTimes(1);
     expect(mockDeleteSubject.mock.calls[0][0].toMap()).toMatchObject({
-      education_classification_subject_id: 221,
-    });
-    expect(mockDeleteBranch).not.toHaveBeenCalled();
-
-    await deleteButtons[1]?.trigger('click');
-    await flushPromises();
-
-    expect(mockDeleteBranch).toHaveBeenCalledTimes(1);
-    expect(mockDeleteBranch.mock.calls[0][0].toMap()).toMatchObject({
-      education_classification_branch_id: 300,
+      education_classification_subject_id: 103,
     });
   });
 
-  it('calls fetchList on mount without pagination and caches the tree', async () => {
+  it('loads table data and filter data using their pagination contracts', async () => {
     mount(SubjectIndex, mountOptions);
     await flushPromises();
 
     expect(mockFetchList).toHaveBeenCalledTimes(1);
     expect(mockFetchList.mock.calls[0][0].toMap()).toMatchObject({ with_pagination: 0 });
-    expect(sessionStorage.getItem('subjects_full_education_classification_tree')).toContain(
-      'New EducationClassification',
-    );
+    expect(mockIndexSubjects).toHaveBeenCalledTimes(1);
+    expect(mockIndexSubjects.mock.calls[0][0].toMap()).toMatchObject({ with_pagination: 1 });
   });
 
   it('shows add button link', () => {

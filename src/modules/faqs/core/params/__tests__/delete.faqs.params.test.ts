@@ -7,9 +7,9 @@ describe('DeleteFaqsParams', () => {
     expect(params.id).toBe(42);
   });
 
-  it('toMap returns the id', () => {
+  it('toMap returns the backend FAQ id key', () => {
     const params = new DeleteFaqsParams({ id: 7 });
-    expect(params.toMap()).toEqual({ id: 7 });
+    expect(params.toMap()).toEqual({ faq_id: 7 });
   });
 
   it('validate returns isValid:true for a valid id', () => {

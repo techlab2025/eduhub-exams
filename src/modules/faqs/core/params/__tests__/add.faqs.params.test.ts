@@ -1,39 +1,25 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import TranslationParams from '@/modules/about/core/params/translation.params';
 import AddFaqsParams from '../add.faqs.params';
-import FaqsDetailsParams from '../faqs.details.params';
 
-const makeDetails = () =>
-  new FaqsDetailsParams({
+const makeTranslation = () =>
+  new TranslationParams({
     question: { en: 'What is this?', ar: 'ما هذا؟' },
-    answer: { en: 'This is a FAQ.', ar: 'هذا سؤال شائع.' },
+    answer: { en: 'A frequently asked question.', ar: 'سؤال شائع.' },
   });
 
 describe('AddFaqsParams', () => {
-  it('constructs with a list of FaqsDetailsParams', () => {
-    const params = new AddFaqsParams({ faqs: [makeDetails()] });
-    expect(params.faqs).toHaveLength(1);
-  });
+  it('stores and serializes FAQ translations', () => {
+    const translations = makeTranslation();
+    const params = new AddFaqsParams({ translations });
 
-  it('toMap serialises each faq using FaqsDetailsParams.toMap', () => {
-    const details = makeDetails();
-    const params = new AddFaqsParams({ faqs: [details] });
-    const map = params.toMap();
-    expect(map.faqs).toHaveLength(1);
-    expect(map.faqs[0]).toEqual(details.toMap());
-  });
-
-  it('toMap returns an empty faqs array when no items are given', () => {
-    const params = new AddFaqsParams({ faqs: [] });
-    expect(params.toMap().faqs).toEqual([]);
-  });
-
-  it('validate returns isValid:false when faqs is empty', () => {
-    const params = new AddFaqsParams({ faqs: [] });
-    expect(params.validate().isValid).toBe(false);
-  });
-
-  it('validate returns isValid:true when faqs has at least one item', () => {
-    const params = new AddFaqsParams({ faqs: [makeDetails()] });
+    expect(params.translations).toBe(translations);
+    expect(params.toMap()).toEqual({ translations: translations.toMap() });
     expect(params.validate().isValid).toBe(true);
+  });
+
+  it('fails validation without translations', () => {
+    const params = new AddFaqsParams({ translations: null as never });
+    expect(params.validate().isValid).toBe(false);
   });
 });

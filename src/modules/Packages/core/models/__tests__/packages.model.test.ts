@@ -1,57 +1,36 @@
 import { describe, it, expect } from 'vitest';
-import ArticleModel from '../Article.model';
-import ArticleSubjectModel from '../Subject.model';
-import { ArticleGeneratedByEnum } from '../../constant/Article.generatedby.enum';
+import PackageModel from '../packages.model';
 
-describe('ArticleModel', () => {
+describe('PackageModel', () => {
   const mockJson = {
     id: 1,
-    article_title: 'Title of the Article',
-    subject: {
-      curriculum: 'Governmental',
-      cycle: 'Primary',
-      grade: 'First',
-    },
-    generated_by: ArticleGeneratedByEnum.manual,
-    no_of_qs: 10,
+    package_name: 'Exam preparation',
+    education_type: 'secondary',
+    type: 'paid',
+    contant: 10,
+    price: 250,
+    status: 'active',
+    created_by: 'Admin',
   };
 
-  it('should create an instance correctly from constructor', () => {
-    const data = {
-      id: 1,
-      articleTitle: 'Title of the Article',
-      subject: ArticleSubjectModel.example,
-      generatedBy: ArticleGeneratedByEnum.manual,
-      noOfQs: 10,
-    };
-    const model = new ArticleModel(data);
+  it('maps the documented package response', () => {
+    const model = PackageModel.fromJson(mockJson);
 
-    expect(model.articleTitle).toBe('Title of the Article');
-    expect(model.subject).toEqual(ArticleSubjectModel.example);
-    expect(model.generatedBy).toBe(ArticleGeneratedByEnum.manual);
-    expect(model.noOfQs).toBe(10);
+    expect(model).toEqual(
+      expect.objectContaining({
+        id: 1,
+        packageName: 'Exam preparation',
+        educationType: 'secondary',
+        type: 'paid',
+        contant: 10,
+        price: 250,
+        status: 'active',
+        createdBy: 'Admin',
+      }),
+    );
   });
 
-  it('should create an instance correctly from fromJson', () => {
-    const model = ArticleModel.fromJson(mockJson);
-
-    expect(model.id).toBe(1);
-    expect(model.articleTitle).toBe('Title of the Article');
-    expect(model.subject).toEqual({
-      curriculum: 'Governmental',
-      cycle: 'Primary',
-      grade: 'First',
-    });
-    expect(model.generatedBy).toBe(ArticleGeneratedByEnum.manual);
-    expect(model.noOfQs).toBe(10);
-  });
-
-  it('should throw error if json is null in fromJson', () => {
-    expect(() => ArticleModel.fromJson(null)).toThrow();
-  });
-
-  it('should have a valid example', () => {
-    expect(ArticleModel.example).toBeInstanceOf(ArticleModel);
-    expect(ArticleModel.example.articleTitle).toBe('What is the capital of Egypt?');
+  it('rejects an empty response', () => {
+    expect(() => PackageModel.fromJson(null)).toThrow();
   });
 });

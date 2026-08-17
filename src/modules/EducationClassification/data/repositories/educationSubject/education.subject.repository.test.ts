@@ -49,19 +49,15 @@ describe('EducationSubjectRepository', () => {
           status: true,
           message: 'success',
           data: {
-            education_classification_id: 2,
+            education_classification: { id: 2, title: 'Secondary' },
             number_of_branches: 2,
-            translation: {
-              SingularTitle: { en: 'Subject', ar: 'مادة' },
-              PluralTitle: { en: 'Subjects', ar: 'مواد' },
-            },
+            singular_title: { en: 'Subject', ar: 'مادة' },
+            plural_title: { en: 'Subjects', ar: 'مواد' },
             branches: [
               {
                 level_number: 1,
-                translation: {
-                  SingularTitle: { en: 'Part', ar: 'جزء' },
-                  PluralTitle: { en: 'Parts', ar: 'اجزاء' },
-                },
+                singular_title: { en: 'Part', ar: 'جزء' },
+                plural_title: { en: 'Parts', ar: 'اجزاء' },
               },
             ],
           },
@@ -76,9 +72,9 @@ describe('EducationSubjectRepository', () => {
       if (result instanceof DataSuccess) {
         expect(result.data).toBeInstanceOf(Array);
         expect(result.data?.[0]).toBeInstanceOf(EducationSubjectConfigurationModel);
-        expect(result.data?.[0].educationClassificatioId).toBe(2);
+        expect(result.data?.[0].educationClassification.id).toBe(2);
         expect(result.data?.[0].numberOfBranches).toBe(2);
-        expect(result.data?.[0].SingularTitle.en).toBe('Subject');
+        expect(result.data?.[0].SingluarTitle.en).toBe('Subject');
       }
     });
 

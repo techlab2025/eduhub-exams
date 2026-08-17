@@ -3,6 +3,6 @@ import DeletePlanParams from '../delete.plan.params';
 
 describe('DeletePlanParams', () => {
   it('maps the plan id', () => {
-    expect(new DeletePlanParams(7).toMap()).toEqual({ plan_id: 7 });
+    expect(new DeletePlanParams(7).toMap()).toEqual({ subscription_plan_id: 7 });
   });
 });

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
@@ -19,8 +18,8 @@ vi.mock('vue-router', () => ({
 vi.mock('@/modules/about/presentation/controllers/about.controller', () => ({
   default: {
     getInstance: vi.fn(() => ({
-      fetchOne: vi.fn().mockResolvedValue({ isSuccess: true }),
-      itemState: { value: { data: null } },
+      fetchList: vi.fn().mockResolvedValue({ isSuccess: true }),
+      listState: { value: { data: [] } },
     })),
   },
 }));
@@ -37,7 +36,13 @@ vi.mock('@/shared/icons/About/EmptyData.vue', () => ({
 
 const globalConfig = {
   mocks: { $t: (k: string) => k },
-  stubs: { 'router-link': true, Teleport: true },
+  stubs: {
+    'router-link': true,
+    Teleport: true,
+    DataStatusBuilder: {
+      template: '<div><slot name="success" /></div>',
+    },
+  },
 };
 
 describe('AboutIndex', () => {

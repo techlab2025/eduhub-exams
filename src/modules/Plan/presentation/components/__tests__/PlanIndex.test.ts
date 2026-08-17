@@ -152,7 +152,7 @@ describe('PlanIndex', () => {
     expect(actions[3].link).toBe('/plans/edit/1?section=features');
     expect(actions[4].confirmation).toBeUndefined();
     expect(actions[5].confirmation).toBeUndefined();
-    expect(dropList.props('deleteDialogTitle')).toBe('Confirm delete');
+    expect(dropList.props('deleteDialogTitle')).toBe('delete_plan_title');
   });
 
   it('deletes the selected plan and refreshes the list', async () => {

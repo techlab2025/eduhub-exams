@@ -54,8 +54,8 @@ describe('EmployeeAdd.vue', () => {
 
   it('contains the "Save Employee" button', () => {
     const wrapper = mount(EmployeeAdd, { global: globalConfig });
-    const saveButton = wrapper.find('.save-emp');
-    expect(saveButton.exists()).toBe(true);
+    const saveButton = wrapper.find('.actions .btn-primary');
+    expect(saveButton.text()).toBe('save_employee');
   });
 
   it('contains the "Save As draft" button', () => {

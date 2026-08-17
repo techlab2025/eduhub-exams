@@ -93,7 +93,7 @@ describe('LoginController', () => {
 
       await LoginController.getInstance().login(mockParams);
 
-      expect(mockPush).toHaveBeenCalledWith('/eg/');
+      expect(mockPush).toHaveBeenCalledWith({ name: 'About' });
     });
 
     it('should return a DataFailed response when repository throws', async () => {

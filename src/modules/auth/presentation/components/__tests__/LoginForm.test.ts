@@ -4,6 +4,12 @@ import LoginForm from '../LoginForm.vue';
 import LoginController from '../../controllers/login.controller';
 import LoginParams from '../../../core/params/login.params';
 
+const { routerPushMock } = vi.hoisted(() => ({ routerPushMock: vi.fn() }));
+
+vi.mock('@/router', () => ({
+  default: { push: routerPushMock },
+}));
+
 vi.mock('../../controllers/login.controller', () => {
   return {
     default: {
@@ -20,6 +26,7 @@ describe('LoginForm.vue', () => {
   let mockLogin: any;
 
   beforeEach(() => {
+    vi.clearAllMocks();
     mockLogin = vi.fn();
     (LoginController.getInstance as any).mockReturnValue({
       login: mockLogin,

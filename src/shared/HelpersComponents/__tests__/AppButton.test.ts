@@ -89,12 +89,12 @@ describe('AppButton', () => {
 
   it('shows spinner when loading', () => {
     const wrapper = createWrapper({ loading: true });
-    expect(wrapper.find('.btn__spinner').exists()).toBe(true);
+    expect(wrapper.find('.loader').exists()).toBe(true);
   });
 
   it('hides spinner when not loading', () => {
     const wrapper = createWrapper();
-    expect(wrapper.find('.btn__spinner').exists()).toBe(false);
+    expect(wrapper.find('.loader').exists()).toBe(false);
   });
 
   it('emits click event', async () => {

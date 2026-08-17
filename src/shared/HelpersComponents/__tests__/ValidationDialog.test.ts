@@ -1,71 +1,28 @@
-// import { describe, it, expect, vi } from 'vitest';
-// import { mount } from '@vue/test-utils';
-// import { ref } from 'vue';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
+import ValidationService from '@/base/Presentation/Utils/validationService';
+import ValidationDialog from '../ValidationDialog.vue';
 
-// // Mock the ValidationService
-// vi.mock('@/base/Presentation/Utils/validationService', () => {
-//   return {
-//     default: {
-//       isOpen: ref(false),
-//       message: ref(''),
-//       openDialog: vi.fn(),
-//       clearValidation: vi.fn(),
-//     },
-//   };
-// });
+describe('ValidationDialog', () => {
+  beforeEach(() => ValidationService.clearValidation());
 
-// import ValidationService from '@/base/Presentation/Utils/validationService';
+  it('renders the current validation message only while open', async () => {
+    const wrapper = mount(ValidationDialog);
+    expect(wrapper.find('.dialog-overlay').exists()).toBe(false);
 
-// const createWrapper = () => mount(ValidationDialog);
+    ValidationService.message.value = 'Name is required';
+    ValidationService.isOpen.value = true;
+    await wrapper.vm.$nextTick();
 
-// // describe('ValidationDialog', () => {
-// //   it('renders without crashing', () => {
-// //     const wrapper = createWrapper();
-// //     expect(wrapper.exists()).toBe(true);
-// //   });
+    expect(wrapper.find('.dialog-message').text()).toBe('Name is required');
+  });
 
-// //   it('is hidden when isOpen is false', () => {
-// //     ValidationService.isOpen.value = false;
-// //     const wrapper = createWrapper();
-// //     expect(wrapper.find('.dialog-overlay').exists()).toBe(false);
-// //   });
+  it('clears validation from the close button', async () => {
+    const clear = vi.spyOn(ValidationService, 'clearValidation');
+    ValidationService.isOpen.value = true;
+    const wrapper = mount(ValidationDialog);
 
-// //   it('is visible when isOpen is true', () => {
-// //     ValidationService.isOpen.value = true;
-// //     ValidationService.message.value = 'Required field';
-// //     const wrapper = createWrapper();
-// //     expect(wrapper.find('.dialog-overlay').exists()).toBe(true);
-// //   });
-
-// //   it('displays the validation message', () => {
-// //     ValidationService.isOpen.value = true;
-// //     ValidationService.message.value = 'Name is required';
-// //     const wrapper = createWrapper();
-// //     expect(wrapper.find('.dialog-message').text()).toBe('Name is required');
-// //   });
-
-// //   it('renders close button when visible', () => {
-// //     ValidationService.isOpen.value = true;
-// //     ValidationService.message.value = 'Error';
-// //     const wrapper = createWrapper();
-// //     expect(wrapper.find('.dialog-close-btn').text()).toBe('Close');
-// //   });
-
-// //   it('calls clearValidation when close button clicked', async () => {
-// //     ValidationService.isOpen.value = true;
-// //     ValidationService.message.value = 'Error';
-// //     const wrapper = createWrapper();
-
-// //     await wrapper.find('.dialog-close-btn').trigger('click');
-// //     expect(ValidationService.clearValidation).toHaveBeenCalled();
-// //   });
-
-// //   it('calls clearValidation when overlay clicked', async () => {
-// //     ValidationService.isOpen.value = true;
-// //     ValidationService.message.value = 'Error';
-// //     const wrapper = createWrapper();
-
-// //     await wrapper.find('.dialog-overlay').trigger('click');
-// //     expect(ValidationService.clearValidation).toHaveBeenCalled();
-// //   });
-// // });
+    await wrapper.find('.dialog-close-btn').trigger('click');
+    expect(clear).toHaveBeenCalledOnce();
+  });
+});

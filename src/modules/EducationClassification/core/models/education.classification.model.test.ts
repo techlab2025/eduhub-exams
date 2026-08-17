@@ -20,7 +20,12 @@ describe('EducationClassificationModel', () => {
 
   describe('fromJson', () => {
     it('should create model from API response', () => {
-      const json = { id: 5, title: 'Higher Education', created_at: '2023-06-01', status: false };
+      const json = {
+        id: 5,
+        title: 'Higher Education',
+        created_at: '2023-06-01',
+        is_active: false,
+      };
 
       const model = EducationClassificationModel.fromJson(json);
 
@@ -44,7 +49,7 @@ describe('EducationClassificationModel', () => {
         id: 5,
         title: 'Higher Education',
         created_at: '2023-06-01',
-        status,
+        is_active: status,
       });
 
       expect(model.status).toBe(expected);
