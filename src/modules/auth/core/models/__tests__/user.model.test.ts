@@ -53,8 +53,8 @@ describe('UserModel', () => {
         employee_id: 42,
         created_at: '2024-02-01',
         updated_at: '2024-07-01',
-        api_token: 'jwt-token',
-        refresh_token: 'ref-token',
+        token: 'example-access-token',
+        refresh_token: 'example-refresh-token',
       };
       const model = UserModel.fromJson(json);
       expect(model.id).toBe(5);
@@ -62,8 +62,8 @@ describe('UserModel', () => {
       expect(model.email).toBe('hana@example.com');
       expect(model.type).toBe(EmailType.WORK);
       expect(model.employeeId).toBe(42);
-      expect(model.apiToken).toBe('jwt-token');
-      expect(model.refreshToken).toBe('ref-token');
+      expect(model.apiToken).toBe('example-access-token');
+      expect(model.refreshToken).toBe('example-refresh-token');
     });
 
     it('should throw when json is null', () => {

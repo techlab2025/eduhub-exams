@@ -88,7 +88,7 @@ describe('SubscriptionIndex', () => {
               <div>
                 <slot
                   name="success"
-                  :data="[{ id: 7, status: '1', student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+                  :data="[{ id: 7, status: 1, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
                 />
               </div>
             `,
@@ -137,7 +137,7 @@ describe('SubscriptionIndex', () => {
             template: `
               <slot
                 name="success"
-                :data="[{ id: 7, status: '2', student: { name: 'Student' }, plan: { title: 'Plan' } }]"
+                :data="[{ id: 7, status: 2, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
               />
             `,
           },

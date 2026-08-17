@@ -35,8 +35,10 @@ export default class SubscriptionPlanModel {
     return new SubscriptionPlanModel(
       Number(json.id ?? 0),
       String(json.title ?? ''),
-      Number(json.status ?? SubscriptionStatusEnum.ACTIVE) as SubscriptionStatus,
-      String(json.total_paid ?? ''),
+      Number(
+        json.status ?? json.plan_status ?? SubscriptionStatusEnum.ACTIVE,
+      ) as SubscriptionStatus,
+      String(json.total_paid ?? json.total_paied ?? ''),
       String(json.payment_method ?? ''),
       String(json.subscribe_date ?? ''),
       String(json.expire_date ?? ''),
