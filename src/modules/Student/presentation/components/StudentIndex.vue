@@ -283,7 +283,7 @@
         <FilterDialog
           v-model="filterDialogVisible"
           dialog-class="student-filter-dialog"
-          width="min(25.75rem, calc(100vw - 1.5rem))"
+          width="40rem"
         >
           <template #content>
             <div class="student-filters">
@@ -420,15 +420,16 @@
                   </label>
                 </div>
               </section>
-
-              <div class="student-filter-actions">
-                <button type="button" class="btn btn-primary" @click="applyFilters">
-                  {{ $t('apply') }}
-                </button>
-                <button type="button" class="btn btn-cancel" @click="resetFilters">
-                  {{ $t('reset') }}
-                </button>
-              </div>
+            </div>
+          </template>
+          <template #footer>
+            <div class="student-filter-actions">
+              <button type="button" class="btn btn-primary" @click="applyFilters">
+                {{ $t('apply') }}
+              </button>
+              <button type="button" class="btn btn-cancel" @click="resetFilters">
+                {{ $t('reset') }}
+              </button>
             </div>
           </template>
         </FilterDialog>
@@ -445,7 +446,12 @@
         "
       >
         <template #success="{ data }">
-          <AppTable :headers="headers" :items="data as StudentModel[]" row-key="id" selectable>
+          <AppTable
+            :headers="headers"
+            :items="(data || []) as StudentModel[]"
+            row-key="id"
+            selectable
+          >
             <template #cell-name="{ item }">
               <div class="student-name-cell">
                 <img v-if="item.image" :src="item.image" :alt="item.name" />
@@ -734,48 +740,93 @@
   }
 
   .student-filters {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    gap: 12px;
+    padding-block: 18px;
+    font-family: var(--font-family);
   }
 
-  :global(.student-filter-dialog) {
+  :global(.student-filter-dialog.p-dialog) {
+    display: flex;
+    flex-direction: column;
+    height: min(52rem, calc(100dvh - 24px));
     max-width: calc(100vw - 24px);
-    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
     overflow: hidden;
+    border: 1px solid var(--border-weak);
     background: var(--standard-white) !important;
-    border-radius: 24px;
-    box-shadow: var(--shadow-md);
+    border-radius: 28px;
+    box-shadow: var(--shadow-xl);
+  }
 
-    .p-dialog-header {
-      padding: 24px 20px 0;
-    }
+  :global(.student-filter-dialog.p-dialog .p-dialog-header) {
+    flex: 0 0 auto;
+    padding: 22px 24px 18px;
+    background: linear-gradient(135deg, var(--standard-white), var(--PrimaryColor-alpha-4));
+    border-bottom: 1px solid var(--border-weak);
+  }
 
-    .p-dialog-header-actions {
-      display: none;
-    }
+  :global(.student-filter-dialog.p-dialog .p-dialog-header-actions) {
+    display: flex;
+  }
 
-    .p-dialog-content {
-      padding: 0 !important;
-      scrollbar-width: none;
+  :global(.student-filter-dialog.p-dialog .p-dialog-close-button) {
+    width: 36px;
+    height: 36px;
+    color: var(--gray-500);
+    border-radius: var(--radius-full);
+  }
 
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
+  :global(.student-filter-dialog.p-dialog .p-dialog-close-button:hover) {
+    color: var(--PrimaryColor);
+    background: var(--PrimaryColor-alpha-8);
+  }
 
-    .filter-title {
-      margin: 0;
-      color: var(--standard-black);
-      font-family: var(--font-family);
-      font-size: 20px;
-      font-weight: 600;
-      line-height: normal;
-    }
+  :global(.student-filter-dialog.p-dialog .p-dialog-content) {
+    min-height: 0;
+    flex: 1 1 auto;
+    padding: 0 20px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--gray-50-std);
+    scrollbar-color: var(--gray-300) transparent;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  :global(.student-filter-dialog.p-dialog .p-dialog-content::-webkit-scrollbar) {
+    width: 6px;
+  }
+
+  :global(.student-filter-dialog.p-dialog .p-dialog-content::-webkit-scrollbar-thumb) {
+    background: var(--gray-300);
+    border-radius: var(--radius-full);
+  }
+
+  :global(.student-filter-dialog.p-dialog .p-dialog-content::-webkit-scrollbar-track) {
+    background: transparent;
+  }
+
+  :global(.student-filter-dialog.p-dialog .p-dialog-footer) {
+    flex: 0 0 auto;
+    padding: 16px 24px 20px;
+    background: var(--standard-white);
+    border-top: 1px solid var(--border-weak);
+    box-shadow: var(--shadow-sm);
+  }
+
+  :global(.student-filter-dialog.p-dialog .filter-title) {
+    margin: 0;
+    color: var(--gray-900);
+    font-family: var(--font-family);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
   }
 
   :global(.custom-select-overlay) {
-    width: min(23.125rem, calc(100vw - 4rem)) !important;
-    max-width: min(23.125rem, calc(100vw - 4rem)) !important;
+    width: min(36rem, calc(100vw - 4rem)) !important;
+    max-width: min(36rem, calc(100vw - 4rem)) !important;
   }
 
   :global(.custom-select-overlay .p-select-list) {
@@ -792,11 +843,20 @@
   }
 
   .student-filter-section {
-    padding-block: 18px;
-    border-bottom: 1px solid var(--input-border-color);
+    min-width: 0;
+    padding: 18px;
+    background: var(--standard-white);
+    border: 1px solid var(--border-weak);
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
 
-    &:first-child {
-      padding-top: 10px;
+    h2 {
+      margin: 0 0 14px;
+      color: var(--gray-800);
+      font-family: var(--font-family);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
     }
   }
 
@@ -805,32 +865,34 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 14px;
 
     h2 {
       margin: 0;
-      color: var(--title-header-color);
-      font-family: var(--font-family);
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.4;
     }
   }
 
   .student-filter-reset {
-    width: 22px;
-    height: 22px;
+    width: 32px;
+    height: 32px;
     padding: 0;
     display: grid;
     place-items: center;
-    color: var(--gray-text);
-    background: transparent;
-    border: 0;
+    color: var(--gray-500);
+    background: var(--gray-50-std);
+    border: 1px solid var(--border-weak);
+    border-radius: var(--radius-full);
     cursor: pointer;
 
     :deep(svg) {
       width: 20px;
       height: 20px;
+    }
+
+    &:hover {
+      color: var(--PrimaryColor);
+      background: var(--PrimaryColor-alpha-8);
+      border-color: var(--PrimaryColor-alpha-30);
     }
   }
 
@@ -841,40 +903,63 @@
 
     :deep(.input-select) {
       width: 100%;
-      height: 48px;
-      border: 1px solid var(--input-border-color);
-      border-radius: var(--radius-full);
-      background: var(--standard-white);
+      height: 52px;
+      border: 1px solid var(--border-weak);
+      border-radius: 14px;
+      background: var(--gray-50-std);
+      box-shadow: none;
+
+      &:hover {
+        border-color: var(--PrimaryColor-alpha-40);
+      }
     }
 
     :deep(.p-select-label) {
-      padding-inline: 16px;
       display: flex;
       align-items: center;
+      padding-inline: 14px;
       color: var(--gray-text);
       font-size: 14px;
     }
 
     :deep(.p-select-dropdown) {
-      width: 44px;
+      width: 48px;
     }
   }
 
   .student-status-options {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 10px;
   }
 
   .student-status-option {
     position: relative;
-    display: inline-flex;
+    min-width: 0;
+    min-height: 46px;
+    padding: 10px 12px;
+    display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--standard-black);
+    background: var(--gray-50-std);
+    border: 1px solid var(--border-weak);
+    border-radius: 13px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 600;
+
+    &:hover,
+    &:has(input:checked) {
+      background: var(--standard-white);
+      border-color: currentColor;
+      box-shadow: var(--shadow-sm);
+    }
+
+    &:has(input:focus-visible) {
+      outline: 3px solid var(--PrimaryColor-alpha-20);
+      outline-offset: 2px;
+    }
 
     input {
       position: absolute;
@@ -891,23 +976,22 @@
     flex: 0 0 18px;
     background: var(--standard-white);
     border: 1px solid var(--gray-300);
-    border-radius: 5px;
+    border-radius: var(--radius-full);
   }
 
   .student-status-option input:checked + .student-status-box {
-    background: currentColor;
+    background: var(--standard-white);
     border-color: currentColor;
 
     &::after {
       position: absolute;
-      top: 3px;
-      left: 6px;
-      width: 4px;
+      top: 4px;
+      left: 4px;
+      width: 8px;
       height: 8px;
-      border: solid var(--standard-white);
-      border-width: 0 2px 2px 0;
+      background: currentColor;
+      border-radius: var(--radius-full);
       content: '';
-      transform: rotate(45deg);
     }
   }
 
@@ -924,7 +1008,7 @@
   }
 
   .student-join-date-section {
-    border-bottom: 0;
+    margin-bottom: 0;
   }
 
   .student-date-fields {
@@ -934,64 +1018,88 @@
 
     label {
       min-width: 0;
-      display: grid;
-      gap: 6px;
-      color: var(--title-header-color);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      color: var(--gray-600);
       font-size: 14px;
+      font-weight: 600;
     }
 
     :deep(.p-datepicker) {
+      position: relative;
       width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      background: var(--gray-50-std);
+      border: 1px solid var(--border-weak);
+      border-radius: 14px;
+
+      &:focus-within {
+        background: var(--standard-white);
+        border-color: var(--PrimaryColor);
+        box-shadow: 0 0 0 3px var(--PrimaryColor-alpha-12);
+      }
     }
 
     :deep(.p-inputtext) {
-      width: 100%;
       min-width: 0;
-      height: 48px;
-      padding-inline: 14px 4px;
-      color: var(--gray-text);
-      border: 1px solid var(--input-border-color);
-      border-inline-end: 0;
-      border-radius: var(--radius-full) 0 0 var(--radius-full);
-      font-size: 12px;
+      height: 100%;
+      flex: 1 1 auto;
+      padding-inline: 14px 8px;
+      color: var(--gray-text) !important;
+      background: transparent;
+      border: 0 !important;
+      border-radius: 14px !important;
+      box-shadow: none !important;
+      font-size: 14px !important;
     }
 
     :deep(.p-datepicker-dropdown) {
-      width: 42px;
-      color: var(--gray-text);
-      background: var(--standard-white);
-      border: 1px solid var(--input-border-color);
-      border-inline-start: 0;
-      border-radius: 0 var(--radius-full) var(--radius-full) 0;
+      position: static;
+      width: 46px;
+      height: 100%;
+      flex: 0 0 46px;
+      color: var(--PrimaryColor);
+      background: var(--PrimaryColor-alpha-8);
+      border: 0;
+      border-inline-start: 1px solid var(--border-weak);
+      border-radius: 0 !important;
     }
   }
 
   .student-filter-actions {
     display: grid;
-    grid-template-columns: minmax(0, 1.7fr) minmax(112px, 1fr);
-    gap: 16px;
-    padding-top: 8px;
+    grid-template-columns: minmax(0, 1.65fr) minmax(120px, 1fr);
+    gap: 12px;
+    width: 100%;
 
     .btn {
       width: 100%;
-      height: 52px;
+      height: 50px;
       margin: 0 !important;
       border-radius: var(--radius-full);
-      font-family: var(--font-family);
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
     }
 
     .btn-primary {
       color: var(--standard-white);
-      background: var(--primary-green);
-      border: 1px solid var(--primary-green);
+      background: var(--PrimaryColor);
+      border: 1px solid var(--PrimaryColor);
+      box-shadow: var(--shadow-sm);
+
+      &:hover {
+        background: var(--PrimaryColor-hover);
+      }
     }
 
     .btn-cancel {
-      color: var(--btn-red);
-      background: var(--background-btn-outline-color);
-      border: 1px solid var(--background-btn-hard-color);
+      color: var(--danger-alt);
+      background: var(--danger-light);
+      border: 1px solid var(--danger-border-light);
     }
   }
 
@@ -1034,11 +1142,37 @@
     }
 
     .student-status-options {
-      flex-wrap: wrap;
+      grid-template-columns: 1fr;
     }
 
     .student-date-fields {
-      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+
+    :global(.student-filter-dialog.p-dialog) {
+      border-radius: 20px;
+    }
+
+    :global(.student-filter-dialog.p-dialog .p-dialog-header),
+    :global(.student-filter-dialog.p-dialog .p-dialog-footer) {
+      padding-inline: 16px;
+    }
+
+    :global(.student-filter-dialog.p-dialog .p-dialog-content) {
+      padding-inline: 12px;
+    }
+
+    .student-filters {
+      gap: 10px;
+      padding-block: 12px;
+    }
+
+    .student-filter-section {
+      padding: 16px;
+    }
+
+    .student-filter-actions {
+      grid-template-columns: minmax(0, 1.35fr) minmax(104px, 1fr);
     }
   }
 </style>
