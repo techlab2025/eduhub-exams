@@ -331,13 +331,13 @@
             <div class="pricing-grid">
               <dl v-for="(item, index) in plan.pricing" :key="index" class="pricing-item">
                 <dt>{{ pricingLabel(item.durationType) }}</dt>
-                <dd>
+                <dd class="price_duaration">
                   {{ formatNumber(item.price) }} {{ $t('currency_egp') }} /
                   {{ durationLabel(item.duration, item.durationType) }}
                 </dd>
               </dl>
               <dl class="pricing-item">
-                <dt>{{ $t('trial_period') }}</dt>
+                <dt>{{ $t('trial_period') }}:</dt>
                 <dd>{{ plan.trialDays }} {{ $t(plan.trialDays === 1 ? 'day' : 'days') }}</dd>
               </dl>
             </div>
@@ -572,8 +572,11 @@
 
     h2 {
       margin: 0;
-      font-size: 0.95rem;
+      font-size: 1rem;
       letter-spacing: 0;
+      font-family: "bold";
+      font-weight: 700;
+      color: rgba(22, 36, 55, 1);
     }
   }
 
@@ -584,15 +587,25 @@
     gap: var(--xs-size);
   }
 
+  .price_duaration{
+    background-color: rgba(79, 175, 124, 0.1);
+    width: fit-content;
+    padding: 8px 1rem;
+    border-radius: 20px;
+    color: rgba(79, 175, 124, 1);
+  }
   .pricing-item {
     min-width: 0;
     margin: 0;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--xs-size-3);
+    align-items: center;
 
     dt {
-      color: var(--GrayText);
+      color: rgba(138, 138, 138, 1);
+        font-weight: 500;
+        font-family: "medium";
     }
 
     dd {

@@ -99,11 +99,11 @@
           name: 'subscriptions',
           icon: SettingIcon,
         },
-        // {
-        //   link: '/students',
-        //   name: 'students',
-        //   icon: SettingIcon,
-        // },
+        {
+          link: '/students',
+          name: 'students',
+          icon: SettingIcon,
+        },
         // {
         //   link: '/placements/show',
         //   name: 'Placement Configuration',

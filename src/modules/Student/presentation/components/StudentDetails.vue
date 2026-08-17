@@ -1,23 +1,123 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, h, onMounted, ref } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import { useRoute } from 'vue-router';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
+  import IconPlane from '@/shared/icons/IconPlane.vue';
+  import ArchiveIcon from '@/shared/icons/Plan/ArchiveIcon.vue';
+  import AddNoteIconSource from '@/assets/icons/Student/add-note.svg';
+  import BlockIconSource from '@/assets/icons/Student/block.svg';
+  import ForceLogoutIconSource from '@/assets/icons/Student/force-logout.svg';
   import { StudentStatusEnum } from '../../core/models/student.model';
+  import { AddStudentNoteParams } from '../../core/params/add.student.note.params';
+  import { ChangeStudentStatusParams } from '../../core/params/change.student.status.params';
+  import { ForceLogoutStudentParams } from '../../core/params/force.logout.student.params';
   import { ShowStudentParams } from '../../core/params/show.student.params';
   import StudentController from '../controllers/student.controller';
+  import StudentArchiveDialog from '../subComponents/StudentArchiveDialog.vue';
+  import StudentBlockDialog from '../subComponents/StudentBlockDialog.vue';
+  import StudentForceLogoutDialog from '../subComponents/StudentForceLogoutDialog.vue';
+  import StudentNoteDialog from '../subComponents/StudentNoteDialog.vue';
 
   const route = useRoute();
+  const { t } = useI18n();
   const controller = StudentController.getInstance();
   const student = computed(() => controller.itemData.value);
   const itemState = computed(() => controller.itemState.value);
   const showAllNotes = ref(false);
+  const notesExpanded = ref(true);
   const showAllPlacementTests = ref(false);
   const showAllPractices = ref(false);
+  const archiveDialogVisible = ref(false);
+  const blockDialogVisible = ref(false);
+  const forceLogoutDialogVisible = ref(false);
+  const noteDialogVisible = ref(false);
+  const statusActionLoading = ref(false);
+  const forceLogoutLoading = ref(false);
+  const noteActionLoading = ref(false);
+
+  const AddNoteIcon = () => h('img', { src: AddNoteIconSource, alt: '' });
+  const BlockIcon = () => h('img', { src: BlockIconSource, alt: '' });
+  const ForceLogoutIcon = () => h('img', { src: ForceLogoutIconSource, alt: '' });
 
   const fetchStudent = () => controller.fetchOne(new ShowStudentParams(Number(route.params.id)));
   const retryFetchStudent = async () => {
     await fetchStudent();
   };
+  const changeStatus = async (status: StudentStatusEnum, reason?: string) => {
+    if (!student.value || statusActionLoading.value) return;
+
+    statusActionLoading.value = true;
+    try {
+      await controller.changeStatus(
+        new ChangeStudentStatusParams(student.value.id, status, reason),
+      );
+      archiveDialogVisible.value = false;
+      blockDialogVisible.value = false;
+      await fetchStudent();
+    } finally {
+      statusActionLoading.value = false;
+    }
+  };
+  const confirmArchive = () => changeStatus(StudentStatusEnum.ARCHIVE);
+  const confirmBlock = (reason?: string) => changeStatus(StudentStatusEnum.BLOCK, reason);
+  const confirmForceLogout = async () => {
+    if (!student.value || forceLogoutLoading.value) return;
+
+    forceLogoutLoading.value = true;
+    try {
+      await controller.forceLogout(new ForceLogoutStudentParams(student.value.id));
+      forceLogoutDialogVisible.value = false;
+    } finally {
+      forceLogoutLoading.value = false;
+    }
+  };
+  const addNote = async (payload: { studentId: number; note: string }) => {
+    if (noteActionLoading.value) return;
+
+    noteActionLoading.value = true;
+    try {
+      await controller.addNote(new AddStudentNoteParams(payload.studentId, payload.note));
+      noteDialogVisible.value = false;
+      await fetchStudent();
+    } finally {
+      noteActionLoading.value = false;
+    }
+  };
+  const actionList = computed(() => {
+    if (!student.value) return [];
+
+    return [
+      {
+        text: student.value.status === StudentStatusEnum.ARCHIVE ? t('active') : t('archive'),
+        icon: ArchiveIcon,
+        action: () =>
+          student.value?.status === StudentStatusEnum.ARCHIVE
+            ? changeStatus(StudentStatusEnum.ACTIVE)
+            : (archiveDialogVisible.value = true),
+      },
+      {
+        text: t('add_note'),
+        icon: AddNoteIcon,
+        action: () => (noteDialogVisible.value = true),
+      },
+      {
+        text: t('force_logout'),
+        icon: ForceLogoutIcon,
+        action: () => (forceLogoutDialogVisible.value = true),
+      },
+      {
+        text: student.value.status === StudentStatusEnum.BLOCK ? t('active') : t('block'),
+        icon: BlockIcon,
+        action: () =>
+          student.value?.status === StudentStatusEnum.BLOCK
+            ? changeStatus(StudentStatusEnum.ACTIVE)
+            : (blockDialogVisible.value = true),
+        danger: student.value.status !== StudentStatusEnum.BLOCK,
+      },
+    ];
+  });
   const valueOrDash = (value: unknown) =>
     value === null || value === undefined || value === '' ? '—' : String(value);
   const verificationValue = (verified: boolean) => (verified ? 'verified' : 'not_verified');
@@ -148,9 +248,17 @@
                 <h2>{{ $t('account_status') }}</h2>
                 <p>{{ $t('account_status_description') }}</p>
               </div>
-              <button type="button" class="student-more-button" :aria-label="$t('more_actions')">
-                ⋮
-              </button>
+              <DropList :action-list="actionList" variant="student">
+                <template #icon>
+                  <button
+                    type="button"
+                    class="student-more-button"
+                    :aria-label="$t('more_actions')"
+                  >
+                    ⋮
+                  </button>
+                </template>
+              </DropList>
             </header>
             <p
               class="student-account-message"
@@ -168,7 +276,10 @@
           </article>
 
           <article class="student-content-card">
-            <h2 class="student-section-title">{{ $t('plans_finance') }}</h2>
+            <h2 class="student-section-title student-section-title-with-icon">
+              <IconPlane aria-hidden="true" />
+              <span>{{ $t('plans_finance') }}</span>
+            </h2>
             <div class="student-finance-grid">
               <div>
                 <span>{{ $t('current_plan') }}</span>
@@ -301,37 +412,74 @@
           </article>
 
           <article id="notes" class="student-content-card student-notes-card">
-            <header class="student-card-heading">
+            <button
+              type="button"
+              class="student-card-heading student-notes-trigger"
+              :aria-expanded="notesExpanded"
+              aria-controls="student-notes-panel"
+              @click="notesExpanded = !notesExpanded"
+            >
               <h2>
                 {{ $t('notes') }}
                 <span>({{ student.notes.length }})</span>
               </h2>
-              <span aria-hidden="true">⌃</span>
-            </header>
-            <ul>
-              <li v-for="note in visibleNotes" :key="note.id">
-                <div class="student-note-meta">
-                  <span class="student-note-avatar" aria-hidden="true">
-                    {{ note.createdBy?.name.charAt(0) ?? 'A' }}
-                  </span>
-                  <strong>{{ valueOrDash(note.createdBy?.name) }}</strong>
-                  <time>{{ valueOrDash(note.createdAt) }}</time>
-                </div>
-                <p>{{ note.note }}</p>
-              </li>
-            </ul>
-            <p v-if="student.notes.length === 0" class="student-empty-row">{{ $t('no_notes') }}</p>
-            <button
-              v-if="student.notes.length > 5"
-              type="button"
-              class="student-notes-toggle"
-              @click="showAllNotes = !showAllNotes"
-            >
-              {{ $t(showAllNotes ? 'show_less' : 'show_all') }}
+              <span
+                class="student-notes-chevron"
+                :class="{ expanded: notesExpanded }"
+                aria-hidden="true"
+              ></span>
             </button>
+
+            <div v-show="notesExpanded" id="student-notes-panel" class="student-notes-panel">
+              <ul>
+                <li v-for="note in visibleNotes" :key="note.id">
+                  <div class="student-note-meta">
+                    <span class="student-note-avatar" aria-hidden="true">
+                      {{ note.createdBy?.name.charAt(0) ?? 'A' }}
+                    </span>
+                    <strong>{{ valueOrDash(note.createdBy?.name) }}</strong>
+                    <time>{{ valueOrDash(note.createdAt) }}</time>
+                  </div>
+                  <p>{{ note.note }}</p>
+                </li>
+              </ul>
+              <p v-if="student.notes.length === 0" class="student-empty-row">
+                {{ $t('no_notes') }}
+              </p>
+              <button
+                v-if="student.notes.length > 5"
+                type="button"
+                class="student-notes-toggle"
+                @click="showAllNotes = !showAllNotes"
+              >
+                {{ $t(showAllNotes ? 'show_less' : 'show_all') }}
+              </button>
+            </div>
           </article>
         </section>
       </main>
+
+      <StudentArchiveDialog
+        v-model="archiveDialogVisible"
+        :loading="statusActionLoading"
+        @confirm="confirmArchive"
+      />
+      <StudentBlockDialog
+        v-model="blockDialogVisible"
+        :loading="statusActionLoading"
+        @confirm="confirmBlock"
+      />
+      <StudentForceLogoutDialog
+        v-model="forceLogoutDialogVisible"
+        :loading="forceLogoutLoading"
+        @confirm="confirmForceLogout"
+      />
+      <StudentNoteDialog
+        v-model="noteDialogVisible"
+        :student-id="student?.id ?? null"
+        :loading="noteActionLoading"
+        @save="addNote"
+      />
     </template>
   </DataStatusBuilder>
 </template>
@@ -490,6 +638,8 @@
     margin: 0;
     font-size: 16px;
     font-weight: 700;
+    font-family: var(--font-family);
+    color: var(--title-card-color);
   }
 
   .student-state-value {
@@ -562,6 +712,18 @@
 
   .student-section-title {
     margin-bottom: 14px;
+  }
+
+  .student-section-title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    :deep(svg) {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+    }
   }
 
   .student-finance-grid,
@@ -669,7 +831,32 @@
     }
   }
 
-  .student-notes-card ul {
+  .student-notes-trigger {
+    width: 100%;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: start;
+  }
+
+  .student-notes-chevron {
+    width: 8px;
+    height: 8px;
+    margin-inline: 4px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+
+    &.expanded {
+      transform: rotate(225deg);
+    }
+  }
+
+  .student-notes-panel ul {
     margin: 14px 0 0;
     padding: 0;
     display: grid;

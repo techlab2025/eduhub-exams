@@ -157,12 +157,13 @@
   const confirmStatusChange = async (
     status: StudentStatusEnum,
     dialogVisible: typeof archiveDialogVisible | typeof blockDialogVisible,
+    reason?: string,
   ) => {
     if (!selectedStudent.value || statusActionLoading.value) return;
 
     statusActionLoading.value = true;
     try {
-      await changeStatus(selectedStudent.value, status);
+      await changeStatus(selectedStudent.value, status, reason);
       dialogVisible.value = false;
       selectedStudent.value = null;
     } finally {
@@ -170,7 +171,8 @@
     }
   };
   const confirmArchive = () => confirmStatusChange(StudentStatusEnum.ARCHIVE, archiveDialogVisible);
-  const confirmBlock = () => confirmStatusChange(StudentStatusEnum.BLOCK, blockDialogVisible);
+  const confirmBlock = (reason: string) =>
+    confirmStatusChange(StudentStatusEnum.BLOCK, blockDialogVisible, reason);
   const confirmForceLogout = async () => {
     if (!selectedStudent.value || forceLogoutLoading.value) return;
 
@@ -351,6 +353,7 @@
                   :params="new IndexPlanParams('', 1, 100)"
                   has-header
                   :reload="false"
+                  wrap-option-labels
                 >
                   <template #Header>
                     <div class="student-filter-heading">
@@ -768,6 +771,24 @@
       font-weight: 600;
       line-height: normal;
     }
+  }
+
+  :global(.custom-select-overlay) {
+    width: min(23.125rem, calc(100vw - 4rem)) !important;
+    max-width: min(23.125rem, calc(100vw - 4rem)) !important;
+  }
+
+  :global(.custom-select-overlay .p-select-list) {
+    max-width: 100%;
+  }
+
+  :global(.custom-select-overlay .p-select-option),
+  :global(.custom-select-overlay .p-select-option-label),
+  :global(.custom-select-overlay .option-label) {
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .student-filter-section {

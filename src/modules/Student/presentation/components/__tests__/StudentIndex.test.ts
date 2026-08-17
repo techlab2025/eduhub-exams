@@ -202,7 +202,11 @@ describe('StudentIndex', () => {
             props: ['modelValue'],
             emits: ['confirm'],
             template: `
-              <button v-if="modelValue" class="block-dialog-confirm" @click="$emit('confirm')">
+              <button
+                v-if="modelValue"
+                class="block-dialog-confirm"
+                @click="$emit('confirm', 'Policy violation: Repeated misuse')"
+              >
                 confirm block
               </button>
             `,
@@ -226,7 +230,7 @@ describe('StudentIndex', () => {
     expect(mocks.changeStatus.mock.calls[0][0].toMap()).toEqual({
       student_id: 8,
       status: '3',
-      block_reason: undefined,
+      block_reason: 'Policy violation: Repeated misuse',
     });
   });
 
