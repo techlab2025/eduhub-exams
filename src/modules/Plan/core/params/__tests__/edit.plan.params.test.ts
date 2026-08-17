@@ -24,7 +24,28 @@ describe('EditPlanParams', () => {
     expect(params.toMap()).toMatchObject({
       subscription_plan_id: 9,
       status: 1,
+      highlight_badge: [],
       number_of_subjects: 8,
+    });
+  });
+
+  it('keeps an empty highlight badge key in a basic update', () => {
+    const params = new EditPlanParams({
+      id: 9,
+      section: 'basic',
+      translations: new TranslationParams({ title: { en: 'Updated' } }),
+      status: PlanStatusEnum.ACTIVE,
+      highlightBadge: [],
+      pricing: [],
+      hasTrail: false,
+      trialDays: 0,
+      numberOfSubjects: 8,
+      features: [],
+    });
+
+    expect(params.toMap()).toMatchObject({
+      subscription_plan_id: 9,
+      highlight_badge: [],
     });
   });
 

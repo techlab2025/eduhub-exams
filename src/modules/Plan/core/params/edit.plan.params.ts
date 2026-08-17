@@ -35,10 +35,11 @@ export default class EditPlanParams extends AddPlanParams {
         subscription_plan_id: this.id,
         status: fullMap.status,
         translations: fullMap.translations,
-        highlight_badge: fullMap.highlight_badge,
-        ...(fullMap.number_of_subjects !== undefined && {
-          number_of_subjects: fullMap.number_of_subjects,
-        }),
+        highlight_badge: this.highlightBadge ?? [],
+        // ...(fullMap.number_of_subjects !== undefined && {
+        //   number_of_subjects: fullMap.number_of_subjects,
+        // }),
+        number_of_subjects: fullMap.number_of_subjects || [],
       };
     }
     if (this.section === 'pricing') {
@@ -57,7 +58,11 @@ export default class EditPlanParams extends AddPlanParams {
         features: fullMap.features,
       };
     }
-    return { subscription_plan_id: this.id, ...fullMap };
+    return {
+      subscription_plan_id: this.id,
+      ...fullMap,
+      highlight_badge: this.highlightBadge ?? [],
+    };
   }
 
   validate(): { isValid: boolean; errors: FieldError[] } {
