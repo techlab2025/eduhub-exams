@@ -61,7 +61,7 @@
     { id: Number(SubscriptionStatusEnum.CANCELLED), title: t('cancelled') },
   ]);
   const stats = computed(() => [
-    { label: t('all_subscriptions'), value: controller.stats.value?.totalSubscribers ?? 0 },
+    { label: t('all_subscriptions'), value: controller.stats.value?.totalSubscribertions ?? 0 },
     { label: t('active'), value: controller.stats.value?.activeSubscriptions ?? 0 },
     { label: t('cancelled'), value: controller.stats.value?.cancelledSubscriptions ?? 0 },
     { label: t('expired'), value: controller.stats.value?.expiredSubscriptions ?? 0 },
