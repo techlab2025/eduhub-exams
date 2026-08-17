@@ -121,7 +121,7 @@ export default class AddquestionsParams implements Params {
 
     return {
       // Always send question
-      ...(this.title?.length! > 0 && {
+      ...((this.title?.length ?? 0) > 0 && {
         question: this.title,
       }),
 
@@ -210,7 +210,7 @@ export default class AddquestionsParams implements Params {
         }),
 
       // Similar percentage
-      ...(this.similarPrecentage?.trim()?.length! > 0 && {
+      ...((this.similarPrecentage?.trim().length ?? 0) > 0 && {
         identicality_percentage: Number(this.similarPrecentage),
       }),
 

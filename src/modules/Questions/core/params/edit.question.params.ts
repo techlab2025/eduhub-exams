@@ -39,7 +39,7 @@ export default class EditquestionsParams implements Params {
   public status?: QuestionStatusEnum | null;
 
   public static readonly validation = new ClassValidation().setRules({
-   title: { required: true },
+    title: { required: true },
     // image: { required: true },
     questionType: { required: true },
     subjectId: { required: true },
@@ -131,7 +131,7 @@ export default class EditquestionsParams implements Params {
   //   };
   // }
 
-    toMap(): { [p: string]: any } {
+  toMap(): { [p: string]: any } {
     const attachments =
       this.image?.map((item) => item.toMap()).filter((item) => item.file && item.file.length > 0) ??
       [];
@@ -162,9 +162,8 @@ export default class EditquestionsParams implements Params {
       question_id: this.id,
 
       // Always send question
-      ...(this.title?.length! > 0 &&{
-
-        question: this.title
+      ...((this.title?.length ?? 0) > 0 && {
+        question: this.title,
       }),
 
       // Send only when selected
@@ -252,7 +251,7 @@ export default class EditquestionsParams implements Params {
         }),
 
       // Similar percentage
-      ...(this.similarPrecentage?.trim()?.length! > 0 && {
+      ...((this.similarPrecentage?.trim().length ?? 0) > 0 && {
         identicality_percentage: Number(this.similarPrecentage),
       }),
 
