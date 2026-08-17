@@ -1,0 +1,84 @@
+name: verify
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      QUALITY_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22.22.0
+          cache: npm
+
+      - name: Pin npm
+        run: npm install --global npm@10.9.4
+
+      - name: Confirm toolchain
+        run: |
+          test "$(node --version)" = "v22.22.0"
+          test "$(npm --version)" = "10.9.4"
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check committed secrets
+        run: npm run security:check
+
+      - name: Check source assets
+        run: npm run assets:check
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Check ESLint
+        run: npm run lint:check
+
+      - name: Check Stylelint
+        run: npm run stylelint:check
+
+      - name: Check types
+        run: npm run type-check
+
+      - name: Run tests
+        run: npm run test:run
+
+      - name: Measure coverage
+        run: npm run test:coverage
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Check bundle budgets
+        run: npm run bundle:check
+
+      - name: Upload verification artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: verification-reports
+          if-no-files-found: ignore
+          retention-days: 14
+          path: |
+            coverage/
+            dist/

@@ -3,17 +3,19 @@
 ## Fast Start (verified)
 
 - Use `npm` (repo has `package-lock.json` and husky hooks call `npm run ...`).
-- Core scripts: `npm run dev`, `npm run build`, `npm run type-check`, `npm run test:run`, `npm run test:coverage`, `npm run lint`.
+- Supported runtime: Node `22.22.0` and npm `10.9.4`.
+- Core scripts: `npm run dev`, `npm run build`, `npm run type-check`, `npm run test:run`, `npm run test:coverage`, `npm run lint:check`, `npm run stylelint:check`, `npm run format:check`, `npm run verify`.
+- `npm run verify` is the authoritative release check. All `*:check` scripts are non-mutating; use `*:fix` only intentionally.
 - For a focused test: `npx vitest run path/to/file.test.ts` (or `npx vitest run -t "test name"`).
 
 ## Commit/Push Gates You Must Preempt
 
 - Pre-commit runs, in order:
   1. `lint-staged` (ESLint + Prettier + Stylelint)
-  2. `npx tsc --noEmit` (plain tsc, not `vue-tsc`)
+  2. `npm run type-check` (`vue-tsc -b`)
   3. `stylelint "src/**/*.{vue,css,scss}"`
   4. `node scripts/check-test-coverage.mjs`
-- Pre-push runs: `npm run type-check` (`vue-tsc --noEmit`) then `npm run test:run`.
+- Pre-push runs the complete `npm run verify` release gate.
 - Commit messages are linted by commitlint (`@commitlint/config-conventional`):
   - lowercase subject, no trailing period, header max **200** chars, kebab-case scope.
 
