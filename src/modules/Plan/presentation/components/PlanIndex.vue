@@ -667,6 +667,9 @@
     font-size: 14px;
     font-weight: 600;
   }
+  .filter-content {
+    width: 100% !important;
+  }
 
   .status-Active {
     color: var(--primary-green) !important;

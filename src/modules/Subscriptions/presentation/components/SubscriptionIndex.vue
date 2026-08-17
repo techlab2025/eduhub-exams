@@ -28,6 +28,7 @@
   import { IndexSubscriptionParams } from '../../core/params/index.subscription.params';
   import SubscriptionController from '../controllers/subscription.controller';
   import SubscriptionDetailsDialog from '../subComponents/SubscriptionDetailsDialog.vue';
+  import SubscriptionBulkDeleteWarningDialog from '../subComponents/SubscriptionBulkDeleteWarningDialog.vue';
   import SubscriptionDeleteWarningDialog from '../subComponents/SubscriptionDeleteWarningDialog.vue';
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
 
@@ -48,6 +49,7 @@
   const expireFrom = ref<Date | null>(null);
   const expireTo = ref<Date | null>(null);
   const filterDialogVisible = ref(false);
+  const bulkDeleteWarningDialogVisible = ref(false);
   const deleteWarningDialogVisible = ref(false);
   const detailsDialogVisible = ref(false);
   const selectedSubscriptionId = ref<number | null>(null);
@@ -55,7 +57,7 @@
 
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
-    { id: Number(SubscriptionStatusEnum.PENDING), title: t('subscription_status_0') },
+    // { id: Number(SubscriptionStatusEnum.PENDING), title: t('subscription_status_0') },
     { id: Number(SubscriptionStatusEnum.ACTIVE), title: t('active') },
     { id: Number(SubscriptionStatusEnum.EXPIRED), title: t('expired') },
     { id: Number(SubscriptionStatusEnum.CANCELLED), title: t('cancelled') },
@@ -70,6 +72,7 @@
     { key: 'id', label: t('ID'), sortable: true, width: '9%' },
     { key: 'student', label: t('student_name'), sortable: true, width: '18%' },
     { key: 'plan', label: t('plan_name'), sortable: true, width: '18%' },
+    { key: 'numberOfSubjects', label: t('number_of_subjects'), width: '11%' },
     { key: 'totalPrice', label: t('total_paid'), width: '12%' },
     { key: 'subscriptionDate', label: t('subscribe_date'), width: '15%' },
     { key: 'expireDate', label: t('expire_date'), width: '15%' },
@@ -155,12 +158,9 @@
   const updateSelectedRows = (rows: SubscriptionModel[]) => {
     selectedRows.value = rows;
   };
-  const isSubscriptionSelectable = (item: SubscriptionModel) =>
-    item.status !== SubscriptionStatusEnum.ACTIVE;
-
   const DeleteItems = async () => {
     if (selectedRows.value.some((item) => item.status === SubscriptionStatusEnum.ACTIVE)) {
-      deleteWarningDialogVisible.value = true;
+      bulkDeleteWarningDialogVisible.value = true;
       return;
     }
 
@@ -368,7 +368,7 @@
                 <label
                   v-for="option in statusOptions"
                   :key="option.id"
-                  :class="`subscription-status-option-${option.id}`"
+                  :class="`subscription-status-option-${option.id} ${option.title}`"
                 >
                   <input v-model="status" type="radio" :value="option" />
                   <span class="subscription-filter-checkbox"></span>
@@ -450,7 +450,6 @@
             :items="data as SubscriptionModel[]"
             row-key="id"
             :selectable="true"
-            :row-selectable="isSubscriptionSelectable"
             @selection-change="updateSelectedRows"
           >
             <template #cell-student="{ item }">{{ item.student.name }}</template>
@@ -496,6 +495,7 @@
         </template>
       </DataStatusBuilder>
     </div>
+    <SubscriptionBulkDeleteWarningDialog v-model="bulkDeleteWarningDialogVisible" />
     <SubscriptionDeleteWarningDialog v-model="deleteWarningDialogVisible" />
     <SubscriptionDetailsDialog
       v-model="detailsDialogVisible"
@@ -505,6 +505,24 @@
 </template>
 
 <style scoped lang="scss">
+  .Active {
+    span {
+      color: #18a957;
+    }
+  }
+
+  .Expired {
+    span {
+      color: #d64545;
+    }
+  }
+
+  .Cancelled {
+    span {
+      color: #d99100;
+    }
+  }
+
   .items-deleted {
     padding: 12px 16px;
     border-radius: 12px;

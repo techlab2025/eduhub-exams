@@ -79,7 +79,7 @@ describe('SubscriptionIndex', () => {
     expect(mocks.fetchList).toHaveBeenCalled();
   });
 
-  it('allows selecting only subscriptions that are not active', () => {
+  it('keeps active subscription rows selectable', () => {
     const wrapper = shallowMount(Component, {
       global: {
         mocks: { $t: (key: string) => key },
@@ -88,7 +88,7 @@ describe('SubscriptionIndex', () => {
             template: '<div><slot name="success" :data="[]" /></div>',
           },
           AppTable: {
-            props: ['rowSelectable'],
+            props: ['selectable', 'rowSelectable'],
             template: '<div class="app-table-stub" />',
           },
           FilterDialog: true,
@@ -98,14 +98,53 @@ describe('SubscriptionIndex', () => {
       },
     });
 
-    const rowSelectable = wrapper.getComponent('.app-table-stub').props('rowSelectable') as (item: {
-      status: number;
-    }) => boolean;
+    expect(wrapper.getComponent('.app-table-stub').props('selectable')).toBe(true);
+    expect(wrapper.getComponent('.app-table-stub').props('rowSelectable')).toBeUndefined();
+  });
 
-    expect(rowSelectable({ status: 1 })).toBe(false);
-    expect(rowSelectable({ status: 0 })).toBe(true);
-    expect(rowSelectable({ status: 2 })).toBe(true);
-    expect(rowSelectable({ status: 3 })).toBe(true);
+  it('blocks bulk deletion when the selection contains an active subscription', async () => {
+    const wrapper = shallowMount(Component, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          DataStatusBuilder: {
+            template: `
+              <slot
+                name="success"
+                :data="[
+                  { id: 7, status: 1, student: { name: 'Active' }, plan: { title: 'Plan' } },
+                  { id: 8, status: 2, student: { name: 'Expired' }, plan: { title: 'Plan' } }
+                ]"
+              />
+            `,
+          },
+          AppTable: {
+            props: ['items'],
+            emits: ['selection-change'],
+            template: `
+              <button class="select-rows" @click="$emit('selection-change', items)">
+                select
+              </button>
+            `,
+          },
+          SubscriptionBulkDeleteWarningDialog: {
+            props: ['modelValue'],
+            template: '<div v-if="modelValue" class="bulk-warning-dialog-stub" />',
+          },
+          SubscriptionDeleteWarningDialog: true,
+          SubscriptionDetailsDialog: true,
+          FilterDialog: true,
+          UpdatedCustomInputSelect: true,
+          Pagination: true,
+        },
+      },
+    });
+
+    await wrapper.find('.select-rows').trigger('click');
+    await wrapper.find('.num-deleted').trigger('click');
+
+    expect(wrapper.find('.bulk-warning-dialog-stub').exists()).toBe(true);
+    expect(mocks.remove).not.toHaveBeenCalled();
   });
 
   it('blocks deleting an active subscription and opens the warning dialog', async () => {

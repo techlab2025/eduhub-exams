@@ -494,6 +494,7 @@
   "subscription_delete_blocked_title": "هذا الطالب لديه خطة اشتراك، ولا يمكنك حذفه الآن.",
   "subscription_delete_blocked_message": "لا يمكنك حذفه حتى ينتهي اشتراكه",
   "subscription_delete_blocked_close": "لا",
+  "subscription_bulk_delete_blocked_message": "لدى طالب واحد أو أكثر من الطلاب المحددين خطة اشتراك نشطة ولا يمكن حذفهم في الوقت الحالي.",
   "show_receipt": "عرض الإيصال",
   "subscription_details": "تفاصيل الاشتراك",
   "student": "الطالب",

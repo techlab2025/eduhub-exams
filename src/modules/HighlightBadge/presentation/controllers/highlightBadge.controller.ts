@@ -1,4 +1,6 @@
-import BaseController, { type ControllerConfig } from '@/base/Presentation/Controller/baseController';
+import BaseController, {
+  type ControllerConfig,
+} from '@/base/Presentation/Controller/baseController';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
 import type HighlightBadgeModel from '../../core/models/highlightBadge.model';
@@ -41,7 +43,7 @@ export default class HighlightBadgeController extends BaseController<
     });
   }
   async fetchList(params?: Params, options?: ApiCallOptions) {
-    return super.fetchList(params, { ...options });
+    return super.fetchList(params, { ...options});
   }
   async delete(params: Params, options?: ApiCallOptions) {
     const result = await super.delete(params, options);

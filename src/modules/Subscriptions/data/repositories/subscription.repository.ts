@@ -24,7 +24,7 @@ export default class SubscriptionRepository extends BaseRepository<
   protected get mockList() {
     return [
       SubscriptionModel.example,
-      { ...SubscriptionModel.example, status: SubscriptionStatusEnum.EXPIRED },
+      { ...SubscriptionModel.example, status: SubscriptionStatusEnum.EXPIRED  , },
       { ...SubscriptionModel.example, status: SubscriptionStatusEnum.ACTIVE },
       { ...SubscriptionModel.example, status: SubscriptionStatusEnum.CANCELLED },
     ];

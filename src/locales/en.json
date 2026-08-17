@@ -1007,6 +1007,7 @@
   "subscription_delete_blocked_title": "This Student Has An Subscription Plan, You Can Not Delete Him Now.",
   "subscription_delete_blocked_message": "You Cannot Delete Him Until He End His Subscribe",
   "subscription_delete_blocked_close": "No",
+  "subscription_bulk_delete_blocked_message": "One or more of the selected students have an active subscription plan and cannot be deleted at this time.",
   "show_receipt": "Show Receipt",
   "subscription_details": "Subscription Details",
   "student": "Student",
@@ -1151,5 +1152,6 @@
   "subscription_confirm_delete_message": "This action will permanently delete the subscription details and cannot be undone.",
   "delete_plan_title": "Permanently delete this plan?",
   "delete_plan_message": "This plan has no active subscribers, so it can be safely deleted. Once deleted, its entitlement settings will be removed permanently.",
-  "highlight_badge_confirm_delete": "Permanently delete this highlight badge?"
+  "highlight_badge_confirm_delete": "Permanently delete this highlight badge?",
+  "subscription_bulk_delete_blocked_message_description": "You cannot delete students until their subscription ends."
 }

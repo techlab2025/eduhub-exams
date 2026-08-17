@@ -16,6 +16,7 @@
   import IndexHighLightsBadgesParams from '../../core/params/index.highlightBadge.params';
   import DeleteHighLightsBadgesParams from '../../core/params/delete.highlightBadge.params';
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -30,7 +31,11 @@
       new IndexHighLightsBadgesParams({ word, pageNumber: page, perPage: perPage.value }),
     );
 
-  const remove = async (id: number) => {
+  const remove = async (id: number , hasPlan?:boolean) => {
+    if(hasPlan){
+      dialogManager.toastWarning('this highlight badge is used in plans');
+      return;
+    }
     await controller.delete(new DeleteHighLightsBadgesParams({ highlightBadgeId: id }));
     await fetchItems();
   };
@@ -44,7 +49,7 @@
     {
       text: t('delete'),
       icon: DeletIcon,
-      action: () => remove(item.id),
+      action: () => remove(item.id , item?.hasPlan),
     },
   ];
 
