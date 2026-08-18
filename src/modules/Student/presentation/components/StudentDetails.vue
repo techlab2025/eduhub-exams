@@ -221,7 +221,7 @@ onMounted(fetchStudent);
           </article>
 
           <article class="student-info-card">
-            <h2>{{ $t('registration_security') }}</h2>
+            <h2  class="registration_security">{{ $t('registration_security') }}</h2>
             <dl class="student-info-list">
               <div v-for="row in registrationRows" :key="row.label">
                 <dt>{{ $t(row.label) }}</dt>
@@ -233,7 +233,7 @@ onMounted(fetchStudent);
           </article>
 
           <article class="student-info-card">
-            <h2>{{ $t('application_information') }}</h2>
+            <h2 class="registration_security">{{ $t('application_information') }}</h2>
             <dl class="student-info-list">
               <div v-for="row in applicationRows" :key="row.label">
                 <dt>{{ $t(row.label) }}</dt>
@@ -440,6 +440,11 @@ onMounted(fetchStudent);
 </template>
 
 <style scoped lang="scss">
+.registration_security{
+  border-bottom: 2px dashed #24385C1A;
+  padding-bottom: .8rem;
+  margin-bottom: .5rem !important;
+}
 .parents {
   background-color: rgba(255, 255, 255, 1);
   border: 1px solid rgba(230, 230, 230, 1);
@@ -590,14 +595,17 @@ box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.07);
   }
 
   dt {
-    color: var(--gray-text);
-    font-size: 12px;
+    color: #8A8A8A;
+    font-size: 14px;
+     font-weight: 500;
+    font-family: "Medium";
   }
 
   dd {
     margin: 0;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
+    font-family: "demi";
     text-align: end;
   }
 }
@@ -636,7 +644,9 @@ box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.07);
   p {
     margin: 4px 0 0;
     color: var(--gray-text);
-    font-size: 12px;
+    font-size: 14px;
+    font-family: 'Medium';
+    font-weight: 500;
   }
 
   h2 span {
