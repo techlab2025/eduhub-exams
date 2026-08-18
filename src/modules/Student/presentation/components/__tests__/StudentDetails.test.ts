@@ -124,7 +124,7 @@ describe('StudentDetails', () => {
               <button
                 v-if="modelValue"
                 class="block-confirm"
-                @click="$emit('confirm', 'Policy violation: Repeated misuse')"
+                @click="$emit('confirm', 12, 'Policy violation: Repeated misuse')"
               >
                 confirm block
               </button>
@@ -166,7 +166,6 @@ describe('StudentDetails', () => {
     expect(mocks.changeStatus.mock.calls[0][0].toMap()).toEqual({
       student_id: 1,
       status: '2',
-      block_reason: undefined,
     });
 
     await wrapper.find('.note-action').trigger('click');
@@ -189,6 +188,7 @@ describe('StudentDetails', () => {
     expect(mocks.changeStatus.mock.calls[0][0].toMap()).toEqual({
       student_id: 1,
       status: '3',
+      block_reason_id: [12],
       block_reason: 'Policy violation: Repeated misuse',
     });
   });

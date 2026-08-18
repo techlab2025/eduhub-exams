@@ -3,16 +3,26 @@ import { StudentStatusEnum } from '../../models/student.model';
 import { ChangeStudentStatusParams } from '../change.student.status.params';
 
 describe('ChangeStudentStatusParams', () => {
-  it('maps status and the optional block reason', () => {
-    expect(new ChangeStudentStatusParams(6, StudentStatusEnum.BLOCK, 'policy').toMap()).toEqual({
+  it('maps block_reason_id as an array when blocking a student', () => {
+    expect(
+      new ChangeStudentStatusParams(
+        6,
+        StudentStatusEnum.BLOCK,
+        12,
+        'Policy violation: Repeated misuse',
+      ).toMap(),
+    ).toEqual({
       student_id: 6,
       status: '3',
-      block_reason: 'policy',
+      block_reason_id: [12],
+      block_reason: 'Policy violation: Repeated misuse',
     });
   });
 
-  it('omits block_reason when it is not supplied', () => {
-    expect(new ChangeStudentStatusParams(6, StudentStatusEnum.ACTIVE).toMap()).toEqual({
+  it('omits block_reason_id for statuses other than block', () => {
+    expect(
+      new ChangeStudentStatusParams(6, StudentStatusEnum.ACTIVE, 12, 'Ignored reason').toMap(),
+    ).toEqual({
       student_id: 6,
       status: '1',
     });

@@ -119,8 +119,15 @@
     listMode.value = mode;
     await fetchItems(1);
   };
-  const changeStatus = async (item: StudentModel, next: StudentStatusEnum, reason?: string) => {
-    await controller.changeStatus(new ChangeStudentStatusParams(item.id, next, reason));
+  const changeStatus = async (
+    item: StudentModel,
+    next: StudentStatusEnum,
+    blockReasonId?: number,
+    reason?: string,
+  ) => {
+    await controller.changeStatus(
+      new ChangeStudentStatusParams(item.id, next, blockReasonId, reason),
+    );
     await Promise.all([fetchItems(), controller.fetchStats()]);
   };
   const openArchiveDialog = (item: StudentModel) => {
@@ -157,13 +164,14 @@
   const confirmStatusChange = async (
     status: StudentStatusEnum,
     dialogVisible: typeof archiveDialogVisible | typeof blockDialogVisible,
+    blockReasonId?: number,
     reason?: string,
   ) => {
     if (!selectedStudent.value || statusActionLoading.value) return;
 
     statusActionLoading.value = true;
     try {
-      await changeStatus(selectedStudent.value, status, reason);
+      await changeStatus(selectedStudent.value, status, blockReasonId, reason);
       dialogVisible.value = false;
       selectedStudent.value = null;
     } finally {
@@ -171,8 +179,8 @@
     }
   };
   const confirmArchive = () => confirmStatusChange(StudentStatusEnum.ARCHIVE, archiveDialogVisible);
-  const confirmBlock = (reason: string) =>
-    confirmStatusChange(StudentStatusEnum.BLOCK, blockDialogVisible, reason);
+  const confirmBlock = (blockReasonId: number, reason: string) =>
+    confirmStatusChange(StudentStatusEnum.BLOCK, blockDialogVisible, blockReasonId, reason);
   const confirmForceLogout = async () => {
     if (!selectedStudent.value || forceLogoutLoading.value) return;
 

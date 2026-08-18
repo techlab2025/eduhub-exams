@@ -1,9 +1,19 @@
-import { mount } from '@vue/test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Component from '../StudentBlockDialog.vue';
+
+const mocks = vi.hoisted(() => ({
+  fetchAsOptions: vi.fn().mockResolvedValue([{ id: 12, title: 'Policy violation' }]),
+}));
 
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ t: (key: string) => key }),
+}));
+
+vi.mock('@/modules/BlockReasons/presentation/controllers/blockReason.controller', () => ({
+  default: {
+    getInstance: () => ({ fetchAsOptions: mocks.fetchAsOptions }),
+  },
 }));
 
 const SelectStub = {
@@ -20,7 +30,9 @@ const SelectStub = {
 };
 
 describe('StudentBlockDialog', () => {
-  it('renders the block form and emits the selected reason with its details', async () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('loads block reasons and emits the selected block_reason_id', async () => {
     const confirm = vi.fn();
     const wrapper = mount(Component, {
       props: {
@@ -39,15 +51,22 @@ describe('StudentBlockDialog', () => {
       },
     });
 
+    await flushPromises();
+
     expect(wrapper.find('.student-block-image img').attributes('src')).toContain('BlockImage.gif');
     expect(wrapper.text()).toContain('block_student_dialog_title');
+    expect(mocks.fetchAsOptions).toHaveBeenCalledOnce();
+    expect(mocks.fetchAsOptions.mock.calls[0][0].toMap()).toMatchObject({
+      with_page: 0,
+      per_page: 100,
+    });
 
     await wrapper.find('.select-reason').trigger('click');
     await wrapper.find('#student-block-explanation').setValue('Repeated misuse');
     await wrapper.find('.block-button').trigger('click');
 
     expect(confirm).toHaveBeenCalledOnce();
-    expect(confirm).toHaveBeenCalledWith('block_reason_policy_violation: Repeated misuse');
+    expect(confirm).toHaveBeenCalledWith(12, 'Policy violation: Repeated misuse');
   });
 
   it('requires a block reason before confirming', async () => {
@@ -68,6 +87,8 @@ describe('StudentBlockDialog', () => {
         },
       },
     });
+
+    await flushPromises();
 
     await wrapper.find('.block-button').trigger('click');
 

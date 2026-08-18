@@ -1,15 +1,16 @@
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue';
-  import { useI18n } from 'vue-i18n';
+  import { ref, watch } from 'vue';
   import Dialog from 'primevue/dialog';
   import Select from 'primevue/select';
   import BlockImage from '@/assets/images/Student/BlockImage.gif';
   import ReloadIcon from '@/shared/icons/CustomSelect/ReloadIcon.vue';
+  import IndexBlockReasonsParams from '@/modules/BlockReasons/core/params/index.blockReason.params';
+  import BlockReasonController from '@/modules/BlockReasons/presentation/controllers/blockReason.controller';
 
   type ReasonLanguage = 'en' | 'ar';
 
   interface BlockReasonOption {
-    id: string;
+    id: number;
     title: string;
   }
 
@@ -21,23 +22,35 @@
   );
 
   const emit = defineEmits<{
-    confirm: [reason: string];
+    confirm: [blockReasonId: number, reason: string];
   }>();
   const visible = defineModel<boolean>({ default: false });
-  const { t } = useI18n();
+  const blockReasonController = BlockReasonController.getInstance();
   const selectedReason = ref<BlockReasonOption | null>(null);
+  const reasonOptions = ref<BlockReasonOption[]>([]);
+  const reasonsLoading = ref(false);
   const explanation = ref('');
   const language = ref<ReasonLanguage>('en');
   const bold = ref(false);
   const underlined = ref(false);
   const hasReasonError = ref(false);
 
-  const reasonOptions = computed<BlockReasonOption[]>(() => [
-    { id: 'policy_violation', title: t('block_reason_policy_violation') },
-    { id: 'inappropriate_behavior', title: t('block_reason_inappropriate_behavior') },
-    { id: 'suspicious_activity', title: t('block_reason_suspicious_activity') },
-    { id: 'other', title: t('block_reason_other') },
-  ]);
+  const fetchReasonOptions = async () => {
+    reasonsLoading.value = true;
+
+    try {
+      const options = await blockReasonController.fetchAsOptions(
+        new IndexBlockReasonsParams({ withPage: 0, perPage: 100 }),
+      );
+
+      reasonOptions.value = options.map((option) => ({
+        id: Number(option.id),
+        title: option.title ?? '',
+      }));
+    } finally {
+      reasonsLoading.value = false;
+    }
+  };
 
   const reset = () => {
     selectedReason.value = null;
@@ -58,12 +71,21 @@
     const reason = details
       ? `${selectedReason.value.title}: ${details}`
       : selectedReason.value.title;
-    emit('confirm', reason);
+    emit('confirm', selectedReason.value.id, reason);
   };
 
-  watch(visible, (isVisible) => {
-    if (!isVisible) reset();
-  });
+  watch(
+    visible,
+    async (isVisible) => {
+      if (isVisible) {
+        await fetchReasonOptions();
+        return;
+      }
+
+      reset();
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>
@@ -100,11 +122,12 @@
           </div>
 
           <Select
-            input-id="student-block-category"
             v-model="selectedReason"
+            input-id="student-block-category"
             :options="reasonOptions"
             option-label="title"
             :placeholder="$t('select_block_reason')"
+            :loading="reasonsLoading"
             append-to="self"
             class="student-block-select"
             :class="{ invalid: hasReasonError }"

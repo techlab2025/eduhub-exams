@@ -163,7 +163,6 @@ describe('StudentIndex', () => {
     expect(mocks.changeStatus.mock.calls[0][0].toMap()).toEqual({
       student_id: 7,
       status: '2',
-      block_reason: undefined,
     });
   });
 
@@ -205,7 +204,7 @@ describe('StudentIndex', () => {
               <button
                 v-if="modelValue"
                 class="block-dialog-confirm"
-                @click="$emit('confirm', 'Policy violation: Repeated misuse')"
+                @click="$emit('confirm', 12, 'Policy violation: Repeated misuse')"
               >
                 confirm block
               </button>
@@ -230,6 +229,7 @@ describe('StudentIndex', () => {
     expect(mocks.changeStatus.mock.calls[0][0].toMap()).toEqual({
       student_id: 8,
       status: '3',
+      block_reason_id: [12],
       block_reason: 'Policy violation: Repeated misuse',
     });
   });

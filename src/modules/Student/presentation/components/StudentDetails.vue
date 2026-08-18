@@ -47,13 +47,17 @@ const fetchStudent = () => controller.fetchOne(new ShowStudentParams(Number(rout
 const retryFetchStudent = async () => {
   await fetchStudent();
 };
-const changeStatus = async (status: StudentStatusEnum, reason?: string) => {
+const changeStatus = async (
+  status: StudentStatusEnum,
+  blockReasonId?: number,
+  reason?: string,
+) => {
   if (!student.value || statusActionLoading.value) return;
 
   statusActionLoading.value = true;
   try {
     await controller.changeStatus(
-      new ChangeStudentStatusParams(student.value.id, status, reason),
+      new ChangeStudentStatusParams(student.value.id, status, blockReasonId, reason),
     );
     archiveDialogVisible.value = false;
     blockDialogVisible.value = false;
@@ -63,7 +67,8 @@ const changeStatus = async (status: StudentStatusEnum, reason?: string) => {
   }
 };
 const confirmArchive = () => changeStatus(StudentStatusEnum.ARCHIVE);
-const confirmBlock = (reason?: string) => changeStatus(StudentStatusEnum.BLOCK, reason);
+const confirmBlock = (blockReasonId: number, reason: string) =>
+  changeStatus(StudentStatusEnum.BLOCK, blockReasonId, reason);
 const confirmForceLogout = async () => {
   if (!student.value || forceLogoutLoading.value) return;
 
@@ -696,7 +701,9 @@ box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.07);
   color: var(--standard-black);
   background: var(--PrimaryColor-alpha-8);
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Medium";
 
   span {
     width: 16px;
@@ -859,6 +866,9 @@ box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.07);
       margin: 8px 0 0;
       font-size: 12px;
       line-height: 1.5;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: "Medium";
     }
   }
 }
@@ -897,8 +907,16 @@ box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.07);
   gap: 8px;
   font-size: 12px;
 
+  strong{
+    font-weight: 500;
+    font-family: "Medium";
+    font-size: 16px;
+  }
   time {
     color: var(--gray-text);
+       font-weight: 500;
+    font-family: "Medium";
+    font-size: 14px;
   }
 }
 
