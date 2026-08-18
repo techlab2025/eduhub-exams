@@ -9,6 +9,7 @@ import ArchiveIcon from '@/shared/icons/Plan/ArchiveIcon.vue';
 import AddNoteIconSource from '@/assets/icons/Student/add-note.svg';
 import BlockIconSource from '@/assets/icons/Student/block.svg';
 import ForceLogoutIconSource from '@/assets/icons/Student/force-logout.svg';
+import AccordionToggleIcon from '@/shared/icons/questions/AccordionToggleIcon.vue';
 import { StudentStatusEnum } from '../../core/models/student.model';
 import { AddStudentNoteParams } from '../../core/params/add.student.note.params';
 import { ChangeStudentStatusParams } from '../../core/params/change.student.status.params';
@@ -403,28 +404,48 @@ onMounted(fetchStudent);
           <article id="notes" class="student-content-card student-notes-card">
             <header class="student-card-heading">
               <h2>
-                {{ $t('notes') }}
-                <span>({{ student.notes.length }})</span>
+                <button
+                  type="button"
+                  class="student-notes-trigger"
+                  :aria-expanded="notesExpanded"
+                  aria-controls="student-notes-panel"
+                  @click="notesExpanded = !notesExpanded"
+                >
+                  {{ $t('notes') }}
+                  <span>({{ student.notes.length }})</span>
+                  <AccordionToggleIcon
+                    class="student-notes-chevron"
+                    :class="{ 'student-notes-chevron-collapsed': !notesExpanded }"
+                    aria-hidden="true"
+                  />
+                </button>
               </h2>
-              <span aria-hidden="true">⌃</span>
             </header>
-            <ul>
-              <li v-for="note in visibleNotes" :key="note.id">
-                <div class="student-note-meta">
-                  <span class="student-note-avatar" aria-hidden="true">
-                    {{ note.createdBy?.name.charAt(0) ?? 'A' }}
-                  </span>
-                  <strong>{{ valueOrDash(note.createdBy?.name) }}</strong>
-                  <time>{{ valueOrDash(note.createdAt) }}</time>
-                </div>
-                <p>{{ note.note }}</p>
-              </li>
-            </ul>
-            <p v-if="student.notes.length === 0" class="student-empty-row">{{ $t('no_notes') }}</p>
-            <button v-if="student.notes.length > 5" type="button" class="student-notes-toggle"
-              @click="showAllNotes = !showAllNotes">
-              {{ $t(showAllNotes ? 'show_less' : 'show_all') }}
-            </button>
+            <div v-show="notesExpanded" id="student-notes-panel">
+              <ul>
+                <li v-for="note in visibleNotes" :key="note.id">
+                  <div class="student-note-meta">
+                    <span class="student-note-avatar" aria-hidden="true">
+                      {{ note.createdBy?.name.charAt(0) ?? 'A' }}
+                    </span>
+                    <strong>{{ valueOrDash(note.createdBy?.name) }}</strong>
+                    <time>{{ valueOrDash(note.createdAt) }}</time>
+                  </div>
+                  <p>{{ note.note }}</p>
+                </li>
+              </ul>
+              <p v-if="student.notes.length === 0" class="student-empty-row">
+                {{ $t('no_notes') }}
+              </p>
+              <button
+                v-if="student.notes.length > 5"
+                type="button"
+                class="student-notes-toggle"
+                @click="showAllNotes = !showAllNotes"
+              >
+                {{ $t(showAllNotes ? 'show_less' : 'show_all') }}
+              </button>
+            </div>
           </article>
         </section>
       </main>
@@ -840,6 +861,34 @@ box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.07);
       line-height: 1.5;
     }
   }
+}
+
+.student-notes-card .student-card-heading h2 {
+  width: 100%;
+}
+
+.student-notes-trigger {
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+}
+
+.student-notes-chevron {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  transition: transform 0.2s ease;
+}
+
+.student-notes-chevron-collapsed {
+  transform: rotate(180deg);
 }
 
 .student-note-meta {

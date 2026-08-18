@@ -265,10 +265,11 @@
 
     label {
       color: var(--gray-5);
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 600;
+      font-family: "demi";
     }
-
+  
     label span {
       color: var(--danger-alt);
     }
@@ -417,8 +418,9 @@
       place-items: center;
       border: 1px solid currentColor;
       border-radius: 50%;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 400;
+      font-family: "regular";
     }
   }
 
