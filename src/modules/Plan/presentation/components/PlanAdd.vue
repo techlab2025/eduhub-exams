@@ -53,12 +53,12 @@
     //     console.error('No plan parameters to save');
     //     return;
     //   }
-      // params.value.status = PlanStatusEnum.DRAFT;
-      // const result = await controller.create(params.value, undefined);
-      // if (result?.data) {
-        // await controller.fetchList();
-        draftDialogVisible.value = true;
-      // }
+    // params.value.status = PlanStatusEnum.DRAFT;
+    // const result = await controller.create(params.value, undefined);
+    // if (result?.data) {
+    // await controller.fetchList();
+    draftDialogVisible.value = true;
+    // }
     // } catch (error) {
     //   console.error('Error saving plan draft:', error);
     // } finally {
@@ -67,7 +67,7 @@
   };
   const acknowledgeDraft = async () => {
     draftDialogVisible.value = false;
-     loading.value = true;
+    loading.value = true;
     try {
       if (!params.value) {
         console.error('No plan parameters to save');
@@ -84,6 +84,9 @@
       loading.value = false;
     }
     await router.push({ name: 'Plans', query: plansQuery() });
+  };
+  const cancelDraft = () => {
+    router.push({ name: 'Plans', query: plansQuery() });
   };
 </script>
 
@@ -113,6 +116,9 @@
       </button>
       <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
         {{ $t('save_as_draft') }}
+      </button>
+      <button type="button" class="btn btn-cancel" :disabled="loading" @click.prevent="cancelDraft">
+        {{ $t('cancel') }}
       </button>
       <!-- <DraftPlanDialog /> -->
     </div>
