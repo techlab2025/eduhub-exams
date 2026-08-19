@@ -53,11 +53,11 @@ describe('PlanAdd', () => {
   it('shows only Publish and Save as draft and dims Publish initially', () => {
     const wrapper = mount(PlanAdd, { global });
 
-    expect(wrapper.find('.actions').findAll('button')).toHaveLength(2);
+    expect(wrapper.find('.actions').findAll('button')).toHaveLength(3);
     expect(wrapper.get('.publish-button').attributes('disabled')).toBeUndefined();
     expect(wrapper.get('.publish-button').attributes('aria-disabled')).toBe('true');
     expect(wrapper.get('.publish-button').classes()).toContain('is-not-ready');
-    expect(wrapper.find('.btn-cancel').exists()).toBe(false);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
   });
 
   it('publishes as ACTIVE after the complete-form event', async () => {

@@ -101,7 +101,7 @@ const mountComponent = (plan: PlanModel = PlanModel.example) =>
         },
         PlanDeleteWarningDialog: {
           name: 'PlanDeleteWarningDialog',
-          props: ['modelValue'],
+          props: ['modelValue', 'actionType'],
           emits: ['update:modelValue'],
           template: '<div />',
         },
@@ -178,10 +178,36 @@ describe('PlanIndex', () => {
     deleteAction.action();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.getComponent({ name: 'PlanDeleteWarningDialog' }).props('modelValue')).toBe(
-      true,
-    );
+    const warningDialog = wrapper.getComponent({ name: 'PlanDeleteWarningDialog' });
+    expect(warningDialog.props('modelValue')).toBe(true);
+    expect(warningDialog.props('actionType')).toBe('delete');
     expect(deleteMock).not.toHaveBeenCalled();
+  });
+
+  it('shows a deactivate warning dialog when deactivating a plan with subscribers', async () => {
+    const wrapper = mountComponent(planWithStatus(PlanStatusEnum.ACTIVE, 3));
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+    const deactivateAction = actions[4];
+
+    deactivateAction.action();
+    await wrapper.vm.$nextTick();
+
+    const warningDialog = wrapper.getComponent({ name: 'PlanDeleteWarningDialog' });
+    expect(warningDialog.props('modelValue')).toBe(true);
+    expect(warningDialog.props('actionType')).toBe('deactivate');
+  });
+
+  it('shows an archive warning dialog when archiving a plan with subscribers', async () => {
+    const wrapper = mountComponent(planWithStatus(PlanStatusEnum.ACTIVE, 3));
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+    const archiveAction = actions[5];
+
+    archiveAction.action();
+    await wrapper.vm.$nextTick();
+
+    const warningDialog = wrapper.getComponent({ name: 'PlanDeleteWarningDialog' });
+    expect(warningDialog.props('modelValue')).toBe(true);
+    expect(warningDialog.props('actionType')).toBe('archive');
   });
 
   it('shows only view, complete, and delete for a draft plan', () => {
@@ -228,7 +254,7 @@ describe('PlanIndex', () => {
   });
 
   it('changes the plan status and refreshes the list', async () => {
-    const wrapper = mountComponent();
+    const wrapper = mountComponent(planWithStatus(PlanStatusEnum.ACTIVE, 0));
     const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
 
     actions[5].action();
@@ -251,7 +277,7 @@ describe('PlanIndex', () => {
   });
 
   it('closes the deactivate dialog and refreshes the list after deactivation', async () => {
-    const wrapper = mountComponent();
+    const wrapper = mountComponent(planWithStatus(PlanStatusEnum.ACTIVE, 0));
     const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
 
     actions[4].action();

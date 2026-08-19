@@ -23,4 +23,40 @@ describe('PlanDeleteWarningDialog', () => {
     await wrapper.get('button').trigger('click');
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false]);
   });
+
+  it('renders correct keys for deactivate action type', () => {
+    const wrapper = mount(PlanDeleteWarningDialog, {
+      props: { modelValue: true, actionType: 'deactivate' },
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          Dialog: {
+            props: ['visible'],
+            template: '<div v-if="visible"><slot name="container" /></div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.get('h3').text()).toBe('plan_deactivate_blocked_title');
+    expect(wrapper.get('p').text()).toBe('plan_deactivate_blocked_message');
+  });
+
+  it('renders correct keys for archive action type', () => {
+    const wrapper = mount(PlanDeleteWarningDialog, {
+      props: { modelValue: true, actionType: 'archive' },
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          Dialog: {
+            props: ['visible'],
+            template: '<div v-if="visible"><slot name="container" /></div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.get('h3').text()).toBe('plan_archive_blocked_title');
+    expect(wrapper.get('p').text()).toBe('plan_archive_blocked_message');
+  });
 });

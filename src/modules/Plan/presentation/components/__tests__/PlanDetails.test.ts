@@ -72,7 +72,7 @@ const mountComponent = () =>
         },
         PlanDeleteWarningDialog: {
           name: 'PlanDeleteWarningDialog',
-          props: ['modelValue'],
+          props: ['modelValue', 'actionType'],
           emits: ['update:modelValue'],
           template: '<div />',
         },
@@ -172,6 +172,13 @@ describe('PlanDetails', () => {
   });
 
   it('blocks deletion when the plan has subscribers', async () => {
+    itemData.value = PlanDetailsModel.fromJson({
+      id: 5,
+      status: PlanStatusEnum.ACTIVE,
+      subscribers: 3,
+      title: [],
+      description: [],
+    });
     const wrapper = mountComponent();
     const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
     const deleteAction = actions.at(-1);
@@ -180,10 +187,50 @@ describe('PlanDetails', () => {
     deleteAction.action();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.getComponent({ name: 'PlanDeleteWarningDialog' }).props('modelValue')).toBe(
-      true,
-    );
+    const warningDialog = wrapper.getComponent({ name: 'PlanDeleteWarningDialog' });
+    expect(warningDialog.props('modelValue')).toBe(true);
+    expect(warningDialog.props('actionType')).toBe('delete');
     expect(deleteMock).not.toHaveBeenCalled();
+  });
+
+  it('blocks deactivation and shows warning dialog when plan has subscribers', async () => {
+    itemData.value = PlanDetailsModel.fromJson({
+      id: 5,
+      status: PlanStatusEnum.ACTIVE,
+      subscribers: 3,
+      title: [],
+      description: [],
+    });
+    const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+    const deactivateAction = actions[3];
+
+    deactivateAction.action();
+    await wrapper.vm.$nextTick();
+
+    const warningDialog = wrapper.getComponent({ name: 'PlanDeleteWarningDialog' });
+    expect(warningDialog.props('modelValue')).toBe(true);
+    expect(warningDialog.props('actionType')).toBe('deactivate');
+  });
+
+  it('blocks archiving and shows warning dialog when plan has subscribers', async () => {
+    itemData.value = PlanDetailsModel.fromJson({
+      id: 5,
+      status: PlanStatusEnum.ACTIVE,
+      subscribers: 3,
+      title: [],
+      description: [],
+    });
+    const wrapper = mountComponent();
+    const actions = wrapper.getComponent({ name: 'DropList' }).props('actionList');
+    const archiveAction = actions[4];
+
+    archiveAction.action();
+    await wrapper.vm.$nextTick();
+
+    const warningDialog = wrapper.getComponent({ name: 'PlanDeleteWarningDialog' });
+    expect(warningDialog.props('modelValue')).toBe(true);
+    expect(warningDialog.props('actionType')).toBe('archive');
   });
 
   it('deletes a plan without subscribers and returns to the index', async () => {

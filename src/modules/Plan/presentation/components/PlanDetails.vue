@@ -40,6 +40,7 @@
   const archiveDialogVisible = ref(false);
   const activateDialogVisible = ref(false);
   const deleteWarningDialogVisible = ref(false);
+  const warningActionType = ref<'delete' | 'deactivate' | 'archive'>('delete');
   const statusLoading = ref(false);
 
   const refreshPlan = () => controller.fetchOne(new ShowPlanParams(Number(route.params.id)));
@@ -47,6 +48,26 @@
   const remove = async (id: number) => {
     await controller.delete(new DeletePlanParams(id));
     await router.replace({ name: 'Plans' });
+  };
+
+  const openDeactivateDialog = () => {
+    if (!plan.value) return;
+    if (plan.value.subscribers > 0) {
+      warningActionType.value = 'deactivate';
+      deleteWarningDialogVisible.value = true;
+      return;
+    }
+    deactivateDialogVisible.value = true;
+  };
+
+  const openArchiveDialog = () => {
+    if (!plan.value) return;
+    if (plan.value.subscribers > 0) {
+      warningActionType.value = 'archive';
+      deleteWarningDialogVisible.value = true;
+      return;
+    }
+    archiveDialogVisible.value = true;
   };
 
   const changeStatus = async (nextStatus: PlanStatusEnum) => {
@@ -104,6 +125,7 @@
       icon: DeletIcon,
       action: deleteBlocked
         ? () => {
+            warningActionType.value = 'delete';
             deleteWarningDialogVisible.value = true;
           }
         : () => remove(item.id),
@@ -151,9 +173,7 @@
         {
           text: t('archive'),
           icon: ArchiveIcon,
-          action: () => {
-            archiveDialogVisible.value = true;
-          },
+          action: openArchiveDialog,
         },
         deleteAction,
       ];
@@ -165,16 +185,12 @@
       {
         text: t('deactivate'),
         icon: DeactiveIcon,
-        action: () => {
-          deactivateDialogVisible.value = true;
-        },
+        action: openDeactivateDialog,
       },
       {
         text: t('archive'),
         icon: ArchiveIcon,
-        action: () => {
-          archiveDialogVisible.value = true;
-        },
+        action: openArchiveDialog,
       },
       deleteAction,
     ];
@@ -269,6 +285,9 @@
                 :delete-dialog-message="$t('confirm_delete')"
               />
             </div>
+          </div>
+          <div class="description">
+            <p>{{ plan?.descriptions }}</p>
           </div>
 
           <dl class="summary-meta">
@@ -404,7 +423,10 @@
           :loading="statusLoading"
           @confirm="changeStatus(PlanStatusEnum.ACTIVE)"
         />
-        <PlanDeleteWarningDialog v-model="deleteWarningDialogVisible" />
+        <PlanDeleteWarningDialog
+          v-model="deleteWarningDialogVisible"
+          :action-type="warningActionType"
+        />
       </main>
     </template>
     <template #loader>
@@ -429,11 +451,22 @@
   .plan-summary {
     overflow: hidden;
     border-radius: var(--radius-lg);
+
+    .description {
+      margin: 0 var(--xl-size-base) 0.6rem;
+
+      p {
+        color: rgba(75, 75, 75, 1);
+        font-weight: 500;
+        font-size: 1rem;
+        font-family: 'Medium';
+      }
+    }
   }
 
   .summary-heading {
     min-height: 64px;
-    padding: var(--xl-size-base);
+    padding: var(--xl-size-base) var(--xl-size-base) 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -574,7 +607,7 @@
       margin: 0;
       font-size: 1rem;
       letter-spacing: 0;
-      font-family: "bold";
+      font-family: 'bold';
       font-weight: 700;
       color: rgba(22, 36, 55, 1);
     }
@@ -587,13 +620,14 @@
     gap: var(--xs-size);
   }
 
-  .price_duaration{
+  .price_duaration {
     background-color: rgba(79, 175, 124, 0.1);
     width: fit-content;
     padding: 8px 1rem;
     border-radius: 20px;
     color: rgba(79, 175, 124, 1);
   }
+
   .pricing-item {
     min-width: 0;
     margin: 0;
@@ -604,8 +638,8 @@
 
     dt {
       color: rgba(138, 138, 138, 1);
-        font-weight: 500;
-        font-family: "medium";
+      font-weight: 500;
+      font-family: 'medium';
     }
 
     dd {

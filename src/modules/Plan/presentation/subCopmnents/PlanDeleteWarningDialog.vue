@@ -1,8 +1,42 @@
 <script setup lang="ts">
+  import { computed } from 'vue';
   import Dialog from 'primevue/dialog';
   import PlanDeleteWarning from '@/assets/images/PLan/PlanDeleteWarning.gif';
 
+  const props = withDefaults(
+    defineProps<{
+      actionType?: 'delete' | 'deactivate' | 'archive';
+    }>(),
+    {
+      actionType: 'delete',
+    },
+  );
+
   const visible = defineModel<boolean>({ default: false });
+
+  const titleKey = computed(() => {
+    switch (props.actionType) {
+      case 'deactivate':
+        return 'plan_deactivate_blocked_title';
+      case 'archive':
+        return 'plan_archive_blocked_title';
+      case 'delete':
+      default:
+        return 'plan_delete_blocked_title';
+    }
+  });
+
+  const messageKey = computed(() => {
+    switch (props.actionType) {
+      case 'deactivate':
+        return 'plan_deactivate_blocked_message';
+      case 'archive':
+        return 'plan_archive_blocked_message';
+      case 'delete':
+      default:
+        return 'plan_delete_blocked_message';
+    }
+  });
 </script>
 
 <template>
@@ -10,10 +44,10 @@
     <template #container>
       <div class="plan-delete-warning-dialog">
         <img :src="PlanDeleteWarning" width="180" alt="" aria-hidden="true" />
-        <h3>{{ $t('plan_delete_blocked_title') }}</h3>
-        <p>{{ $t('plan_delete_blocked_message') }}</p>
+        <h3>{{ $t(titleKey) }}</h3>
+        <p>{{ $t(messageKey) }}</p>
         <button type="button" class="btn btn-primary" @click="visible = false">
-          {{ $t('close') }}
+          {{ $t('cancel') }}
         </button>
       </div>
     </template>

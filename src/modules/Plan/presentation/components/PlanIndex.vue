@@ -53,6 +53,7 @@
   const archiveDialogVisible = ref(false);
   const activateDialogVisible = ref(false);
   const deleteWarningDialogVisible = ref(false);
+  const warningActionType = ref<'delete' | 'deactivate' | 'archive'>('delete');
   const selectedPlanId = ref<number | null>(null);
   const statusLoading = ref(false);
   const listMode = ref<PlanStatusEnum | null>(null);
@@ -173,12 +174,22 @@
       statusLoading.value = false;
     }
   };
-  const openDeactivateDialog = (id: number) => {
-    selectedPlanId.value = id;
+  const openDeactivateDialog = (item: PlanModel) => {
+    if (item.subscribers > 0) {
+      warningActionType.value = 'deactivate';
+      deleteWarningDialogVisible.value = true;
+      return;
+    }
+    selectedPlanId.value = item.id;
     deactivateDialogVisible.value = true;
   };
-  const openArchiveDialog = (id: number) => {
-    selectedPlanId.value = id;
+  const openArchiveDialog = (item: PlanModel) => {
+    if (item.subscribers > 0) {
+      warningActionType.value = 'archive';
+      deleteWarningDialogVisible.value = true;
+      return;
+    }
+    selectedPlanId.value = item.id;
     archiveDialogVisible.value = true;
   };
   const openActivateDialog = (id: number) => {
@@ -229,6 +240,7 @@
       icon: DeletIcon,
       action: deleteBlocked
         ? () => {
+            warningActionType.value = 'delete';
             deleteWarningDialogVisible.value = true;
           }
         : () => remove(item.id),
@@ -271,7 +283,7 @@
         {
           text: t('archive'),
           icon: ArchiveIcon,
-          action: () => openArchiveDialog(item.id),
+          action: () => openArchiveDialog(item),
         },
         deleteAction,
       ];
@@ -283,12 +295,12 @@
       {
         text: t('deactivate'),
         icon: DeactiveIcon,
-        action: () => openDeactivateDialog(item.id),
+        action: () => openDeactivateDialog(item),
       },
       {
         text: t('archive'),
         icon: ArchiveIcon,
-        action: () => openArchiveDialog(item.id),
+        action: () => openArchiveDialog(item),
       },
       deleteAction,
     ];
@@ -605,7 +617,10 @@
       :loading="statusLoading"
       @confirm="confirmStatusChange(PlanStatusEnum.ACTIVE)"
     />
-    <PlanDeleteWarningDialog v-model="deleteWarningDialogVisible" />
+    <PlanDeleteWarningDialog
+      v-model="deleteWarningDialogVisible"
+      :action-type="warningActionType"
+    />
   </section>
 </template>
 
@@ -667,6 +682,7 @@
     font-size: 14px;
     font-weight: 600;
   }
+
   .filter-content {
     width: 100% !important;
   }
@@ -818,6 +834,7 @@
     display: flex;
     width: 100%;
   }
+
   .filter-content {
     width: 100%;
   }
