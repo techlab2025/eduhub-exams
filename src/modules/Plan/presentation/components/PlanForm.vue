@@ -173,6 +173,76 @@
     subType.enabled = hasActiveLimit(subType);
   };
 
+  const handleNumberKeydown = (event: KeyboardEvent, allowDecimal = false) => {
+    const target = event.target as HTMLInputElement;
+    const key = event.key;
+
+    // Allow control keys, shortcuts (Ctrl/Cmd/Alt combinations), navigation keys
+    if (event.ctrlKey || event.metaKey || event.altKey || key.length > 1) {
+      return;
+    }
+
+    // Allow digits 0-9, and decimal point if allowed
+    const isDigit = key >= '0' && key <= '9';
+    const isDecimal = allowDecimal && (key === '.' || key === ',');
+
+    if (!isDigit && !isDecimal) {
+      event.preventDefault();
+      return;
+    }
+
+    // Block 0 as the starting digit when input is empty or selection is at start
+    if (key === '0') {
+      const isSelectionAll =
+        target.selectionStart === 0 && target.selectionEnd === target.value.length;
+      const isEmpty = target.value === '' || target.value === null;
+      const isAtStart = target.selectionStart === 0;
+
+      if (isEmpty || isSelectionAll || (isAtStart && target.value.length > 0)) {
+        event.preventDefault();
+      }
+    }
+  };
+
+  const sanitizeNumberInput = (
+    event: Event,
+    updateCallback?: (val: number | undefined) => void,
+    allowDecimal = false,
+  ) => {
+    const input = event.target as HTMLInputElement;
+    if (!input || input.value === '') return;
+
+    let rawVal = input.value;
+
+    if (
+      rawVal.includes('-') ||
+      rawVal.includes('+') ||
+      rawVal.includes('e') ||
+      rawVal.includes('E') ||
+      Number(rawVal) < 1
+    ) {
+      input.value = '';
+      if (updateCallback) updateCallback(undefined);
+      return;
+    }
+
+    let cleaned = allowDecimal ? rawVal.replace(/[^0-9.]/g, '') : rawVal.replace(/[^0-9]/g, '');
+
+    cleaned = cleaned.replace(/^0+/, '');
+
+    const num = Number(cleaned);
+
+    if (cleaned === '' || isNaN(num) || num < 1) {
+      input.value = '';
+      if (updateCallback) updateCallback(undefined);
+    } else {
+      if (input.value !== cleaned) {
+        input.value = cleaned;
+      }
+      if (updateCallback) updateCallback(num);
+    }
+  };
+
   const validationErrors = computed<Record<string, string>>(() => {
     const errors: Record<string, string> = {};
     const validates = (section: PlanEditSection) =>
@@ -560,6 +630,12 @@
                   ? 'plan-number-of-subjects-error'
                   : undefined
               "
+              @keydown="handleNumberKeydown($event)"
+              @input="
+                sanitizeNumberInput($event, (val) => {
+                  numberOfSubjects = val;
+                })
+              "
             />
             <p
               v-if="showValidationErrors && validationErrors.numberOfSubjects"
@@ -618,7 +694,7 @@
                 :id="`pricing-${index}-price`"
                 v-model.number="row.price"
                 type="number"
-                min="0.01"
+                min="1"
                 step="any"
                 :placeholder="$t('enter_plan_price')"
                 :class="{
@@ -627,6 +703,16 @@
                 :aria-invalid="Boolean(showValidationErrors && pricingFieldError(index, 'price'))"
                 :aria-describedby="
                   showValidationErrors ? pricingFieldErrorId(index, 'price') : undefined
+                "
+                @keydown="handleNumberKeydown($event, true)"
+                @input="
+                  sanitizeNumberInput(
+                    $event,
+                    (val) => {
+                      row.price = val;
+                    },
+                    true,
+                  )
                 "
               />
             </div>
@@ -642,6 +728,7 @@
                     v-model.number="row.duration"
                     type="number"
                     min="1"
+                    step="1"
                     :placeholder="$t('enter_duration_number')"
                     :class="{
                       'field-invalid': showValidationErrors && pricingFieldError(index, 'duration'),
@@ -651,6 +738,12 @@
                     "
                     :aria-describedby="
                       showValidationErrors ? pricingFieldErrorId(index, 'duration') : undefined
+                    "
+                    @keydown="handleNumberKeydown($event)"
+                    @input="
+                      sanitizeNumberInput($event, (val) => {
+                        row.duration = val;
+                      })
                     "
                   />
                 </span>
@@ -761,12 +854,19 @@
           <input
             v-model.number="trialDays"
             type="number"
-            min="0"
+            min="1"
+            step="1"
             :disabled="!hasTrial"
             :class="{ 'field-invalid': showValidationErrors && validationErrors.trialDays }"
             :aria-invalid="Boolean(showValidationErrors && validationErrors.trialDays)"
             :aria-describedby="
               showValidationErrors && validationErrors.trialDays ? 'trial-days-error' : undefined
+            "
+            @keydown="handleNumberKeydown($event)"
+            @input="
+              sanitizeNumberInput($event, (val) => {
+                trialDays = val ?? 0;
+              })
             "
           />
           <p
@@ -852,9 +952,18 @@
                   v-model.number="subType.limit"
                   class="feature-limit"
                   type="number"
-                  min="0"
+                  min="1"
+                  step="1"
                   :aria-label="subType.title"
-                  @input="updateLimitSubFeature(subType)"
+                  @keydown="handleNumberKeydown($event)"
+                  @input="
+                    (e) => {
+                      sanitizeNumberInput(e, (val) => {
+                        subType.limit = val;
+                      });
+                      updateLimitSubFeature(subType);
+                    }
+                  "
                 />
                 <ToggleSwitch v-else v-model="subType.enabled" :aria-label="subType.title" />
                 <span

@@ -318,7 +318,7 @@ describe('PlanForm', () => {
     routeMock.query = { section: 'pricing' };
     const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
 
-    await wrapper.get('#pricing-0-price').setValue(0.5);
+    await wrapper.get('#pricing-0-price').setValue(50);
     await wrapper.get('#pricing-0-duration').setValue(3);
     await wrapper.get('#pricing-0-duration-type').setValue(PlanDurationTypeEnum.MONTH);
 
@@ -326,6 +326,32 @@ describe('PlanForm', () => {
       true,
     );
     expect(wrapper.findAll('#plan-pricing [data-plan-validation-error]')).toHaveLength(0);
+  });
+
+  it('prevents entering string, negative, or starting with 0 on number inputs', async () => {
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    const input = wrapper.get('#plan-number-of-subjects');
+
+    const preventDefaultMock = vi.fn();
+    await input.trigger('keydown', { key: '-', preventDefault: preventDefaultMock });
+    expect(preventDefaultMock).toHaveBeenCalled();
+
+    preventDefaultMock.mockClear();
+    await input.trigger('keydown', { key: 'e', preventDefault: preventDefaultMock });
+    expect(preventDefaultMock).toHaveBeenCalled();
+
+    preventDefaultMock.mockClear();
+    await input.trigger('keydown', { key: '0', preventDefault: preventDefaultMock });
+    expect(preventDefaultMock).toHaveBeenCalled();
+
+    await input.setValue(-5);
+    expect((input.element as HTMLInputElement).value).toBe('');
+
+    await input.setValue(0);
+    expect((input.element as HTMLInputElement).value).toBe('');
+
+    await input.setValue(10);
+    expect((input.element as HTMLInputElement).value).toBe('10');
   });
 
   it.each([0, -1, 'not-a-number'])(

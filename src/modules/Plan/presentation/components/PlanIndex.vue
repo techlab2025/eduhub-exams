@@ -396,6 +396,7 @@
     <button
       class="btn btn-primary"
       @click="router.push({ name: 'Add Plan', query: buildPlanQuery() })"
+      v-if="listMode !== PlanStatusEnum.Archived"
     >
       <span class="plus">+</span> {{ $t('Add New Plan') }}
     </button>

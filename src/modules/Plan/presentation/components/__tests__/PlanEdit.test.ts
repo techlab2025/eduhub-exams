@@ -86,27 +86,43 @@ describe('PlanEdit', () => {
     fetchListMock.mockResolvedValue(undefined);
   });
 
-  it('hides edit actions until the plan data changes', async () => {
+  it('shows cancel action initially and adds publish/draft actions when plan data changes', async () => {
     const wrapper = mount(PlanEdit, { global });
     await flushPromises();
 
-    expect(wrapper.find('.actions').exists()).toBe(false);
+    expect(wrapper.find('.actions').exists()).toBe(true);
+    expect(wrapper.find('.publish-button').exists()).toBe(false);
+    expect(wrapper.find('.btn-draft').exists()).toBe(false);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
 
     const form = wrapper.getComponent({ name: 'PlanForm' });
     form.vm.$emit('updateData', params());
     form.vm.$emit('featuresLoaded');
     await flushPromises();
-    expect(wrapper.find('.actions').exists()).toBe(false);
+    expect(wrapper.find('.publish-button').exists()).toBe(false);
+    expect(wrapper.find('.btn-draft').exists()).toBe(false);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
 
     const changedParams = params();
     changedParams.status = PlanStatusEnum.ACTIVE;
     form.vm.$emit('updateData', changedParams);
     await flushPromises();
 
-    expect(wrapper.findAll('.actions button')).toHaveLength(2);
+    expect(wrapper.findAll('.actions button')).toHaveLength(3);
     expect(wrapper.find('.publish-button').exists()).toBe(true);
     expect(wrapper.find('.btn-draft').exists()).toBe(true);
-    expect(wrapper.find('.btn-cancel').exists()).toBe(false);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
+  });
+
+  it('navigates back to plans list when cancel button is clicked', async () => {
+    const wrapper = mount(PlanEdit, { global });
+    await flushPromises();
+
+    await wrapper.get('.btn-cancel').trigger('click');
+    expect(routerPushMock).toHaveBeenCalledWith({
+      name: 'Plans',
+      query: { listMode: '3', page: '2' },
+    });
   });
 
   it('publishes a draft as active', async () => {
@@ -170,7 +186,7 @@ describe('PlanEdit', () => {
     const wrapper = mount(PlanEdit, { global });
     await flushPromises();
 
-    expect(wrapper.find('.actions').exists()).toBe(false);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
 
     const form = wrapper.getComponent({ name: 'PlanForm' });
     const initialParams = params();
@@ -185,6 +201,7 @@ describe('PlanEdit', () => {
 
     expect(wrapper.find('.publish-button').exists()).toBe(true);
     expect(wrapper.find('.btn-draft').exists()).toBe(true);
+    expect(wrapper.find('.btn-cancel').exists()).toBe(true);
   });
 
   it('shows warning dialog when trying to save as draft for a plan with subscribers', async () => {

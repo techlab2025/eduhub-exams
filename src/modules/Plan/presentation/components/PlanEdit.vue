@@ -134,29 +134,31 @@
       @features-loaded="handleFeaturesLoaded"
     />
 
-    <div v-if="hasChanges" class="actions">
+    <div class="actions">
+      <template v-if="hasChanges">
+        <button
+          class="btn btn-primary publish-button"
+          :class="{ 'is-not-ready': !publishReady }"
+          type="button"
+          :aria-disabled="!publishReady"
+          :disabled="loading"
+          @click="savePlan"
+        >
+          <span>{{ $t('publish') }}</span>
+        </button>
+        <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
+          {{ $t('save_as_draft') }}
+        </button>
+      </template>
       <button
-        class="btn btn-primary publish-button"
-        :class="{ 'is-not-ready': !publishReady }"
         type="button"
-        :aria-disabled="!publishReady"
+        class="btn btn-cancel"
         :disabled="loading"
-        @click="savePlan"
+        @click.prevent="returnToPlanIndex"
       >
-        <span>{{ $t('publish') }}</span>
-      </button>
-      <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
-        {{ $t('save_as_draft') }}
+        {{ $t('cancel') }}
       </button>
     </div>
-
-    <!-- <div v-else class="actions" :class="{ disabled: loading }">
-      <button class="btn btn-primary w-full" type="button" :disabled="loading" @click="savePlan">
-        <span v-if="loading" class="loader"></span>
-        <span v-else>{{ $t('update_plan') }}</span>
-      </button>
-      <router-link to="/plans" class="btn btn-cancel">{{ $t('cancel') }}</router-link>
-    </div> -->
 
     <DraftPlanDialog v-model="draftDialogVisible" @acknowledge="acknowledgeDraft" />
     <PlanDeleteWarningDialog v-model="warningDialogVisible" :action-type="warningActionType" />
@@ -196,7 +198,8 @@
   }
 
   .btn-draft,
-  .publish-button {
+  .publish-button,
+  .btn-cancel {
     width: min(240px, 50%);
     border-radius: var(--radius-full);
   }
@@ -213,7 +216,8 @@
     }
 
     .btn-draft,
-    .publish-button {
+    .publish-button,
+    .btn-cancel {
       width: 100%;
     }
   }
