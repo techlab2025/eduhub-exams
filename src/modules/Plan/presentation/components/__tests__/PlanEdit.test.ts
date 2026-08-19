@@ -51,6 +51,12 @@ const global = {
       emits: ['update:modelValue', 'acknowledge'],
       template: '<div class="draft-dialog-stub" />',
     },
+    PlanDeleteWarningDialog: {
+      name: 'PlanDeleteWarningDialog',
+      props: ['modelValue', 'actionType'],
+      emits: ['update:modelValue'],
+      template: '<div class="warning-dialog-stub" />',
+    },
     RouterLink: {
       props: ['to'],
       template: '<a><slot /></a>',
@@ -179,5 +185,30 @@ describe('PlanEdit', () => {
 
     expect(wrapper.find('.publish-button').exists()).toBe(true);
     expect(wrapper.find('.btn-draft').exists()).toBe(true);
+  });
+
+  it('shows warning dialog when trying to save as draft for a plan with subscribers', async () => {
+    itemData.value = { status: PlanStatusEnum.ACTIVE, subscribers: 5 };
+    const wrapper = mount(PlanEdit, { global });
+    await flushPromises();
+
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    const initialParams = params();
+    initialParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', initialParams);
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+
+    const changedParams = params();
+    form.vm.$emit('updateData', changedParams);
+    await flushPromises();
+
+    await wrapper.get('.btn-draft').trigger('click');
+    await wrapper.vm.$nextTick();
+
+    const warningDialog = wrapper.getComponent({ name: 'PlanDeleteWarningDialog' });
+    expect(warningDialog.props('modelValue')).toBe(true);
+    expect(warningDialog.props('actionType')).toBe('draft');
+    expect(wrapper.getComponent({ name: 'DraftPlanDialog' }).props('modelValue')).toBe(false);
   });
 });

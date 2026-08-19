@@ -5,7 +5,7 @@
 
   const props = withDefaults(
     defineProps<{
-      actionType?: 'delete' | 'deactivate' | 'archive';
+      actionType?: 'delete' | 'deactivate' | 'archive' | 'draft';
     }>(),
     {
       actionType: 'delete',
@@ -20,6 +20,8 @@
         return 'plan_deactivate_blocked_title';
       case 'archive':
         return 'plan_archive_blocked_title';
+      case 'draft':
+        return 'plan_draft_blocked_title';
       case 'delete':
       default:
         return 'plan_delete_blocked_title';
@@ -32,6 +34,8 @@
         return 'plan_deactivate_blocked_message';
       case 'archive':
         return 'plan_archive_blocked_message';
+      case 'draft':
+        return 'plan_draft_blocked_message';
       case 'delete':
       default:
         return 'plan_delete_blocked_message';

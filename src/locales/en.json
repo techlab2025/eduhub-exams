@@ -921,6 +921,8 @@
   "plan_deactivate_blocked_message": "This plan has an active subscribers, so it can not be safely deactive it.",
   "plan_archive_blocked_title": " this plan has an subscribtions ?",
   "plan_archive_blocked_message": "This plan has an active subscribers, so it can not be safely archive it.",
+  "plan_draft_blocked_title": " this plan has an subscribtions ?",
+  "plan_draft_blocked_message": "This plan has an active subscribers, so it can not be safely draft it.",
   "close": "Close",
   "deactivate": "Deactivate",
   "archive": "Archive",

@@ -8,6 +8,7 @@
   import ShowPlanParams from '../../core/params/show.plan.params';
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
   import DraftPlanDialog from '../subCopmnents/DraftPlanDialog.vue';
+  import PlanDeleteWarningDialog from '../subCopmnents/PlanDeleteWarningDialog.vue';
 
   const controller = PlanController.getInstance();
   const route = useRoute();
@@ -21,6 +22,8 @@
   const loading = ref(false);
   const publishReady = ref(false);
   const draftDialogVisible = ref(false);
+  const warningDialogVisible = ref(false);
+  const warningActionType = ref<'delete' | 'deactivate' | 'archive' | 'draft'>('draft');
   const hasChanges = ref(false);
   const initialParamsSnapshot = ref<string | null>(null);
   const isInitialized = ref(false);
@@ -78,6 +81,11 @@
   };
 
   const saveDraft = () => {
+    if ((controller.itemData.value?.subscribers ?? 0) > 0) {
+      warningActionType.value = 'draft';
+      warningDialogVisible.value = true;
+      return;
+    }
     draftDialogVisible.value = true;
   };
 
@@ -151,6 +159,7 @@
     </div> -->
 
     <DraftPlanDialog v-model="draftDialogVisible" @acknowledge="acknowledgeDraft" />
+    <PlanDeleteWarningDialog v-model="warningDialogVisible" :action-type="warningActionType" />
   </div>
 </template>
 
