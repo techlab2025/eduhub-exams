@@ -907,9 +907,6 @@
             v-for="(feature, featureIndex) in planFeatures"
             :key="feature.featureType"
             class="feature-card"
-            :class="{
-              'edit-selection-inactive': isFeatureEdit && !feature.enabled,
-            }"
           >
             <header class="feature-row">
               <span class="feature-number">{{ featureIndex + 1 }}</span>
@@ -931,13 +928,13 @@
             >
               {{ validationErrors[`feature-${feature.featureType}-subfeatures`] }}
             </p>
-            <div v-if="feature.enabled || isFeatureEdit" class="sub-features">
+            <div v-if="feature.enabled" class="sub-features">
               <div
                 v-for="subType in feature.subTypes"
                 :key="subType.subType"
                 class="feature-row validated-field"
                 :class="{
-                  'edit-selection-inactive': isFeatureEdit && !subType.enabled,
+                  'edit-selection-inactive': !subType.enabled,
                 }"
               >
                 <span class="sub-feature-dot" aria-hidden="true"></span>
