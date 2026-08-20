@@ -60,7 +60,7 @@
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
     { id: Number(PlanStatusEnum.ACTIVE), title: t('active') },
-    { id: Number(PlanStatusEnum.deactivated), title: t('inactive') },
+    { id: Number(PlanStatusEnum.deactivated), title: t('deactive') },
     { id: Number(PlanStatusEnum.Archived), title: t('archived') },
     { id: Number(PlanStatusEnum.DRAFT), title: t('draft') },
   ]);
@@ -160,7 +160,6 @@
     );
   };
   const remove = async (id: number) => {
-
     await controller.delete(new DeletePlanParams(id));
     await fetchItems();
   };
@@ -212,7 +211,7 @@
     selectedPlanId.value = null;
     await fetchItems(currentPage.value, word.value);
   };
-  const SelectedSubscribersNumber = ref()
+  const SelectedSubscribersNumber = ref();
   const actionList = (item: PlanModel) => {
     const viewAction = {
       text: t('view'),
