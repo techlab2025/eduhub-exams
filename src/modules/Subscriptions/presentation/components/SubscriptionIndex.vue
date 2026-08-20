@@ -53,6 +53,8 @@
   const deleteWarningDialogVisible = ref(false);
   const detailsDialogVisible = ref(false);
   const selectedSubscriptionId = ref<number | null>(null);
+  const selectedRows = ref<SubscriptionModel[]>([]);
+  const tableSelectionKey = ref(0);
   const hasQuickFilters = computed(() => Boolean(education.value || plan.value || status.value));
 
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
@@ -79,8 +81,13 @@
     { key: 'status', label: t('status'), width: '11%' },
   ]);
 
-  const fetchItems = (page = 1) =>
-    controller.fetchList(
+  const clearTableSelection = () => {
+    selectedRows.value = [];
+    tableSelectionKey.value += 1;
+  };
+  const fetchItems = (page = 1) => {
+    clearTableSelection();
+    return controller.fetchList(
       new IndexSubscriptionParams(word.value, page, perPage.value, {
         educationTypeId: education.value ? Number(education.value.id) : undefined,
         planId: plan.value ? Number(plan.value.id) : undefined,
@@ -93,6 +100,7 @@
         expireDateTo: dateValue(expireTo.value),
       }),
     );
+  };
   const search = debounce(() => fetchItems(1));
   const remove = async (id: number) => {
     await controller.delete(new DeleteSubscriptionParams(id));
@@ -154,7 +162,6 @@
 
   onMounted(() => Promise.all([fetchItems(), controller.fetchStats()]));
 
-  const selectedRows = ref<SubscriptionModel[]>([]);
   const updateSelectedRows = (rows: SubscriptionModel[]) => {
     selectedRows.value = rows;
   };
@@ -446,12 +453,12 @@
       >
         <template #success="{ data }">
           <AppTable
+            :key="tableSelectionKey"
             :headers="headers"
             :items="data as SubscriptionModel[]"
             row-key="id"
             :selectable="true"
             @selection-change="updateSelectedRows"
-            
           >
             <template #cell-student="{ item }">{{ item.student.name }}</template>
             <template #cell-plan="{ item }">{{ item.plan.title }}</template>

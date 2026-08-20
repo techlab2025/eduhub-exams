@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   fetchList: vi.fn().mockResolvedValue(undefined),
   fetchStats: vi.fn().mockResolvedValue(undefined),
   remove: vi.fn().mockResolvedValue(undefined),
+  pagination: { value: null as object | null },
 }));
 
 vi.mock('vue-i18n', () => ({
@@ -17,7 +18,7 @@ vi.mock('../../controllers/subscription.controller', () => ({
     getInstance: () => ({
       listState: { value: {} },
       stats: { value: null },
-      pagination: { value: null },
+      pagination: mocks.pagination,
       fetchList: mocks.fetchList,
       fetchStats: mocks.fetchStats,
       delete: mocks.remove,
@@ -35,7 +36,10 @@ vi.mock('@/modules/Plan/presentation/controllers/plan.controller', () => ({
 }));
 
 describe('SubscriptionIndex', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.pagination.value = null;
+  });
 
   it('shows selected quick filters and allows clearing them', async () => {
     const wrapper = shallowMount(Component, {
@@ -100,6 +104,51 @@ describe('SubscriptionIndex', () => {
 
     expect(wrapper.getComponent('.app-table-stub').props('selectable')).toBe(true);
     expect(wrapper.getComponent('.app-table-stub').props('rowSelectable')).toBeUndefined();
+  });
+
+  it('clears selected rows when the displayed page changes', async () => {
+    mocks.pagination.value = {};
+    const wrapper = shallowMount(Component, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          DataStatusBuilder: {
+            template: `
+              <slot
+                name="success"
+                :data="[{ id: 8, status: 2, student: { name: 'Expired' }, plan: { title: 'Plan' } }]"
+              />
+            `,
+          },
+          AppTable: {
+            props: ['items'],
+            emits: ['selection-change'],
+            template: `
+              <button class="select-rows" @click="$emit('selection-change', items)">
+                select
+              </button>
+            `,
+          },
+          Pagination: {
+            emits: ['change-page'],
+            template: '<button class="next-page" @click="$emit(\'change-page\', 2)">next</button>',
+          },
+          FilterDialog: true,
+          UpdatedCustomInputSelect: true,
+          SubscriptionBulkDeleteWarningDialog: true,
+          SubscriptionDeleteWarningDialog: true,
+          SubscriptionDetailsDialog: true,
+        },
+      },
+    });
+
+    await wrapper.find('.select-rows').trigger('click');
+    expect(wrapper.find('.items-deleted').exists()).toBe(true);
+
+    await wrapper.find('.next-page').trigger('click');
+
+    expect(wrapper.find('.items-deleted').exists()).toBe(false);
+    expect(mocks.fetchList.mock.calls.at(-1)?.[0].toMap()).toMatchObject({ page: 2 });
   });
 
   it('blocks bulk deletion when the selection contains an active subscription', async () => {
@@ -206,11 +255,7 @@ describe('SubscriptionIndex', () => {
             template: `
               <slot
                 name="success"
-<<<<<<< HEAD
-                  :data="[{ id: 7, status: 2, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
-=======
                 :data="[{ id: 7, status: 2, student: { name: 'Student' }, plan: { title: 'Plan' } }]"
->>>>>>> ci/cd
               />
             `,
           },

@@ -29,13 +29,13 @@ export class IndexSubscriptionParams extends IndexParams {
       }),
       ...(this.filters.planId !== undefined && { plan_id: this.filters.planId }),
       ...(this.filters.status !== undefined && { status: this.filters.status }),
-      ...(this.filters.paidFrom !== undefined && { paied_from: this.filters.paidFrom }),
-      ...(this.filters.paidTo !== undefined && { paied_to: this.filters.paidTo }),
+      ...(this.filters.paidFrom !== undefined && { from_price: this.filters.paidFrom }),
+      ...(this.filters.paidTo !== undefined && { to_price: this.filters.paidTo }),
       ...(this.filters.subscriptionDateFrom && {
-        subscription_date_from: this.filters.subscriptionDateFrom,
+        from_date: this.filters.subscriptionDateFrom,
       }),
       ...(this.filters.subscriptionDateTo && {
-        subscription_date_to: this.filters.subscriptionDateTo,
+        to_date: this.filters.subscriptionDateTo,
       }),
       ...(this.filters.expireDateFrom && { expire_date_from: this.filters.expireDateFrom }),
       ...(this.filters.expireDateTo && { expire_date_to: this.filters.expireDateTo }),
