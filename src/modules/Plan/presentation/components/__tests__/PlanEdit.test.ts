@@ -4,6 +4,7 @@ import PlanEdit from '../PlanEdit.vue';
 import EditPlanParams from '../../../core/params/edit.plan.params';
 import TranslationParams from '@/modules/about/core/params/translation.params';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
+import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
 const {
   itemData,
@@ -12,6 +13,7 @@ const {
   fetchListMock,
   routerPushMock,
   routeLeaveRegistrationMock,
+  validateMock,
   routeMock,
 } = vi.hoisted(() => ({
   itemData: { value: { status: 4 } },
@@ -20,6 +22,7 @@ const {
   fetchListMock: vi.fn(),
   routerPushMock: vi.fn(),
   routeLeaveRegistrationMock: vi.fn(),
+  validateMock: vi.fn(),
   routeMock: {
     params: { id: '8' },
     fullPath: '/plans/edit/8?section=features&listMode=3&page=2',
@@ -50,7 +53,7 @@ const global = {
     PlanForm: {
       name: 'PlanForm',
       emits: ['updateData', 'validityChange', 'featuresLoaded'],
-      methods: { validate: () => Promise.resolve(true) },
+      methods: { validate: validateMock },
       template: '<div class="plan-form-stub" />',
     },
     DraftPlanDialog: {
@@ -101,7 +104,8 @@ describe('PlanEdit', () => {
     vi.clearAllMocks();
     itemData.value = { status: PlanStatusEnum.DRAFT };
     fetchOneMock.mockResolvedValue(undefined);
-    updateMock.mockResolvedValue({ data: {} });
+    validateMock.mockResolvedValue(true);
+    updateMock.mockResolvedValue(new DataSuccess({ data: {} }));
     fetchListMock.mockResolvedValue(undefined);
   });
 
@@ -271,5 +275,53 @@ describe('PlanEdit', () => {
     await wrapper.vm.$nextTick();
     await wrapper.get('.unsaved-plan-dialog-stub .leave').trigger('click');
     expect(await leaveResult).toBe(true);
+  });
+
+  it('does not send a request or navigate when edit form validation fails', async () => {
+    validateMock.mockResolvedValueOnce(false);
+    const wrapper = mount(PlanEdit, { global });
+    await flushPromises();
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', params());
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+
+    const changedParams = params();
+    changedParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', changedParams);
+    await flushPromises();
+
+    await wrapper.get('.publish-button').trigger('click');
+    await flushPromises();
+
+    expect(updateMock).not.toHaveBeenCalled();
+    expect(routerPushMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps edit form data and does not navigate when update fails', async () => {
+    updateMock.mockResolvedValueOnce({ hasError: true });
+    const wrapper = mount(PlanEdit, { global });
+    await flushPromises();
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', params());
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+
+    const changedParams = params();
+    changedParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', changedParams);
+    await flushPromises();
+
+    await wrapper.get('.publish-button').trigger('click');
+    await flushPromises();
+
+    expect(routerPushMock).not.toHaveBeenCalled();
+
+    const guard = routeLeaveRegistrationMock.mock.calls.at(-1)?.[0];
+    const leaveResult = guard();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.unsaved-plan-dialog-stub').exists()).toBe(true);
+    await wrapper.get('.unsaved-plan-dialog-stub .stay').trigger('click');
+    expect(await leaveResult).toBe(false);
   });
 });

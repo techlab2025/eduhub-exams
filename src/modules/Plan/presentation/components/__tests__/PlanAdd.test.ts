@@ -2,18 +2,26 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import PlanAdd from '../PlanAdd.vue';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
+import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
-const { createMock, fetchListMock, routerPushMock, routeLeaveRegistrationMock, routeMock } =
-  vi.hoisted(() => ({
-    createMock: vi.fn(),
-    fetchListMock: vi.fn(),
-    routerPushMock: vi.fn(),
-    routeLeaveRegistrationMock: vi.fn(),
-    routeMock: {
-      fullPath: '/plans/add?status=3&page=2',
-      query: { status: '3', page: '2' },
-    },
-  }));
+const {
+  createMock,
+  fetchListMock,
+  routerPushMock,
+  routeLeaveRegistrationMock,
+  validateMock,
+  routeMock,
+} = vi.hoisted(() => ({
+  createMock: vi.fn(),
+  fetchListMock: vi.fn(),
+  routerPushMock: vi.fn(),
+  routeLeaveRegistrationMock: vi.fn(),
+  validateMock: vi.fn(),
+  routeMock: {
+    fullPath: '/plans/add?status=3&page=2',
+    query: { status: '3', page: '2' },
+  },
+}));
 
 vi.mock('../../controllers/plan.controller', () => ({
   default: {
@@ -32,6 +40,7 @@ const global = {
     PlanForm: {
       name: 'PlanForm',
       emits: ['updateData', 'validityChange', 'featuresLoaded'],
+      methods: { validate: validateMock },
       template: '<div class="plan-form-stub" />',
     },
     DraftPlanDialog: {
@@ -60,7 +69,8 @@ const params = () => ({ status: PlanStatusEnum.ACTIVE });
 describe('PlanAdd', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    createMock.mockResolvedValue({ data: {} });
+    validateMock.mockResolvedValue(true);
+    createMock.mockResolvedValue(new DataSuccess({ data: {} }));
     fetchListMock.mockResolvedValue(undefined);
   });
 
@@ -136,5 +146,77 @@ describe('PlanAdd', () => {
     await wrapper.vm.$nextTick();
     await wrapper.get('.unsaved-plan-dialog-stub .leave').trigger('click');
     expect(await leaveResult).toBe(true);
+  });
+
+  it('does not send a request or navigate when form validation fails', async () => {
+    validateMock.mockResolvedValueOnce(false);
+    const wrapper = mount(PlanAdd, { global });
+    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', params());
+
+    await wrapper.get('.publish-button').trigger('click');
+    await flushPromises();
+
+    expect(createMock).not.toHaveBeenCalled();
+    expect(routerPushMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps add form data and does not navigate when publishing fails', async () => {
+    createMock.mockResolvedValueOnce({ hasError: true });
+    const wrapper = mount(PlanAdd, { global });
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', { status: PlanStatusEnum.ACTIVE, title: '' });
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+    form.vm.$emit('updateData', { status: PlanStatusEnum.ACTIVE, title: 'New plan' });
+
+    await wrapper.get('.publish-button').trigger('click');
+    await flushPromises();
+
+    expect(routerPushMock).not.toHaveBeenCalled();
+
+    const guard = routeLeaveRegistrationMock.mock.calls.at(-1)?.[0];
+    const leaveResult = guard();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.unsaved-plan-dialog-stub').exists()).toBe(true);
+    await wrapper.get('.unsaved-plan-dialog-stub .stay').trigger('click');
+    expect(await leaveResult).toBe(false);
+  });
+
+  it('does not navigate when saving a draft fails', async () => {
+    createMock.mockResolvedValueOnce({ hasError: true });
+    const wrapper = mount(PlanAdd, { global });
+    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', params());
+
+    await wrapper.get('.btn-draft').trigger('click');
+    wrapper.getComponent({ name: 'DraftPlanDialog' }).vm.$emit('acknowledge');
+    await flushPromises();
+
+    expect(routerPushMock).not.toHaveBeenCalled();
+  });
+
+  it('blocks navigation without opening the warning while a request is running', async () => {
+    let resolveCreate: ((result: DataSuccess<object>) => void) | undefined;
+    createMock.mockReturnValueOnce(
+      new Promise<DataSuccess<object>>((resolve) => {
+        resolveCreate = resolve;
+      }),
+    );
+    const wrapper = mount(PlanAdd, { global });
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', { status: PlanStatusEnum.ACTIVE, title: '' });
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+    form.vm.$emit('updateData', { status: PlanStatusEnum.ACTIVE, title: 'New plan' });
+    await flushPromises();
+
+    void wrapper.get('.publish-button').trigger('click');
+    await wrapper.vm.$nextTick();
+
+    const guard = routeLeaveRegistrationMock.mock.calls.at(-1)?.[0];
+    expect(guard()).toBe(false);
+    expect(wrapper.find('.unsaved-plan-dialog-stub').exists()).toBe(false);
+
+    resolveCreate?.(new DataSuccess({ data: {} }));
+    await flushPromises();
   });
 });

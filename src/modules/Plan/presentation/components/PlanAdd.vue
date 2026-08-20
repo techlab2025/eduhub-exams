@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { nextTick, onBeforeUnmount, ref } from 'vue';
   import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
+  import { isDataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
   import type AddPlanParams from '../../core/params/add.plan.params';
@@ -45,6 +46,7 @@
 
   onBeforeRouteLeave(() => {
     if (!hasChanges.value) return true;
+    if (loading.value) return false;
 
     leaveDialogVisible.value = true;
     return new Promise<boolean>((resolve) => {
@@ -66,11 +68,11 @@
 
       params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.create(params.value, undefined);
-      if (result?.data) {
-        hasChanges.value = false;
-        await router.push({ name: 'Plans', query: plansQuery() });
-        await controller.fetchList();
-      }
+      if (!result || !isDataSuccess(result)) return;
+
+      hasChanges.value = false;
+      await router.push({ name: 'Plans', query: plansQuery() });
+      await controller.fetchList();
     } catch (error) {
       console.error('Error saving plan:', error);
     } finally {
@@ -115,16 +117,16 @@
       }
       params.value.status = PlanStatusEnum.DRAFT;
       const result = await controller.create(params.value, undefined);
-      if (result?.data) {
-        hasChanges.value = false;
-        await controller.fetchList();
-      }
+      if (!result || !isDataSuccess(result)) return;
+
+      hasChanges.value = false;
+      await controller.fetchList();
+      await router.push({ name: 'Plans', query: plansQuery() });
     } catch (error) {
       console.error('Error saving plan draft:', error);
     } finally {
       loading.value = false;
     }
-    await router.push({ name: 'Plans', query: plansQuery() });
   };
   const cancelDraft = () => {
     router.push({ name: 'Plans', query: plansQuery() });

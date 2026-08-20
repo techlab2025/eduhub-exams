@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
   import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
+  import { isDataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
   import EditPlanParams from '../../core/params/edit.plan.params';
@@ -69,6 +70,7 @@
 
   onBeforeRouteLeave(() => {
     if (!hasChanges.value) return true;
+    if (loading.value) return false;
 
     leaveDialogVisible.value = true;
     return new Promise<boolean>((resolve) => {
@@ -91,7 +93,7 @@
     try {
       if (isDraft.value) params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.update(params.value, undefined, undefined, false);
-      if (result?.hasError) return;
+      if (!result || !isDataSuccess(result)) return;
 
       hasChanges.value = false;
       await returnToPlanIndex();
@@ -122,7 +124,7 @@
     try {
       params.value.status = PlanStatusEnum.DRAFT;
       const result = await controller.update(params.value, undefined, undefined, false);
-      if (result?.hasError) return;
+      if (!result || !isDataSuccess(result)) return;
 
       hasChanges.value = false;
       await returnToPlanIndex();
