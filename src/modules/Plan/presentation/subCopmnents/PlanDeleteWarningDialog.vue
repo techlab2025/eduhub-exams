@@ -6,6 +6,7 @@
   const props = withDefaults(
     defineProps<{
       actionType?: 'delete' | 'deactivate' | 'archive' | 'draft';
+      SelectedSubscribersNumber?: number;
     }>(),
     {
       actionType: 'delete',
@@ -50,6 +51,7 @@
         <img :src="PlanDeleteWarning" width="180" alt="" aria-hidden="true" />
         <h3>{{ $t(titleKey) }}</h3>
         <p>{{ $t(messageKey) }}</p>
+        <p v-if="SelectedSubscribersNumber"><b>Number Of Subscribers :</b> {{ SelectedSubscribersNumber }} subscriber</p>
         <button type="button" class="btn btn-primary" @click="visible = false">
           {{ $t('cancel') }}
         </button>

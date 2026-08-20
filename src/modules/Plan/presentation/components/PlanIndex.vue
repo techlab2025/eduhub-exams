@@ -160,6 +160,7 @@
     );
   };
   const remove = async (id: number) => {
+
     await controller.delete(new DeletePlanParams(id));
     await fetchItems();
   };
@@ -211,6 +212,7 @@
     selectedPlanId.value = null;
     await fetchItems(currentPage.value, word.value);
   };
+  const SelectedSubscribersNumber = ref()
   const actionList = (item: PlanModel) => {
     const viewAction = {
       text: t('view'),
@@ -242,6 +244,7 @@
         ? () => {
             warningActionType.value = 'delete';
             deleteWarningDialogVisible.value = true;
+            SelectedSubscribersNumber.value = item.subscribers;
           }
         : () => remove(item.id),
       skipDeleteConfirmation: deleteBlocked,
@@ -621,6 +624,7 @@
     <PlanDeleteWarningDialog
       v-model="deleteWarningDialogVisible"
       :action-type="warningActionType"
+      :SelectedSubscribersNumber="SelectedSubscribersNumber"
     />
   </section>
 </template>
