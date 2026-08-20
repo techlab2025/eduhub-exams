@@ -3481,6 +3481,7 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: flex-start;
   align-items: stretch;
   gap: 12px;
+  padding: 20px 0;
 }
 .sidebar .sidebar-wrapper .menu .group-title {
   font-size: var(--sm-size);
@@ -10379,7 +10380,6 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .questions-page .status {
   align-items: center;
-  border: 1px solid currentcolor;
   border-radius: 999px;
   display: inline-flex;
   font-size: var(--sm-size);
@@ -11473,7 +11473,6 @@ body::-webkit-scrollbar-thumb:hover {
   justify-content: flex-start;
   align-items: stretch;
   background-color: var(--bg-rejected);
-  padding: var(--md-size);
   border-radius: var(--md-size);
   padding: var(--md-size);
   width: 100%;
@@ -17992,4 +17991,10 @@ input {
 
 .filter-content {
   width: 100% !important;
+}
+
+.plan-filter-dialog .p-dialog-header {
+  color: #121212 !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
 }/*# sourceMappingURL=main.css.map */

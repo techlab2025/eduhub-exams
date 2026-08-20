@@ -29,8 +29,8 @@ export class IndexSubscriptionParams extends IndexParams {
       }),
       ...(this.filters.planId !== undefined && { plan_id: this.filters.planId }),
       ...(this.filters.status !== undefined && { status: this.filters.status }),
-      ...(this.filters.paidFrom !== undefined && { from_price: this.filters.paidFrom }),
-      ...(this.filters.paidTo !== undefined && { to_price: this.filters.paidTo }),
+      ...(this.filters.paidFrom !== undefined && { paied_from: this.filters.paidFrom }),
+      ...(this.filters.paidTo !== undefined && { paied_to: this.filters.paidTo }),
       ...(this.filters.subscriptionDateFrom && {
         from_date: this.filters.subscriptionDateFrom,
       }),

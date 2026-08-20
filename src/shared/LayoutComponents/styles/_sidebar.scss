@@ -39,8 +39,8 @@
 
     .menu {
       @include flex-column(nowrap, flex-start, stretch);
-
       gap: 12px;
+      padding: 20px 0;
 
       .group-title {
         font-size: $SmSize;

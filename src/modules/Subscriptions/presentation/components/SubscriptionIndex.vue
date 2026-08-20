@@ -459,6 +459,7 @@
             row-key="id"
             :selectable="true"
             @selection-change="updateSelectedRows"
+            :sticky-column="2"
           >
             <template #cell-student="{ item }">{{ item.student.name }}</template>
             <template #cell-plan="{ item }">{{ item.plan.title }}</template>
