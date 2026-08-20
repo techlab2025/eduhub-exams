@@ -126,8 +126,8 @@
       if (!result || !isDataSuccess(result)) return;
 
       hasChanges.value = false;
-      await controller.fetchList();
       await router.push({ name: 'Plans', query: plansQuery() });
+      await controller.fetchList();
     } catch (error) {
       console.error('Error saving plan draft:', error);
     } finally {
@@ -183,6 +183,9 @@
 </template>
 
 <style scoped lang="scss">
+  .plan-add-page {
+    padding-block: 20px;
+  }
   .loader {
     width: 35px;
     height: 35px;

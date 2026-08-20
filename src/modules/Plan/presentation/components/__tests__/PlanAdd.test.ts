@@ -127,6 +127,9 @@ describe('PlanAdd', () => {
       name: 'Plans',
       query: { status: '3', page: '2' },
     });
+    expect(routerPushMock.mock.invocationCallOrder[0]).toBeLessThan(
+      fetchListMock.mock.invocationCallOrder[0] ?? Number.POSITIVE_INFINITY,
+    );
   });
 
   it('does not open the draft dialog when the title is empty', async () => {

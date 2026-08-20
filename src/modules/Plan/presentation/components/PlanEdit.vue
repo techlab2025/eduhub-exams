@@ -211,6 +211,9 @@
 </template>
 
 <style scoped lang="scss">
+  .plan-edit-page {
+    padding-block: 20px;
+  }
   .loader {
     width: 35px;
     height: 35px;
