@@ -178,7 +178,10 @@
           <span>{{ $t('publish') }}</span>
         </button>
         <button
-          v-if="controller.itemData.value?.status != PlanStatusEnum.ACTIVE"
+          v-if="
+            controller.itemData.value?.status &&
+            controller.itemData.value?.status != PlanStatusEnum.ACTIVE
+          "
           type="button"
           class="btn btn-draft"
           :disabled="loading"
