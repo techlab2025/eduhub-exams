@@ -451,6 +451,7 @@
             row-key="id"
             :selectable="true"
             @selection-change="updateSelectedRows"
+            
           >
             <template #cell-student="{ item }">{{ item.student.name }}</template>
             <template #cell-plan="{ item }">{{ item.plan.title }}</template>

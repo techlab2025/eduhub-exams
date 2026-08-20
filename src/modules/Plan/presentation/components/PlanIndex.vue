@@ -558,7 +558,7 @@
       "
     >
       <template #success="{ data }">
-        <AppTable :headers="headers" :items="data as PlanModel[]" show-index>
+        <AppTable :sticky-column="2" :headers="headers" :items="data as PlanModel[]" show-index>
           <template #cell-duration="{ item }"
             >{{ item.duration }} {{ GetDuarationType(item.durationType) }}</template
           >
