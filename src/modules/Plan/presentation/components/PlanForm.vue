@@ -71,7 +71,7 @@
       ? section
       : undefined;
   });
-  const isFeatureEdit = computed(() => Boolean(id) && editSection.value === 'features');
+  // const isFeatureEdit = computed(() => Boolean(id) && editSection.value === 'features');
   const activeTab = ref('basic');
   const planFormRoot = ref<HTMLElement | null>(null);
   const showValidationErrors = ref(false);

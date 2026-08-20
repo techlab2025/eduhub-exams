@@ -393,6 +393,12 @@
   "plan_form_edit_title": "تعديل الخطة",
   "plan_form_create_subtitle": "أضف خطة اشتراك جديدة من البداية.",
   "plan_form_edit_subtitle": "حدّث معلومات خطة الاشتراك.",
+  "unsaved_plan_dialog": {
+    "title": "تغييرات غير محفوظة في الخطة",
+    "description": "ستتم إزالة البيانات التي أدخلتها في نموذج الخطة إذا غادرت هذه الصفحة.",
+    "cancel": "إلغاء",
+    "confirm": "موافق"
+  },
   "edit_price": "تعديل السعر",
   "edit_basic_info": "تعديل المعلومات الأساسية",
   "edit_features": "تعديل الميزات",

@@ -905,6 +905,12 @@
   "plan_form_edit_title": "Edit Plan",
   "plan_form_create_subtitle": "Add a new subscription plan from scratch.",
   "plan_form_edit_subtitle": "Update the subscription plan information.",
+  "unsaved_plan_dialog": {
+    "title": "Unsaved plan changes",
+    "description": "The data entered in this plan form will be removed if you leave this page.",
+    "cancel": "Cancel",
+    "confirm": "OK"
+  },
   "edit_price": "Edit Price",
   "edit_basic_info": "Edit Basic Info",
   "edit_features": "Edit Features",

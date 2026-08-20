@@ -1,11 +1,12 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
+  import { nextTick, onBeforeUnmount, ref } from 'vue';
+  import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
   import type AddPlanParams from '../../core/params/add.plan.params';
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
   import DraftPlanDialog from '../subCopmnents/DraftPlanDialog.vue';
+  import UnsavedPlanChangesDialog from '../subCopmnents/UnsavedPlanChangesDialog.vue';
 
   const controller = PlanController.getInstance();
   const route = useRoute();
@@ -17,6 +18,41 @@
   const loading = ref(false);
   const publishReady = ref(false);
   const draftDialogVisible = ref(false);
+  const hasChanges = ref(false);
+  const initialParamsSnapshot = ref<string | null>(null);
+  const isInitialized = ref(false);
+  const leaveDialogVisible = ref(false);
+  let resolveNavigation: ((allow: boolean) => void) | null = null;
+
+  const getParamsSnapshot = (value: AddPlanParams | null) =>
+    value ? JSON.stringify(value.toMap?.() ?? value) : null;
+
+  const initializeChangeTracking = async () => {
+    if (isInitialized.value) return;
+
+    await nextTick();
+    initialParamsSnapshot.value = getParamsSnapshot(params.value);
+    hasChanges.value = false;
+    isInitialized.value = true;
+  };
+
+  const resolveLeaveRequest = (allowNavigation: boolean) => {
+    leaveDialogVisible.value = false;
+    const resolve = resolveNavigation;
+    resolveNavigation = null;
+    resolve?.(allowNavigation);
+  };
+
+  onBeforeRouteLeave(() => {
+    if (!hasChanges.value) return true;
+
+    leaveDialogVisible.value = true;
+    return new Promise<boolean>((resolve) => {
+      resolveNavigation = resolve;
+    });
+  });
+
+  onBeforeUnmount(() => resolveNavigation?.(false));
   const savePlan = async () => {
     const isValid = await planFormRef.value?.validate?.();
     if (isValid === false) return;
@@ -31,6 +67,7 @@
       params.value.status = PlanStatusEnum.ACTIVE;
       const result = await controller.create(params.value, undefined);
       if (result?.data) {
+        hasChanges.value = false;
         await router.push({ name: 'Plans', query: plansQuery() });
         await controller.fetchList();
       }
@@ -43,6 +80,9 @@
 
   const updateData = (updatedParams: AddPlanParams) => {
     params.value = updatedParams;
+    if (isInitialized.value) {
+      hasChanges.value = getParamsSnapshot(updatedParams) !== initialParamsSnapshot.value;
+    }
   };
 
   const router = useRouter();
@@ -76,6 +116,7 @@
       params.value.status = PlanStatusEnum.DRAFT;
       const result = await controller.create(params.value, undefined);
       if (result?.data) {
+        hasChanges.value = false;
         await controller.fetchList();
       }
     } catch (error) {
@@ -98,6 +139,7 @@
       :loading="loading"
       @update-data="updateData"
       @validity-change="publishReady = $event"
+      @features-loaded="initializeChangeTracking"
     />
 
     <div class="actions">
@@ -124,6 +166,11 @@
     </div>
 
     <DraftPlanDialog v-model="draftDialogVisible" @acknowledge="acknowledgeDraft" />
+    <UnsavedPlanChangesDialog
+      v-model="leaveDialogVisible"
+      @confirm="resolveLeaveRequest(true)"
+      @cancel="resolveLeaveRequest(false)"
+    />
   </div>
 </template>
 

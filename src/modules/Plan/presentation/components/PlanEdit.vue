@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { computed, nextTick, onMounted, ref } from 'vue';
-  import { useRoute, useRouter } from 'vue-router';
+  import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+  import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
   import PlanController from '../controllers/plan.controller';
   import PlanForm from './PlanForm.vue';
   import EditPlanParams from '../../core/params/edit.plan.params';
@@ -9,6 +9,7 @@
   import { PlanStatusEnum } from '../../core/enums/plan.status.enum';
   import DraftPlanDialog from '../subCopmnents/DraftPlanDialog.vue';
   import PlanDeleteWarningDialog from '../subCopmnents/PlanDeleteWarningDialog.vue';
+  import UnsavedPlanChangesDialog from '../subCopmnents/UnsavedPlanChangesDialog.vue';
 
   const controller = PlanController.getInstance();
   const route = useRoute();
@@ -29,6 +30,8 @@
   const isInitialized = ref(false);
   const isPlanLoaded = ref(false);
   const areFeaturesLoaded = ref(false);
+  const leaveDialogVisible = ref(false);
+  let resolveNavigation: ((allow: boolean) => void) | null = null;
   const isDraft = computed(() => controller.itemData.value?.status === PlanStatusEnum.DRAFT);
 
   const getParamsSnapshot = (value: EditPlanParams | null) =>
@@ -57,6 +60,24 @@
     initializeChangeTracking();
   };
 
+  const resolveLeaveRequest = (allowNavigation: boolean) => {
+    leaveDialogVisible.value = false;
+    const resolve = resolveNavigation;
+    resolveNavigation = null;
+    resolve?.(allowNavigation);
+  };
+
+  onBeforeRouteLeave(() => {
+    if (!hasChanges.value) return true;
+
+    leaveDialogVisible.value = true;
+    return new Promise<boolean>((resolve) => {
+      resolveNavigation = resolve;
+    });
+  });
+
+  onBeforeUnmount(() => resolveNavigation?.(false));
+
   const savePlan = async () => {
     const isValid = await planFormRef.value?.validate?.();
     if (isValid === false) return;
@@ -72,6 +93,7 @@
       const result = await controller.update(params.value, undefined, undefined, false);
       if (result?.hasError) return;
 
+      hasChanges.value = false;
       await returnToPlanIndex();
     } catch (error) {
       console.error('Error updating plan:', error);
@@ -102,6 +124,7 @@
       const result = await controller.update(params.value, undefined, undefined, false);
       if (result?.hasError) return;
 
+      hasChanges.value = false;
       await returnToPlanIndex();
     } catch (error) {
       console.error('Error saving plan draft:', error);
@@ -162,6 +185,11 @@
 
     <DraftPlanDialog v-model="draftDialogVisible" @acknowledge="acknowledgeDraft" />
     <PlanDeleteWarningDialog v-model="warningDialogVisible" :action-type="warningActionType" />
+    <UnsavedPlanChangesDialog
+      v-model="leaveDialogVisible"
+      @confirm="resolveLeaveRequest(true)"
+      @cancel="resolveLeaveRequest(false)"
+    />
   </div>
 </template>
 

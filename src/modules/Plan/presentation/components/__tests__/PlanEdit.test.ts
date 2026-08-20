@@ -5,20 +5,27 @@ import EditPlanParams from '../../../core/params/edit.plan.params';
 import TranslationParams from '@/modules/about/core/params/translation.params';
 import { PlanStatusEnum } from '../../../core/enums/plan.status.enum';
 
-const { itemData, fetchOneMock, updateMock, fetchListMock, routerPushMock, routeMock } = vi.hoisted(
-  () => ({
-    itemData: { value: { status: 4 } },
-    fetchOneMock: vi.fn(),
-    updateMock: vi.fn(),
-    fetchListMock: vi.fn(),
-    routerPushMock: vi.fn(),
-    routeMock: {
-      params: { id: '8' },
-      fullPath: '/plans/edit/8?section=features&listMode=3&page=2',
-      query: { section: 'features', listMode: '3', page: '2' },
-    },
-  }),
-);
+const {
+  itemData,
+  fetchOneMock,
+  updateMock,
+  fetchListMock,
+  routerPushMock,
+  routeLeaveRegistrationMock,
+  routeMock,
+} = vi.hoisted(() => ({
+  itemData: { value: { status: 4 } },
+  fetchOneMock: vi.fn(),
+  updateMock: vi.fn(),
+  fetchListMock: vi.fn(),
+  routerPushMock: vi.fn(),
+  routeLeaveRegistrationMock: vi.fn(),
+  routeMock: {
+    params: { id: '8' },
+    fullPath: '/plans/edit/8?section=features&listMode=3&page=2',
+    query: { section: 'features', listMode: '3', page: '2' },
+  },
+}));
 
 vi.mock('../../controllers/plan.controller', () => ({
   default: {
@@ -32,6 +39,7 @@ vi.mock('../../controllers/plan.controller', () => ({
 }));
 
 vi.mock('vue-router', () => ({
+  onBeforeRouteLeave: routeLeaveRegistrationMock,
   useRoute: () => routeMock,
   useRouter: () => ({ push: routerPushMock }),
 }));
@@ -56,6 +64,17 @@ const global = {
       props: ['modelValue', 'actionType'],
       emits: ['update:modelValue'],
       template: '<div class="warning-dialog-stub" />',
+    },
+    UnsavedPlanChangesDialog: {
+      name: 'UnsavedPlanChangesDialog',
+      props: ['modelValue'],
+      emits: ['update:modelValue', 'confirm', 'cancel'],
+      template: `
+        <div v-if="modelValue" class="unsaved-plan-dialog-stub">
+          <button class="stay" @click="$emit('cancel')">Cancel</button>
+          <button class="leave" @click="$emit('confirm')">OK</button>
+        </div>
+      `,
     },
     RouterLink: {
       props: ['to'],
@@ -227,5 +246,30 @@ describe('PlanEdit', () => {
     expect(warningDialog.props('modelValue')).toBe(true);
     expect(warningDialog.props('actionType')).toBe('draft');
     expect(wrapper.getComponent({ name: 'DraftPlanDialog' }).props('modelValue')).toBe(false);
+  });
+
+  it('asks before leaving after plan data changes', async () => {
+    const wrapper = mount(PlanEdit, { global });
+    await flushPromises();
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', params());
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+
+    const changedParams = params();
+    changedParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', changedParams);
+    await flushPromises();
+
+    const guard = routeLeaveRegistrationMock.mock.calls.at(-1)?.[0];
+    const stayResult = guard();
+    await wrapper.vm.$nextTick();
+    await wrapper.get('.unsaved-plan-dialog-stub .stay').trigger('click');
+    expect(await stayResult).toBe(false);
+
+    const leaveResult = guard();
+    await wrapper.vm.$nextTick();
+    await wrapper.get('.unsaved-plan-dialog-stub .leave').trigger('click');
+    expect(await leaveResult).toBe(true);
   });
 });
