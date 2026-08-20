@@ -56,7 +56,7 @@
   const warningActionType = ref<'delete' | 'deactivate' | 'archive'>('delete');
   const selectedPlanId = ref<number | null>(null);
   const statusLoading = ref(false);
-  const listMode = ref<PlanStatusEnum | null>(null);
+  const listMode = ref<PlanStatusEnum | null>(PlanStatusEnum.ACTIVE);
   const dateValue = (date: Date | null) => date?.toISOString().slice(0, 10);
   const statusOptions = computed(() => [
     { id: Number(PlanStatusEnum.ACTIVE), title: t('active') },
@@ -104,7 +104,9 @@
     ...(toPrice.value === undefined ? {} : { toPrice: toPrice.value }),
     ...(hasTrial.value === null ? {} : { hasTrial: String(hasTrial.value) }),
     ...(status.value ? { status: status.value.id } : {}),
-    ...(listMode.value === null ? {} : { listMode: listMode.value }),
+    ...(listMode.value === null || listMode.value === PlanStatusEnum.ACTIVE
+      ? {}
+      : { listMode: listMode.value }),
     ...(durationType.value ? { duration: durationType.value.id } : {}),
     ...(fromDate.value ? { fromDate: dateValue(fromDate.value) } : {}),
     ...(toDate.value ? { toDate: dateValue(toDate.value) } : {}),
@@ -132,7 +134,7 @@
     const mode = queryNumber('listMode');
     listMode.value = Object.values(PlanStatusEnum).includes(mode as PlanStatusEnum)
       ? (mode as PlanStatusEnum)
-      : null;
+      : PlanStatusEnum.ACTIVE;
     const duration = queryNumber('duration');
     durationType.value = DurationTypeOptions.value.find((option) => option.id === duration);
     fromDate.value = queryDate('fromDate');
@@ -323,7 +325,7 @@
     toDate.value = null;
     status.value = null;
     lastUpdated.value = null;
-    listMode.value = null;
+    listMode.value = PlanStatusEnum.ACTIVE;
     await applyFilters();
   };
   const setListMode = async (mode: PlanStatusEnum) => {

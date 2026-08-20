@@ -318,14 +318,17 @@ describe('PlanIndex', () => {
     expect(modeButtons[0].attributes('aria-pressed')).toBe('true');
   });
 
-  it('fetches the initial list without optional filters', () => {
-    mountComponent();
+  it('defaults to the active plan list', () => {
+    const wrapper = mountComponent();
+    const activeButton = wrapper.findAll('.plan-list-toggle button')[0];
 
     expect(fetchListMock.mock.calls[0]?.[0].toMap()).toEqual({
       with_pagination: 1,
       page: 1,
       per_page: 10,
+      status: PlanStatusEnum.ACTIVE,
     });
+    expect(activeButton.attributes('aria-pressed')).toBe('true');
   });
 
   it('restores filters from the query and carries them into edit links', async () => {
