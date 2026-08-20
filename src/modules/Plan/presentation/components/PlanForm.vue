@@ -212,7 +212,7 @@
     const input = event.target as HTMLInputElement;
     if (!input || input.value === '') return;
 
-    let rawVal = input.value;
+    const rawVal = input.value;
 
     if (
       rawVal.includes('-') ||
