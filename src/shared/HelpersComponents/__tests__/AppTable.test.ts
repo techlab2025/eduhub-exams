@@ -214,4 +214,21 @@ describe('AppTable', () => {
     const wrapper = createWrapper();
     expect(wrapper.find('.table-responsive').exists()).toBe(true);
   });
+
+  it('marks the requested one-based data column as sticky', () => {
+    const wrapper = createWrapper({ selectable: true, showIndex: true, stickyColumn: 2 });
+    const headerCells = wrapper.findAll('thead .sticky-column');
+    const bodyCells = wrapper.findAll('tbody tr:first-child .sticky-column');
+
+    expect(headerCells).toHaveLength(1);
+    expect(headerCells[0].text()).toBe('Email');
+    expect(bodyCells).toHaveLength(1);
+    expect(bodyCells[0].text()).toBe('john@test.com');
+  });
+
+  it('does not make a column sticky when stickyColumn is omitted', () => {
+    const wrapper = createWrapper();
+
+    expect(wrapper.find('.sticky-column').exists()).toBe(false);
+  });
 });

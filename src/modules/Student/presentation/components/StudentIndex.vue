@@ -459,6 +459,7 @@
             :items="(data || []) as StudentModel[]"
             row-key="id"
             selectable
+            :stickyColumn="2"
           >
             <template #cell-name="{ item }">
               <div class="student-name-cell">

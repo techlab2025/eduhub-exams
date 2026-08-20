@@ -21,6 +21,8 @@
     hoverable?: boolean;
     rowDisabled?: (item: T, index: number) => boolean;
     rowSelectable?: (item: T, index: number) => boolean;
+    /** One-based index in `headers` of the column pinned while scrolling. */
+    stickyColumn?: number;
   }>();
 
   const emit = defineEmits<{
@@ -108,6 +110,10 @@
     return val !== undefined ? val : index;
   }
 
+  function isStickyColumn(headerIndex: number): boolean {
+    return props.stickyColumn === headerIndex + 1;
+  }
+
   // when double click on any filed copy to clipboard
   const copyToClipboard = async (value: unknown) => {
     const text = String(value ?? '').trim();
@@ -143,7 +149,7 @@
 
             <!-- Data columns -->
             <th
-              v-for="header in headers"
+              v-for="(header, headerIndex) in headers"
               :key="header.key"
               :style="{
                 width: header.width,
@@ -152,6 +158,7 @@
               :class="{
                 sortable: header.sortable,
                 active: sortKey === header.key,
+                'sticky-column': isStickyColumn(headerIndex),
               }"
               @click="handleSort(header)"
             >
@@ -216,10 +223,11 @@
 
             <!-- Data cells -->
             <td
-              v-for="header in headers"
+              v-for="(header, headerIndex) in headers"
               :key="header.key"
               :style="{ textAlign: header.align || 'left' }"
               class="td-data"
+              :class="{ 'sticky-column': isStickyColumn(headerIndex) }"
               @dblclick.stop="copyToClipboard((item as any)?.[header.key])"
             >
               <!--
@@ -252,5 +260,20 @@
     opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none;
+  }
+
+  .app-table thead tr th.sticky-column,
+  .app-table tbody tr td.td-data.sticky-column {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--bg-main);
+    border-bottom: 1px solid #4b4b4b24;
+    /* box-shadow: 4px 0 8px var(--border-weak); */
+  }
+
+  .app-table thead tr th.sticky-column {
+    z-index: 12;
+    background: var(--color-light-gray);
   }
 </style>
