@@ -151,14 +151,21 @@ describe('UpdatedCustomInputSelect', () => {
     expect(wrapper.findComponent(SelectStub).props('modelValue')).toEqual(selected);
   });
 
-  it('wraps long dropdown option labels without truncating their values', () => {
+  it('wraps long dropdown option labels by default without truncating their values', () => {
     const option = makeTitleInterface(1, 'A'.repeat(100));
-    const wrapper = createWrapper({ staticOptions: [option], wrapOptionLabels: true });
+    const wrapper = createWrapper({ staticOptions: [option] });
 
     expect(wrapper.find('.option-label').text()).toBe('A'.repeat(100));
     expect(wrapper.find('.option-label').classes()).toContain('option-label--wrapped');
     expect(wrapper.find('.option-label').attributes('title')).toBe('A'.repeat(100));
     expect(wrapper.findComponent(SelectStub).props('options')).toEqual([option]);
+  });
+
+  it('allows dropdown option wrapping to be disabled', () => {
+    const option = makeTitleInterface(1, 'A'.repeat(100));
+    const wrapper = createWrapper({ staticOptions: [option], wrapOptionLabels: false });
+
+    expect(wrapper.find('.option-label').classes()).not.toContain('option-label--wrapped');
   });
 
   it('renders the placeholder when no value is selected', () => {

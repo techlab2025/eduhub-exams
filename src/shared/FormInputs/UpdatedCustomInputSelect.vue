@@ -97,7 +97,7 @@
 
     searchParam: 'word',
 
-    wrapOptionLabels: false,
+    wrapOptionLabels: true,
   });
 
   const {
@@ -537,15 +537,28 @@
     }
   }
 
-  .custom-select-overlay {
+  :global(.custom-select-overlay) {
     max-width: min(90vw, 500px) !important;
+    overflow-x: hidden;
+  }
 
-    .p-select-option-label,
-    .p-multiselect-option-label {
-      white-space: normal;
-      overflow-wrap: anywhere;
-      line-height: 1.4;
-    }
+  :global(.custom-select-overlay .p-select-list),
+  :global(.custom-select-overlay .p-multiselect-list),
+  :global(.custom-select-overlay .p-select-option),
+  :global(.custom-select-overlay .p-multiselect-option),
+  :global(.custom-select-overlay .p-select-option-label),
+  :global(.custom-select-overlay .p-multiselect-option-label) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  :global(.custom-select-overlay .option-label--wrapped) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
   }
 
   .color-red {
