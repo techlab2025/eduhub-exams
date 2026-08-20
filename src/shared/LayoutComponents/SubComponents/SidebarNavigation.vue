@@ -187,11 +187,11 @@
           name: 'terms & conditions',
           icon: SidebarTerms,
         },
-        // {
-        //   link: '/deleted-accounts',
-        //   name: 'add logout reasons',
-        //   icon: SidebarTerms,
-        // },
+        {
+          link: '/deleted-accounts',
+          name: 'add logout reasons',
+          icon: SidebarTerms,
+        },
       ],
     },
   ];
