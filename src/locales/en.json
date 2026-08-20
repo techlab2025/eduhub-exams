@@ -1165,5 +1165,7 @@
   "delete_plan_title": "Permanently delete this plan?",
   "delete_plan_message": "This plan has no active subscribers, so it can be safely deleted. Once deleted, its entitlement settings will be removed permanently.",
   "highlight_badge_confirm_delete": "Permanently delete this highlight badge?",
-  "subscription_bulk_delete_blocked_message_description": "You cannot delete students until their subscription ends."
+  "subscription_bulk_delete_blocked_message_description": "You cannot delete students until their subscription ends.",
+  "no_plans_title": "No plans",
+  "no_plans_description": "No plans found"
 }

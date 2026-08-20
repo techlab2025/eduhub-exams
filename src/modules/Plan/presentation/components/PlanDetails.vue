@@ -29,6 +29,8 @@
   import NUmberOfSUbjectsIcon from '@/shared/icons/Plan/NUmberOfSUbjectsIcon.vue';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import PLanDetailsSkelaton from '../subCopmnents/PLanDetailsSkelaton.vue';
+  import ArrowIcons from '@/shared/icons/ArrowIcons.vue';
+  import Arrow from '@/shared/icons/Question/Arrow.vue';
 
   const route = useRoute();
   const router = useRouter();
@@ -254,6 +256,10 @@
   };
 
   onMounted(refreshPlan);
+
+  const back = () => {
+    router.push({ name: 'Plans' });
+  };
 </script>
 
 <template>
@@ -267,6 +273,10 @@
   >
     <template #success>
       <main v-if="plan" class="plan-details">
+        <button @click="back" class="btn btn-primary">
+          <Arrow :size="16" />
+          {{ $t('back') }}
+        </button>
         <section class="plan-summary">
           <div class="summary-heading">
             <div class="title-line">
@@ -436,6 +446,10 @@
 </template>
 
 <style scoped lang="scss">
+  .btn-primary svg {
+    transform: rotate(180deg);
+    fill: white;
+  }
   .plan-details {
     display: grid;
     gap: var(--xl-size-base);

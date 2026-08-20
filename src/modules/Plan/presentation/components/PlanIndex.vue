@@ -32,6 +32,7 @@
   import PlanViewIcon from '@/shared/icons/Plan/PlanViewIcon.vue';
   import PlanPriceIcon from '@/shared/icons/Plan/PlanPriceIcon.vue';
   import IconCheck from '@/shared/icons/IconCheck.vue';
+import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -605,6 +606,12 @@
           @change-page="changePage"
           @count-per-page="changePerPage"
         />
+      </template>
+
+      <template #empty>
+        <NoItemContainer 
+        :title="$t('no_plans_title')" 
+        :description="$t('no_plans_description')" />
       </template>
     </DataStatusBuilder>
     <DeactivatePlanDialog
