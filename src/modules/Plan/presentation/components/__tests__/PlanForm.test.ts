@@ -183,6 +183,25 @@ describe('PlanForm', () => {
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'center' });
   });
 
+  it('requires a title for drafts without requiring the rest of the form', async () => {
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    const form = wrapper.vm as unknown as { validateTitle: () => Promise<boolean> };
+
+    expect(await form.validateTitle()).toBe(false);
+    expect(wrapper.findAll('[data-plan-validation-error]')).toHaveLength(1);
+    expect(wrapper.get('.basic-info-fields [data-plan-validation-error]').text()).toBe(
+      'plan_title_required',
+    );
+
+    wrapper
+      .findAllComponents({ name: 'MultiLangInput' })[0]
+      ?.vm.$emit('update:modelValue', { en: 'Draft plan' });
+    await wrapper.vm.$nextTick();
+
+    expect(await form.validateTitle()).toBe(true);
+    expect(wrapper.findAll('[data-plan-validation-error]')).toHaveLength(0);
+  });
+
   it('accepts one language for both title and description', async () => {
     const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
     const translationInputs = wrapper.findAllComponents({ name: 'MultiLangInput' });
@@ -403,6 +422,22 @@ describe('PlanForm', () => {
       });
     },
   );
+
+  it('resets trial days to zero when the value is empty or non-numeric', async () => {
+    routeMock.query = { section: 'pricing' };
+    const wrapper = shallowMount(PlanForm, { global: { plugins: [i18n] } });
+    wrapper.findComponent({ name: 'ToggleSwitch' }).vm.$emit('update:modelValue', true);
+    await wrapper.vm.$nextTick();
+    const trialInput = wrapper.get('.trial-section input');
+
+    await trialInput.setValue(5);
+    await trialInput.setValue('not-a-number');
+    await wrapper.vm.$nextTick();
+
+    const params = wrapper.emitted('updateData')?.at(-1)?.[0] as { trialDays: number };
+    expect(params.trialDays).toBe(0);
+    expect((trialInput.element as HTMLInputElement).value).toBe('0');
+  });
 
   it.each([
     ['basic', '#plan-basic'],

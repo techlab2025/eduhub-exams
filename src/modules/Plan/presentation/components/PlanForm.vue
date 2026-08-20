@@ -75,6 +75,7 @@
   const activeTab = ref('basic');
   const planFormRoot = ref<HTMLElement | null>(null);
   const showValidationErrors = ref(false);
+  const showTitleValidationError = ref(false);
   const basicSection = ref<HTMLElement | null>(null);
   const pricingSection = ref<HTMLElement | null>(null);
   const featuresSection = ref<HTMLElement | null>(null);
@@ -210,7 +211,11 @@
     allowDecimal = false,
   ) => {
     const input = event.target as HTMLInputElement;
-    if (!input || input.value === '') return;
+    if (!input) return;
+    if (input.value === '') {
+      updateCallback?.(undefined);
+      return;
+    }
 
     const rawVal = input.value;
 
@@ -328,7 +333,26 @@
     return false;
   };
 
-  defineExpose({ validate });
+  const validateTitle = async () => {
+    if (hasTranslation(title.value)) {
+      showTitleValidationError.value = false;
+      return true;
+    }
+
+    showTitleValidationError.value = true;
+    await nextTick();
+    const titleError = planFormRoot.value?.querySelector<HTMLElement>(
+      '.basic-info-fields [data-plan-validation-error]',
+    );
+    titleError?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+    titleError
+      ?.closest<HTMLElement>('.validated-field')
+      ?.querySelector<HTMLElement>('input, textarea')
+      ?.focus();
+    return false;
+  };
+
+  defineExpose({ validate, validateTitle });
 
   const scrollToSection = (section: 'basic' | 'pricing' | 'features') => {
     activeTab.value = section;
@@ -585,7 +609,7 @@
               @update:model-value="title = $event"
             />
             <p
-              v-if="showValidationErrors && validationErrors.title"
+              v-if="(showValidationErrors || showTitleValidationError) && validationErrors.title"
               data-plan-validation-error
               class="field-error"
             >

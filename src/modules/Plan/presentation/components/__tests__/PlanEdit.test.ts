@@ -14,6 +14,7 @@ const {
   routerPushMock,
   routeLeaveRegistrationMock,
   validateMock,
+  validateTitleMock,
   routeMock,
 } = vi.hoisted(() => ({
   itemData: { value: { status: 4 } },
@@ -23,6 +24,7 @@ const {
   routerPushMock: vi.fn(),
   routeLeaveRegistrationMock: vi.fn(),
   validateMock: vi.fn(),
+  validateTitleMock: vi.fn(),
   routeMock: {
     params: { id: '8' },
     fullPath: '/plans/edit/8?section=features&listMode=3&page=2',
@@ -53,7 +55,7 @@ const global = {
     PlanForm: {
       name: 'PlanForm',
       emits: ['updateData', 'validityChange', 'featuresLoaded'],
-      methods: { validate: validateMock },
+      methods: { validate: validateMock, validateTitle: validateTitleMock },
       template: '<div class="plan-form-stub" />',
     },
     DraftPlanDialog: {
@@ -105,6 +107,7 @@ describe('PlanEdit', () => {
     itemData.value = { status: PlanStatusEnum.DRAFT };
     fetchOneMock.mockResolvedValue(undefined);
     validateMock.mockResolvedValue(true);
+    validateTitleMock.mockResolvedValue(true);
     updateMock.mockResolvedValue(new DataSuccess({ data: {} }));
     fetchListMock.mockResolvedValue(undefined);
   });
@@ -202,6 +205,28 @@ describe('PlanEdit', () => {
       query: { listMode: '3', page: '2' },
     });
     expect(fetchListMock).not.toHaveBeenCalled();
+  });
+
+  it('does not open the edit draft dialog when the title is empty', async () => {
+    validateTitleMock.mockResolvedValueOnce(false);
+    const wrapper = mount(PlanEdit, { global });
+    await flushPromises();
+    const form = wrapper.getComponent({ name: 'PlanForm' });
+    form.vm.$emit('updateData', params());
+    form.vm.$emit('featuresLoaded');
+    await flushPromises();
+
+    const changedParams = params();
+    changedParams.status = PlanStatusEnum.ACTIVE;
+    form.vm.$emit('updateData', changedParams);
+    await flushPromises();
+
+    await wrapper.get('.btn-draft').trigger('click');
+    await flushPromises();
+
+    expect(validateTitleMock).toHaveBeenCalledOnce();
+    expect(wrapper.getComponent({ name: 'DraftPlanDialog' }).props('modelValue')).toBe(false);
+    expect(updateMock).not.toHaveBeenCalled();
   });
 
   it('uses the same change-triggered actions for a non-draft plan', async () => {

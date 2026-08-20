@@ -20,7 +20,10 @@
     Object.fromEntries(Object.entries(route.query).filter(([key]) => key !== 'section'));
   const returnToPlanIndex = () => router.push({ name: 'Plans', query: plansQuery() });
   const params = ref<EditPlanParams | null>(null);
-  const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
+  const planFormRef = ref<{
+    validate?: () => Promise<boolean>;
+    validateTitle?: () => Promise<boolean>;
+  } | null>(null);
   const loading = ref(false);
   const publishReady = ref(false);
   const draftDialogVisible = ref(false);
@@ -104,7 +107,10 @@
     }
   };
 
-  const saveDraft = () => {
+  const saveDraft = async () => {
+    const hasValidTitle = await planFormRef.value?.validateTitle?.();
+    if (hasValidTitle === false) return;
+
     if ((controller.itemData.value?.subscribers ?? 0) > 0) {
       warningActionType.value = 'draft';
       warningDialogVisible.value = true;
@@ -171,7 +177,13 @@
         >
           <span>{{ $t('publish') }}</span>
         </button>
-        <button type="button" class="btn btn-draft" :disabled="loading" @click.prevent="saveDraft">
+        <button
+          v-if="controller.itemData.value?.status != PlanStatusEnum.ACTIVE"
+          type="button"
+          class="btn btn-draft"
+          :disabled="loading"
+          @click.prevent="saveDraft"
+        >
           {{ $t('save_as_draft') }}
         </button>
       </template>

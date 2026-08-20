@@ -15,7 +15,10 @@
   const plansQuery = () => ({ ...route.query });
 
   const params = ref<AddPlanParams | null>(null);
-  const planFormRef = ref<{ validate?: () => Promise<boolean> } | null>(null);
+  const planFormRef = ref<{
+    validate?: () => Promise<boolean>;
+    validateTitle?: () => Promise<boolean>;
+  } | null>(null);
   const loading = ref(false);
   const publishReady = ref(false);
   const draftDialogVisible = ref(false);
@@ -89,6 +92,9 @@
 
   const router = useRouter();
   const saveDraft = async () => {
+    const hasValidTitle = await planFormRef.value?.validateTitle?.();
+    if (hasValidTitle === false) return;
+
     // loading.value = true;
     // try {
     //   if (!params.value) {

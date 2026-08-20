@@ -10,6 +10,7 @@ const {
   routerPushMock,
   routeLeaveRegistrationMock,
   validateMock,
+  validateTitleMock,
   routeMock,
 } = vi.hoisted(() => ({
   createMock: vi.fn(),
@@ -17,6 +18,7 @@ const {
   routerPushMock: vi.fn(),
   routeLeaveRegistrationMock: vi.fn(),
   validateMock: vi.fn(),
+  validateTitleMock: vi.fn(),
   routeMock: {
     fullPath: '/plans/add?status=3&page=2',
     query: { status: '3', page: '2' },
@@ -40,7 +42,7 @@ const global = {
     PlanForm: {
       name: 'PlanForm',
       emits: ['updateData', 'validityChange', 'featuresLoaded'],
-      methods: { validate: validateMock },
+      methods: { validate: validateMock, validateTitle: validateTitleMock },
       template: '<div class="plan-form-stub" />',
     },
     DraftPlanDialog: {
@@ -70,6 +72,7 @@ describe('PlanAdd', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     validateMock.mockResolvedValue(true);
+    validateTitleMock.mockResolvedValue(true);
     createMock.mockResolvedValue(new DataSuccess({ data: {} }));
     fetchListMock.mockResolvedValue(undefined);
   });
@@ -124,6 +127,19 @@ describe('PlanAdd', () => {
       name: 'Plans',
       query: { status: '3', page: '2' },
     });
+  });
+
+  it('does not open the draft dialog when the title is empty', async () => {
+    validateTitleMock.mockResolvedValueOnce(false);
+    const wrapper = mount(PlanAdd, { global });
+    wrapper.getComponent({ name: 'PlanForm' }).vm.$emit('updateData', params());
+
+    await wrapper.get('.btn-draft').trigger('click');
+    await flushPromises();
+
+    expect(validateTitleMock).toHaveBeenCalledOnce();
+    expect(wrapper.getComponent({ name: 'DraftPlanDialog' }).props('modelValue')).toBe(false);
+    expect(createMock).not.toHaveBeenCalled();
   });
 
   it('asks before leaving after form data changes', async () => {
