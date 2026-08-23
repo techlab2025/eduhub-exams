@@ -1,53 +1,12 @@
 import type TitleInterface from '@/base/Data/Models/titleInterface';
 import { StudentStatusEnum, type StudentTitleModel } from './student.model';
-
-export interface StudentEducationModel extends StudentTitleModel {
-  children: StudentEducationModel[];
-}
-
-export interface StudentRegistrationModel {
-  registerDate: string;
-  authenticationMethod: string;
-  email: string;
-  emailVerified: boolean;
-  phoneVerified: boolean;
-}
-
-export interface StudentApplicationModel {
-  registrationMethod: string;
-  deviceUsed: string;
-  operationSystem: string;
-  appVersion: string;
-  currentStatus: string;
-  lastSeen: string;
-}
-
-export interface StudentPlanModel extends StudentTitleModel {
-  planStatus: StudentStatusEnum;
-  totalPaid: number;
-  paymentMethod: string;
-  subscribeDate: string;
-  expireDate: string;
-}
-
-export interface StudentPerformanceModel {
-  totalPlacementTests: number;
-  placementTestsThisMonth: number;
-  totalPracticesPlan: number;
-  totalPracticesPlanThisMonth: number;
-}
-
-export interface StudentResultModel extends StudentTitleModel {
-  correctCount: number;
-  wrongCount: number;
-}
-
-export interface StudentNoteModel {
-  id: number;
-  note: string;
-  createdAt: string;
-  createdBy: { id: number; name: string } | null;
-}
+import StudentApplicationModel from './student.application.model';
+import { StudentEducationModel } from './student.education.model';
+import StudentNoteModel from './student.note.model';
+import StudentPerformanceModel from './student.performance.model';
+import StudentPlanModel from './student.plan.model';
+import StudentRegistrationModel from './student.registration.model';
+import StudentResultModel from './student.result.model';
 
 const objectValue = (value: unknown): Record<string, unknown> =>
   value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
@@ -112,8 +71,58 @@ export default class ShowStudentModel {
   public readonly notes!: StudentNoteModel[];
   public readonly subjects!: TitleInterface<string>[];
 
-  private constructor(values: ShowStudentModel) {
-    Object.assign(this, values);
+  private constructor(data: {
+    id: number;
+    name: string;
+    image: string;
+    serial: string;
+    status: StudentStatusEnum;
+    points: number;
+    rank: string;
+    phone: string;
+    educationType: StudentEducationModel | null;
+    educationStage: StudentTitleModel | null;
+    grade: StudentTitleModel | null;
+    parentName: string;
+    parentPhone: string;
+    reason: string;
+    blockedBy: { id: number; name: string } | null;
+    blockDate: string;
+    registration: StudentRegistrationModel;
+    applicationInformation: StudentApplicationModel;
+    plan: StudentPlanModel | null;
+    performance: StudentPerformanceModel;
+    placementTests: StudentResultModel[];
+    practicesPlan: StudentResultModel[];
+    studentSchedules: unknown[];
+    notes: StudentNoteModel[];
+    subjects: TitleInterface<string>[];
+  }) {
+    this.id = data.id;
+    this.name = data.name;
+    this.image = data.image;
+    this.serial = data.serial;
+    this.status = data.status;
+    this.points = data.points;
+    this.rank = data.rank;
+    this.phone = data.phone;
+    this.educationType = data.educationType;
+    this.educationStage = data.educationStage;
+    this.grade = data.grade;
+    this.parentName = data.parentName;
+    this.parentPhone = data.parentPhone;
+    this.reason = data.reason;
+    this.blockedBy = data.blockedBy;
+    this.blockDate = data.blockDate;
+    this.registration = data.registration;
+    this.applicationInformation = data.applicationInformation;
+    this.plan = data.plan;
+    this.performance = data.performance;
+    this.placementTests = data.placementTests;
+    this.practicesPlan = data.practicesPlan;
+    this.studentSchedules = data.studentSchedules;
+    this.notes = data.notes;
+    this.subjects = data.subjects;
     Object.freeze(this);
   }
 
@@ -123,7 +132,7 @@ export default class ShowStudentModel {
     const planJson = objectValue(json.plan);
     const performance = objectValue(json.performance);
     const blockedBy = objectValue(json.blocked_by);
-    const planTitle = titleValue(json.plan);
+    // const planTitle = titleValue(json.plan);
 
     return new ShowStudentModel({
       id: Number(json.id ?? json.student_id ?? 0),
@@ -134,7 +143,7 @@ export default class ShowStudentModel {
       points: Number(json.points ?? 0),
       rank: String(json.rank ?? ''),
       phone: String(json.phone ?? ''),
-      educationType: educationValue(json.education_type),
+      educationType: StudentEducationModel.fromJson(json.education_type ?? {}),
       educationStage: titleValue(json.education_stage),
       grade: titleValue(json.grade),
       parentName: String(json.parent_name ?? ''),
@@ -145,61 +154,25 @@ export default class ShowStudentModel {
           ? { id: Number(blockedBy.id ?? 0), name: String(blockedBy.name ?? '') }
           : null,
       blockDate: String(json.block_date ?? ''),
-      registration: {
-        registerDate: String(registration.register_date ?? ''),
-        authenticationMethod: String(registration.authentication_method ?? ''),
-        email: String(registration.email ?? ''),
-        emailVerified: Boolean(registration.email_verified),
-        phoneVerified: Boolean(registration.phone_verified),
-      },
-      applicationInformation: {
-        registrationMethod: String(application.registration_method ?? ''),
-        deviceUsed: String(application.device_used ?? ''),
-        operationSystem: String(application.operation_system ?? ''),
-        appVersion: String(application.app_version ?? ''),
-        currentStatus: String(application.current_status ?? ''),
-        lastSeen: String(application.last_seen ?? ''),
-      },
-      plan:
-        planTitle && Object.keys(planJson).length > 0
-          ? {
-              ...planTitle,
-              planStatus: String(
-                planJson.plan_status ?? StudentStatusEnum.ACTIVE,
-              ) as StudentStatusEnum,
-              totalPaid: Number(planJson.total_paid ?? 0),
-              paymentMethod: String(planJson.payment_method ?? ''),
-              subscribeDate: String(planJson.subscribe_date ?? ''),
-              expireDate: String(planJson.expire_date ?? ''),
-            }
-          : null,
-      performance: {
-        totalPlacementTests: Number(performance.total_placement_tests ?? 0),
-        placementTestsThisMonth: Number(performance.placement_tests_this_month ?? 0),
-        totalPracticesPlan: Number(performance.total_practices_plan ?? 0),
-        totalPracticesPlanThisMonth: Number(performance.total_practices_plan_this_month ?? 0),
-      },
-      placementTests: resultList(json.placement_tests),
-      practicesPlan: resultList(json.practices_plan),
+      registration: StudentRegistrationModel.fromJson(registration),
+      applicationInformation: StudentApplicationModel.fromJson(application),
+      plan: StudentPlanModel.fromJson(planJson),
+      performance: StudentPerformanceModel.fromJson(performance),
+      // placementTests: resultList(json.placement_tests),
+      placementTests: Array.isArray(json.placement_tests)
+        ? json.placement_tests.map((item) => StudentResultModel.fromJson(item))
+        : [],
+      // practicesPlan: resultList(json.practices_plan),
+      practicesPlan: Array.isArray(json.practices_plan)
+        ? json.practices_plan.map((item) => StudentResultModel.fromJson(item))
+        : [],
       studentSchedules: Array.isArray(json.student_schedules)
         ? json.student_schedules
         : Array.isArray(json['Student schedules'])
           ? json['Student schedules']
           : [],
       notes: Array.isArray(json.notes)
-        ? json.notes.map((item) => {
-            const note = objectValue(item);
-            const createdBy = objectValue(note.created_by);
-            return {
-              id: Number(note.id ?? 0),
-              note: String(note.note ?? ''),
-              createdAt: String(note.created_at ?? ''),
-              createdBy:
-                Object.keys(createdBy).length > 0
-                  ? { id: Number(createdBy.id ?? 0), name: String(createdBy.name ?? '') }
-                  : null,
-            };
-          })
+        ? json.notes.map((item) => StudentNoteModel.fromJson(item))
         : [],
       subjects: Array.isArray(json.subjects)
         ? json.subjects.map((item) => {
@@ -222,56 +195,26 @@ export default class ShowStudentModel {
     points: 1200,
     rank: 'Golden Rank',
     phone: '+2010203040',
-    education_type: {
-      id: 1,
-      title: 'Basic Education',
-      children: [{ id: 2, title: 'Primary', children: [] }],
-    },
+    education_type: StudentEducationModel.example,
     education_stage: { id: 2, title: 'Primary' },
     grade: { id: 3, title: 'First' },
     parent_name: 'Hawam Ali',
     parent_phone: '+20 100 234 5678',
-    registration: {
-      register_date: '09 May 2022, 10:30 AM',
-      authentication_method: 'Phone Number',
-      email: '',
-      email_verified: false,
-      phone_verified: true,
-    },
-    application_information: {
-      registration_method: 'Mobile App',
-      device_used: 'iPhone 13',
-      operation_system: 'iOS 18',
-      app_version: '2.4.1',
-      current_status: 'Offline',
-      last_seen: 'Today, 09:15 AM',
-    },
-    plan: {
-      id: 1,
-      title: 'Premium',
-      plan_status: StudentStatusEnum.ACTIVE,
-      total_paid: 1000,
-      payment_method: 'Card',
-      subscribe_date: '09 May 2022',
-      expire_date: '09 May 2023',
-    },
-    performance: {
-      total_placement_tests: 20,
-      placement_tests_this_month: 8,
-      total_practices_plan: 20,
-      total_practices_plan_this_month: 8,
-    },
-    placement_tests: [{ id: 1, title: 'Arabic', correct_count: 240, wrong_count: 60 }],
-    practices_plan: [{ id: 1, title: 'Arabic', correct_count: 240, wrong_count: 60 }],
+    registration: StudentRegistrationModel.example,
+    application_information: StudentApplicationModel.example,
+    plan: StudentPlanModel.example,
+    performance: StudentPerformanceModel.example,
+    placement_tests: [StudentResultModel.example, StudentResultModel.example],
+    practices_plan: [StudentResultModel.example, StudentResultModel.example],
     student_schedules: Array.from({ length: 14 }),
-    notes: [
-      {
-        id: 1,
-        note: 'This plan included unlimited access to all premium features.',
-        created_at: '5 July 2026, 3:20 pm',
-        created_by: { id: 1, name: 'Amira Ahmed' },
-      },
+    notes: [StudentNoteModel.example, StudentNoteModel.example, StudentNoteModel.example],
+    subjects: [
+      { id: 1, title: 'Arabic' },
+      { id: 1, title: 'Arabic' },
+      { id: 1, title: 'Arabic' },
+      { id: 1, title: 'Arabic' },
+      { id: 1, title: 'Arabic' },
+      { id: 1, title: 'Arabic' },
     ],
-    subjects: [{ id: 1, title: 'Arabic' } , { id: 1, title: 'Arabic' } , { id: 1, title: 'Arabic' }, { id: 1, title: 'Arabic' }, { id: 1, title: 'Arabic' }, { id: 1, title: 'Arabic' }],
   });
 }
