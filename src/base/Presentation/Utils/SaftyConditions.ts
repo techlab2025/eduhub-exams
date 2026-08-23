@@ -15,6 +15,19 @@ export class SaftyConditions {
       : {};
   }
 
+  // Check On Number Value That Return From Backend
+  static numberValue(value: unknown, fallback = 0): number {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+  }
+
+  // Check On Boolean Value That Return From Backend
+  static booleanValue(value: unknown): boolean {
+    return (
+      value === true || value === 1 || value === '1' || value === 'true' || value === 'needs_review'
+    );
+  }
+
   //  Check On Object That Return From Backend (if there is model already)
   //   this return default values if no data
   static modelValue<T>(value: unknown, model: JsonModel<T>): T {
