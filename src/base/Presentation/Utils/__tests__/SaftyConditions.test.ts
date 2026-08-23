@@ -36,4 +36,11 @@ describe('SaftyConditions', () => {
     expect(SaftyConditions.titleValue([])).toBeNull();
     expect(SaftyConditions.objectValue([])).toEqual({});
   });
+
+  it('safely converts backend number and boolean values', () => {
+    expect(SaftyConditions.numberValue('17')).toBe(17);
+    expect(SaftyConditions.numberValue('invalid', 4)).toBe(4);
+    expect(SaftyConditions.booleanValue('needs_review')).toBe(true);
+    expect(SaftyConditions.booleanValue(false)).toBe(false);
+  });
 });

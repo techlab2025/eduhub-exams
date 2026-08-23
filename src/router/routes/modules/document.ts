@@ -1,35 +1,44 @@
-import type { RouteRecordRaw } from "@/router/types";
-import DocumentIcon from "@/shared/icons/BreadcrumbIcons/DocumentIcon.vue";
+import type { RouteRecordRaw } from '@/router/types';
+import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
 
 export const documentRoutes: RouteRecordRaw[] = [
   {
-    path: "documents",
-    name: "Documents",
-    component: () => import("@/views/Document/IndexDocument.vue"),
+    path: 'document-index',
+    name: 'Document Index',
+    component: () => import('@/views/DocumentIndex/IndexDocumentIndex.vue'),
     meta: {
-      breadcrumb: "Documents",
+      breadcrumb: 'Generate Document Index',
       icon: DocumentIcon,
     },
   },
   {
-    path: "documents/add",
-    name: "Add Document",
-    component: () => import("@/views/Document/AddDocument.vue"),
+    path: 'documents',
+    name: 'Documents',
+    component: () => import('@/views/Document/IndexDocument.vue'),
     meta: {
-      breadcrumb: "Add Document",
+      breadcrumb: 'Documents',
       icon: DocumentIcon,
-      parent: "Documents",
     },
   },
   {
-    path: "documents/edit/:id",
-    name: "Edit Document",
-    component: () => import("@/views/Document/EditDocument.vue"),
+    path: 'documents/add',
+    name: 'Add Document',
+    component: () => import('@/views/Document/AddDocument.vue'),
+    meta: {
+      breadcrumb: 'Add Document',
+      icon: DocumentIcon,
+      parent: 'Documents',
+    },
+  },
+  {
+    path: 'documents/edit/:id',
+    name: 'Edit Document',
+    component: () => import('@/views/Document/EditDocument.vue'),
     props: true,
     meta: {
-      breadcrumb: "Edit Document",
+      breadcrumb: 'Edit Document',
       icon: DocumentIcon,
-      parent: "Documents",
+      parent: 'Documents',
     },
   },
 ];

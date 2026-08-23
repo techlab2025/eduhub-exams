@@ -11,6 +11,11 @@ export default class DocumentModel {
   public readonly tags: string[];
   public readonly images: string[];
   public readonly files: string[];
+  public readonly description: string | Record<string, string> | unknown[];
+  public readonly image: string;
+  public readonly file: string;
+  public readonly indexFile: string;
+  public readonly hasIndex: boolean;
 
   constructor(data: {
     id?: number;
@@ -22,6 +27,11 @@ export default class DocumentModel {
     tags: string[];
     images: string[];
     files: string[];
+    description?: string | Record<string, string> | unknown[];
+    image?: string;
+    file?: string;
+    indexFile?: string;
+    hasIndex?: boolean;
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -32,6 +42,11 @@ export default class DocumentModel {
     this.tags = data.tags;
     this.images = data.images;
     this.files = data.files;
+    this.description = data.description ?? '';
+    this.image = data.image ?? '';
+    this.file = data.file ?? '';
+    this.indexFile = data.indexFile ?? '';
+    this.hasIndex = data.hasIndex ?? Boolean(this.indexFile);
 
     Object.freeze(this);
   }
@@ -51,6 +66,18 @@ export default class DocumentModel {
       tags: json.tags,
       images: json.images,
       files: json.files,
+      description: json.description ?? json.tranaslations?.description ?? '',
+      image: json.image ?? json.images?.[0] ?? '',
+      file: json.document_file ?? json.files?.[0] ?? '',
+      indexFile:
+        json.index_file ??
+        json.document_index?.file ??
+        json.document_index?.url ??
+        json.index?.file ??
+        '',
+      hasIndex: Boolean(
+        json.has_index ?? json.is_indexed ?? json.document_index ?? json.index_file ?? json.index,
+      ),
     });
   }
 
@@ -65,7 +92,7 @@ export default class DocumentModel {
     Subjtecs: [
       {
         id: 1,
-        title: 'aa',  
+        title: 'aa',
       },
     ],
     tranaslations: new DocumentTranslationParams({
