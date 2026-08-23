@@ -86,6 +86,49 @@ describe('StudentIndex', () => {
     expect(mocks.fetchList.mock.calls[0][0].toMap()).toMatchObject({ status: '2' });
   });
 
+  it('renders every nested education type level with connectors', async () => {
+    const wrapper = shallowMount(Component, {
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          ...defaultStubs,
+          DataStatusBuilder: {
+            template: `
+              <slot
+                name="success"
+                :data="[{
+                  educationType: {
+                    id: 202,
+                    title: 'LEFT1',
+                    children: [{
+                      id: 203,
+                      title: 'LEFT2',
+                      children: [{ id: 207, title: 'OVER 1', children: [] }]
+                    }]
+                  },
+                  educationStage: null,
+                  grade: null
+                }]"
+              />
+            `,
+          },
+          AppTable: {
+            props: ['items'],
+            template: '<div><slot name="cell-educationType" :item="items[0]" /></div>',
+          },
+        },
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.findAll('.subject-curriculum p').map((label) => label.text())).toEqual([
+      'LEFT1',
+      'LEFT2',
+      'OVER 1',
+    ]);
+    expect(wrapper.findAll('.arrow-icon')).toHaveLength(2);
+  });
+
   it('opens the archive dialog and confirms archiving an active student', async () => {
     const wrapper = shallowMount(Component, {
       global: {
