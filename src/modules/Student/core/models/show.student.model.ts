@@ -1,4 +1,5 @@
 import type TitleInterface from '@/base/Data/Models/titleInterface';
+import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
 import { StudentStatusEnum, type StudentTitleModel } from './student.model';
 import StudentApplicationModel from './student.application.model';
 import { StudentEducationModel } from './student.education.model';
@@ -7,42 +8,6 @@ import StudentPerformanceModel from './student.performance.model';
 import StudentPlanModel from './student.plan.model';
 import StudentRegistrationModel from './student.registration.model';
 import StudentResultModel from './student.result.model';
-
-const objectValue = (value: unknown): Record<string, unknown> =>
-  value && typeof value === 'object' ? (value as Record<string, unknown>) : {};
-
-const titleValue = (value: unknown): StudentTitleModel | null => {
-  if (!value || typeof value !== 'object') return null;
-  const json = objectValue(value);
-  return { id: Number(json.id ?? 0), title: String(json.title ?? '') };
-};
-
-const educationValue = (value: unknown): StudentEducationModel | null => {
-  if (!value || typeof value !== 'object') return null;
-  const json = objectValue(value);
-  return {
-    id: Number(json.id ?? 0),
-    title: String(json.title ?? ''),
-    children: Array.isArray(json.children)
-      ? json.children
-          .map(educationValue)
-          .filter((item): item is StudentEducationModel => item !== null)
-      : [],
-  };
-};
-
-const resultList = (value: unknown): StudentResultModel[] =>
-  Array.isArray(value)
-    ? value.map((item) => {
-        const json = objectValue(item);
-        return {
-          id: Number(json.id ?? 0),
-          title: String(json.title ?? ''),
-          correctCount: Number(json.correct_count ?? 0),
-          wrongCount: Number(json.wrong_count ?? 0),
-        };
-      })
-    : [];
 
 export default class ShowStudentModel {
   public readonly id!: number;
@@ -127,12 +92,14 @@ export default class ShowStudentModel {
   }
 
   static fromJson(json: Record<string, unknown>): ShowStudentModel {
-    const registration = objectValue(json.registration);
-    const application = objectValue(json.application_information);
-    const planJson = objectValue(json.plan);
-    const performance = objectValue(json.performance);
-    const blockedBy = objectValue(json.blocked_by);
-    // const planTitle = titleValue(json.plan);
+    const registration = SaftyConditions.modelValue(json.registration, StudentRegistrationModel);
+    const application = SaftyConditions.modelValue(
+      json.application_information,
+      StudentApplicationModel,
+    );
+    const plan = SaftyConditions.nullableModelValue(json.plan, StudentPlanModel);
+    const performance = SaftyConditions.modelValue(json.performance, StudentPerformanceModel);
+    const blockedBy = SaftyConditions.objectValue(json.blocked_by);
 
     return new ShowStudentModel({
       id: Number(json.id ?? json.student_id ?? 0),
@@ -143,9 +110,9 @@ export default class ShowStudentModel {
       points: Number(json.points ?? 0),
       rank: String(json.rank ?? ''),
       phone: String(json.phone ?? ''),
-      educationType: StudentEducationModel.fromJson(json.education_type ?? {}),
-      educationStage: titleValue(json.education_stage),
-      grade: titleValue(json.grade),
+      educationType: SaftyConditions.nullableModelValue(json.education_type, StudentEducationModel),
+      educationStage: SaftyConditions.titleValueCheck(json.education_stage),
+      grade: SaftyConditions.titleValueCheck(json.grade),
       parentName: String(json.parent_name ?? ''),
       parentPhone: String(json.parent_phone ?? ''),
       reason: String(json.reason ?? ''),
@@ -154,29 +121,21 @@ export default class ShowStudentModel {
           ? { id: Number(blockedBy.id ?? 0), name: String(blockedBy.name ?? '') }
           : null,
       blockDate: String(json.block_date ?? ''),
-      registration: StudentRegistrationModel.fromJson(registration),
-      applicationInformation: StudentApplicationModel.fromJson(application),
-      plan: StudentPlanModel.fromJson(planJson),
-      performance: StudentPerformanceModel.fromJson(performance),
-      // placementTests: resultList(json.placement_tests),
-      placementTests: Array.isArray(json.placement_tests)
-        ? json.placement_tests.map((item) => StudentResultModel.fromJson(item))
-        : [],
-      // practicesPlan: resultList(json.practices_plan),
-      practicesPlan: Array.isArray(json.practices_plan)
-        ? json.practices_plan.map((item) => StudentResultModel.fromJson(item))
-        : [],
+      registration,
+      applicationInformation: application,
+      plan,
+      performance,
+      placementTests: SaftyConditions.modelListCheck(json.placement_tests, StudentResultModel),
+      practicesPlan: SaftyConditions.modelListCheck(json.practices_plan, StudentResultModel),
       studentSchedules: Array.isArray(json.student_schedules)
         ? json.student_schedules
         : Array.isArray(json['Student schedules'])
           ? json['Student schedules']
           : [],
-      notes: Array.isArray(json.notes)
-        ? json.notes.map((item) => StudentNoteModel.fromJson(item))
-        : [],
+      notes: SaftyConditions.modelListCheck(json.notes, StudentNoteModel),
       subjects: Array.isArray(json.subjects)
         ? json.subjects.map((item) => {
-            const subject = objectValue(item);
+            const subject = SaftyConditions.objectValue(item);
             return {
               id: Number(subject.id ?? 0),
               title: String(subject.title ?? ''),

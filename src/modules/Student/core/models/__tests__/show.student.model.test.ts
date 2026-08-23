@@ -123,7 +123,7 @@ describe('ShowStudentModel', () => {
 
   it('provides a complete example for the details page', () => {
     expect(ShowStudentModel.example.plan?.title).toBe('Premium');
-    expect(ShowStudentModel.example.placementTests).toHaveLength(1);
-    expect(ShowStudentModel.example.notes).toHaveLength(1);
+    expect(ShowStudentModel.example.placementTests).toHaveLength(2);
+    expect(ShowStudentModel.example.notes).toHaveLength(3);
   });
 });
