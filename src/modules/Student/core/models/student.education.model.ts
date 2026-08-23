@@ -1,3 +1,4 @@
+import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
 import type { StudentTitleModel } from './student.model';
 
 export class StudentEducationModel implements StudentTitleModel {
@@ -10,12 +11,11 @@ export class StudentEducationModel implements StudentTitleModel {
     this.children = children;
     Object.freeze(this);
   }
-  static fromJson(json: Record<string, unknown> | any): StudentEducationModel {
-    const children = (json.children ?? []) as Record<string, unknown>[];
+  static fromJson(json: Record<string, unknown>): StudentEducationModel {
     return new StudentEducationModel(
       Number(json.id ?? 0),
       String(json.title ?? ''),
-      children.map((child) => StudentEducationModel.fromJson(child)),
+      SaftyConditions.modelListCheck(json.children, StudentEducationModel),
     );
   }
   static readonly example = StudentEducationModel.fromJson({
@@ -24,4 +24,3 @@ export class StudentEducationModel implements StudentTitleModel {
     children: [],
   });
 }
-  

@@ -1,10 +1,10 @@
-import type TitleInterface from '@/base/Data/Models/titleInterface';
+import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
 
 export default class StudentNoteModel {
   public readonly id!: number;
   public readonly note!: string;
   public readonly createdAt!: string;
-  public readonly createdBy!: TitleInterface<string> | null;
+  public readonly createdBy!: { id: number; name: string } | null;
 
   constructor(data: {
     id: number;
@@ -20,15 +20,17 @@ export default class StudentNoteModel {
   }
 
   static fromJson(json: Record<string, unknown>): StudentNoteModel {
+    const createdBy = SaftyConditions.objectValue(json.created_by);
+
     return new StudentNoteModel({
       id: Number(json.id ?? 0),
       note: String(json.note ?? ''),
       createdAt: String(json.created_at ?? ''),
       createdBy:
-        Object.keys(json.created_by ?? {}).length > 0
+        Object.keys(createdBy).length > 0
           ? {
-              id: Number((json.created_by as Record<string, unknown>).id ?? 0),
-              name: String((json.created_by as Record<string, unknown>).name ?? ''),
+              id: Number(createdBy.id ?? 0),
+              name: String(createdBy.name ?? ''),
             }
           : null,
     });
