@@ -108,7 +108,7 @@ export default class StudentModel {
 
   static readonly example = StudentModel.fromJson({
     id: 1,
-    name: 'Ahmed Hawam',
+    name: 'Ahmed Hawam', 
     image: '',
     serial: 'ST-0001',
     education_type: {

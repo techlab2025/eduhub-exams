@@ -504,7 +504,7 @@
                     />
                   </span>
                 </div>
-              </div>
+              </div> 
               <span v-else>—</span>
             </template>
             <template #cell-currentPlan="{ item }">{{ item.currentPlan?.title ?? '—' }}</template>
@@ -514,7 +514,7 @@
               </span>
             </template>
             <template #actions="{ item }">
-              <DropList :action-list="actionList(item)" variant="student" />
+              <DropList :action-list="actionList(item)" variant="student" />     
             </template>
           </AppTable>
 
