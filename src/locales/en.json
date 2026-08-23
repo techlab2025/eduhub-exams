@@ -1066,7 +1066,13 @@
   "account_status_description": "Control the student account status and permissions",
   "more_actions": "More actions",
   "student_account_active": "The student account is active and can access the platform",
-  "student_account_blocked": "The student account is blocked and cannot access the platform",
+  "student_account_archived": "The student account is archived and cannot access the platform",
+  "student_account_blocked": "This account is blocked",
+  "student_blocked_by": "Blocked by",
+  "student_blocked_since": "Blocked since",
+  "student_block_reason": "Reason",
+  "un_archive": "Un Archive",
+  "un_block": "Un Block",
   "plans_finance": "Plans & Finance",
   "total_paid_for_all_plans": "Total Paid For All Plans",
   "total_placement_tests": "Total Placement Tests",
@@ -1168,5 +1174,6 @@
   "subscription_bulk_delete_blocked_message_description": "You cannot delete students until their subscription ends.",
   "no_plans_title": "No plans",
   "no_plans_description": "No plans found",
-  "show_more": "show more"
+  "show_more": "show more",
+  "Student Profile": "Student Profile"
 }

@@ -4,6 +4,7 @@ export type StudentStatusEnum = (typeof StudentStatusEnum)[keyof typeof StudentS
 export interface StudentTitleModel {
   id: number;
   title: string;
+  children?: StudentTitleModel[];
 }
 
 export interface StudentNoteModel {
@@ -74,6 +75,11 @@ export default class StudentModel {
     return {
       id: Number(json.id ?? 0),
       title: String(json.title ?? ''),
+      children: Array.isArray(json.children)
+        ? json.children
+            .map((child) => StudentModel.titleFromJson(child))
+            .filter((child): child is StudentTitleModel => child !== null)
+        : [],
     };
   }
 
@@ -102,10 +108,20 @@ export default class StudentModel {
 
   static readonly example = StudentModel.fromJson({
     id: 1,
-    name: 'Ahmed Hawam',
+    name: 'Ahmed Hawam', 
     image: '',
     serial: 'ST-0001',
-    education_type: { id: 1, title: 'Governmental' },
+    education_type: {
+      id: 1,
+      title: 'Governmental',
+      children: [
+        {
+          id: 2,
+          title: 'Primary',
+          children: [{ id: 3, title: 'First', children: [] }],
+        },
+      ],
+    },
     education_stage: { id: 2, title: 'Primary' },
     grade: { id: 3, title: 'First' },
     current_plan: { id: 1, title: 'Basic' },

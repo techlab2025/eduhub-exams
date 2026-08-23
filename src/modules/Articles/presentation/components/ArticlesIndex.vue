@@ -174,7 +174,7 @@
   //   return subjects?.map((subject) => subject.trim());
   // }
   const getSubjectPath = (item: questionsModel) => {
-    if (!item?.e_c_branch) return '';
+    if (!item?.e_c_branch) return ''; 
     const parts = item.e_c_branch.full_title?.split(/\s*->\s*/);
     return parts?.map((subject) => subject.trim()) ?? '';
   };

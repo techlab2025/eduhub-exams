@@ -29,6 +29,35 @@ describe('StudentModel', () => {
     });
   });
 
+  it('maps the nested education type hierarchy', () => {
+    const model = StudentModel.fromJson({
+      id: 6,
+      education_type: {
+        id: 202,
+        title: 'LEFT1',
+        children: [
+          {
+            id: 203,
+            title: 'LEFT2',
+            children: [{ id: 207, title: 'OVER 1', children: [] }],
+          },
+        ],
+      },
+    });
+
+    expect(model.educationType).toEqual({
+      id: 202,
+      title: 'LEFT1',
+      children: [
+        {
+          id: 203,
+          title: 'LEFT2',
+          children: [{ id: 207, title: 'OVER 1', children: [] }],
+        },
+      ],
+    });
+  });
+
   it('provides a complete example for the students table', () => {
     expect(StudentModel.example).toMatchObject({
       id: 1,

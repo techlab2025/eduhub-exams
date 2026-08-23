@@ -132,10 +132,12 @@ export default class ShowStudentModel {
         : Array.isArray(json['Student schedules'])
           ? json['Student schedules']
           : [],
+
       notes: SaftyConditions.modelListCheck(json.notes, StudentNoteModel),
       subjects: Array.isArray(json.subjects)
         ? json.subjects.map((item) => {
             const subject = SaftyConditions.objectValue(item);
+
             return {
               id: Number(subject.id ?? 0),
               title: String(subject.title ?? ''),

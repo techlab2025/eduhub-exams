@@ -33,6 +33,7 @@
   import StudentBlockDialog from '../subComponents/StudentBlockDialog.vue';
   import StudentForceLogoutDialog from '../subComponents/StudentForceLogoutDialog.vue';
   import StudentNoteDialog from '../subComponents/StudentNoteDialog.vue';
+  import Articlearrow from '@/shared/icons/articlearrow.vue';
 
   type StudentListMode = 'active' | 'archive';
 
@@ -195,6 +196,11 @@
   };
   const actionList = (item: StudentModel) => [
     {
+      text: t('view'),
+      icon: PlanViewIcon,
+      link: `/students/${item.id}?status=${item.status}`,
+    },
+    {
       text: item.status === StudentStatusEnum.ARCHIVE ? t('active') : t('archive'),
       icon: ArchiveIcon,
       action: () =>
@@ -202,13 +208,9 @@
           ? changeStatus(item, StudentStatusEnum.ACTIVE)
           : openArchiveDialog(item),
     },
+
     ...(item.status != StudentStatusEnum.BLOCK
       ? [
-          {
-            text: t('view'),
-            icon: PlanViewIcon,
-            link: `/students/${item.id}`,
-          },
           {
             text: t('add_note'),
             icon: AddNoteIcon,
@@ -232,10 +234,22 @@
       danger: item.status !== StudentStatusEnum.BLOCK,
     },
   ];
-  const educationLabels = (item: StudentModel) =>
-    [item.educationType?.title, item.educationStage?.title, item.grade?.title].filter(
+  const nestedEducationLabels = (education: StudentModel['educationType']): string[] => {
+    if (!education) return [];
+
+    return [
+      ...(education.title ? [education.title] : []),
+      ...(education.children ?? []).flatMap(nestedEducationLabels),
+    ];
+  };
+  const educationLabels = (item: StudentModel) => {
+    const nestedLabels = nestedEducationLabels(item.educationType);
+    if (nestedLabels.length > 1) return nestedLabels;
+
+    return [item.educationType?.title, item.educationStage?.title, item.grade?.title].filter(
       (label): label is string => Boolean(label),
     );
+  };
   const applyFilters = async () => {
     filterDialogVisible.value = false;
     listMode.value = status.value?.id === Number(StudentStatusEnum.ARCHIVE) ? 'archive' : 'active';
@@ -463,7 +477,7 @@
             :headers="headers"
             :items="(data || []) as StudentModel[]"
             row-key="id"
-            :stickyColumn="2"
+            :sticky-column="2"
             :selectable="false"
           >
             <template #cell-name="{ item }">
@@ -476,10 +490,22 @@
               </div>
             </template>
             <template #cell-educationType="{ item }">
-              <div class="student-education-cell">
-                <span v-for="label in educationLabels(item)" :key="label">{{ label }}</span>
-                <span v-if="educationLabels(item).length === 0">—</span>
-              </div>
+              <div v-if="educationLabels(item).length" class="subject-cell">
+                <div class="parent-subject-curriculum">
+                  <span
+                    v-for="(label, index) in educationLabels(item)"
+                    :key="`${index}-${label}`"
+                    class="subject-curriculum"
+                  >
+                    <p>{{ label }}</p>
+                    <Articlearrow
+                      v-if="index < educationLabels(item).length - 1"
+                      class="arrow-icon"
+                    />
+                  </span>
+                </div>
+              </div> 
+              <span v-else>—</span>
             </template>
             <template #cell-currentPlan="{ item }">{{ item.currentPlan?.title ?? '—' }}</template>
             <template #cell-status="{ item }">
@@ -488,7 +514,7 @@
               </span>
             </template>
             <template #actions="{ item }">
-              <DropList :action-list="actionList(item)" variant="student" />
+              <DropList :action-list="actionList(item)" variant="student" />     
             </template>
           </AppTable>
 
@@ -537,16 +563,19 @@
       color: #2f7bff;
     }
   }
+
   .Archive {
     span {
       color: #4b4b4b;
     }
   }
+
   .Block {
     span {
       color: #d64545;
     }
   }
+
   .student-page {
     display: grid;
     gap: 24px;

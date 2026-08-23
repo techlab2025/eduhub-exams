@@ -554,7 +554,13 @@
   "account_status_description": "التحكم في حالة حساب الطالب وصلاحياته",
   "more_actions": "المزيد من الإجراءات",
   "student_account_active": "حساب الطالب نشط ويمكنه الوصول إلى المنصة",
-  "student_account_blocked": "حساب الطالب محظور ولا يمكنه الوصول إلى المنصة",
+  "student_account_archived": "حساب الطالب مؤرشف ولا يمكنه الوصول إلى المنصة",
+  "student_account_blocked": "هذا الحساب محظور",
+  "student_blocked_by": "تم الحظر بواسطة",
+  "student_blocked_since": "محظور منذ",
+  "student_block_reason": "السبب",
+  "un_archive": "إلغاء الأرشفة",
+  "un_block": "إلغاء الحظر",
   "plans_finance": "الخطط والمدفوعات",
   "total_paid_for_all_plans": "إجمالي المدفوع لكل الخطط",
   "total_placement_tests": "إجمالي اختبارات تحديد المستوى",
@@ -743,6 +749,8 @@
     "profile_load_failed": "تعذر تحميل ملف الطالب",
     "try_again": "إعادة المحاولة",
     "Most Important Skills": "أهم 3 مهارات",
-    "the": "ال"
-  }
+    "the": "ال",
+    "Student Profile": "الملف الشخصي للطالب"
+  },
+  "Student Profile": "الملف الشخصي للطالب"
 }
