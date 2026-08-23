@@ -23,10 +23,23 @@
   import IconPerformance from '@/shared/icons/IconPerformance.vue';
 
   const route = useRoute();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const controller = StudentController.getInstance();
   const student = computed(() => controller.itemData.value);
   const itemState = computed(() => controller.itemState.value);
+  const statusFromRoute = computed<StudentStatusEnum | null>(() => {
+    const statusQuery = route.query?.status;
+    const status = Array.isArray(statusQuery) ? statusQuery[0] : statusQuery;
+
+    return typeof status === 'string' &&
+      Object.values(StudentStatusEnum).includes(status as StudentStatusEnum)
+      ? (status as StudentStatusEnum)
+      : null;
+  });
+  const changedStatus = ref<StudentStatusEnum | null>(null);
+  const studentStatus = computed(
+    () => changedStatus.value ?? statusFromRoute.value ?? student.value?.status,
+  );
   const showAllNotes = ref(false);
   const notesExpanded = ref(true);
   const showAllPlacementTests = ref(false);
@@ -59,6 +72,7 @@
       await controller.changeStatus(
         new ChangeStudentStatusParams(student.value.id, status, blockReasonId, reason),
       );
+      changedStatus.value = status;
       archiveDialogVisible.value = false;
       blockDialogVisible.value = false;
       await fetchStudent();
@@ -95,15 +109,33 @@
   const actionList = computed(() => {
     if (!student.value) return [];
 
+    const archiveAction = {
+      text: studentStatus.value === StudentStatusEnum.ARCHIVE ? t('un_archive') : t('archive'),
+      icon: ArchiveIcon,
+      action: () =>
+        studentStatus.value === StudentStatusEnum.ARCHIVE
+          ? changeStatus(StudentStatusEnum.ACTIVE)
+          : (archiveDialogVisible.value = true),
+    };
+
+    if (studentStatus.value === StudentStatusEnum.ARCHIVE) return [archiveAction];
+
+    const blockAction = {
+      text: studentStatus.value === StudentStatusEnum.BLOCK ? t('un_block') : t('block'),
+      icon: BlockIcon,
+      action: () =>
+        studentStatus.value === StudentStatusEnum.BLOCK
+          ? changeStatus(StudentStatusEnum.ACTIVE)
+          : (blockDialogVisible.value = true),
+      danger: true,
+    };
+
+    if (studentStatus.value === StudentStatusEnum.BLOCK) {
+      return [archiveAction, blockAction];
+    }
+
     return [
-      {
-        text: student.value.status === StudentStatusEnum.ARCHIVE ? t('active') : t('archive'),
-        icon: ArchiveIcon,
-        action: () =>
-          student.value?.status === StudentStatusEnum.ARCHIVE
-            ? changeStatus(StudentStatusEnum.ACTIVE)
-            : (archiveDialogVisible.value = true),
-      },
+      archiveAction,
       {
         text: t('add_note'),
         icon: AddNoteIcon,
@@ -114,19 +146,23 @@
         icon: ForceLogoutIcon,
         action: () => (forceLogoutDialogVisible.value = true),
       },
-      {
-        text: student.value.status === StudentStatusEnum.BLOCK ? t('un block') : t('block'),
-        icon: BlockIcon,
-        action: () =>
-          student.value?.status === StudentStatusEnum.BLOCK
-            ? changeStatus(StudentStatusEnum.ACTIVE)
-            : (blockDialogVisible.value = true),
-        danger: student.value.status !== StudentStatusEnum.BLOCK,
-      },
+      blockAction,
     ];
   });
   const valueOrDash = (value: unknown) =>
     value === null || value === undefined || value === '' ? '—' : String(value);
+  const formatBlockDate = (value: string) => {
+    if (!value) return '—';
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+
+    return new Intl.DateTimeFormat(locale.value === 'ar' ? 'ar-EG' : 'en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
+  };
   const verificationValue = (verified: boolean) => (verified ? 'verified' : 'not_verified');
   const money = (value: number) => `${value.toLocaleString()} LE`;
   const visibleNotes = computed(() =>
@@ -191,7 +227,7 @@
                 <div class="student-profile-name">
                   <h1>{{ student.name }}</h1>
                   <span class="student-online-dot"></span>
-                  <span>{{ $t(`student_status_${student.status}`) }}</span>
+                  <span>{{ $t(`student_status_${studentStatus}`) }}</span>
                 </div>
                 <p>{{ student.serial }}</p>
               </div>
@@ -276,19 +312,47 @@
                 </template>
               </DropList>
             </header>
-            <p
+            <div
               class="student-account-message"
-              :class="{ blocked: student.status === StudentStatusEnum.BLOCK }"
+              :class="{
+                active: studentStatus === StudentStatusEnum.ACTIVE,
+                archived: studentStatus === StudentStatusEnum.ARCHIVE,
+                blocked: studentStatus === StudentStatusEnum.BLOCK,
+              }"
+              role="status"
             >
-              <span aria-hidden="true">✓</span>
-              {{
-                $t(
-                  student.status === StudentStatusEnum.BLOCK
-                    ? 'student_account_blocked'
-                    : 'student_account_active',
-                )
-              }}
-            </p>
+              <p class="student-account-message-title">
+                <span class="student-account-message-icon" aria-hidden="true">
+                  {{ studentStatus === StudentStatusEnum.ARCHIVE ? 'i' : '!' }}
+                </span>
+                {{
+                  $t(
+                    studentStatus === StudentStatusEnum.ACTIVE
+                      ? 'student_account_active'
+                      : studentStatus === StudentStatusEnum.ARCHIVE
+                        ? 'student_account_archived'
+                        : 'student_account_blocked',
+                  )
+                }}
+              </p>
+
+              <template v-if="studentStatus === StudentStatusEnum.BLOCK">
+                <dl class="student-account-block-details">
+                  <div>
+                    <dt>{{ $t('student_blocked_by') }}:</dt>
+                    <dd>{{ valueOrDash(student.blockedBy?.name) }}</dd>
+                  </div>
+                  <div>
+                    <dt>{{ $t('student_blocked_since') }}:</dt>
+                    <dd>{{ formatBlockDate(student.blockDate) }}</dd>
+                  </div>
+                </dl>
+                <p class="student-account-block-reason">
+                  <strong>{{ $t('student_block_reason') }}:</strong>
+                  {{ valueOrDash(student.reason) }}
+                </p>
+              </template>
+            </div>
           </article>
 
           <article class="student-content-card">
@@ -304,13 +368,13 @@
                   $t('expire_date', { date: valueOrDash(student.plan?.expireDate) })
                 }}</small>
               </div>
-              <div class="subject-container" v-if="student.subjects.length > 0">
+              <div v-if="student.subjects.length > 0" class="subject-container">
                 <span
                   >{{ $t('num of subject:') }}
                   <small class="num-of-subjects">{{ student.subjects.length }}</small></span
                 >
                 <div class="subjects-content">
-                  <div class="subjects" v-for="subject in subjectsList" :key="subject.id">
+                  <div v-for="subject in subjectsList" :key="subject.id" class="subjects">
                     <strong>{{ subject.title }}</strong>
                   </div>
                   <span
@@ -528,22 +592,26 @@
     cursor: pointer !important;
     text-decoration: underline !important;
   }
+
   .subject-container {
     span {
       color: #5d5d5d;
       font-weight: 500;
       font-size: 14px;
     }
+
     .num-of-subjects {
       color: #4faf7c;
       font-size: 14px;
       font-weight: 700;
     }
+
     .subjects-content {
       display: flex;
       flex-direction: row !important;
       flex-wrap: wrap;
       gap: 15px;
+
       .subjects {
         strong {
           color: #8a8a8a;
@@ -551,6 +619,7 @@
           font-size: 14px;
           font-family: var(--font-family);
           position: relative;
+
           &::before {
             position: absolute;
             content: '•';
@@ -563,6 +632,7 @@
       }
     }
   }
+
   .registration_security {
     border-bottom: 2px dashed #24385c1a;
     padding-bottom: 0.8rem;
@@ -794,8 +864,8 @@
     margin: 14px 0 0;
     padding: 12px;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: stretch;
     color: var(--standard-black);
     background: var(--PrimaryColor-alpha-8);
     border-radius: 10px;
@@ -803,19 +873,83 @@
     font-weight: 500;
     font-family: 'Medium';
 
-    span {
-      width: 16px;
-      height: 16px;
-      display: grid;
-      place-items: center;
-      color: var(--primary-green);
-      border: 1px solid var(--primary-green);
-      border-radius: 50%;
-      font-size: 10px;
+    &.archived {
+      background: rgba(184, 184, 184, 1);
     }
 
     &.blocked {
-      background: var(--danger-alpha-15);
+      color: var(--danger-alt);
+      background: var(--danger-light-alt);
+    }
+  }
+
+  .student-account-message-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .student-account-message-icon {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    display: grid;
+    place-items: center;
+    color: var(--primary-green);
+    border: 1px solid var(--primary-green);
+    border-radius: 50%;
+    font-size: 10px;
+    font-family: var(--font-family);
+    line-height: 1;
+  }
+
+  .student-account-message.archived .student-account-message-icon {
+    color: var(--standard-black);
+    border-color: var(--standard-black);
+  }
+
+  .student-account-message.blocked .student-account-message-icon {
+    color: var(--danger-alt);
+    border-color: var(--danger-alt);
+  }
+
+  .student-account-block-details {
+    margin: 6px 0 0;
+    margin-inline-start: 24px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    dt {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    dd {
+      margin: 0;
+      color: var(--standard-black);
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+
+  .student-account-block-reason {
+    margin: 8px 0 0;
+    padding-top: 8px;
+    color: var(--standard-black);
+    border-top: 1px dashed var(--danger-border-light);
+    font-size: 12px;
+
+    strong {
+      color: var(--danger-alt);
     }
   }
 

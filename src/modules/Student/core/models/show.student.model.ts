@@ -201,8 +201,8 @@ export default class ShowStudentModel {
             };
           })
         : [],
-      subjects: Array.isArray(json.subjects)
-        ? json.subjects.map((item) => {
+      subjects: Array.isArray(json.student_subjects)
+        ? json.student_subjects.map((item) => {
             const subject = objectValue(item);
             return {
               id: Number(subject.id ?? 0),

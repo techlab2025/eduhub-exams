@@ -115,7 +115,11 @@ describe('StudentIndex', () => {
           DropList: {
             props: ['actionList', 'variant'],
             template: `
-              <div class="actions-stub" :data-variant="variant">
+              <div
+                class="actions-stub"
+                :data-variant="variant"
+                :data-view-link="actionList[0].link"
+              >
                 <span v-for="action in actionList" :key="action.text">{{ action.text }}</span>
                 <button class="archive-action" @click="actionList[1].action()">archive</button>
                 <button class="block-action" @click="actionList[4].action()">block</button>
@@ -148,6 +152,7 @@ describe('StudentIndex', () => {
     });
 
     expect(wrapper.find('.actions-stub').attributes('data-variant')).toBe('student');
+    expect(wrapper.find('.actions-stub').attributes('data-view-link')).toBe('/students/7?status=1');
     expect(wrapper.find('.actions-stub').text()).toContain('viewarchiveadd_noteforce_logoutblock');
 
     await wrapper.find('.archive-action').trigger('click');

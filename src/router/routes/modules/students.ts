@@ -11,6 +11,6 @@ export const studentRoutes: RouteRecordRaw[] = [
     name: 'Student Details',
     component: () => import('@/views/Student/ShowStudent.vue'),
     props: true,
-    meta: { breadcrumb: 'student_details', parent: 'Students' },
+    meta: { breadcrumb: 'Student Profile', parent: 'Students' },
   },
 ];

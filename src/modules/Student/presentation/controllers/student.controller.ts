@@ -41,7 +41,7 @@ export default class StudentController extends BaseController<ShowStudentModel, 
     return super.fetchList(params, options);
   }
   fetchOne(params: Params, options?: ApiCallOptions): Promise<DataState<ShowStudentModel>> {
-    return super.fetchOne(params, { ...options, useStaticData: true });
+    return super.fetchOne(params, { ...options, useStaticData: false });
   }
   changeStatus(params: Params) {
     return this.repository.changeStatus(params);

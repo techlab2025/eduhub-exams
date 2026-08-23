@@ -195,6 +195,11 @@
   };
   const actionList = (item: StudentModel) => [
     {
+      text: t('view'),
+      icon: PlanViewIcon,
+      link: `/students/${item.id}?status=${item.status}`,
+    },
+    {
       text: item.status === StudentStatusEnum.ARCHIVE ? t('active') : t('archive'),
       icon: ArchiveIcon,
       action: () =>
@@ -202,13 +207,9 @@
           ? changeStatus(item, StudentStatusEnum.ACTIVE)
           : openArchiveDialog(item),
     },
+
     ...(item.status != StudentStatusEnum.BLOCK
       ? [
-          {
-            text: t('view'),
-            icon: PlanViewIcon,
-            link: `/students/${item.id}`,
-          },
           {
             text: t('add_note'),
             icon: AddNoteIcon,
@@ -463,7 +464,7 @@
             :headers="headers"
             :items="(data || []) as StudentModel[]"
             row-key="id"
-            :stickyColumn="2"
+            :sticky-column="2"
             :selectable="false"
           >
             <template #cell-name="{ item }">
@@ -537,16 +538,19 @@
       color: #2f7bff;
     }
   }
+
   .Archive {
     span {
       color: #4b4b4b;
     }
   }
+
   .Block {
     span {
       color: #d64545;
     }
   }
+
   .student-page {
     display: grid;
     gap: 24px;
