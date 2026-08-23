@@ -1,3 +1,4 @@
+import type TitleInterface from '@/base/Data/Models/titleInterface';
 import { StudentStatusEnum, type StudentTitleModel } from './student.model';
 
 export interface StudentEducationModel extends StudentTitleModel {
@@ -109,6 +110,7 @@ export default class ShowStudentModel {
   public readonly practicesPlan!: StudentResultModel[];
   public readonly studentSchedules!: unknown[];
   public readonly notes!: StudentNoteModel[];
+  public readonly subjects!: TitleInterface<string>[];
 
   private constructor(values: ShowStudentModel) {
     Object.assign(this, values);
@@ -199,6 +201,15 @@ export default class ShowStudentModel {
             };
           })
         : [],
+      subjects: Array.isArray(json.subjects)
+        ? json.subjects.map((item) => {
+            const subject = objectValue(item);
+            return {
+              id: Number(subject.id ?? 0),
+              title: String(subject.title ?? ''),
+            };
+          })
+        : [],
     });
   }
 
@@ -261,5 +272,6 @@ export default class ShowStudentModel {
         created_by: { id: 1, name: 'Amira Ahmed' },
       },
     ],
+    subjects: [{ id: 1, title: 'Arabic' } , { id: 1, title: 'Arabic' } , { id: 1, title: 'Arabic' }, { id: 1, title: 'Arabic' }, { id: 1, title: 'Arabic' }, { id: 1, title: 'Arabic' }],
   });
 }

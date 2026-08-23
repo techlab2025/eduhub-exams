@@ -195,11 +195,6 @@
   };
   const actionList = (item: StudentModel) => [
     {
-      text: t('view'),
-      icon: PlanViewIcon,
-      link: `/students/${item.id}`,
-    },
-    {
       text: item.status === StudentStatusEnum.ARCHIVE ? t('active') : t('archive'),
       icon: ArchiveIcon,
       action: () =>
@@ -207,18 +202,28 @@
           ? changeStatus(item, StudentStatusEnum.ACTIVE)
           : openArchiveDialog(item),
     },
+    ...(item.status != StudentStatusEnum.BLOCK
+      ? [
+          {
+            text: t('view'),
+            icon: PlanViewIcon,
+            link: `/students/${item.id}`,
+          },
+          {
+            text: t('add_note'),
+            icon: AddNoteIcon,
+            action: () => openNoteDialog(item),
+          },
+          {
+            text: t('force_logout'),
+            icon: ForceLogoutIcon,
+            action: () => openForceLogoutDialog(item),
+          },
+        ]
+      : []),
+
     {
-      text: t('add_note'),
-      icon: AddNoteIcon,
-      action: () => openNoteDialog(item),
-    },
-    {
-      text: t('force_logout'),
-      icon: ForceLogoutIcon,
-      action: () => openForceLogoutDialog(item),
-    },
-    {
-      text: item.status === StudentStatusEnum.BLOCK ? t('active') : t('block'),
+      text: item.status === StudentStatusEnum.BLOCK ? t('un block') : t('block'),
       icon: BlockIcon,
       action: () =>
         item.status === StudentStatusEnum.BLOCK
@@ -388,7 +393,7 @@
                     v-for="option in statusOptions"
                     :key="option.id"
                     class="student-status-option"
-                    :class="`student-status-option-${option.id}`"
+                    :class="`student-status-option-${option.id} ${option.title}`"
                   >
                     <input
                       type="checkbox"
@@ -458,8 +463,8 @@
             :headers="headers"
             :items="(data || []) as StudentModel[]"
             row-key="id"
-            selectable
             :stickyColumn="2"
+            :selectable="false"
           >
             <template #cell-name="{ item }">
               <div class="student-name-cell">
@@ -527,6 +532,21 @@
 </template>
 
 <style scoped lang="scss">
+  .Active {
+    span {
+      color: #2f7bff;
+    }
+  }
+  .Archive {
+    span {
+      color: #4b4b4b;
+    }
+  }
+  .Block {
+    span {
+      color: #d64545;
+    }
+  }
   .student-page {
     display: grid;
     gap: 24px;

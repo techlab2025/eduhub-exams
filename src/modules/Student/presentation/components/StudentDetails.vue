@@ -115,7 +115,7 @@
         action: () => (forceLogoutDialogVisible.value = true),
       },
       {
-        text: student.value.status === StudentStatusEnum.BLOCK ? t('active') : t('block'),
+        text: student.value.status === StudentStatusEnum.BLOCK ? t('un block') : t('block'),
         icon: BlockIcon,
         action: () =>
           student.value?.status === StudentStatusEnum.BLOCK
@@ -165,7 +165,14 @@
       { label: 'last_seen', value: data.lastSeen },
     ];
   });
-
+  const showAllSubjects = ref(false);
+  const subjectsList = computed(() => {
+    if (showAllSubjects.value) return student.value?.subjects;
+    return student.value?.subjects.slice(0, 3);
+  });
+  const handleShowMore = () => {
+    showAllSubjects.value = !showAllSubjects.value;
+  };
   onMounted(fetchStudent);
 </script>
 
@@ -296,6 +303,23 @@
                 <small>{{
                   $t('expire_date', { date: valueOrDash(student.plan?.expireDate) })
                 }}</small>
+              </div>
+              <div class="subject-container" v-if="student.subjects.length > 0">
+                <span
+                  >{{ $t('num of subject:') }}
+                  <small class="num-of-subjects">{{ student.subjects.length }}</small></span
+                >
+                <div class="subjects-content">
+                  <div class="subjects" v-for="subject in subjectsList" :key="subject.id">
+                    <strong>{{ subject.title }}</strong>
+                  </div>
+                  <span
+                    v-if="student?.subjects?.length > 3"
+                    class="more-subjects"
+                    @click="handleShowMore"
+                    >{{ showAllSubjects ? $t('show_less') : $t('show_more') }}</span
+                  >
+                </div>
               </div>
               <div>
                 <span>{{ $t('total_paid_for_all_plans') }}</span>
@@ -497,6 +521,48 @@
 </template>
 
 <style scoped lang="scss">
+  .more-subjects {
+    color: #4faf7c !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    text-decoration: underline !important;
+  }
+  .subject-container {
+    span {
+      color: #5d5d5d;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .num-of-subjects {
+      color: #4faf7c;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .subjects-content {
+      display: flex;
+      flex-direction: row !important;
+      flex-wrap: wrap;
+      gap: 15px;
+      .subjects {
+        strong {
+          color: #8a8a8a;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: var(--font-family);
+          position: relative;
+          &::before {
+            position: absolute;
+            content: '•';
+            top: 50%;
+            left: -10px;
+            transform: translateY(-50%);
+            color: #8a8a8a;
+          }
+        }
+      }
+    }
+  }
   .registration_security {
     border-bottom: 2px dashed #24385c1a;
     padding-bottom: 0.8rem;
@@ -795,7 +861,7 @@
   }
 
   .student-finance-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 
     > div:first-child strong {
       color: var(--primary-green);

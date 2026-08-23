@@ -47,6 +47,13 @@ export enum StudentStatusEnum {
   "education_type": {
     "id": number,
     "title": string,
+    "children": [
+      {
+        "id": number,
+        "title": string,
+           "children": []
+      }
+    ]
   },
 
   "current_plan": {

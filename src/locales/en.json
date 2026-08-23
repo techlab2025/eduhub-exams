@@ -1167,5 +1167,6 @@
   "highlight_badge_confirm_delete": "Permanently delete this highlight badge?",
   "subscription_bulk_delete_blocked_message_description": "You cannot delete students until their subscription ends.",
   "no_plans_title": "No plans",
-  "no_plans_description": "No plans found"
+  "no_plans_description": "No plans found",
+  "show_more": "show more"
 }
