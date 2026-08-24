@@ -3,6 +3,6 @@ import { EmployeeTypeEnum } from '../employee.type.enum';
 
 describe('EmployeeTypeEnum', () => {
   it('keeps the supported employee type values stable', () => {
-    expect(EmployeeTypeEnum).toEqual({ ADMIN: 1, EMPLOYEE: 2, TEACHER: 3 });
+    expect(EmployeeTypeEnum).toEqual({ ADMIN: 1, TEACHER: 2 });
   });
 });

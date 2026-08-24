@@ -15,6 +15,7 @@
   import DeleteAdviceParams from '../../core/params/delete.advice.params';
   import IndexAdviceParams from '../../core/params/index.advice.params';
   import AdviceController from '../controllers/advice.controller';
+  import AdviceCategoryDialog from '@/modules/AdviceCategory/presentation/components/AdviceCategoryDialog.vue';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -72,9 +73,12 @@
           @input="search"
         />
       </div>
-      <button class="btn btn-primary" @click="router.push('/advices/add')">
-        {{ $t('add_advice') }}
-      </button>
+      <div class="header-actions">
+        <AdviceCategoryDialog />
+        <button class="btn btn-primary" @click="router.push('/advices/add')">
+          {{ $t('add_advice') }}
+        </button>
+      </div>
     </header>
     <DataStatusBuilder
       :controller="state"
@@ -132,5 +136,10 @@
     display: flex;
     gap: var(--xs-size);
     justify-content: flex-end;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: var(--xs-size);
   }
 </style>

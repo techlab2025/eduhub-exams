@@ -6,12 +6,13 @@ describe('EditAdviceParams', () => {
   it('maps the advice id and translations', () => {
     const params = new EditAdviceParams({
       adviceId: 3,
+      adviceCategoryId: 8,
       translations: new TranslationParams({
         title: { en: 'Plan title' },
         description: { en: 'Plan description' },
       }),
     });
 
-    expect(params.toMap()).toMatchObject({ advice_id: 3 });
+    expect(params.toMap()).toMatchObject({ advice_id: 3, advice_category_id: 8 });
   });
 });

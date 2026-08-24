@@ -6,6 +6,10 @@
   import type AdviceModel from '../../core/models/advice.model';
   import AddAdviceParams from '../../core/params/add.advice.params';
   import EditAdviceParams from '../../core/params/edit.advice.params';
+  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import type TitleInterface from '@/base/Data/Models/titleInterface';
+  import AdviceCategoryController from '@/modules/AdviceCategory/presentation/controllers/advice.category.controller';
+  import IndexAdviceCategoryParams from '@/modules/AdviceCategory/core/params/index.advice.category.params';
 
   const props = defineProps<{
     advice?: AdviceModel;
@@ -17,6 +21,9 @@
   const id = Number(route.params.id || 0);
   const titleTranslations = ref<Record<string, string>>({});
   const descriptionTranslations = ref<Record<string, string>>({});
+  const adviceCategory = ref<TitleInterface<number> | null>(null);
+  const adviceCategoryController = AdviceCategoryController.getInstance();
+  const adviceCategoryParams = new IndexAdviceCategoryParams();
 
   const toTranslations = (value: unknown, field: 'title' | 'description') =>
     Array.isArray(value)
@@ -36,6 +43,7 @@
         title: titleTranslations.value,
         description: descriptionTranslations.value,
       }),
+      adviceCategoryId: adviceCategory.value?.id ?? 0,
     };
 
     emit(
@@ -50,10 +58,11 @@
       if (!advice) return;
       titleTranslations.value = toTranslations(advice.title, 'title');
       descriptionTranslations.value = toTranslations(advice.description, 'description');
+      adviceCategory.value = advice.adviceCategory;
     },
     { immediate: true },
   );
-  watch([titleTranslations, descriptionTranslations], updateData, {
+  watch([titleTranslations, descriptionTranslations, adviceCategory], updateData, {
     deep: true,
     immediate: true,
   });
@@ -62,6 +71,16 @@
 <template>
   <section class="form-card" :class="{ 'is-loading': props.loading }">
     <h2>{{ $t(id ? 'edit_advice' : 'add_advice') }}</h2>
+    <UpdatedCustomInputSelect
+      id="advice-category"
+      v-model="adviceCategory"
+      :label="$t('advice_category')"
+      :placeholder="$t('select_advice_category')"
+      :controller="adviceCategoryController"
+      :params="adviceCategoryParams"
+      required
+      @update:model-value="updateData"
+    />
     <MultiLangInput
       field-key="title"
       :label="$t('title')"
