@@ -11,8 +11,13 @@
   import DocumentController from '@/modules/document/presentation/controllers/document.controller';
   import type DocumentModel from '@/modules/document/core/models/document.model';
   import GenerateDocumentIndexParams from '../../core/params/generate.document.index.params';
-  import type { EditableDocumentIndexItem } from '../../core/models/editable.document.index.item.model';
+  import {
+    copyEditableDocumentIndexItems,
+    type EditableDocumentIndexItem,
+  } from '../../core/models/editable.document.index.item.model';
   import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
+  import UpdateDocumentIndexParams from '../../core/params/update.document.index.params';
+  import SaveDocumentIndexParams from '../../core/params/save.document.index.params';
   import DocumentIndexController from '../controllers/document.index.controller';
   import {
     createSubjectOptions,
@@ -24,6 +29,8 @@
     type CurriculumSubjectNode,
   } from '../../core/utils/curriculum.options';
   import IndexDocumentParams from '@/modules/document/core/params/index.document.params';
+  import NorCurriculumIcon from '@/shared/icons/DocuecmntIndex/NorCurriculumIcon.vue';
+  import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
   const emit = defineEmits<{
     saveIndex: [payload: { documentId: number; items: EditableDocumentIndexItem[] }];
@@ -45,7 +52,10 @@
   const generationDialogVisible = ref(false);
   const generatedDialogVisible = ref(false);
   const isEditingGeneratedIndex = ref(false);
+  const isUpdatingGeneratedIndex = ref(false);
+  const isSavingGeneratedIndex = ref(false);
   const activeDocumentId = ref<number>();
+  const generatedIndex = shallowRef<GeneratedDocumentIndexModel | null>(null);
   const generatedIndexItems = ref<EditableDocumentIndexItem[]>([]);
   const originalGeneratedIndexItems = ref<EditableDocumentIndexItem[]>([]);
   let generationAbortController: AbortController | null = null;
@@ -190,9 +200,6 @@
     if (file) window.open(file, '_blank', 'noopener,noreferrer');
   };
 
-  const copyIndexItems = (items: EditableDocumentIndexItem[]): EditableDocumentIndexItem[] =>
-    items.map((item) => ({ ...item }));
-
   const generateDocumentIndex = async (document: DocumentModel) => {
     if (document.id == null || generationDialogVisible.value) return;
 
@@ -204,10 +211,7 @@
 
     const result = await documentIndexController.generateIndex(
       new GenerateDocumentIndexParams(document.id),
-      {
-        signal: requestController.signal,
-        useStaticData: true,
-      },
+      { signal: requestController.signal },
     );
 
     if (generationAbortController !== requestController) return;
@@ -216,11 +220,12 @@
     generationDialogVisible.value = false;
 
     if (result instanceof DataSuccess && result.data) {
-      const generatedIndex = result.data as GeneratedDocumentIndexModel;
-      const items = generatedIndex.items.map((item) => ({ ...item }));
-      generatedIndexItems.value = copyIndexItems(items);
-      originalGeneratedIndexItems.value = copyIndexItems(items);
-      activeDocumentId.value = generatedIndex.documentId ?? document.id;
+      generatedIndex.value = result.data as GeneratedDocumentIndexModel;
+      generatedIndexItems.value = copyEditableDocumentIndexItems(
+        generatedIndex.value.editableItems,
+      );
+      originalGeneratedIndexItems.value = copyEditableDocumentIndexItems(generatedIndexItems.value);
+      activeDocumentId.value = document.id;
       isEditingGeneratedIndex.value = false;
       generatedDialogVisible.value = true;
     }
@@ -233,29 +238,56 @@
   };
 
   const startEditingGeneratedIndex = () => {
-    originalGeneratedIndexItems.value = copyIndexItems(generatedIndexItems.value);
+    originalGeneratedIndexItems.value = copyEditableDocumentIndexItems(generatedIndexItems.value);
     isEditingGeneratedIndex.value = true;
   };
 
   const cancelGeneratedIndexEdit = () => {
-    generatedIndexItems.value = copyIndexItems(originalGeneratedIndexItems.value);
+    generatedIndexItems.value = copyEditableDocumentIndexItems(originalGeneratedIndexItems.value);
     isEditingGeneratedIndex.value = false;
   };
 
-  const saveGeneratedIndex = () => {
+  const updateGeneratedIndex = async () => {
     if (activeDocumentId.value == null) return;
+
+    isUpdatingGeneratedIndex.value = true;
+    const result = await documentIndexController.updateIndex(
+      new UpdateDocumentIndexParams(activeDocumentId.value, generatedIndexItems.value),
+    );
+    isUpdatingGeneratedIndex.value = false;
+
+    if (!(result instanceof DataSuccess) || !result.data) return;
+
+    generatedIndex.value = result.data;
+    generatedIndexItems.value = copyEditableDocumentIndexItems(result.data.editableItems);
+    originalGeneratedIndexItems.value = copyEditableDocumentIndexItems(generatedIndexItems.value);
+    isEditingGeneratedIndex.value = false;
+    dialogManager.toastSuccess(t('document_index.updated_successfully'));
+  };
+
+  const saveGeneratedIndex = async () => {
+    if (activeDocumentId.value == null || isEditingGeneratedIndex.value) return;
+
+    isSavingGeneratedIndex.value = true;
+    const result = await documentIndexController.saveIndex(
+      new SaveDocumentIndexParams(activeDocumentId.value),
+    );
+    isSavingGeneratedIndex.value = false;
+
+    if (!(result instanceof DataSuccess)) return;
 
     emit('saveIndex', {
       documentId: activeDocumentId.value,
-      items: copyIndexItems(generatedIndexItems.value),
+      items: copyEditableDocumentIndexItems(generatedIndexItems.value),
     });
-    originalGeneratedIndexItems.value = copyIndexItems(generatedIndexItems.value);
-    isEditingGeneratedIndex.value = false;
+    dialogManager.toastSuccess(t('document_index.saved_successfully'));
+    closeGeneratedIndex();
   };
 
   const closeGeneratedIndex = () => {
     generatedDialogVisible.value = false;
     isEditingGeneratedIndex.value = false;
+    generatedIndex.value = null;
   };
 
   const levelClass = (level: string): string => {
@@ -366,6 +398,16 @@
       </div>
     </section>
 
+    <section v-if="!resultsRequested" class="document-index-page__card">
+      <h2 id="document-index-results" class="document-index-page__section-title">
+        {{ t('document_index.results') }}
+      </h2>
+      <div class="start-page">
+        <NorCurriculumIcon />
+        <h2>{{ t('document_index.select_curriculum') }}</h2>
+        <p>{{ t('document_index.select_curriculum_description') }}</p>
+      </div>
+    </section>
     <section
       v-if="resultsRequested"
       class="document-index-page__card"
@@ -511,6 +553,20 @@
               {{ t('document_index.generated_title') }}
             </h2>
             <p>{{ t('document_index.generated_description') }}</p>
+            <div v-if="generatedIndex" class="document-index-generated__summary">
+              <span>
+                {{ t('document_index.book_id') }}
+                <strong>#{{ generatedIndex.bookId }}</strong>
+              </span>
+              <span>
+                {{ t('document_index.book_status') }}
+                <strong>{{ generatedIndex.bookStatus }}</strong>
+              </span>
+              <span>
+                {{ t('document_index.chapters_count') }}
+                <strong>{{ generatedIndex.chapters.length }}</strong>
+              </span>
+            </div>
           </div>
           <button
             class="document-index-generated__close"
@@ -531,14 +587,13 @@
                 <th>{{ t('document_index.from_pdf') }}</th>
                 <th>{{ t('document_index.to_pdf') }}</th>
                 <th>{{ t('document_index.printed_page_label') }}</th>
-                <th>{{ t('document_index.needs_admin_review') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in generatedIndexItems" :key="item.id">
                 <td>
                   <span class="document-index-generated__level" :class="levelClass(item.level)">
-                    {{ item.level }}
+                    {{ t(`document_index.levels.${item.level}`) }}
                   </span>
                 </td>
                 <td>
@@ -579,22 +634,9 @@
                   />
                   <span v-else>{{ item.printedPageLabel }}</span>
                 </td>
-                <td>
-                  <span
-                    :class="{
-                      'document-index-generated__review': item.needsAdminReview,
-                    }"
-                  >
-                    {{
-                      item.needsAdminReview
-                        ? t('document_index.needs_review')
-                        : t('document_index.no_review')
-                    }}
-                  </span>
-                </td>
               </tr>
               <tr v-if="generatedIndexItems.length === 0">
-                <td colspan="6" class="document-index-generated__empty">
+                <td colspan="5" class="document-index-generated__empty">
                   {{ t('document_index.no_generated_items') }}
                 </td>
               </tr>
@@ -607,6 +649,7 @@
             v-if="isEditingGeneratedIndex"
             class="document-index-generated__secondary-action document-index-generated__secondary-action--cancel"
             type="button"
+            :disabled="isUpdatingGeneratedIndex"
             @click="cancelGeneratedIndexEdit"
           >
             {{ t('document_index.cancel_edit') }}
@@ -615,16 +658,36 @@
             v-else
             class="document-index-generated__secondary-action"
             type="button"
+            :disabled="isSavingGeneratedIndex"
             @click="startEditingGeneratedIndex"
           >
             {{ t('document_index.edit_index') }}
           </button>
           <button
+            v-if="isEditingGeneratedIndex"
             class="document-index-generated__save-action"
             type="button"
+            :disabled="isUpdatingGeneratedIndex"
+            @click="updateGeneratedIndex"
+          >
+            {{
+              isUpdatingGeneratedIndex
+                ? t('document_index.updating_index')
+                : t('document_index.update_index')
+            }}
+          </button>
+          <button
+            v-else
+            class="document-index-generated__save-action"
+            type="button"
+            :disabled="isSavingGeneratedIndex"
             @click="saveGeneratedIndex"
           >
-            {{ t('document_index.save_index') }}
+            {{
+              isSavingGeneratedIndex
+                ? t('document_index.saving_index')
+                : t('document_index.save_index')
+            }}
           </button>
         </footer>
       </section>
@@ -634,4 +697,16 @@
 
 <style scoped lang="scss">
   @use '../styles/document_index';
+  .start-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: #f8f8f8;
+    border: 1px dashed #e6e6e6;
+    border-radius: 24px;
+    padding: 50px;
+  }
 </style>

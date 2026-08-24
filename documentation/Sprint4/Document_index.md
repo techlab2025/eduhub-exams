@@ -4,16 +4,13 @@
 
 # Fetch
 
-`POST - /fetch_advices`
+`POST - /create_document_index`
 
 ## Request
 
 ```ts
 {
-  "word"?: string,
-  "with_pagination"?: number,
-  "page"?: number,
-  "per_page"?: number,
+  "document_id": string,
 }
 ```
 
@@ -21,110 +18,184 @@
 
 ```ts
 {
-  "id": number,
-  "title":,
-  "description": string,
-}
-```
-
----
-
-# Store
-
-`POST - /store_advice`
-
-## Request
-
-```ts
-{
-  "translations": {
-    "title": {
-      "en": "plan title",
-      "ar": "خطة"
-    },
-    "description": {
-      "en": "plan description",
-      "ar": "وصف الخطة"
-    }
-
-  },
-
-}
-```
-
----
-
-# Show
-
-`POST - /show_advice`
-
-## Request
-
-```ts
-{
-  "advice_id": number,
-}
-```
-
-## Response
-
-```ts
-{
-  "title": [
+  "book_id": number,
+  "book_status": string,
+  "chapters": [
     {
-      "locale": "en",
-      "title": "plan feature title"
+      "id": number,
+      "position": number,
+      "number": string,
+      "title": string,
+      "description": string | null,
+      "source_pages": {
+        "start": number,
+        "end": number,
+      },
+      "source_hash": string,
+      "source_url_json": string,
+      "source_url_txt": string,
+      "confidence": number,
+      "is_inferred": boolean,
+      "inference_level": string,
+      "lessons": [
+        {
+          "id": number,
+          "position": number,
+          "number": string,
+          "title": string,
+          "description": string | null,
+          "source_pages": {
+            "start": number,
+            "end": number,
+          },
+          "source_hash": string,
+          "source_url_json": string,
+          "source_url_txt": string,
+          "confidence": number,
+          "is_inferred": boolean,
+          "inference_level": string,
+          "topics": [
+            {
+              "id": number,
+              "position": number,
+              "title": string,
+              "description": string | null,
+              "important_concepts": unknown[],
+              "subtopics": unknown[],
+              "source_pages": {
+                "start": number,
+                "end": number,
+              },
+              "source_hash": string,
+              "source_url_json": string,
+              "source_url_txt": string,
+              "confidence": number,
+              "is_inferred": boolean,
+              "inference_level": string,
+            },
+          ],
+        },
+      ],
     },
-    {
-      "locale": "ar",
-      "title": "عنوان الميزة"
-    }
   ],
-    "description": [
+}
+```
+
+---
+
+# Update Document Index
+
+`POST - /update_document_index`
+
+## Request
+
+```ts
+{
+  "document_id": string,
+  "data":[
     {
-      "locale": "en",
-      "description": "plan description"
+      "chapter_id":number,
+      "chapter_title":string,
+      "chapter_from_pdf":number,
+      "chapter_to_pdf":number,
+      "chapter_printed_page":string,
     },
     {
-      "locale": "ar",
-      "description": "وصف الخطة"
+      "lesson_id":number,
+      "lesson_title":string,
+      "lesson_from_pdf":number,
+      "lesson_to_pdf":number,
+      "lesson_printed_page":string,
+    },
+    {
+      "topic_id":number,
+      "topic_title":string,
+      "topic_from_pdf":number,
+      "topic_to_pdf":number,
+      "topic_printed_page":string,
     }
   ]
 
-
 }
 ```
 
-# Edit
-
-`POST - /edit_advice`
-
-## Request
+## Response
 
 ```ts
 {
-  "advice_id": number,
-  "translations": {
-    "title": {
-      "en": "plan title",
-      "ar": "خطة"
+  "book_id": number,
+  "book_status": string,
+  "chapters": [
+    {
+      "id": number,
+      "position": number,
+      "number": string,
+      "title": string,
+      "description": string | null,
+      "source_pages": {
+        "start": number,
+        "end": number,
+      },
+      "source_hash": string,
+      "source_url_json": string,
+      "source_url_txt": string,
+      "confidence": number,
+      "is_inferred": boolean,
+      "inference_level": string,
+      "lessons": [
+        {
+          "id": number,
+          "position": number,
+          "number": string,
+          "title": string,
+          "description": string | null,
+          "source_pages": {
+            "start": number,
+            "end": number,
+          },
+          "source_hash": string,
+          "source_url_json": string,
+          "source_url_txt": string,
+          "confidence": number,
+          "is_inferred": boolean,
+          "inference_level": string,
+          "topics": [
+            {
+              "id": number,
+              "position": number,
+              "title": string,
+              "description": string | null,
+              "important_concepts": unknown[],
+              "subtopics": unknown[],
+              "source_pages": {
+                "start": number,
+                "end": number,
+              },
+              "source_hash": string,
+              "source_url_json": string,
+              "source_url_txt": string,
+              "confidence": number,
+              "is_inferred": boolean,
+              "inference_level": string,
+            },
+          ],
+        },
+      ],
     },
-    "description": {
-      "en": "plan description",
-      "ar": "وصف الخطة"
-    }
-  }
+  ],
 }
 ```
 
-# delete
+---
 
-`POST - /delete_advice`
+# Save Document Index
+
+`POST - /save_document_index`
 
 ## Request
 
 ```ts
 {
-  "advice_id": number,
+  "document_id": string,
 }
 ```
