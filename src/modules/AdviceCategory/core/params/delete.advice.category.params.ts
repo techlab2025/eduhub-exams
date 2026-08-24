@@ -13,7 +13,7 @@ export default class DeleteAdviceCategoryParams implements Params {
   }
 
   toMap(): Record<string, unknown> {
-    return { category_id: this.adviceCategoryId };
+    return { advice_category_id: this.adviceCategoryId };
   }
 
   validate() {

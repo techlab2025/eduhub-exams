@@ -72,7 +72,7 @@ export default class EditEmployeeParams implements Params {
       gender: this.gender,
       status: this.employeeStatus,
       password: this.password,
-      employee_type: this.employeeType,
+      type: this.employeeType,
       e_c_subject_ids: this.educationClassificationSubjectIds,
     };
   }

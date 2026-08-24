@@ -15,16 +15,18 @@
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
   import { EmployeeTypeEnum } from '../../core/constant/employee.type.enum';
-  import SubjectController from '@/modules/Subjects/presentation/controllers/subject.controller';
-  import IndexSubjectParams from '@/modules/Subjects/core/params/index.subject.params';
-  import flattenBranchTree from '@/modules/document/core/TreeSelectHelper';
+  import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
+  import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
+  import flattenSubjectBranchTree from '@/modules/Questions/core/SubjectTreeSelectHelper';
   import type StageModel from '@/modules/Stages/core/models/stage.model';
+  import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import { useI18n } from 'vue-i18n';
 
   const emit = defineEmits(['updateData']);
 
   const props = defineProps<{
     employee?: EmployeeModel;
+    formKey?: string;
     loading?: boolean;
   }>();
 
@@ -42,8 +44,7 @@
   const checked = ref(false); //employee status
 
   const { t } = useI18n();
-  const subjectController = SubjectController.getInstance();
-  const indexSubjectParams = new IndexSubjectParams('', 1, 100, 0);
+  const stageController = StageController.getInstance();
   const employeeTypeOptions: TitleInterface<number>[] = [
     new TitleInterface({ id: EmployeeTypeEnum.ADMIN, title: t('employee_type_admin') }),
     new TitleInterface({ id: EmployeeTypeEnum.TEACHER, title: t('employee_type_teacher') }),
@@ -52,6 +53,24 @@
   const subjectOptions = ref<TitleInterface<number>[]>([]);
   const selectedSubjects = ref<TitleInterface<number>[]>([]);
   const isTeacher = computed(() => selectedEmployeeType.value.id === EmployeeTypeEnum.TEACHER);
+
+  const mapSelectedSubjectIds = (subjectIds: number[]): TitleInterface<number>[] =>
+    subjectIds.map(
+      (subjectId) =>
+        subjectOptions.value.find((option) => option.id === subjectId) ??
+        new TitleInterface({ id: subjectId, title: String(subjectId) }),
+    );
+
+  const mapSelectedSubjects = (subjects: TitleInterface<number>[]): TitleInterface<number>[] =>
+    subjects.map(
+      (subject) => subjectOptions.value.find((option) => option.id === subject.id) ?? subject,
+    );
+
+  const flattenBranchSubjects = (branches: BranchesModel[]): TitleInterface<number>[] =>
+    branches.flatMap((branch) => [
+      ...flattenSubjectBranchTree(branch.subjects as unknown as StageModel[]),
+      ...flattenBranchSubjects(branch.children ?? []),
+    ]);
 
   const route = useRoute();
 
@@ -96,13 +115,9 @@
         selectedEmployeeType.value =
           employeeTypeOptions.find((option) => option.id === newEmployee.employeeType) ??
           employeeTypeOptions[0]!;
-        selectedSubjects.value = newEmployee.educationClassificationSubjectIds.map(
-          (subjectId) =>
-            new TitleInterface({
-              id: subjectId,
-              title: String(subjectId),
-            }),
-        );
+        selectedSubjects.value = newEmployee.subjects.length
+          ? mapSelectedSubjects(newEmployee.subjects)
+          : mapSelectedSubjectIds(newEmployee.educationClassificationSubjectIds);
         gender.value = newEmployee.gender;
         lastName.value = newEmployee.lastname;
         employeeId.value = newEmployee.employeeId;
@@ -144,8 +159,15 @@
   };
 
   const fetchSubjectOptions = async () => {
-    const result = await subjectController.indexSubjects(new IndexSubjectParams('', 1, 100, 0));
-    subjectOptions.value = flattenBranchTree((result?.data ?? []) as StageModel[]);
+    const result = await stageController.fetchList(new IndexStageParams('', 1, 100, 0));
+    const options = ((result?.data ?? []) as StageModel[]).flatMap((stage) => [
+      ...flattenSubjectBranchTree(stage.subjects ?? []),
+      ...flattenBranchSubjects(stage.branches ?? []),
+    ]);
+    subjectOptions.value = options.filter(
+      (option, index) => options.findIndex((item) => item.id === option.id) === index,
+    );
+    selectedSubjects.value = mapSelectedSubjects(selectedSubjects.value);
   };
 
   const draftRef =
@@ -169,8 +191,8 @@
       selectedEmployeeType.value =
         employeeTypeOptions.find((option) => option.id === newVal.employeeType) ??
         employeeTypeOptions[0]!;
-      selectedSubjects.value = (newVal.educationClassificationSubjectIds ?? []).map(
-        (subjectId) => new TitleInterface({ id: subjectId, title: String(subjectId) }),
+      selectedSubjects.value = mapSelectedSubjectIds(
+        newVal.educationClassificationSubjectIds ?? [],
       );
       updateData();
     }
@@ -305,15 +327,14 @@
         />
       </div>
 
-      <div v-if="isTeacher" class="field-group " :class="{ disabled: props.loading }">
+      <div v-if="isTeacher" class="field-group" :class="{ disabled: props.loading }">
         <UpdatedCustomInputSelect
           id="employee-subjects"
           v-model="selectedSubjects"
           :type="2"
           :label="$t('subjects')"
           :placeholder="$t('select_subjects')"
-          :controller="subjectController"
-          :params="indexSubjectParams"
+          :static-options="subjectOptions"
           required
           :reload="false"
           @update:model-value="updateData"
