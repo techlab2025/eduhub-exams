@@ -32,4 +32,15 @@ export const employeeRoutes: RouteRecordRaw[] = [
       parent: 'Employees',
     },
   },
+  {
+    path: 'employees/:id/permissions',
+    name: 'Employee Permissions',
+    component: () => import('@/views/Permission/EmployeePermissions.vue'),
+    props: true,
+    meta: {
+      breadcrumb: 'Employee Permissions',
+      icon: EmployeeIcon,
+      parent: 'Employees',
+    },
+  },
 ];

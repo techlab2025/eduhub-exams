@@ -13,6 +13,7 @@ describe('UserModel', () => {
     updatedAt: '2024-06-01',
     apiToken: 'token-abc',
     refreshToken: 'refresh-xyz',
+    permission: ['OE01'],
   };
 
   describe('constructor', () => {
@@ -27,6 +28,7 @@ describe('UserModel', () => {
       expect(model.updatedAt).toBe('2024-06-01');
       expect(model.apiToken).toBe('token-abc');
       expect(model.refreshToken).toBe('refresh-xyz');
+      expect(model.permission).toEqual(['OE01']);
     });
 
     it('should default type to EMPLOYEE when not provided', () => {
@@ -55,6 +57,7 @@ describe('UserModel', () => {
         updated_at: '2024-07-01',
         token: 'example-access-token',
         refresh_token: 'example-refresh-token',
+        permissions: [{ permission: 'OE03' }, 'OE04'],
       };
       const model = UserModel.fromJson(json);
       expect(model.id).toBe(5);
@@ -64,6 +67,7 @@ describe('UserModel', () => {
       expect(model.employeeId).toBe(42);
       expect(model.apiToken).toBe('example-access-token');
       expect(model.refreshToken).toBe('example-refresh-token');
+      expect(model.permission).toEqual(['OE03', 'OE04']);
     });
 
     it('should throw when json is null', () => {
@@ -73,6 +77,15 @@ describe('UserModel', () => {
     it('should default type to EMPLOYEE when not in json', () => {
       const model = UserModel.fromJson({ name: 'Test', email: 't@t.com' });
       expect(model.type).toBe(EmailType.EMPLOYEE);
+    });
+
+    it('should normalize objects from the singular permission key', () => {
+      const model = UserModel.fromJson({
+        name: 'Test',
+        email: 't@t.com',
+        permission: [{ permission: 'NP01' }],
+      });
+      expect(model.permission).toEqual(['NP01']);
     });
   });
 
@@ -89,6 +102,7 @@ describe('UserModel', () => {
       expect(json.updated_at).toBe('2024-06-01');
       expect(json.api_token).toBe('token-abc');
       expect(json.refresh_token).toBe('refresh-xyz');
+      expect(json.permission).toEqual(['OE01']);
     });
   });
 

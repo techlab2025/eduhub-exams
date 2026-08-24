@@ -5,6 +5,7 @@ import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import type Params from '@/base/Core/Params/params';
 import type EmployeePermissionModel from '../../core/models/employee.permission.model';
 import PermissionRepository from '../../data/repositories/permission.repository';
+import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
 export default class PermissionController extends BaseController<
   EmployeePermissionModel,
@@ -32,6 +33,9 @@ export default class PermissionController extends BaseController<
     return this.instance;
   }
 
+  fetchOne(params: Params, options?: ApiCallOptions): Promise<DataState<EmployeePermissionModel>> {
+    return super.fetchOne(params, { ...options, useStaticData: true });
+  }
   storeEmployeePermissions(params: Params, options?: ApiCallOptions) {
     return this.create(params, { ...options, useJson: true });
   }

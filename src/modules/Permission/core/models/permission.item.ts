@@ -9,6 +9,7 @@ export interface PermissionActionItem {
 export interface PermissionGroupItem {
   code: PermissionCode;
   labelKey: string;
+  checked: boolean;
   permissions: PermissionActionItem[];
 }
 

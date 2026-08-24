@@ -13,7 +13,8 @@ export default class PermissionHandler {
     const user = useUserStore().user;
     if (!user) return false;
     if (user.isMaster) return true;
-    return codes.some((permission) => user.permission.includes(permission));
+    const permissions = Array.isArray(user.permission) ? user.permission : [];
+    return codes.some((permission) => permissions.includes(permission));
   }
 
   except(code: PermissionCode): boolean {

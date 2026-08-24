@@ -1374,5 +1374,35 @@
     "rejected": "Rejected",
     "no_batches": "No question batches found",
     "no_batches_description": "Generate a new batch to begin reviewing AI-created questions."
+  },
+  "permission": {
+    "page_title": "Employee Permissions",
+    "page_description": "Choose the access permissions assigned to {employee}.",
+    "manage": "Manage permissions",
+    "manage_for": "Manage permissions for {employee}",
+    "select_all": "Select all",
+    "selected_count": "{count} permissions selected",
+    "save": "Save Permissions",
+    "apply": "Apply",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "back": "Back",
+    "denied": "You do not have permission to manage employee permissions.",
+    "modules": {
+      "settings": "Settings",
+      "organization": "Organization"
+    },
+    "groups": {
+      "employees": "Employees",
+      "notification_plans": "Notification Plans"
+    },
+    "actions": {
+      "all": "All",
+      "fetch": "Table",
+      "details": "Details",
+      "create": "Create",
+      "update": "Update",
+      "delete": "Delete"
+    }
   }
 }

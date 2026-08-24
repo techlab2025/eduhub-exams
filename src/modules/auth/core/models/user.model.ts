@@ -1,6 +1,17 @@
 import { EmailType } from '../constants/emailType.enum';
 import { isValidEmail } from '../utils/email.validation';
 
+const normalizePermissions = (value: unknown): string[] =>
+  Array.isArray(value)
+    ? value
+        .map((permission: unknown) =>
+          typeof permission === 'string'
+            ? permission
+            : String((permission as { permission?: string })?.permission ?? ''),
+        )
+        .filter(Boolean)
+    : [];
+
 /**
  * Email model representing employee email data
  *
@@ -76,17 +87,7 @@ export default class UserModel {
       image: json.image,
       languages: json.languages,
       isMaster: json.is_master,
-      permission: Array.isArray(json.permission)
-        ? json.permission
-        : Array.isArray(json.permissions)
-          ? json.permissions
-              .map((permission: unknown) =>
-                typeof permission === 'string'
-                  ? permission
-                  : String((permission as { permission?: string })?.permission ?? ''),
-              )
-              .filter(Boolean)
-          : [],
+      permission: normalizePermissions(json.permission ?? json.permissions),
     });
   }
 
