@@ -952,5 +952,35 @@
     "rejected": "مرفوض",
     "no_batches": "لا توجد حزم أسئلة",
     "no_batches_description": "أنشئ حزمة جديدة لبدء مراجعة الأسئلة المنشأة بالذكاء الاصطناعي."
+  },
+  "permission": {
+    "page_title": "صلاحيات الموظف",
+    "page_description": "اختر صلاحيات الوصول المخصصة للموظف {employee}.",
+    "manage": "إدارة الصلاحيات",
+    "manage_for": "إدارة صلاحيات الموظف {employee}",
+    "select_all": "تحديد الكل",
+    "selected_count": "تم تحديد {count} صلاحية",
+    "save": "حفظ الصلاحيات",
+    "apply": "تطبيق",
+    "saving": "جارٍ الحفظ...",
+    "cancel": "إلغاء",
+    "back": "رجوع",
+    "denied": "ليس لديك صلاحية لإدارة صلاحيات الموظفين.",
+    "modules": {
+      "settings": "الإعدادات",
+      "organization": "المنظمة"
+    },
+    "groups": {
+      "employees": "الموظفون",
+      "notification_plans": "خطط الإشعارات"
+    },
+    "actions": {
+      "all": "الكل",
+      "fetch": "الجدول",
+      "details": "التفاصيل",
+      "create": "إنشاء",
+      "update": "تعديل",
+      "delete": "حذف"
+    }
   }
 }

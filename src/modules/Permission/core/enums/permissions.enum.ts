@@ -1,5 +1,6 @@
 export const PermissionsEnum = {
   ADMIN: 'A',
+  ORGANIZATION_EMPLOYEE: 'O',
   SETTING: 'S',
   CREATE_PERMISSION: 'C00',
   PERMISSION_FETCH: 'FP01',
