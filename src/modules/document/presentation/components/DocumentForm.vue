@@ -161,40 +161,6 @@
     emit('updateData', params);
   };
 
-  watch(
-    () => document,
-    (newDoc) => {
-      if (!newDoc) return;
-
-      title.value = newDoc.translations.title;
-
-      if (UploadedImage.value !== newDoc.images) {
-        UploadedImage.value = newDoc.images;
-      }
-      if (UploadedFiles.value !== newDoc.files) {
-        UploadedFiles.value = newDoc.files;
-      }
-
-      RefrenceNumber.value = newDoc.RefNumber;
-      selectedBranch.value = new TitleInterface({
-        id: newDoc.stage.id,
-        title: newDoc.stage.title,
-      });
-      selectedSubject.value = new TitleInterface({
-        id: newDoc.subject.id,
-        title: newDoc.subject.title,
-      });
-      selectedDocumentType.value = new TitleInterface({
-        id: newDoc.documentType.id,
-        title: newDoc.documentType.title,
-      });
-      tags.value = [...newDoc.tags];
-      description.value = { ...newDoc.description };
-      updateData();
-    },
-    { immediate: true },
-  );
-
   const handleEducationClassificationChange = async (
     selected: TitleInterface<number> | null | undefined,
   ) => {
@@ -292,6 +258,91 @@
     perPage: 100,
     withPage: 0,
   });
+
+  let restoreRequestId = 0;
+
+  const restoreDocumentSelections = async (newDoc: DocumentShowModel, requestId: number) => {
+    const classificationId = newDoc.educationClassification.id;
+    const branchId = newDoc.stage.id;
+    const subjectId = newDoc.subject.id;
+    const subjectParentId = newDoc.subjectParentId ?? subjectId;
+
+    selectedEducationClassification.value = new TitleInterface({
+      id: classificationId,
+      title: newDoc.educationClassification.title,
+    });
+    selectedBranch.value = new TitleInterface({
+      id: branchId,
+      title: newDoc.stage.title,
+      subtitle: subjectParentId,
+    });
+    selectedSubject.value = new TitleInterface({
+      id: subjectId,
+      title: newDoc.subject.title,
+    });
+    branchOptions.value = [];
+    subjectOptions.value = [];
+
+    if (classificationId) {
+      const branchResult = await fullBranchTreeController.fetchList(
+        new IndexEducationClassificationBranchesParams({
+          educationClassificationId: classificationId,
+          withSubjects: true,
+        }),
+      );
+      if (requestId !== restoreRequestId) return;
+
+      branchOptions.value = mapBranchSubjectOptions((branchResult?.data ?? []) as StageModel[]);
+      const matchedBranch =
+        branchOptions.value.find(
+          (option) => option.id === branchId && option.subtitle === subjectParentId,
+        ) ?? branchOptions.value.find((option) => option.id === branchId);
+
+      if (matchedBranch) {
+        selectedBranch.value = new TitleInterface({
+          id: matchedBranch.id,
+          title: matchedBranch.title,
+          subtitle: subjectParentId,
+        });
+      }
+    }
+
+    if (branchId) {
+      const subjectResult = await fullSubjectTreeController.fetchList(
+        new FullSubjectTreeParams({ id: branchId, parentId: subjectParentId }),
+      );
+      if (requestId !== restoreRequestId) return;
+
+      subjectOptions.value = flattenSubjectBranchTree((subjectResult?.data ?? []) as StageModel[]);
+      const matchedSubject = subjectOptions.value.find((option) => option.id === subjectId);
+      if (matchedSubject) selectedSubject.value = matchedSubject;
+    }
+
+    updateData();
+  };
+
+  watch(
+    () => document,
+    (newDoc) => {
+      const requestId = ++restoreRequestId;
+      if (!newDoc) return;
+
+      title.value = { ...newDoc.translations.title };
+      description.value = { ...newDoc.translations.description };
+      RefrenceNumber.value = newDoc.RefNumber;
+      UploadedImage.value = newDoc.images;
+      UploadedFiles.value = newDoc.files;
+      selectedDocumentType.value = new TitleInterface({
+        id: newDoc.documentType.id,
+        title: newDoc.documentType.title,
+      });
+      tags.value = [...newDoc.tags];
+
+      void restoreDocumentSelections(newDoc, requestId);
+      updateData();
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>
@@ -411,7 +462,7 @@
           @update:model-value="handleBranchChange($event)"
         />
       </div>
-      <div v-if="subjectOptions.length > 0" class="field-group col-span-2">
+      <div v-if="subjectOptions.length > 0 || selectedSubject" class="field-group col-span-2">
         <UpdatedCustomInputSelect
           id="document-subject"
           v-model="selectedSubject"
