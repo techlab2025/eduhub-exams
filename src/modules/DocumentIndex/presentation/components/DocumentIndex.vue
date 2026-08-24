@@ -31,6 +31,11 @@
   import IndexDocumentParams from '@/modules/document/core/params/index.document.params';
   import NorCurriculumIcon from '@/shared/icons/DocuecmntIndex/NorCurriculumIcon.vue';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+  import {
+    DocumentIndexLevelTypeEnum,
+    getDocumentIndexLevelKey,
+    type DocumentIndexLevelTypeEnum as DocumentIndexLevel,
+  } from '../../core/constant/DocumentIndexLevel.enum';
 
   const emit = defineEmits<{
     saveIndex: [payload: { documentId: number; items: EditableDocumentIndexItem[] }];
@@ -290,12 +295,17 @@
     generatedIndex.value = null;
   };
 
-  const levelClass = (level: string): string => {
-    const normalizedLevel = level.toLowerCase();
-    if (normalizedLevel === 'chapter') return 'document-index-generated__level--chapter';
-    if (normalizedLevel === 'lesson') return 'document-index-generated__level--lesson';
+  const levelClass = (level: DocumentIndexLevel): string => {
+    if (level === DocumentIndexLevelTypeEnum.CHAPTER) {
+      return 'document-index-generated__level--chapter';
+    }
+    if (level === DocumentIndexLevelTypeEnum.LESSON) {
+      return 'document-index-generated__level--lesson';
+    }
     return '';
   };
+
+  const levelKey = (level: DocumentIndexLevel) => getDocumentIndexLevelKey(level);
 
   onMounted(fetchStages);
   onBeforeUnmount(cancelGeneration);
@@ -593,7 +603,7 @@
               <tr v-for="item in generatedIndexItems" :key="item.id">
                 <td>
                   <span class="document-index-generated__level" :class="levelClass(item.level)">
-                    {{ t(`document_index.levels.${item.level}`) }}
+                    {{ t(`document_index.levels.${levelKey(item.level)}`) }}
                   </span>
                 </td>
                 <td>

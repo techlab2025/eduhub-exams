@@ -62,7 +62,7 @@ export default class DocumentIndexController extends BaseController<
     this.generatedIndexState.value = new DataLoading<GeneratedDocumentIndexModel>();
     const result = await this.repository.generateIndex(params, {
       ...options,
-
+      useStaticData: true,
       timeout: 0,
       enableRetry: false,
     });

@@ -1,5 +1,6 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import { getDocumentIndexLevelKey } from '../constant/DocumentIndexLevel.enum';
 import type { EditableDocumentIndexItem } from '../models/editable.document.index.item.model';
 
 type DocumentIndexUpdateRow = Record<string, number | string>;
@@ -19,7 +20,7 @@ export default class UpdateDocumentIndexParams implements Params {
   }
 
   private mapItem(item: EditableDocumentIndexItem): DocumentIndexUpdateRow {
-    const prefix = item.level;
+    const prefix = getDocumentIndexLevelKey(item.level);
     return {
       [`${prefix}_id`]: item.id,
       [`${prefix}_title`]: item.title,

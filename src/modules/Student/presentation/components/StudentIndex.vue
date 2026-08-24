@@ -558,6 +558,9 @@
 </template>
 
 <style scoped lang="scss">
+.subject-cell{
+  justify-content: left;
+}
   .Active {
     span {
       color: #2f7bff;

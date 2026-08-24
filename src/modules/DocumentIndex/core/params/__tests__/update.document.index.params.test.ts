@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import UpdateDocumentIndexParams from '../update.document.index.params';
+import { DocumentIndexLevelTypeEnum } from '../../constant/DocumentIndexLevel.enum';
 
 describe('UpdateDocumentIndexParams', () => {
   it('maps each hierarchy level to the documented update keys', () => {
     const params = new UpdateDocumentIndexParams(17, [
       {
         id: 22,
-        level: 'chapter',
+        level: DocumentIndexLevelTypeEnum.CHAPTER,
         title: 'Chapter 1',
         fromPdf: 7,
         toPdf: 31,
@@ -14,7 +15,7 @@ describe('UpdateDocumentIndexParams', () => {
       },
       {
         id: 84,
-        level: 'lesson',
+        level: DocumentIndexLevelTypeEnum.LESSON,
         title: 'Lesson 1',
         fromPdf: 9,
         toPdf: 14,
@@ -22,7 +23,7 @@ describe('UpdateDocumentIndexParams', () => {
       },
       {
         id: 221,
-        level: 'topic',
+        level: DocumentIndexLevelTypeEnum.TOPIC,
         title: 'Topic 1',
         fromPdf: 10,
         toPdf: 10,

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import GeneratedDocumentIndexModel from '../generated.document.index.model';
+import { DocumentIndexLevelTypeEnum } from '../../constant/DocumentIndexLevel.enum';
 
 describe('GeneratedDocumentIndexModel', () => {
   it('maps the documented book hierarchy and source metadata', () => {
@@ -53,9 +54,24 @@ describe('GeneratedDocumentIndexModel', () => {
 
   it('flattens chapter, lesson and topic nodes for the update dialog', () => {
     expect(GeneratedDocumentIndexModel.example.editableItems).toEqual([
-      expect.objectContaining({ id: 22, level: 'chapter', fromPdf: 7, toPdf: 31 }),
-      expect.objectContaining({ id: 84, level: 'lesson', fromPdf: 9, toPdf: 14 }),
-      expect.objectContaining({ id: 221, level: 'topic', fromPdf: 10, toPdf: 10 }),
+      expect.objectContaining({
+        id: 22,
+        level: DocumentIndexLevelTypeEnum.CHAPTER,
+        fromPdf: 7,
+        toPdf: 31,
+      }),
+      expect.objectContaining({
+        id: 84,
+        level: DocumentIndexLevelTypeEnum.LESSON,
+        fromPdf: 9,
+        toPdf: 14,
+      }),
+      expect.objectContaining({
+        id: 221,
+        level: DocumentIndexLevelTypeEnum.TOPIC,
+        fromPdf: 10,
+        toPdf: 10,
+      }),
     ]);
   });
 });
