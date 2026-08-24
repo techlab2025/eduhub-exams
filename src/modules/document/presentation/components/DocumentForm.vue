@@ -64,9 +64,6 @@
   const subjectOptions = ref<TitleInterface<number>[]>([]);
   const indexDocumentTypeParams = new IndexDocumentTypeParams('', 1, 10, 0);
   const documentTypeController = DocumentTypeController.getInstance();
-  const fullSubjectTreeController = FullSubjectTreeController.getInstance();
-  const fullBranchTreeController = SubjectController.getInstance();
-  const educationClassificationController = EducationClassificationController.getInstance();
   const UploadedImage = ref<string>();
   const UploadedFiles = ref<string>();
 
@@ -105,7 +102,7 @@
     const errors: DocumentValidationErrors = {};
 
     if (!hasTranslation(title.value)) errors.title = t('document_name_required');
-    if (!RefrenceNumber?.value?.toString()?.trim()) {
+    if (!String(RefrenceNumber.value)?.trim()) {
       errors.referenceNumber = t('document_reference_number_required');
     }
     if (!selectedDocumentType.value?.id) {
@@ -158,38 +155,45 @@
       refNumber: RefrenceNumber.value,
       tags: tags.value,
     });
+    // RefrenceNumber?.value
 
     refreshVisibleValidation();
     emit('updateData', params);
   };
 
-  const loadBranchOptions = async (classificationId: number) => {
-    const result = await fullBranchTreeController.fetchList(
-      new IndexEducationClassificationBranchesParams({
-        educationClassificationId: classificationId,
-        withSubjects: true,
-      }),
-    );
-    if (selectedEducationClassification.value?.id !== classificationId) return;
+  watch(
+    () => document,
+    (newDoc) => {
+      if (!newDoc) return;
 
-    branchOptions.value = mapBranchSubjectOptions((result?.data ?? []) as StageModel[]);
-  };
+      title.value = newDoc.translations.title;
 
-  const loadSubjectOptions = async (branch: TitleInterface<number>) => {
-    const requestedBranchId = branch.id;
-    const requestedParentId = branch.subtitle;
-    const result = await fullSubjectTreeController.fetchList(
-      new FullSubjectTreeParams({ id: requestedBranchId, parentId: requestedParentId }),
-    );
-    if (
-      selectedBranch.value?.id !== requestedBranchId ||
-      selectedBranch.value.subtitle !== requestedParentId
-    ) {
-      return;
-    }
+      if (UploadedImage.value !== newDoc.images) {
+        UploadedImage.value = newDoc.images;
+      }
+      if (UploadedFiles.value !== newDoc.files) {
+        UploadedFiles.value = newDoc.files;
+      }
 
-    subjectOptions.value = flattenSubjectBranchTree((result?.data ?? []) as StageModel[]);
-  };
+      RefrenceNumber.value = newDoc.RefNumber;
+      selectedBranch.value = new TitleInterface({
+        id: newDoc.stage.id,
+        title: newDoc.stage.title,
+      });
+      selectedSubject.value = new TitleInterface({
+        id: newDoc.subject.id,
+        title: newDoc.subject.title,
+      });
+      selectedDocumentType.value = new TitleInterface({
+        id: newDoc.documentType.id,
+        title: newDoc.documentType.title,
+      });
+      tags.value = [...newDoc.tags];
+      description.value = { ...newDoc.description };
+      updateData();
+    },
+    { immediate: true },
+  );
 
   const handleEducationClassificationChange = async (
     selected: TitleInterface<number> | null | undefined,
@@ -202,7 +206,15 @@
 
     if (selectedEducationClassification.value?.id) {
       const requestedClassificationId = selectedEducationClassification.value.id;
-      await loadBranchOptions(requestedClassificationId);
+      const result = await fullBranchTreeController.fetchList(
+        new IndexEducationClassificationBranchesParams({
+          educationClassificationId: requestedClassificationId,
+          withSubjects: true,
+        }),
+      );
+      if (selectedEducationClassification.value?.id !== requestedClassificationId) return;
+      const branches = (result?.data ?? []) as StageModel[];
+      branchOptions.value = mapBranchSubjectOptions(branches);
     }
     updateData();
   };
@@ -213,7 +225,18 @@
     subjectOptions.value = [];
 
     if (selectedBranch.value?.id) {
-      await loadSubjectOptions(selectedBranch.value);
+      const requestedBranchId = selectedBranch.value.id;
+      const requestedParentId = selectedBranch.value.subtitle;
+      const result = await fullSubjectTreeController.fetchList(
+        new FullSubjectTreeParams({ id: requestedBranchId, parentId: requestedParentId }),
+      );
+      if (
+        selectedBranch.value?.id !== requestedBranchId ||
+        selectedBranch.value.subtitle !== requestedParentId
+      ) {
+        return;
+      }
+      subjectOptions.value = flattenSubjectBranchTree((result?.data ?? []) as StageModel[]);
     }
     updateData();
   };
@@ -225,68 +248,6 @@
   //   UploadedImage.value = files?.[0]?.base64;
   //   updateData();
   // };
-
-  let documentInitializationId = 0;
-  watch(
-    () => document,
-    async (newDoc) => {
-      if (!newDoc) return;
-      const initializationId = ++documentInitializationId;
-
-      title.value = newDoc.translations.title;
-
-      if (UploadedImage.value !== newDoc.images) UploadedImage.value = newDoc.images;
-      if (UploadedFiles.value !== newDoc.files) UploadedFiles.value = newDoc.files;
-
-      RefrenceNumber.value = newDoc.RefNumber;
-      selectedEducationClassification.value = new TitleInterface({
-        id: newDoc.educationClassification.id,
-        title: newDoc.educationClassification.title,
-      });
-
-      const parentSubjectId = newDoc.subjectParentId ?? newDoc.subject.id;
-      selectedBranch.value = new TitleInterface({
-        id: newDoc.stage.id,
-        title: newDoc.stage.title,
-        subtitle: parentSubjectId,
-      });
-      selectedSubject.value = new TitleInterface({
-        id: newDoc.subject.id,
-        title: newDoc.subject.title,
-      });
-      selectedDocumentType.value = new TitleInterface({
-        id: newDoc.documentType.id,
-        title: newDoc.documentType.title,
-      });
-      tags.value = [...newDoc.tags];
-      description.value = { ...newDoc.description };
-      branchOptions.value = [];
-      subjectOptions.value = [];
-      updateData();
-
-      if (!selectedEducationClassification.value.id || !selectedBranch.value.id) return;
-
-      await loadBranchOptions(selectedEducationClassification.value.id);
-      if (initializationId !== documentInitializationId || !selectedBranch.value) return;
-
-      const matchingBranch = branchOptions.value.find(
-        (option) =>
-          option.id === newDoc.stage.id &&
-          (!parentSubjectId || option.subtitle === parentSubjectId),
-      );
-      if (matchingBranch) selectedBranch.value = matchingBranch;
-
-      await loadSubjectOptions(selectedBranch.value);
-      if (initializationId !== documentInitializationId) return;
-
-      const matchingSubject = subjectOptions.value.find(
-        (option) => option.id === newDoc.subject.id,
-      );
-      if (matchingSubject) selectedSubject.value = matchingSubject;
-      updateData();
-    },
-    { immediate: true },
-  );
   // const handleFilsChange = (files: UploadedFile[]) => {
   //   UploadedFiles.value = files?.[0]?.base64;
   //   updateData();
@@ -323,6 +284,9 @@
   };
   // const DocumentTypeDialog = ref(false);
 
+  const fullSubjectTreeController = FullSubjectTreeController.getInstance();
+  const fullBranchTreeController = SubjectController.getInstance();
+  const educationClassificationController = EducationClassificationController.getInstance();
   const educationClassificationParams = new IndexEducationClassificationParams({
     pageNumber: 1,
     perPage: 100,

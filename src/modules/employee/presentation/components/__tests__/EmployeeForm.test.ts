@@ -5,8 +5,52 @@ import { createI18n } from 'vue-i18n';
 import EmployeeForm from '../EmployeeForm.vue';
 import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
 import { EmployeeTypeEnum } from '../../../core/constant/employee.type.enum';
+import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
+import StageModel from '@/modules/Stages/core/models/stage.model';
+import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import EmployeeModel from '../../../core/models/employee.model';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
+const fetchStagesSpy = vi.spyOn(StageController.getInstance(), 'fetchList');
+const educationClassificationTree = [
+  StageModel.fromJson({
+    id: 128,
+    title: 'mostafa',
+    full_title: 'mostafa',
+    branches: [
+      {
+        id: 361,
+        title: 'mostafa 1',
+        subjects: [
+          {
+            id: 284,
+            e_c_subject_id: 284,
+            title: 'mostafa 2',
+            full_title: 'mostafa 1 -> mostafa 2',
+            children: [
+              {
+                id: 308,
+                e_c_subject_id: 308,
+                title: 'mostafaf 2.1',
+                full_title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1',
+                children: [],
+              },
+            ],
+          },
+          {
+            id: 285,
+            e_c_subject_id: 285,
+            title: 'mostafa 3',
+            full_title: 'mostafa 1 -> mostafa 3',
+            children: [],
+          },
+        ],
+        children: [],
+      },
+    ],
+    children: [],
+  }),
+];
 
 // Mock vue-router
 vi.mock('vue-router', () => ({
@@ -51,8 +95,9 @@ vi.mock('primevue/config', () => ({
 // }))
 
 describe('EmployeeForm', () => {
-  const mountForm = () =>
+  const mountForm = (employee?: EmployeeModel) =>
     mount(EmployeeForm, {
+      props: { employee },
       global: {
         plugins: [i18n],
         stubs: {
@@ -98,6 +143,7 @@ describe('EmployeeForm', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    fetchStagesSpy.mockResolvedValue(new DataSuccess({ data: educationClassificationTree }));
   });
 
   it('renders without crashing', () => {
@@ -128,8 +174,60 @@ describe('EmployeeForm', () => {
 
     const emittedParams = wrapper.emitted('updateData')?.at(-1)?.[0];
     expect(emittedParams?.toMap()).toMatchObject({
-      employee_type: EmployeeTypeEnum.TEACHER,
+      type: EmployeeTypeEnum.TEACHER,
       e_c_subject_ids: [10, 12],
     });
+  });
+
+  it('loads full-title subject options through StageController', async () => {
+    const wrapper = mountForm();
+    await flushPromises();
+
+    wrapper.getComponent(UpdatedCustomInputSelect).vm.$emit('update:modelValue', {
+      id: EmployeeTypeEnum.TEACHER,
+      title: 'Teacher',
+    });
+    await wrapper.vm.$nextTick();
+
+    const subjectSelect = wrapper.findAllComponents(UpdatedCustomInputSelect)[1];
+    expect(fetchStagesSpy).toHaveBeenCalledOnce();
+    expect(subjectSelect?.props('staticOptions')).toMatchObject([
+      { id: 308, title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1' },
+      { id: 285, title: 'mostafa 1 -> mostafa 3' },
+    ]);
+  });
+
+  it('fills edit inputs and teacher subjects from show_employee', async () => {
+    const employee = EmployeeModel.fromJson({
+      id: 30,
+      employee_ref: '',
+      first_name: 'Employee ID1',
+      last_name: 'Employee ID2',
+      image: null,
+      gender: 1,
+      status: 2,
+      type: 2,
+      subjects: [
+        { id: 308, e_c_subject_id: 308, title: 'mostafaf 2.1' },
+        { id: 285, e_c_subject_id: 285, title: 'mostafa 3' },
+      ],
+      email: 'Employeeid@gmail.com',
+      phone: '0101546452312',
+    });
+    const wrapper = mountForm(employee);
+    await flushPromises();
+
+    const inputs = wrapper.findAll('input.field-input');
+    expect(inputs[0]?.element.value).toBe('Employee ID1');
+    expect(inputs[1]?.element.value).toBe('Employee ID2');
+    expect(inputs[3]?.element.value).toBe('Employeeid@gmail.com');
+    expect(inputs[5]?.element.value).toBe('0101546452312');
+
+    const selects = wrapper.findAllComponents(UpdatedCustomInputSelect);
+    expect(selects[0]?.props('modelValue')).toMatchObject({ id: EmployeeTypeEnum.TEACHER });
+    expect(selects[1]?.props('modelValue')).toMatchObject([
+      { id: 308, title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1' },
+      { id: 285, title: 'mostafa 1 -> mostafa 3' },
+    ]);
   });
 });

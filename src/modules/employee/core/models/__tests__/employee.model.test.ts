@@ -11,7 +11,7 @@ describe('EmployeeModel', () => {
     isSuperadmin: 1,
     role_id: 2,
     status: 1,
-    subjects: 'Science',
+    subjects: [],
     image: 'img.jpg',
   };
 
@@ -25,7 +25,7 @@ describe('EmployeeModel', () => {
       isSuperadmin: false,
       role_id: 1,
       status: 1,
-      subjects: 'Math',
+      subjects: [],
     };
     const model = new EmployeeModel(data);
 
@@ -60,5 +60,43 @@ describe('EmployeeModel', () => {
 
     expect(model.employeeType).toBe(EmployeeTypeEnum.TEACHER);
     expect(model.educationClassificationSubjectIds).toEqual([4, 8]);
+  });
+
+  it('maps the complete show_employee response for edit mode', () => {
+    const model = EmployeeModel.fromJson({
+      id: 30,
+      employee_ref: '',
+      name: '',
+      first_name: 'Employee ID1',
+      last_name: 'Employee ID2',
+      image: null,
+      gender: 1,
+      status: 2,
+      type: 2,
+      subjects: [
+        { id: 308, e_c_subject_id: 308, title: 'mostafaf 2.1' },
+        { id: 285, e_c_subject_id: 285, title: 'mostafa 3' },
+      ],
+      email: 'Employeeid@gmail.com',
+      phone: '0101546452312',
+    });
+
+    expect(model).toMatchObject({
+      id: 30,
+      employeeId: '',
+      firstname: 'Employee ID1',
+      lastname: 'Employee ID2',
+      image: '',
+      gender: 1,
+      status: 2,
+      employeeType: EmployeeTypeEnum.TEACHER,
+      email: 'Employeeid@gmail.com',
+      phone: '0101546452312',
+      educationClassificationSubjectIds: [308, 285],
+    });
+    expect(model.subjects).toMatchObject([
+      { id: 308, title: 'mostafaf 2.1' },
+      { id: 285, title: 'mostafa 3' },
+    ]);
   });
 });

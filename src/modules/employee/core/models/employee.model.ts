@@ -1,5 +1,6 @@
 import { GenderENum } from '../constant/gender.enum';
 import { EmployeeTypeEnum } from '../constant/employee.type.enum';
+import TitleInterface from '@/base/Data/Models/titleInterface';
 
 /**
  * Employee model representing an employee entity
@@ -15,7 +16,7 @@ export default class EmployeeModel {
   public readonly isSuperadmin: boolean;
   public readonly employeeId: string;
   public readonly status: number;
-  public readonly subjects: string;
+  public readonly subjects: TitleInterface<number>[];
   public readonly gender: GenderENum;
   public readonly employeeType: EmployeeTypeEnum;
   public readonly educationClassificationSubjectIds: number[];
@@ -36,7 +37,7 @@ export default class EmployeeModel {
     isSuperadmin: boolean;
     employeeId?: string;
     status: number;
-    subjects: string;
+    subjects?: TitleInterface<number>[];
     gender?: GenderENum;
     employeeType?: EmployeeTypeEnum;
     educationClassificationSubjectIds?: number[];
@@ -51,10 +52,11 @@ export default class EmployeeModel {
     this.isSuperadmin = data.isSuperadmin;
     this.employeeId = data.employeeId || '';
     this.status = data.status;
-    this.subjects = data.subjects;
+    this.subjects = data.subjects ?? [];
     this.gender = data.gender as GenderENum;
     this.employeeType = data.employeeType ?? EmployeeTypeEnum.ADMIN;
-    this.educationClassificationSubjectIds = data.educationClassificationSubjectIds ?? [];
+    this.educationClassificationSubjectIds =
+      data.educationClassificationSubjectIds ?? this.subjects.map((subject) => subject.id);
 
     Object.freeze(this);
   }
@@ -69,6 +71,21 @@ export default class EmployeeModel {
       throw new Error('Cannot create EmployeeModel from null or undefined');
     }
 
+    const subjects: TitleInterface<number>[] = Array.isArray(json.subjects)
+      ? json.subjects
+          .map((subject: Record<string, unknown>) => {
+            const id = Number(subject.e_c_subject_id ?? subject.id);
+            if (!id) return null;
+            return new TitleInterface<number>({
+              id,
+              title: String(subject.full_title ?? subject.title ?? id),
+            });
+          })
+          .filter((subject: TitleInterface<number> | null): subject is TitleInterface<number> =>
+            Boolean(subject),
+          )
+      : [];
+
     return new EmployeeModel({
       id: json.id || json.employee_id,
       firstname: json.first_name || json.name?.split(' ')[0] || '',
@@ -76,21 +93,19 @@ export default class EmployeeModel {
       email: json.email || '',
       phone: json.phone || '',
       password: json.password,
-      image: json.image || '',
+      image: json.image ?? '',
       isSuperadmin: Boolean(json.isSuperadmin),
       employeeId: json.employee_ref || '',
       status: Number(json.status || 0),
-      subjects: json.subjects || '',
+      subjects,
       gender: json.gender,
       employeeType: Number(
-        json.employee_type ?? json.employeeType ?? EmployeeTypeEnum.ADMIN,
+        json.type ?? json.employee_type ?? json.employeeType ?? EmployeeTypeEnum.ADMIN,
       ) as EmployeeTypeEnum,
       educationClassificationSubjectIds: Array.isArray(json.e_c_subject_ids)
         ? json.e_c_subject_ids.map(Number)
         : Array.isArray(json.subjects)
-          ? json.subjects.map((subject: Record<string, unknown>) =>
-              Number(subject.e_c_subject_id ?? subject.id),
-            )
+          ? subjects.map((subject) => subject.id)
           : [],
     });
   }
@@ -105,7 +120,7 @@ export default class EmployeeModel {
     isSuperadmin: false,
     employeeId: 'EMP-545',
     status: 2,
-    subjects: 'Maths',
+    subjects: [],
     gender: GenderENum.male,
     employeeType: EmployeeTypeEnum.ADMIN,
     educationClassificationSubjectIds: [],
