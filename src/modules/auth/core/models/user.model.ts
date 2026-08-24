@@ -20,6 +20,7 @@ export default class UserModel {
   public readonly image?: string;
   public readonly languages?: any[];
   public readonly isMaster?: boolean;
+  public readonly permission: string[];
 
   constructor(data: {
     id?: number;
@@ -34,6 +35,7 @@ export default class UserModel {
     image?: string;
     languages?: any[];
     isMaster?: boolean;
+    permission?: string[];
   }) {
     this.id = data.id;
     this.email = data.email;
@@ -47,6 +49,7 @@ export default class UserModel {
     this.image = data.image;
     this.languages = data.languages;
     this.isMaster = data.isMaster;
+    this.permission = data.permission ?? [];
   }
 
   /**
@@ -73,6 +76,17 @@ export default class UserModel {
       image: json.image,
       languages: json.languages,
       isMaster: json.is_master,
+      permission: Array.isArray(json.permission)
+        ? json.permission
+        : Array.isArray(json.permissions)
+          ? json.permissions
+              .map((permission: unknown) =>
+                typeof permission === 'string'
+                  ? permission
+                  : String((permission as { permission?: string })?.permission ?? ''),
+              )
+              .filter(Boolean)
+          : [],
     });
   }
 
@@ -92,6 +106,7 @@ export default class UserModel {
       api_token: this.apiToken,
       refresh_token: this.refreshToken,
       image: this.image,
+      permission: this.permission,
     };
   }
 

@@ -18,7 +18,7 @@ export default class AddAdviceParams implements Params {
 
   toMap(): Record<string, unknown> {
     return {
-      advice_category_id: this.adviceCategoryId,
+      category_id: this.adviceCategoryId,
       translations: this.translations.toMap(),
     };
   }
