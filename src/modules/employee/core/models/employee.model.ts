@@ -53,7 +53,7 @@ export default class EmployeeModel {
     this.status = data.status;
     this.subjects = data.subjects;
     this.gender = data.gender as GenderENum;
-    this.employeeType = data.employeeType ?? EmployeeTypeEnum.EMPLOYEE;
+    this.employeeType = data.employeeType ?? EmployeeTypeEnum.ADMIN;
     this.educationClassificationSubjectIds = data.educationClassificationSubjectIds ?? [];
 
     Object.freeze(this);
@@ -83,7 +83,7 @@ export default class EmployeeModel {
       subjects: json.subjects || '',
       gender: json.gender,
       employeeType: Number(
-        json.employee_type ?? json.employeeType ?? EmployeeTypeEnum.EMPLOYEE,
+        json.employee_type ?? json.employeeType ?? EmployeeTypeEnum.ADMIN,
       ) as EmployeeTypeEnum,
       educationClassificationSubjectIds: Array.isArray(json.e_c_subject_ids)
         ? json.e_c_subject_ids.map(Number)
@@ -107,7 +107,7 @@ export default class EmployeeModel {
     status: 2,
     subjects: 'Maths',
     gender: GenderENum.male,
-    employeeType: EmployeeTypeEnum.EMPLOYEE,
+    employeeType: EmployeeTypeEnum.ADMIN,
     educationClassificationSubjectIds: [],
   });
 }

@@ -1,19 +1,19 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
-import type TranslationParams from '@/modules/about/core/params/translation.params';
+import type AdviceCategoryTranslationParams from './advice.category.translation.params';
 
-export default class AddAdviceParams implements Params {
-  public translations: TranslationParams;
+export default class EditAdviceCategoryParams implements Params {
   public adviceCategoryId: number;
+  public translations: AdviceCategoryTranslationParams;
 
   public static readonly validation = new ClassValidation().setRules({
-    translations: { required: true },
     adviceCategoryId: { required: true },
+    translations: { required: true },
   });
 
-  constructor(data: { translations: TranslationParams; adviceCategoryId: number }) {
-    this.translations = data.translations;
+  constructor(data: { adviceCategoryId: number; translations: AdviceCategoryTranslationParams }) {
     this.adviceCategoryId = data.adviceCategoryId;
+    this.translations = data.translations;
   }
 
   toMap(): Record<string, unknown> {
@@ -24,10 +24,10 @@ export default class AddAdviceParams implements Params {
   }
 
   validate() {
-    return AddAdviceParams.validation.validate(this);
+    return EditAdviceCategoryParams.validation.validate(this);
   }
 
   validateOrThrow() {
-    return AddAdviceParams.validation.validateOrThrow(this);
+    return EditAdviceCategoryParams.validation.validateOrThrow(this);
   }
 }
