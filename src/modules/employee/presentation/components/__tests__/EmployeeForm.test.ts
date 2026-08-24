@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { createI18n } from 'vue-i18n';
 import EmployeeForm from '../EmployeeForm.vue';
+import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+import { EmployeeTypeEnum } from '../../../core/constant/employee.type.enum';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 
@@ -49,13 +51,8 @@ vi.mock('primevue/config', () => ({
 // }))
 
 describe('EmployeeForm', () => {
-  beforeEach(() => {
-    setActivePinia(createPinia());
-    vi.clearAllMocks();
-  });
-
-  it('renders without crashing', () => {
-    const wrapper = mount(EmployeeForm, {
+  const mountForm = () =>
+    mount(EmployeeForm, {
       global: {
         plugins: [i18n],
         stubs: {
@@ -97,6 +94,42 @@ describe('EmployeeForm', () => {
         },
       },
     });
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    vi.clearAllMocks();
+  });
+
+  it('renders without crashing', () => {
+    const wrapper = mountForm();
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('shows the subject multiselect for teachers and emits selected subject ids', async () => {
+    const wrapper = mountForm();
+    await flushPromises();
+
+    const employeeTypeSelect = wrapper.getComponent(UpdatedCustomInputSelect);
+    employeeTypeSelect.vm.$emit('update:modelValue', {
+      id: EmployeeTypeEnum.TEACHER,
+      title: 'Teacher',
+    });
+    await wrapper.vm.$nextTick();
+
+    const selects = wrapper.findAllComponents(UpdatedCustomInputSelect);
+    expect(selects).toHaveLength(2);
+    expect(selects[1]?.props('type')).toBe(2);
+
+    selects[1]?.vm.$emit('update:modelValue', [
+      { id: 10, title: 'Math' },
+      { id: 12, title: 'Science' },
+    ]);
+    await wrapper.vm.$nextTick();
+
+    const emittedParams = wrapper.emitted('updateData')?.at(-1)?.[0];
+    expect(emittedParams?.toMap()).toMatchObject({
+      employee_type: EmployeeTypeEnum.TEACHER,
+      e_c_subject_ids: [10, 12],
+    });
   });
 });

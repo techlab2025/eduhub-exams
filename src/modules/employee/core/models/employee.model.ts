@@ -1,4 +1,5 @@
 import { GenderENum } from '../constant/gender.enum';
+import { EmployeeTypeEnum } from '../constant/employee.type.enum';
 
 /**
  * Employee model representing an employee entity
@@ -16,6 +17,8 @@ export default class EmployeeModel {
   public readonly status: number;
   public readonly subjects: string;
   public readonly gender: GenderENum;
+  public readonly employeeType: EmployeeTypeEnum;
+  public readonly educationClassificationSubjectIds: number[];
 
   get name(): string {
     return `${this.firstname.trim()} ${this.lastname.trim()}`.trim();
@@ -35,6 +38,8 @@ export default class EmployeeModel {
     status: number;
     subjects: string;
     gender?: GenderENum;
+    employeeType?: EmployeeTypeEnum;
+    educationClassificationSubjectIds?: number[];
   }) {
     this.id = data.id;
     this.firstname = data.firstname || data.name?.split(' ')[0] || '';
@@ -48,6 +53,8 @@ export default class EmployeeModel {
     this.status = data.status;
     this.subjects = data.subjects;
     this.gender = data.gender as GenderENum;
+    this.employeeType = data.employeeType ?? EmployeeTypeEnum.EMPLOYEE;
+    this.educationClassificationSubjectIds = data.educationClassificationSubjectIds ?? [];
 
     Object.freeze(this);
   }
@@ -75,6 +82,16 @@ export default class EmployeeModel {
       status: Number(json.status || 0),
       subjects: json.subjects || '',
       gender: json.gender,
+      employeeType: Number(
+        json.employee_type ?? json.employeeType ?? EmployeeTypeEnum.EMPLOYEE,
+      ) as EmployeeTypeEnum,
+      educationClassificationSubjectIds: Array.isArray(json.e_c_subject_ids)
+        ? json.e_c_subject_ids.map(Number)
+        : Array.isArray(json.subjects)
+          ? json.subjects.map((subject: Record<string, unknown>) =>
+              Number(subject.e_c_subject_id ?? subject.id),
+            )
+          : [],
     });
   }
 
@@ -90,5 +107,7 @@ export default class EmployeeModel {
     status: 2,
     subjects: 'Maths',
     gender: GenderENum.male,
+    employeeType: EmployeeTypeEnum.EMPLOYEE,
+    educationClassificationSubjectIds: [],
   });
 }

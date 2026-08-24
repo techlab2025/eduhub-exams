@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import EmployeeModel from '../employee.model';
+import { EmployeeTypeEnum } from '../../constant/employee.type.enum';
 
 describe('EmployeeModel', () => {
   const mockJson = {
@@ -48,5 +49,16 @@ describe('EmployeeModel', () => {
   it('should have a valid example', () => {
     expect(EmployeeModel.example).toBeInstanceOf(EmployeeModel);
     expect(EmployeeModel.example.name).toBe('John Doe');
+  });
+
+  it('maps employee type and education classification subject ids', () => {
+    const model = EmployeeModel.fromJson({
+      ...mockJson,
+      employee_type: EmployeeTypeEnum.TEACHER,
+      subjects: [{ e_c_subject_id: 4 }, { id: 8 }],
+    });
+
+    expect(model.employeeType).toBe(EmployeeTypeEnum.TEACHER);
+    expect(model.educationClassificationSubjectIds).toEqual([4, 8]);
   });
 });
