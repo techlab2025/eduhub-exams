@@ -3,6 +3,7 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type { GenderENum } from '../constant/gender.enum';
 import type { EmployeeStatusEnm } from '../constant/employee.status.enum';
 import isBase64 from '@/base/Presentation/Utils/is_base64';
+import type { EmployeeTypeEnum } from '../constant/employee.type.enum';
 
 /**
  * Parameters for editing an employee
@@ -18,12 +19,15 @@ export default class EditEmployeeParams implements Params {
   public gender: GenderENum;
   public employeeStatus: EmployeeStatusEnm;
   public password: string;
+  public employeeType: EmployeeTypeEnum;
+  public educationClassificationSubjectIds: number[];
 
   public static readonly validation = new ClassValidation().setRules({
     firstname: { required: true },
     email: { required: true },
     phone: { required: true },
     password: { required: false },
+    employeeType: { required: true },
   });
 
   constructor(data: {
@@ -37,6 +41,8 @@ export default class EditEmployeeParams implements Params {
     gender: GenderENum;
     employeeStatus: EmployeeStatusEnm;
     password: string;
+    employeeType: EmployeeTypeEnum;
+    educationClassificationSubjectIds?: number[];
   }) {
     this.id = data.id;
     this.firstname = data.firstname;
@@ -48,6 +54,8 @@ export default class EditEmployeeParams implements Params {
     this.gender = data.gender;
     this.employeeStatus = data.employeeStatus;
     this.password = data.password;
+    this.employeeType = data.employeeType;
+    this.educationClassificationSubjectIds = data.educationClassificationSubjectIds ?? [];
   }
 
   toMap(): { [p: string]: any } {
@@ -64,6 +72,8 @@ export default class EditEmployeeParams implements Params {
       gender: this.gender,
       status: this.employeeStatus,
       password: this.password,
+      employee_type: this.employeeType,
+      e_c_subject_ids: this.educationClassificationSubjectIds,
     };
   }
 

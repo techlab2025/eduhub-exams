@@ -2,6 +2,7 @@ import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 import type { GenderENum } from '../constant/gender.enum';
 import type { EmployeeStatusEnm } from '../constant/employee.status.enum';
+import type { EmployeeTypeEnum } from '../constant/employee.type.enum';
 
 /**
  * Parameters for adding a new employee
@@ -16,6 +17,8 @@ export default class AddEmployeeParams implements Params {
   public gender: GenderENum;
   public employeeStatus: EmployeeStatusEnm;
   public password: string;
+  public employeeType: EmployeeTypeEnum;
+  public educationClassificationSubjectIds: number[];
 
   public static readonly validation = new ClassValidation().setRules({
     firstname: { required: true },
@@ -24,6 +27,7 @@ export default class AddEmployeeParams implements Params {
     image: { required: false },
     // EmployeeRef: { required: true },
     gender: { required: true },
+    employeeType: { required: true },
   });
 
   constructor(data: {
@@ -36,6 +40,8 @@ export default class AddEmployeeParams implements Params {
     gender: GenderENum;
     employeeStatus: EmployeeStatusEnm;
     password: string;
+    employeeType: EmployeeTypeEnum;
+    educationClassificationSubjectIds?: number[];
   }) {
     this.firstname = data.firstname;
     this.lastname = data.lastname;
@@ -46,6 +52,8 @@ export default class AddEmployeeParams implements Params {
     this.gender = data.gender;
     this.employeeStatus = data.employeeStatus;
     this.password = data.password;
+    this.employeeType = data.employeeType;
+    this.educationClassificationSubjectIds = data.educationClassificationSubjectIds ?? [];
   }
 
   toMap(): { [p: string]: any } {
@@ -59,6 +67,8 @@ export default class AddEmployeeParams implements Params {
       gender: this.gender,
       status: this.employeeStatus,
       password: this.password,
+      employee_type: this.employeeType,
+      e_c_subject_ids: this.educationClassificationSubjectIds,
     };
   }
 

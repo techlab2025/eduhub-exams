@@ -79,6 +79,11 @@
           icon: SettingIcon,
         },
         {
+          link: '/advices',
+          name: 'advices',
+          icon: SettingIcon,
+        },
+        {
           link: '/block-reasons',
           name: 'block_reasons',
           icon: SettingIcon,

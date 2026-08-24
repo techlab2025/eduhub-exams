@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { computed, onMounted, ref, watch } from 'vue';
   import { useRoute } from 'vue-router';
   import type EmployeeModel from '../../core/models/employee.model';
   import AddEmployeeParams from '../../core/params/add.employee.params';
@@ -12,6 +12,14 @@
   import { GenderENum } from '../../core/constant/gender.enum';
   import { EmployeeStatusEnm } from '../../core/constant/employee.status.enum';
   import { CustomToast } from '@/modules/Questions/presentation/subComponents/CustomTosat';
+  import TitleInterface from '@/base/Data/Models/titleInterface';
+  import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import { EmployeeTypeEnum } from '../../core/constant/employee.type.enum';
+  import SubjectController from '@/modules/Subjects/presentation/controllers/subject.controller';
+  import IndexSubjectParams from '@/modules/Subjects/core/params/index.subject.params';
+  import flattenBranchTree from '@/modules/document/core/TreeSelectHelper';
+  import type StageModel from '@/modules/Stages/core/models/stage.model';
+  import { useI18n } from 'vue-i18n';
 
   const emit = defineEmits(['updateData']);
 
@@ -27,12 +35,23 @@
   const image = ref<string>('');
   const isSuperadmin = ref<boolean>(false);
   const role_id = ref<number>(1);
-  const employeeType = ref<number>(1);
   const gender = ref<GenderENum>();
   const lastName = ref<string>('');
   const employeeId = ref('');
   const UploadedImage = ref<string[]>([]);
   const checked = ref(false); //employee status
+
+  const { t } = useI18n();
+  const subjectController = SubjectController.getInstance();
+  const indexSubjectParams = new IndexSubjectParams('', 1, 100, 0);
+  const employeeTypeOptions: TitleInterface<number>[] = [
+    new TitleInterface({ id: EmployeeTypeEnum.ADMIN, title: t('employee_type_admin') }),
+    new TitleInterface({ id: EmployeeTypeEnum.TEACHER, title: t('employee_type_teacher') }),
+  ];
+  const selectedEmployeeType = ref<TitleInterface<number>>(employeeTypeOptions[0]!);
+  const subjectOptions = ref<TitleInterface<number>[]>([]);
+  const selectedSubjects = ref<TitleInterface<number>[]>([]);
+  const isTeacher = computed(() => selectedEmployeeType.value.id === EmployeeTypeEnum.TEACHER);
 
   const route = useRoute();
 
@@ -47,6 +66,10 @@
       phone: phone.value,
       employeeStatus: checked.value ? EmployeeStatusEnm.active : EmployeeStatusEnm.disavtive,
       password: password.value,
+      employeeType: selectedEmployeeType.value.id as EmployeeTypeEnum,
+      educationClassificationSubjectIds: isTeacher.value
+        ? selectedSubjects.value.map((subject) => subject.id)
+        : [],
     };
 
     let params: any;
@@ -65,13 +88,21 @@
     () => props.employee,
     (newEmployee) => {
       if (newEmployee) {
-        console.log(newEmployee, 'newEmployee');
         name.value = newEmployee.firstname;
         email.value = newEmployee.email;
         phone.value = newEmployee.phone;
         image.value = newEmployee.image;
         isSuperadmin.value = newEmployee.isSuperadmin;
-        employeeType.value = newEmployee.status;
+        selectedEmployeeType.value =
+          employeeTypeOptions.find((option) => option.id === newEmployee.employeeType) ??
+          employeeTypeOptions[0]!;
+        selectedSubjects.value = newEmployee.educationClassificationSubjectIds.map(
+          (subjectId) =>
+            new TitleInterface({
+              id: subjectId,
+              title: String(subjectId),
+            }),
+        );
         gender.value = newEmployee.gender;
         lastName.value = newEmployee.lastname;
         employeeId.value = newEmployee.employeeId;
@@ -91,7 +122,8 @@
     image.value = '';
     isSuperadmin.value = false;
     role_id.value = 1;
-    employeeType.value = 1;
+    selectedEmployeeType.value = employeeTypeOptions[0]!;
+    selectedSubjects.value = [];
     gender.value = 1;
     lastName.value = '';
     employeeId.value = '';
@@ -103,6 +135,17 @@
   const handleImageChange = (file: any) => {
     UploadedImage.value = file[0]?.base64;
     updateData();
+  };
+
+  const handleEmployeeTypeChange = (employeeType: TitleInterface<number> | null) => {
+    selectedEmployeeType.value = employeeType ?? employeeTypeOptions[0]!;
+    if (!isTeacher.value) selectedSubjects.value = [];
+    updateData();
+  };
+
+  const fetchSubjectOptions = async () => {
+    const result = await subjectController.indexSubjects(new IndexSubjectParams('', 1, 100, 0));
+    subjectOptions.value = flattenBranchTree((result?.data ?? []) as StageModel[]);
   };
 
   const draftRef =
@@ -123,9 +166,17 @@
       UploadedImage.value = newVal.image ? [newVal.image] : [];
       password.value = newVal.password;
       employeeId.value = newVal.EmployeeRef;
+      selectedEmployeeType.value =
+        employeeTypeOptions.find((option) => option.id === newVal.employeeType) ??
+        employeeTypeOptions[0]!;
+      selectedSubjects.value = (newVal.educationClassificationSubjectIds ?? []).map(
+        (subjectId) => new TitleInterface({ id: subjectId, title: String(subjectId) }),
+      );
       updateData();
     }
   });
+
+  onMounted(fetchSubjectOptions);
 </script>
 
 <template>
@@ -174,7 +225,7 @@
           />
         </div>
       </div>
-      <div class="field-group required-field"  :class="{ disabled: props.loading }">
+      <div class="field-group required-field" :class="{ disabled: props.loading }">
         <label class="field-label" for="name">{{ $t(`Last Name`) }}</label>
         <div class="input-wrap">
           <input
@@ -241,7 +292,35 @@
         </div>
       </div>
 
-      <div class="field-group " :class="{ disabled: props.loading }">
+      <div class="field-group" :class="{ disabled: props.loading }">
+        <UpdatedCustomInputSelect
+          id="employee-type"
+          v-model="selectedEmployeeType"
+          :label="$t('employee_type')"
+          :placeholder="$t('select_employee_type')"
+          :static-options="employeeTypeOptions"
+          required
+          :reload="false"
+          @update:model-value="handleEmployeeTypeChange"
+        />
+      </div>
+
+      <div v-if="isTeacher" class="field-group " :class="{ disabled: props.loading }">
+        <UpdatedCustomInputSelect
+          id="employee-subjects"
+          v-model="selectedSubjects"
+          :type="2"
+          :label="$t('subjects')"
+          :placeholder="$t('select_subjects')"
+          :controller="subjectController"
+          :params="indexSubjectParams"
+          required
+          :reload="false"
+          @update:model-value="updateData"
+        />
+      </div>
+
+      <div class="field-group" :class="{ disabled: props.loading }">
         <label class="field-label" for="phone">{{ $t(`Gender`) }}</label>
 
         <div class="gender-group">
