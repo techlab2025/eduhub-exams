@@ -6,9 +6,45 @@ import DocumentShowModel from '../../../core/models/document.show.model';
 import type AddDocumentParams from '../../../core/params/add.document.params';
 
 const toastWarningMock = vi.hoisted(() => vi.fn());
-const stageControllerMock = vi.hoisted(() => ({
-  listData: { value: [] as unknown[] },
-  fetchList: vi.fn(),
+const { branchTree, fetchBranchesMock, fetchSubjectsMock, subjectTree } = vi.hoisted(() => ({
+  branchTree: [
+    {
+      id: 107,
+      full_title: '123',
+      children: [
+        {
+          id: 108,
+          full_title: '123 -> 2',
+          children: [
+            { id: 109, full_title: '123 -> 2 -> 3', children: [] },
+            { id: 172, full_title: '123 -> 2 -> test', children: [] },
+          ],
+        },
+        {
+          id: 148,
+          full_title: '123 -> 5',
+          children: [{ id: 149, full_title: '123 -> 5 -> 6', children: [] }],
+        },
+      ],
+    },
+  ],
+  fetchBranchesMock: vi.fn(),
+  fetchSubjectsMock: vi.fn(),
+  subjectTree: [
+    {
+      id: 500,
+      e_c_subject_id: 500,
+      full_title: 'Mathematics',
+      children: [
+        {
+          id: 502,
+          e_c_subject_id: 502,
+          full_title: 'Mathematics -> Algebra',
+          children: [],
+        },
+      ],
+    },
+  ],
 }));
 
 vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
@@ -17,9 +53,24 @@ vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
   },
 }));
 
-vi.mock('@/modules/Stages/presentation/controllers/stage.controller', () => ({
+vi.mock('@/modules/Subjects/presentation/controllers/subject.controller', () => ({
   default: {
-    getInstance: () => stageControllerMock,
+    getInstance: () => ({ fetchList: fetchBranchesMock }),
+  },
+}));
+
+vi.mock(
+  '@/modules/Questions/presentation/controllers/FullSubjectTree/full.subject.tree.controller',
+  () => ({
+    default: {
+      getInstance: () => ({ fetchList: fetchSubjectsMock }),
+    },
+  }),
+);
+
+vi.mock('@/modules/EducationClassification', () => ({
+  EducationClassificationController: {
+    getInstance: () => ({ fetchAsOptions: vi.fn().mockResolvedValue([]) }),
   },
 }));
 
@@ -66,7 +117,8 @@ describe('DocumentForm', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    stageControllerMock.listData.value = [];
+    fetchBranchesMock.mockResolvedValue({ data: branchTree });
+    fetchSubjectsMock.mockResolvedValue({ data: subjectTree });
   });
 
   it('renders without crashing', () => {
@@ -172,41 +224,16 @@ describe('DocumentForm', () => {
     ]);
   });
 
-  it('uses the first subject id and full title for nested branch options', async () => {
-    stageControllerMock.listData.value = [
-      {
-        id: 130,
-        branches: [
-          {
-            id: 362,
-            subjects: [],
-            children: [
-              {
-                id: 393,
-                subjects: [
-                  {
-                    id: 286,
-                    title: '1',
-                    full_title: 'zxczxczxc -> 2 -> 1 -> 1',
-                  },
-                ],
-                children: [],
-              },
-              {
-                id: 394,
-                subjects: [],
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ];
-
+  it('loads leaf branches and subjects through the dependent selects', async () => {
     const wrapper = mount(DocumentForm, {
       global: {
         stubs: {
-          UpdatedCustomInputSelect: true,
+          UpdatedCustomInputSelect: {
+            name: 'UpdatedCustomInputSelect',
+            props: ['id', 'modelValue', 'staticOptions', 'controller', 'params', 'disabled'],
+            emits: ['update:modelValue'],
+            template: '<div class="select-stub" />',
+          },
           MultiLangInput: true,
           HandleFilesUpload: true,
         },
@@ -215,14 +242,50 @@ describe('DocumentForm', () => {
         },
       },
     });
+
+    const getSelect = (id: string) => {
+      const select = wrapper
+        .findAllComponents({ name: 'UpdatedCustomInputSelect' })
+        .find((item) => item.props('id') === id);
+      if (!select) throw new Error(`Missing select: ${id}`);
+      return select;
+    };
+
+    getSelect('document-education-classification').vm.$emit('update:modelValue', {
+      id: 42,
+      title: 'Basic education',
+    });
     await flushPromises();
 
-    expect(wrapper.findComponent('#doc-branch').props('staticOptions')).toEqual([
-      expect.objectContaining({
-        id: 286,
-        title: 'zxczxczxc -> 2 -> 1 -> 1',
-        subtitle: 393,
-      }),
+    expect(fetchBranchesMock.mock.calls[0]?.[0].toMap()).toMatchObject({
+      education_classification_id: 42,
+    });
+    expect(getSelect('document-branch').props('staticOptions')).toEqual([
+      expect.objectContaining({ id: 109, title: '123 -> 2 -> 3' }),
+      expect.objectContaining({ id: 172, title: '123 -> 2 -> test' }),
+      expect.objectContaining({ id: 149, title: '123 -> 5 -> 6' }),
     ]);
+
+    getSelect('document-branch').vm.$emit('update:modelValue', {
+      id: 149,
+      title: '123 -> 5 -> 6',
+    });
+    await flushPromises();
+
+    expect(fetchSubjectsMock.mock.calls[0]?.[0].toMap()).toEqual({
+      education_classification_branch_id: 149,
+    });
+    expect(getSelect('document-subject').props('staticOptions')).toEqual([
+      expect.objectContaining({ id: 502, title: 'Mathematics -> Algebra' }),
+    ]);
+
+    getSelect('document-subject').vm.$emit('update:modelValue', {
+      id: 502,
+      title: 'Mathematics -> Algebra',
+    });
+    await wrapper.vm.$nextTick();
+
+    const emittedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
+    expect(emittedParams.toMap()).toMatchObject({ stage_id: 149, subject_id: 502 });
   });
 });

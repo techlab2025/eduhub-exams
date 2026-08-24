@@ -1,6 +1,8 @@
 {
   "home": "الرئيسية",
   "employee_type": "نوع الموظف",
+  "education_classification_name": "اسم التصنيف التعليمي",
+  "select_education_classification": "اختر التصنيف التعليمي",
   "employee_type_admin": "مسؤول",
   "employee_type_employee": "موظف",
   "employee_type_teacher": "معلم",
