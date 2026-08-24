@@ -295,16 +295,20 @@
 </script>
 
 <template>
-  <div class="document-form-card">
-    <div class="document-form-header">
-      <DocumentIcon />
+  <div class="document-form-card" :aria-busy="loading">
+    <header class="document-form-header">
+      <div class="document-form-header-icon" aria-hidden="true">
+        <DocumentIcon />
+      </div>
 
       <div class="document-form-header-text">
-        <h4>{{ $t('add_document') }}</h4>
+        <span class="document-form-badge">{{ document ? $t('editing') : $t('add_document') }}</span>
 
-        <p>{{ $t('Upload your document and fill in its details') }}</p>
+        <h4>{{ document ? $t('edit_document') : $t('add_document') }}</h4>
+
+        <p>{{ document ? $t('update_document_details') : $t('fill_document_details') }}</p>
       </div>
-    </div>
+    </header>
 
     <div class="form-fields" :class="{ disabled: loading }">
       <div class="field-group required-field">
@@ -353,12 +357,12 @@
         <UpdatedCustomInputSelect
           id="documentType"
           :class="`field-input`"
-          :label="`Document Type`"
+          :label="$t('document_type')"
           :params="indexDocumentTypeParams"
           :controller="documentTypeController as any"
           :model-value="selectedDocumentType"
           :relaod="false"
-          :placeholder="$t('enter your document type')"
+          :placeholder="$t('select_document_type')"
           @update:model-value="
             selectedDocumentType = $event;
             updateData();
@@ -453,14 +457,18 @@
             @input="updateData"
           />
 
-          <button class="btn btn-primary" @click="setTags">{{ $t('Add Tag') }}</button>
+          <button type="button" class="btn btn-primary tag-add-button" @click="setTags">
+            {{ $t('Add Tag') }}
+          </button>
         </div>
 
         <div class="tags-container" :class="tags.length > 0 ? `border` : ``">
           <div v-for="(tagItem, tagIndex) in tags" :key="tagIndex" class="tag">
             <span>{{ tagItem }}</span>
 
-            <DeleteTagIcon class="delete" @click="deletetag(tagIndex)" />
+            <button type="button" class="tag-delete-button" @click="deletetag(tagIndex)">
+              <DeleteTagIcon class="delete" />
+            </button>
           </div>
         </div>
       </div>
@@ -521,8 +529,195 @@
 </template>
 
 <style scoped lang="scss">
+  .document-form-card {
+    // width: min(100%, 1180px);
+    margin-inline: auto;
+    display: grid;
+    gap: 20px;
+  }
+
+  .document-form-header {
+    position: relative;
+    overflow: hidden;
+    min-height: 112px;
+    padding: 24px;
+    border: 1px solid var(--PrimaryColor-alpha-15);
+    border-radius: var(--radius-xl);
+    background: linear-gradient(120deg, var(--PrimaryColor-alpha-12), var(--BgWhite));
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow-sm);
+
+    &::after {
+      position: absolute;
+      inset-inline-end: -42px;
+      top: -74px;
+      width: 190px;
+      height: 190px;
+      border: 30px solid var(--PrimaryColor-alpha-10);
+      border-radius: var(--radius-full);
+      content: '';
+      pointer-events: none;
+    }
+  }
+
+  .document-form-header-icon {
+    position: relative;
+    z-index: 1;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-lg);
+    background: var(--primary-green);
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    box-shadow: var(--shadow-md);
+
+    :deep(svg) {
+      width: 27px;
+      height: 27px;
+      color: var(--BgWhite);
+    }
+  }
+
+  .document-form-header-text {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+
+    h4 {
+      margin: 5px 0 3px;
+      color: var(--gray-900);
+      font-size: clamp(20px, 2vw, 25px);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    p {
+      margin: 0;
+      color: var(--gray-600);
+      font-size: 13px;
+    }
+  }
+
+  .document-form-badge {
+    width: fit-content;
+    padding: 4px 9px;
+    border: 1px solid var(--PrimaryColor-alpha-20);
+    border-radius: var(--radius-full);
+    background: var(--PrimaryColor-alpha-8);
+    color: var(--primary-green);
+    display: inline-flex;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .form-fields {
+    padding: 24px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    background: var(--BgWhite);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    box-shadow: var(--shadow-md);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus-within {
+      border-color: var(--PrimaryColor-alpha-40);
+      box-shadow: var(--shadow-lg);
+    }
+
+    &.disabled {
+      pointer-events: none;
+      opacity: 0.65;
+    }
+  }
+
+  .field-group {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, var(--gray-50), var(--BgWhite));
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease,
+      transform 0.2s ease;
+
+    &:focus-within {
+      border-color: var(--PrimaryColor-alpha-30);
+      background: var(--BgWhite);
+      transform: translateY(-1px);
+    }
+  }
+
+  .col-span-2 {
+    grid-column: 1 / -1;
+  }
+
+  :deep(.field-label),
+  :deep(.input-label),
+  :deep(.upload-label) {
+    width: fit-content;
+    color: var(--gray-700) !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .field-input,
+  :deep(.field-input),
+  :deep(.p-select),
+  :deep(.p-multiselect) {
+    min-height: 48px;
+    border: 1px solid var(--gray-200) !important;
+    border-radius: 14px !important;
+    background: var(--gray-50) !important;
+    color: var(--gray-800);
+    box-shadow: none;
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: var(--gray-300) !important;
+      background: var(--BgWhite) !important;
+    }
+
+    &:focus,
+    &:focus-within {
+      border-color: var(--primary-green) !important;
+      background: var(--BgWhite) !important;
+      outline: none;
+      box-shadow: 0 0 0 4px var(--PrimaryColor-alpha-10);
+    }
+  }
+
+  input.field-input {
+    width: 100%;
+    padding: 11px 15px;
+    font-size: 13px;
+    font-weight: 500;
+
+    &::placeholder {
+      color: var(--gray-400);
+      font-weight: 400;
+    }
+  }
+
   :deep(.p-select-label) {
-    padding: 0 !important;
+    padding: 11px 15px !important;
+    display: flex;
+    align-items: center;
   }
 
   .disabled-input {
@@ -535,8 +730,185 @@
   }
 
   .document-field-error {
+    width: fit-content;
+    margin: 0;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    background: var(--danger-light);
     color: var(--danger-color);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .input-tag-wrap {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .tag-add-button {
+    min-width: 112px;
+    min-height: 48px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--primary-green);
+    color: var(--BgWhite);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  .tags-container {
+    min-height: 48px;
+    padding: 10px;
+    border: 1px dashed var(--PrimaryColor-alpha-30);
+    border-radius: var(--radius-md);
+    background: var(--PrimaryColor-alpha-4);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    padding: 6px 7px 6px 11px;
+    border: 1px solid var(--PrimaryColor-alpha-20);
+    border-radius: var(--radius-full);
+    background: var(--BgWhite);
+    color: var(--gray-700);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     font-size: 12px;
-    font-weight: 400;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .tag-delete-button {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--danger-light);
+    color: var(--danger-color);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--danger-color);
+      outline-offset: 2px;
+    }
+  }
+
+  :deep(.image-input .upload-label) {
+    margin-bottom: 8px;
+  }
+
+  :deep(.image-input .upload-area) {
+    min-height: 150px;
+    padding: 24px !important;
+    border: 1px dashed var(--PrimaryColor-alpha-40) !important;
+    border-radius: 18px !important;
+    background: linear-gradient(135deg, var(--PrimaryColor-alpha-4), var(--gray-50)) !important;
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      border-color: var(--primary-green) !important;
+      background: var(--PrimaryColor-alpha-8) !important;
+      transform: translateY(-1px);
+    }
+  }
+
+  .add-imaegs-data {
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+
+    :deep(svg) {
+      width: 36px;
+      height: 36px;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .first-text {
+      color: var(--gray-600);
+      font-size: 12px;
+
+      span {
+        color: var(--primary-green);
+        font-weight: 600;
+      }
+    }
+
+    .second-text {
+      color: var(--gray-400);
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .document-form-header {
+      min-height: 96px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+    }
+
+    .document-form-header-icon {
+      width: 46px;
+      height: 46px;
+    }
+
+    .form-fields {
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .col-span-2 {
+      grid-column: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .document-form-header {
+      align-items: flex-start;
+    }
+
+    .document-form-header::after {
+      width: 140px;
+      height: 140px;
+    }
+
+    .field-group {
+      padding: 13px;
+    }
+
+    .input-tag-wrap {
+      flex-direction: column;
+    }
+
+    .tag-add-button {
+      width: 100%;
+    }
   }
 </style>
