@@ -827,6 +827,54 @@
     "close": "إغلاق",
     "no_generated_items": "لا تحتوي الاستجابة على عناصر للفهرس."
   },
+  "notification_plan": {
+    "title": "خطط الإشعارات",
+    "add": "إضافة خطة إشعارات",
+    "edit": "تعديل خطة إشعارات",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "all_statuses": "كل الحالات",
+    "status_filter": "الحالة",
+    "not_available": "غير متاح",
+    "empty": "لا توجد خطط إشعارات",
+    "empty_description": "أضف خطة إشعارات لإعداد المستلمين تلقائياً.",
+    "columns": {
+      "title": "العنوان",
+      "employees": "الموظفون",
+      "hierarchies": "التسلسلات الإدارية",
+      "actions": "الإجراءات",
+      "status": "الحالة"
+    },
+    "actions": {
+      "course_assigend": "إسناد دورة"
+    },
+    "sub_actions": {
+      "low": "منخفض",
+      "medium": "متوسط",
+      "medium_near_miss": "متوسط قريب من الخطر",
+      "high": "مرتفع"
+    },
+    "form": {
+      "title": "العنوان",
+      "title_placeholder": "أدخل عنوان خطة الإشعارات",
+      "active": "نشط",
+      "actions": "الإجراءات",
+      "select_sub_action": "اختر مستوى الإجراء",
+      "choose_recipients": "اختيار المستلمين",
+      "choose_recipients_description": "حدد كيفية إسناد المستلمين لهذه الخطة.",
+      "assignment_type": "نوع الإسناد",
+      "positions": "المناصب",
+      "positions_description": "إسناد مناصب كاملة",
+      "employees": "الموظفون",
+      "employees_description": "إسناد موظفين محددين",
+      "select_employees": "اختر الموظفين",
+      "position_ids": "معرفات المناصب",
+      "position_ids_placeholder": "أدخل معرفات المناصب مفصولة بفواصل",
+      "complete_required": "أدخل العنوان واختر إجراءً واحداً على الأقل وحدد المستلمين.",
+      "save": "حفظ",
+      "update": "تحديث"
+    }
+  },
   "question_batch": {
     "title": "حزم الأسئلة",
     "generate_title": "إنشاء حزمة أسئلة",
