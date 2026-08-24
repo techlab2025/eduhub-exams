@@ -5,6 +5,7 @@ import BaseController, {
 } from '@/base/Presentation/Controller/baseController';
 import type AdviceModel from '../../core/models/advice.model';
 import AdviceRepository from '../../data/repositories/advice.repository';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
 export default class AdviceController extends BaseController<AdviceModel, AdviceModel[]> {
   private static instance: AdviceController;
@@ -47,5 +48,12 @@ export default class AdviceController extends BaseController<AdviceModel, Advice
 
   async fetchList(params?: Params, options?: ApiCallOptions) {
     return super.fetchList(params, options);
+  }
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    if (result?.error?.title) {
+      dialogManager.toastError(result?.error?.title);
+    }
+    return result;
   }
 }
