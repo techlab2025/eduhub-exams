@@ -167,8 +167,8 @@
       syncLocalValue(modelValue.value);
       return;
     }
-    const id = (modelValue.value as TitleInterface<string | number>).id;
-    const match = mergedOptions.value.find((opt) => opt.id === id);
+    const selected = modelValue.value as TitleInterface<string | number>;
+    const match = mergedOptions.value.find((option) => isSameOption(option, selected));
     if (match && match !== localValue.value) {
       localValue.value = match;
     }
@@ -189,6 +189,16 @@
       return value as TitleInterface<number | string>;
     }
     return null;
+  }
+
+  function isSameOption(
+    option: TitleInterface<string | number>,
+    selected: TitleInterface<string | number>,
+  ): boolean {
+    if (option.id !== selected.id) return false;
+    if (selected.subtitle === undefined || selected.subtitle === null) return true;
+
+    return option.subtitle === selected.subtitle;
   }
 
   function getSelectedTitle(value: unknown): string {
@@ -214,7 +224,7 @@
     if (Array.isArray(newValue)) {
       // if (mergedOptions.value.length > 0) {
       localValue.value = newValue.map((item) => {
-        const match = mergedOptions.value.find((opt) => opt.id === item.id);
+        const match = mergedOptions.value.find((option) => isSameOption(option, item));
         return match ?? item;
       });
       // } else {
@@ -225,8 +235,8 @@
 
     // Handle single select
     if (newValue && mergedOptions.value.length > 0) {
-      const id = (newValue as TitleInterface<string | number>).id;
-      const match = mergedOptions.value.find((opt) => opt.id === id);
+      const selected = newValue as TitleInterface<string | number>;
+      const match = mergedOptions.value.find((option) => isSameOption(option, selected));
       localValue.value = match ?? newValue;
     } else {
       localValue.value = newValue;

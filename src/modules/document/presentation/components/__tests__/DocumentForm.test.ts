@@ -219,6 +219,155 @@ describe('DocumentForm', () => {
     expect(emittedParams.translations.description).toEqual(DocumentShowModel.example.description);
   });
 
+  it('restores all dependent select values from the show-document response', async () => {
+    const savedDocument = DocumentShowModel.fromJson({
+      id: 10,
+      title: [{ locale: 'en', title: 'Saved document' }],
+      description: [{ locale: 'en', description: 'Saved description' }],
+      reference_number: 'DOC-10',
+      document_type: { id: 7, title: 'Guide' },
+      stage: {
+        id: 149,
+        title: '123 -> 5 -> 6',
+        education_classification: { id: 42, title: 'Basic education' },
+      },
+      subject: { id: 502, title: 'Algebra', parent_id: 284 },
+      tags: [],
+    });
+
+    const wrapper = mount(DocumentForm, {
+      props: { document: savedDocument, formKey: 'edit-document-10' },
+      global: {
+        stubs: {
+          UpdatedCustomInputSelect: {
+            name: 'UpdatedCustomInputSelect',
+            props: ['id', 'modelValue', 'staticOptions', 'controller', 'params', 'disabled'],
+            emits: ['update:modelValue'],
+            template: '<div class="select-stub" />',
+          },
+          MultiLangInput: true,
+          HandleFilesUpload: true,
+        },
+        mocks: { $t: (msg: string) => msg },
+      },
+    });
+
+    await flushPromises();
+
+    const getSelect = (id: string) => {
+      const select = wrapper
+        .findAllComponents({ name: 'UpdatedCustomInputSelect' })
+        .find((item) => item.props('id') === id);
+      if (!select) throw new Error(`Missing select: ${id}`);
+      return select;
+    };
+
+    expect(getSelect('document-education-classification').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 42, title: 'Basic education' }),
+    );
+    expect(getSelect('document-branch').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 149, subtitle: 284 }),
+    );
+    expect(getSelect('document-subject').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 502, title: 'Mathematics -> Algebra' }),
+    );
+    expect(fetchSubjectsMock.mock.calls.at(-1)?.[0].toMap()).toEqual({
+      education_classification_branch_id: 149,
+      parent_id: 284,
+    });
+  });
+
+  it('restores a parent subject from the full show-document response', async () => {
+    fetchBranchesMock.mockResolvedValueOnce({
+      data: [
+        {
+          id: 361,
+          e_c_branch_id: 361,
+          title: 'mostafa 1',
+          full_title: 'mostafa 1',
+          children: [],
+          subjects: [
+            {
+              id: 285,
+              e_c_subject_id: 285,
+              title: 'mostafa 3',
+              children: [],
+            },
+          ],
+        },
+      ],
+    });
+
+    const savedDocument = DocumentShowModel.fromJson({
+      id: 76,
+      title: [{ locale: 'en', title: 'adsdasdas' }],
+      description: [{ locale: 'en', description: 'asdsadas' }],
+      document_type: { id: 28, title: [{ locale: 'en', title: 'asdad' }] },
+      reference_number: '12312332',
+      stage: {
+        id: 361,
+        title: 'mostafa 1',
+        education_classification: { id: 128, title: 'mostafa' },
+      },
+      subject: {
+        id: 285,
+        e_c_subject_id: 285,
+        title: 'mostafa 3',
+        parent_id: null,
+        education_classification_branch: { id: 361, title: 'mostafa 1' },
+      },
+      tags: [{ tag: 'asdasdas' }],
+    });
+
+    const wrapper = mount(DocumentForm, {
+      props: { document: savedDocument, formKey: 'edit-document-76' },
+      global: {
+        stubs: {
+          UpdatedCustomInputSelect: {
+            name: 'UpdatedCustomInputSelect',
+            props: ['id', 'modelValue', 'staticOptions', 'controller', 'params', 'disabled'],
+            emits: ['update:modelValue'],
+            template: '<div class="select-stub" />',
+          },
+          MultiLangInput: true,
+          HandleFilesUpload: true,
+        },
+        mocks: { $t: (msg: string) => msg },
+      },
+    });
+
+    await flushPromises();
+
+    const getSelect = (id: string) => {
+      const select = wrapper
+        .findAllComponents({ name: 'UpdatedCustomInputSelect' })
+        .find((item) => item.props('id') === id);
+      if (!select) throw new Error(`Missing select: ${id}`);
+      return select;
+    };
+
+    expect(getSelect('document-education-classification').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 128, title: 'mostafa' }),
+    );
+    expect(getSelect('document-branch').props('modelValue')).toEqual(
+      expect.objectContaining({
+        id: 361,
+        title: 'mostafa 1 -> mostafa 3',
+        subtitle: 285,
+      }),
+    );
+    expect(getSelect('document-subject').props('modelValue')).toEqual(
+      expect.objectContaining({ id: 285, title: 'mostafa 3' }),
+    );
+    expect(fetchSubjectsMock.mock.calls.at(-1)?.[0].toMap()).toEqual({
+      education_classification_branch_id: 361,
+      parent_id: 285,
+    });
+
+    const emittedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
+    expect(emittedParams.toMap()).toMatchObject({ stage_id: 361, subject_id: 285 });
+  });
+
   it('shows inline errors for every required document field', async () => {
     const wrapper = mount(DocumentForm, {
       global: {
@@ -247,7 +396,6 @@ describe('DocumentForm', () => {
       'document_name_required',
       'document_reference_number_required',
       'document_type_required',
-      'document_subject_required',
       'document_description_required',
     ]);
   });

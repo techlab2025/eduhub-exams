@@ -30,7 +30,8 @@
 
   const headers: TableHeader[] = [
     { key: 'title', label: 'Title', width: '50%', sortable: true },
-    { key: 'doecumentType', label: 'Document Type', width: '50%' },
+    { key: 'doecumentType', label: 'Document Type', width: '30%' },
+    { key: 'hasIndex', label: 'Has Index', width: '30%' },
   ];
 
   const perPage = ref(10);
@@ -212,6 +213,9 @@
             <template #cell-doecumentType="{ item }">
               {{ item.doecumentType?.title ?? 'N/A' }}
               <!-- {{ DOCUMENT_TYPE_LABELS[item.id] ?? item.documentTypeId }} -->
+            </template>
+            <template #cell-hasIndex="{ item }">
+              {{ item.hasIndex ? 'Yes' : 'No' }}
             </template>
             <template #actions="{ item }">
               <div class="row-actions">

@@ -143,6 +143,20 @@ describe('UpdatedCustomInputSelect', () => {
     expect(select.props('options')).toEqual(opts);
   });
 
+  it('matches duplicate IDs by subtitle when the subtitle identifies the selected option', () => {
+    const options = [
+      { id: 361, title: 'mostafa 1 -> mostafa 2', subtitle: 284 },
+      { id: 361, title: 'mostafa 1 -> mostafa 3', subtitle: 285 },
+    ];
+    const wrapper = createWrapper({
+      staticOptions: options,
+      modelValue: { id: 361, title: 'mostafa 1 -> mostafa 3', subtitle: 285 },
+    });
+
+    expect(wrapper.findComponent(SelectStub).props('modelValue')).toEqual(options[1]);
+    expect(wrapper.find('.selected-value').text()).toBe('mostafa 1 -> mostafa 3');
+  });
+
   it('truncates a long selected label without changing the selected value', () => {
     const selected = makeTitleInterface(1, 'A'.repeat(100));
     const wrapper = createWrapper({ modelValue: selected });

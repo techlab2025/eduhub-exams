@@ -43,7 +43,7 @@ export default class AddDocumentParams implements Params {
 
   toMap(): { [p: string]: any } {
     return {
-      reference_number: this.refNumber,
+      reference_number: String(this.refNumber),
       document_type_id: this.documentTypeId,
       stage_id: this.stage_id,
       subject_id: this.subjects,

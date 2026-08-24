@@ -9,8 +9,10 @@ export default class DocumentShowModel {
   public readonly description: Record<string, string>;
   public readonly RefNumber: string;
   public readonly documentType: TitleInterface<number>;
+  public readonly educationClassification: TitleInterface<number>;
   public readonly stage: TitleInterface<number>;
   public readonly subject: TitleInterface<number>;
+  public readonly subjectParentId?: number;
   public readonly tags: string[];
   public readonly images: string;
   public readonly files: string;
@@ -25,8 +27,10 @@ export default class DocumentShowModel {
     description: Record<string, string>;
     RefNumber: string;
     documentType: TitleInterface<number>;
+    educationClassification: TitleInterface<number>;
     stage: TitleInterface<number>;
     subject: TitleInterface<number>;
+    subjectParentId?: number;
     tags: string[];
     images: string;
     files: string;
@@ -38,8 +42,10 @@ export default class DocumentShowModel {
     this.RefNumber = data.RefNumber;
 
     this.documentType = data.documentType;
+    this.educationClassification = data.educationClassification;
     this.stage = data.stage;
     this.subject = data.subject;
+    this.subjectParentId = data.subjectParentId;
 
     this.translations = data.translations;
 
@@ -65,6 +71,14 @@ export default class DocumentShowModel {
   static fromJson(json: any): DocumentShowModel {
     if (!json) throw new Error('Invalid DocumentShowModel data');
 
+    const subject = json.subject ?? {};
+    const stage = json.stage ?? subject.education_classification_branch ?? {};
+    const educationClassification =
+      stage.education_classification ??
+      subject.education_classification ??
+      json.education_classification ??
+      {};
+
     return new DocumentShowModel({
       id: json.id,
 
@@ -86,18 +100,28 @@ export default class DocumentShowModel {
 
       documentType: new TitleInterface({
         id: json.document_type?.id,
-        title: json.document_type?.title?.[0]?.title ?? '',
+        title:
+          (typeof json.document_type?.title === 'string' ? json.document_type.title : undefined) ??
+          json.document_type?.titles?.[0]?.title ??
+          json.document_type?.title?.[0]?.title ??
+          '',
+      }),
+
+      educationClassification: new TitleInterface({
+        id: educationClassification.id,
+        title: educationClassification.title ?? educationClassification.titles?.[0]?.title ?? '',
       }),
 
       stage: new TitleInterface({
-        id: json.stage?.id,
-        title: json.stage?.titles?.[0]?.title ?? '',
+        id: stage.id,
+        title: stage.title ?? stage.titles?.[0]?.title ?? '',
       }),
 
       subject: new TitleInterface({
-        id: json.subject?.id,
-        title: json.subject?.titles?.[0]?.title ?? '',
+        id: subject.e_c_subject_id ?? subject.id,
+        title: subject.title ?? subject.titles?.[0]?.title ?? '',
       }),
+      subjectParentId: subject.parent_id ?? undefined,
 
       tags: Array.isArray(json.tags) ? json.tags.map((t: any) => t.tag) : [], // tags: json.tags ?? [],
       // images: json.images ?? [],
@@ -118,6 +142,7 @@ export default class DocumentShowModel {
     RefNumber: '100',
 
     documentType: { id: 1, title: 'type' },
+    educationClassification: { id: 1, title: 'classification' },
     stage: { id: 1, title: 'stage' },
     subject: { id: 1, title: 'subject' }, // translations: new DocumentTranslationParams({
     //   title: { ar: '', en: '' },
