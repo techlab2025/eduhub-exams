@@ -8,6 +8,7 @@ import SaveDocumentIndexParams from '../../../core/params/save.document.index.pa
 import UpdateDocumentIndexParams from '../../../core/params/update.document.index.params';
 import DocumentIndexApiService from '../../api/document.index.api-service';
 import DocumentIndexRepository from '../document.index.repository';
+import { DocumentIndexLevelTypeEnum } from '../../../core/constant/DocumentIndexLevel.enum';
 
 const bookResponse = {
   book_id: 10,
@@ -52,7 +53,7 @@ describe('DocumentIndexRepository', () => {
     const updateParams = new UpdateDocumentIndexParams(17, [
       {
         id: 22,
-        level: 'chapter',
+        level: DocumentIndexLevelTypeEnum.CHAPTER,
         title: 'Chapter 1',
         fromPdf: 7,
         toPdf: 31,
