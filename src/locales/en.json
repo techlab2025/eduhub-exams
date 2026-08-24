@@ -1249,6 +1249,54 @@
     "close": "Close",
     "no_generated_items": "The generated response does not contain index rows."
   },
+  "notification_plan": {
+    "title": "Notification Plans",
+    "add": "Add Notification Plan",
+    "edit": "Edit Notification Plan",
+    "active": "Active",
+    "inactive": "Inactive",
+    "all_statuses": "All Statuses",
+    "status_filter": "Status",
+    "not_available": "N/A",
+    "empty": "No notification plans found",
+    "empty_description": "Add a notification plan to configure automatic recipients.",
+    "columns": {
+      "title": "Title",
+      "employees": "Employees",
+      "hierarchies": "Hierarchies",
+      "actions": "Actions",
+      "status": "Status"
+    },
+    "actions": {
+      "course_assigend": "Course Assigned"
+    },
+    "sub_actions": {
+      "low": "Low",
+      "medium": "Medium",
+      "medium_near_miss": "Medium Is Near Miss",
+      "high": "High"
+    },
+    "form": {
+      "title": "Title",
+      "title_placeholder": "Enter notification plan title",
+      "active": "Active",
+      "actions": "Actions",
+      "select_sub_action": "Select action level",
+      "choose_recipients": "Choose Recipients",
+      "choose_recipients_description": "Select how this notification plan should assign recipients.",
+      "assignment_type": "Assignment Type",
+      "positions": "Positions",
+      "positions_description": "Assign entire positions",
+      "employees": "Employees",
+      "employees_description": "Assign individual employees",
+      "select_employees": "Select employees",
+      "position_ids": "Position IDs",
+      "position_ids_placeholder": "Enter position IDs separated by commas",
+      "complete_required": "Enter a title, select at least one action, and choose recipients.",
+      "save": "Save",
+      "update": "Update"
+    }
+  },
   "question_batch": {
     "title": "Question Batches",
     "generate_title": "Generate Question Batch",

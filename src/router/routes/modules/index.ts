@@ -25,6 +25,7 @@ import { subscriptionRoutes } from './subscriptions';
 import { studentRoutes } from './students';
 import { questionBatchRoutes } from './question-batch';
 import { adviceRoutes } from './advices';
+import { notificationPlanRoutes } from './notification-plans';
 
 export const dashboardRoutes: RouteRecordRaw[] = [
   // ...countryRoutes,
@@ -53,4 +54,5 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...studentRoutes,
   ...questionBatchRoutes,
   ...adviceRoutes,
+  ...notificationPlanRoutes,
 ];
