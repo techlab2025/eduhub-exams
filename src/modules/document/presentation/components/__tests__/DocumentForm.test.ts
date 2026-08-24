@@ -23,7 +23,35 @@ const { branchTree, fetchBranchesMock, fetchSubjectsMock, subjectTree } = vi.hoi
         {
           id: 148,
           full_title: '123 -> 5',
-          children: [{ id: 149, full_title: '123 -> 5 -> 6', children: [] }],
+          children: [
+            {
+              id: 149,
+              e_c_branch_id: 149,
+              full_title: '123 -> 5 -> 6',
+              children: [],
+              subjects: [
+                {
+                  id: 284,
+                  e_c_subject_id: 284,
+                  title: 'mostafa 2',
+                  full_title: '123 -> 5 -> 6 -> mostafa 2',
+                  children: [],
+                },
+                {
+                  id: 308,
+                  e_c_subject_id: 308,
+                  title: 'mostafa 2.1',
+                  children: [],
+                },
+                {
+                  id: 285,
+                  e_c_subject_id: 285,
+                  title: 'mostafa 3',
+                  children: [],
+                },
+              ],
+            },
+          ],
         },
       ],
     },
@@ -259,25 +287,51 @@ describe('DocumentForm', () => {
 
     expect(fetchBranchesMock.mock.calls[0]?.[0].toMap()).toMatchObject({
       education_classification_id: 42,
+      with_subject: true,
     });
     expect(getSelect('document-branch').props('staticOptions')).toEqual([
       expect.objectContaining({ id: 109, title: '123 -> 2 -> 3' }),
       expect.objectContaining({ id: 172, title: '123 -> 2 -> test' }),
-      expect.objectContaining({ id: 149, title: '123 -> 5 -> 6' }),
+      expect.objectContaining({
+        id: 149,
+        title: '123 -> 5 -> 6 -> mostafa 2',
+        subtitle: 284,
+      }),
+      expect.objectContaining({
+        id: 149,
+        title: '123 -> 5 -> 6 -> mostafa 2.1',
+        subtitle: 308,
+      }),
+      expect.objectContaining({
+        id: 149,
+        title: '123 -> 5 -> 6 -> mostafa 3',
+        subtitle: 285,
+      }),
     ]);
 
     getSelect('document-branch').vm.$emit('update:modelValue', {
       id: 149,
-      title: '123 -> 5 -> 6',
+      title: '123 -> 5 -> 6 -> mostafa 2',
+      subtitle: 284,
     });
     await flushPromises();
 
     expect(fetchSubjectsMock.mock.calls[0]?.[0].toMap()).toEqual({
       education_classification_branch_id: 149,
+      parent_id: 284,
     });
     expect(getSelect('document-subject').props('staticOptions')).toEqual([
       expect.objectContaining({ id: 502, title: 'Mathematics -> Algebra' }),
     ]);
+    expect(getSelect('document-subject').props('modelValue')).toEqual(
+      expect.objectContaining({
+        id: 284,
+        title: '123 -> 5 -> 6 -> mostafa 2',
+      }),
+    );
+
+    const fallbackParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
+    expect(fallbackParams.toMap()).toMatchObject({ stage_id: 149, subject_id: 284 });
 
     getSelect('document-subject').vm.$emit('update:modelValue', {
       id: 502,
@@ -287,5 +341,10 @@ describe('DocumentForm', () => {
 
     const emittedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
     expect(emittedParams.toMap()).toMatchObject({ stage_id: 149, subject_id: 502 });
+
+    getSelect('document-subject').vm.$emit('update:modelValue', null);
+    await wrapper.vm.$nextTick();
+    const clearedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
+    expect(clearedParams.toMap()).toMatchObject({ stage_id: 149, subject_id: 284 });
   });
 });

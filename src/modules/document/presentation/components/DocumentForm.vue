@@ -70,6 +70,34 @@
   const hasTranslation = (value: Record<string, string>) =>
     Object.values(value).some((translation) => translation?.trim());
 
+  const mapBranchSubjectOptions = (branches: StageModel[]): TitleInterface<number>[] =>
+    branches.flatMap((branch) => {
+      if (branch.children.length > 0) return mapBranchSubjectOptions(branch.children);
+
+      const branchId = branch.e_c_branch_id ?? branch.id;
+      if (!branchId) return [];
+
+      if (!branch.subjects?.length) {
+        return [new TitleInterface({ id: branchId, title: branch.full_title || branch.title })];
+      }
+
+      return branch.subjects.flatMap((subject) => {
+        const subjectId = subject.e_c_subject_id ?? subject.id;
+        if (!subjectId) return [];
+
+        const subjectTitle = subject.full_title || subject.title;
+        const branchTitle = branch.full_title || branch.title;
+        const title = subject.full_title || `${branchTitle} -> ${subjectTitle}`;
+
+        return [new TitleInterface({ id: branchId, title, subtitle: subjectId })];
+      });
+    });
+
+  const getBranchDefaultSubject = (
+    branch: TitleInterface<number> | null,
+  ): TitleInterface<number> | null =>
+    branch?.subtitle ? new TitleInterface({ id: branch.subtitle, title: branch.title }) : null;
+
   const getValidationErrors = (): DocumentValidationErrors => {
     const errors: DocumentValidationErrors = {};
 
@@ -184,29 +212,36 @@
         }),
       );
       if (selectedEducationClassification.value?.id !== requestedClassificationId) return;
-      branchOptions.value = flattenSubjectBranchTree((result?.data ?? []) as StageModel[]);
+      const branches = (result?.data ?? []) as StageModel[];
+      branchOptions.value = mapBranchSubjectOptions(branches);
     }
     updateData();
   };
 
   const handleBranchChange = async (selected: TitleInterface<number> | null | undefined) => {
     selectedBranch.value = selected ?? null;
-    selectedSubject.value = null;
+    selectedSubject.value = getBranchDefaultSubject(selectedBranch.value);
     subjectOptions.value = [];
 
     if (selectedBranch.value?.id) {
       const requestedBranchId = selectedBranch.value.id;
+      const requestedParentId = selectedBranch.value.subtitle;
       const result = await fullSubjectTreeController.fetchList(
-        new FullSubjectTreeParams({ id: requestedBranchId }),
+        new FullSubjectTreeParams({ id: requestedBranchId, parentId: requestedParentId }),
       );
-      if (selectedBranch.value?.id !== requestedBranchId) return;
+      if (
+        selectedBranch.value?.id !== requestedBranchId ||
+        selectedBranch.value.subtitle !== requestedParentId
+      ) {
+        return;
+      }
       subjectOptions.value = flattenSubjectBranchTree((result?.data ?? []) as StageModel[]);
     }
     updateData();
   };
 
   const handleSubjectChange = (selected: TitleInterface<number> | null | undefined) => {
-    selectedSubject.value = selected ?? null;
+    selectedSubject.value = selected ?? getBranchDefaultSubject(selectedBranch.value);
     updateData();
   }; // const handleImageChange = (files: UploadedFile[]) => {
   //   UploadedImage.value = files?.[0]?.base64;
@@ -371,7 +406,7 @@
           @update:model-value="handleBranchChange($event)"
         />
       </div>
-      <div class="field-group required-field col-span-2">
+      <div v-if="subjectOptions.length > 0" class="field-group col-span-2">
         <UpdatedCustomInputSelect
           id="document-subject"
           v-model="selectedSubject"

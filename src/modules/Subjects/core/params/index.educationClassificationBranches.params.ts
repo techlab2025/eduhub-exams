@@ -14,7 +14,7 @@ export default class IndexEducationClassificationBranchesParams extends IndexPar
   }) {
     super(data.word ?? '', data.pageNumber ?? 1, data.perPage ?? 100, data.withPage ?? 0);
     this.educationClassificationId = data.educationClassificationId;
-    this.withSubjects=data.withSubjects ?? false;
+    this.withSubjects = data.withSubjects ?? false;
   }
 
   toMap(): Record<string, string | number | number[] | boolean | null> {
