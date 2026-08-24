@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, computed, nextTick, onMounted } from 'vue';
+  import { nextTick, ref, watch } from 'vue';
   import { onBeforeRouteLeave } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import { useFormsStore } from '@/stores/formsStore';
@@ -15,11 +15,16 @@
   import FileIcon from '@/shared/icons/UploadImage/FileIcon.vue';
   import DocumentTranslationParams from '../../core/params/translation.params';
   import DeleteTagIcon from '@/shared/icons/DocaumentType/DeleteTagIcon.vue';
-  import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
   import type StageModel from '@/modules/Stages/core/models/stage.model';
-  import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import type DocumentShowModel from '../../core/models/document.show.model';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+  import FullSubjectTreeController from '@/modules/Questions/presentation/controllers/FullSubjectTree/full.subject.tree.controller';
+  import SubjectController from '@/modules/Subjects/presentation/controllers/subject.controller';
+  import { EducationClassificationController } from '@/modules/EducationClassification';
+  import IndexEducationClassificationParams from '@/modules/EducationClassification/core/params/index.educationClassification.params';
+  import IndexEducationClassificationBranchesParams from '@/modules/Subjects/core/params/index.educationClassificationBranches.params';
+  import FullSubjectTreeParams from '@/modules/Questions/core/params/FullSubjectTree/full.subject.tree.params';
+  import flattenSubjectBranchTree from '@/modules/Questions/core/SubjectTreeSelectHelper';
   // import NewIcon from '@/shared/icons/CustomSelect/NewIcon.vue';
 
   const emit = defineEmits(['updateData']);
@@ -52,43 +57,15 @@
   const description = ref<Record<string, string>>({});
   const RefrenceNumber = ref<string>('');
   const selectedDocumentType = ref<TitleInterface<number> | null>(null); // const selectedBranch = ref<BranchesModel | null>(null);
+  const selectedEducationClassification = ref<TitleInterface<number> | null>(null);
+  const selectedBranch = ref<TitleInterface<number> | null>(null);
   const selectedSubject = ref<TitleInterface<number> | null>(null);
-  const allStages = ref<StageModel[]>([]);
+  const branchOptions = ref<TitleInterface<number>[]>([]);
+  const subjectOptions = ref<TitleInterface<number>[]>([]);
   const indexDocumentTypeParams = new IndexDocumentTypeParams('', 1, 10, 0);
   const documentTypeController = DocumentTypeController.getInstance();
-  const stageController = StageController.getInstance();
   const UploadedImage = ref<string>();
   const UploadedFiles = ref<string>();
-  const FetchStages = async () => {
-    await stageController.fetchList(indexDocumentTypeParams);
-    allStages.value = (stageController.listData.value ?? []) as StageModel[];
-  };
-  onMounted(async () => {
-    FetchStages();
-  });
-
-  const flattenFirstBranchSubjects = (branches: BranchesModel[]): TitleInterface<number>[] => {
-    return branches.flatMap((branch) => {
-      const firstSubject = branch.subjects?.[0];
-      const currentOption = firstSubject
-        ? [
-            new TitleInterface<number>({
-              id: firstSubject.id,
-              title: firstSubject.full_title ?? firstSubject.title,
-              subtitle: branch.id,
-            }),
-          ]
-        : [];
-
-      return [...currentOption, ...flattenFirstBranchSubjects(branch.children ?? [])];
-    });
-  };
-
-  const branchOptions = computed<TitleInterface<number>[]>(() => {
-    return allStages.value.flatMap((stage) => flattenFirstBranchSubjects(stage.branches));
-  });
-
-  const selectedBranchTitle = ref<TitleInterface<number>>();
 
   const hasTranslation = (value: Record<string, string>) =>
     Object.values(value).some((translation) => translation?.trim());
@@ -103,7 +80,7 @@
     if (!selectedDocumentType.value?.id) {
       errors.documentType = t('document_type_required');
     }
-    if (!selectedBranchTitle.value?.id || !selectedBranchTitle.value?.subtitle) {
+    if (!selectedBranch.value?.id || !selectedSubject.value?.id) {
       errors.subject = t('document_subject_required');
     }
     if (!hasTranslation(description.value)) {
@@ -143,8 +120,8 @@
         title: title.value,
       }),
       documentTypeId: selectedDocumentType.value?.id || 0,
-      stage_id: selectedBranchTitle.value?.subtitle || 0,
-      subjects: selectedBranchTitle.value?.id || 0,
+      stage_id: selectedBranch.value?.id || 0,
+      subjects: selectedSubject.value?.id || 0,
       files: UploadedFiles.value || '',
       images: UploadedImage.value || '',
       refNumber: RefrenceNumber.value,
@@ -170,10 +147,9 @@
       }
 
       RefrenceNumber.value = newDoc.RefNumber;
-      selectedBranchTitle.value = new TitleInterface({
-        id: newDoc.subject.id,
-        title: `${newDoc.stage.title} → ${newDoc.subject.title}`,
-        subtitle: newDoc.stage.id,
+      selectedBranch.value = new TitleInterface({
+        id: newDoc.stage.id,
+        title: newDoc.stage.title,
       });
       selectedSubject.value = new TitleInterface({
         id: newDoc.subject.id,
@@ -190,8 +166,47 @@
     { immediate: true },
   );
 
-  const handleBranchChange = (selected: TitleInterface<number> | undefined) => {
-    selectedBranchTitle.value = selected;
+  const handleEducationClassificationChange = async (
+    selected: TitleInterface<number> | null | undefined,
+  ) => {
+    selectedEducationClassification.value = selected ?? null;
+    selectedBranch.value = null;
+    selectedSubject.value = null;
+    branchOptions.value = [];
+    subjectOptions.value = [];
+
+    if (selectedEducationClassification.value?.id) {
+      const requestedClassificationId = selectedEducationClassification.value.id;
+      const result = await fullBranchTreeController.fetchList(
+        new IndexEducationClassificationBranchesParams({
+          educationClassificationId: requestedClassificationId,
+          withSubjects: true,
+        }),
+      );
+      if (selectedEducationClassification.value?.id !== requestedClassificationId) return;
+      branchOptions.value = flattenSubjectBranchTree((result?.data ?? []) as StageModel[]);
+    }
+    updateData();
+  };
+
+  const handleBranchChange = async (selected: TitleInterface<number> | null | undefined) => {
+    selectedBranch.value = selected ?? null;
+    selectedSubject.value = null;
+    subjectOptions.value = [];
+
+    if (selectedBranch.value?.id) {
+      const requestedBranchId = selectedBranch.value.id;
+      const result = await fullSubjectTreeController.fetchList(
+        new FullSubjectTreeParams({ id: requestedBranchId }),
+      );
+      if (selectedBranch.value?.id !== requestedBranchId) return;
+      subjectOptions.value = flattenSubjectBranchTree((result?.data ?? []) as StageModel[]);
+    }
+    updateData();
+  };
+
+  const handleSubjectChange = (selected: TitleInterface<number> | null | undefined) => {
+    selectedSubject.value = selected ?? null;
     updateData();
   }; // const handleImageChange = (files: UploadedFile[]) => {
   //   UploadedImage.value = files?.[0]?.base64;
@@ -232,6 +247,15 @@
     tags.value.splice(tagId, 1);
   };
   // const DocumentTypeDialog = ref(false);
+
+  const fullSubjectTreeController = FullSubjectTreeController.getInstance();
+  const fullBranchTreeController = SubjectController.getInstance();
+  const educationClassificationController = EducationClassificationController.getInstance();
+  const educationClassificationParams = new IndexEducationClassificationParams({
+    pageNumber: 1,
+    perPage: 100,
+    withPage: 0,
+  });
 </script>
 
 <template>
@@ -323,17 +347,40 @@
           </template>
         </UpdatedCustomInputSelect> -->
       </div>
-
       <div class="field-group required-field col-span-2">
         <UpdatedCustomInputSelect
-          id="doc-branch"
-          v-model="selectedBranchTitle"
-          :label="`subject name`"
-          :static-options="branchOptions"
-          :placeholder="$t('Enter subject name')"
+          id="document-education-classification"
+          v-model="selectedEducationClassification"
+          :label="$t('education_classification_name')"
+          :controller="educationClassificationController as any"
+          :params="educationClassificationParams"
+          :placeholder="$t('select_education_classification')"
           :reload="true"
+          @update:model-value="handleEducationClassificationChange($event)"
+        />
+      </div>
+      <div class="field-group required-field col-span-2">
+        <UpdatedCustomInputSelect
+          id="document-branch"
+          v-model="selectedBranch"
+          :label="$t('branch_name')"
+          :static-options="branchOptions"
+          :placeholder="$t('select_branch')"
+          :reload="false"
+          :disabled="!selectedEducationClassification"
           @update:model-value="handleBranchChange($event)"
-          @reload="FetchStages"
+        />
+      </div>
+      <div class="field-group required-field col-span-2">
+        <UpdatedCustomInputSelect
+          id="document-subject"
+          v-model="selectedSubject"
+          :label="$t('subject_name')"
+          :static-options="subjectOptions"
+          :placeholder="$t('select_subject')"
+          :reload="false"
+          :disabled="!selectedBranch"
+          @update:model-value="handleSubjectChange($event)"
         />
         <small v-if="validationErrors.subject" class="document-field-error" data-document-error>
           {{ validationErrors.subject }}

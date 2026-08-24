@@ -35,6 +35,8 @@
   "employee_personal_email": "Employee Personal Email",
   "employee_work_email": "Employee Work Email",
   "employee_type": "Employee Type",
+  "education_classification_name": "Education Classification Name",
+  "select_education_classification": "Select education classification",
   "employee_type_admin": "Admin",
   "employee_type_employee": "Employee",
   "employee_type_teacher": "Teacher",
