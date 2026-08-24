@@ -9,6 +9,8 @@ import DocumentIndex from '../DocumentIndex.vue';
 const fetchStages = vi.fn();
 const fetchDocuments = vi.fn();
 const generateIndex = vi.fn();
+const updateIndex = vi.fn();
+const saveIndex = vi.fn();
 
 const stageData = ref([
   {
@@ -52,8 +54,12 @@ vi.mock('@/modules/document/presentation/controllers/document.controller', () =>
 
 vi.mock('../../controllers/document.index.controller', () => ({
   default: {
-    getInstance: () => ({ generateIndex }),
+    getInstance: () => ({ generateIndex, updateIndex, saveIndex }),
   },
+}));
+
+vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
+  dialogManager: { toastSuccess: vi.fn() },
 }));
 
 vi.mock('vue-i18n', () => ({
@@ -110,21 +116,36 @@ describe('DocumentIndex', () => {
     generateIndex.mockResolvedValue(
       new DataSuccess({
         data: GeneratedDocumentIndexModel.fromJson({
-          document_id: 17,
-          items: [
+          book_id: 10,
+          book_status: 'completed',
+          chapters: [
             {
-              id: 1,
-              level: 'Unit',
-              title: 'Unit 1 — Reading',
-              from_pdf: 1,
-              to_pdf: 64,
-              printed_page_label: '1-64',
-              needs_admin_review: false,
+              id: 22,
+              number: '1',
+              title: 'Chapter 1 — Reading',
+              source_pages: { start: 1, end: 64 },
+              lessons: [
+                {
+                  id: 84,
+                  number: '1',
+                  title: 'Lesson 1 — Reading',
+                  source_pages: { start: 4, end: 13 },
+                  topics: [
+                    {
+                      id: 221,
+                      title: 'Reading topic',
+                      source_pages: { start: 5, end: 6 },
+                    },
+                  ],
+                },
+              ],
             },
           ],
         }),
       }),
     );
+    updateIndex.mockResolvedValue(new DataSuccess({ data: GeneratedDocumentIndexModel.example }));
+    saveIndex.mockResolvedValue(new DataSuccess({}));
   });
 
   it('loads the curriculum and renders four custom selects', async () => {
@@ -135,7 +156,7 @@ describe('DocumentIndex', () => {
     expect(wrapper.findAllComponents(SelectStub)).toHaveLength(4);
   });
 
-  it('sends only the selected subject-child filter', async () => {
+  it('sends the selected subject and subject-child filters', async () => {
     const wrapper = mountDocumentIndex();
     await flushPromises();
 
@@ -148,8 +169,7 @@ describe('DocumentIndex', () => {
 
     expect(fetchDocuments).toHaveBeenCalledOnce();
     const params = fetchDocuments.mock.calls[0]?.[0];
-    expect(params.toMap()).toMatchObject({ e_c_subject_child_id: 308 });
-    expect(params.toMap()).not.toHaveProperty('e_c_subject_id');
+    expect(params.toMap()).toMatchObject({ ec_subject_id: 284, ec_subject_child_id: 308 });
   });
 
   it('opens generated data and switches table rows into edit mode', async () => {
@@ -175,13 +195,22 @@ describe('DocumentIndex', () => {
 
     expect(generateIndex).toHaveBeenCalledWith(
       expect.objectContaining({ documentId: 17 }),
-      expect.objectContaining({ signal: expect.any(AbortSignal), useStaticData: true }),
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
     expect(wrapper.text()).toContain('document_index.generated_title');
-    expect(wrapper.text()).toContain('Unit 1 — Reading');
+    expect(wrapper.text()).toContain('Chapter 1 — Reading');
+    expect(wrapper.text()).toContain('Reading topic');
 
     await wrapper.find('.document-index-generated__secondary-action').trigger('click');
-    expect(wrapper.findAll('.document-index-generated input')).toHaveLength(4);
+    expect(wrapper.findAll('.document-index-generated input')).toHaveLength(12);
+
+    await wrapper.find('.document-index-generated__save-action').trigger('click');
+    await flushPromises();
+    expect(updateIndex).toHaveBeenCalledOnce();
+
+    await wrapper.find('.document-index-generated__save-action').trigger('click');
+    await flushPromises();
+    expect(saveIndex).toHaveBeenCalledOnce();
   });
 
   it('aborts the long-running request when cancel indexing is pressed', async () => {

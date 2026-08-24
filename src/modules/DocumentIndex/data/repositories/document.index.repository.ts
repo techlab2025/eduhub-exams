@@ -78,16 +78,48 @@ export default class DocumentIndexRepository extends BaseRepository<
       const documentId = Number(params.toMap().document_id);
       return new DataSuccess({
         data: new GeneratedDocumentIndexModel({
-          documentId: Number.isFinite(documentId) ? documentId : undefined,
-          items: GeneratedDocumentIndexModel.example.items,
+          bookId: Number.isFinite(documentId) ? documentId : 0,
+          bookStatus: GeneratedDocumentIndexModel.example.bookStatus,
+          chapters: GeneratedDocumentIndexModel.example.chapters,
         }),
       });
     }
 
     return this.executeCustom(
-      () => this.apiService.generateIndex(params, options),
+      () => this.apiService.createIndex(params, options),
       (data) => GeneratedDocumentIndexModel.fromJson(data),
       { captureRetryFn: false },
     );
+  }
+
+  async updateIndex(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<GeneratedDocumentIndexModel>> {
+    if (options?.useStaticData ?? env.useStaticData) {
+      return new DataSuccess({ data: GeneratedDocumentIndexModel.example });
+    }
+
+    return this.executeCustom(
+      () => this.apiService.updateIndex(params, options),
+      GeneratedDocumentIndexModel.fromJson,
+      { captureRetryFn: false },
+    );
+  }
+
+  async saveIndex(params: Params, options?: ApiCallOptions): Promise<DataState<void>> {
+    if (options?.useStaticData ?? env.useStaticData) return new DataSuccess<void>({});
+
+    try {
+      const response = await this.apiService.saveIndex(params, options);
+      const isSuccessful =
+        response.statusCode >= 200 &&
+        response.statusCode < 300 &&
+        (response.data.status ?? true) !== false;
+      if (!isSuccessful) throw new Error(String(response.data.message ?? 'Unable to save index'));
+      return new DataSuccess<void>({ message: response.data.message });
+    } catch (error) {
+      return this.handleError<void>(error);
+    }
   }
 }

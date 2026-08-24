@@ -405,6 +405,30 @@
     line-height: 1;
   }
 
+  &__summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+
+    span {
+      padding: 6px 10px;
+      border: 1px solid var(--PrimaryColor-alpha-15);
+      border-radius: var(--radius-full);
+      background: var(--PrimaryColor-alpha-8);
+      color: var(--gray-600);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+    }
+
+    strong {
+      color: var(--PrimaryColor);
+      font-weight: 600;
+    }
+  }
+
   &__table-wrap {
     flex: 1 1 auto;
     min-height: 210px;
@@ -506,6 +530,11 @@
     border-radius: 999px;
     cursor: pointer;
     font-family: 'Medium';
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.6;
+    }
   }
 
   &__secondary-action {

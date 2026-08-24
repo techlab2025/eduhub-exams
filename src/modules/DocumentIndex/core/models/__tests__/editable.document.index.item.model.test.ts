@@ -5,14 +5,13 @@ describe('EditableDocumentIndexItem', () => {
   it('supports the editable generated-index row shape', () => {
     const item: EditableDocumentIndexItem = {
       id: 1,
-      level: 'Unit',
-      title: 'Unit 1',
+      level: 'chapter',
+      title: 'Chapter 1',
       fromPdf: 1,
       toPdf: 10,
       printedPageLabel: '1-10',
-      needsAdminReview: false,
     };
 
-    expect(item.title).toBe('Unit 1');
+    expect(item.title).toBe('Chapter 1');
   });
 });

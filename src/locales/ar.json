@@ -813,7 +813,15 @@
     "cancel_indexing": "إلغاء الفهرسة",
     "generated_title": "فهرس المستند المُنشأ",
     "generated_description": "راجع التسلسل الهرمي الذي أنشأه الذكاء الاصطناعي قبل تعديله وحفظه كفهرس رسمي للمستند.",
+    "book_id": "معرف الكتاب",
+    "book_status": "الحالة",
+    "chapters_count": "الفصول",
     "level": "المستوى",
+    "levels": {
+      "chapter": "فصل",
+      "lesson": "درس",
+      "topic": "موضوع"
+    },
     "index_title": "العنوان",
     "from_pdf": "من صفحة PDF",
     "to_pdf": "إلى صفحة PDF",
@@ -823,7 +831,12 @@
     "no_review": "-",
     "edit_index": "تعديل الفهرس",
     "cancel_edit": "إلغاء التعديل",
+    "update_index": "تحديث التغييرات",
+    "updating_index": "جارٍ التحديث...",
     "save_index": "حفظ الفهرس",
+    "saving_index": "جارٍ الحفظ...",
+    "updated_successfully": "تم تحديث فهرس المستند بنجاح.",
+    "saved_successfully": "تم حفظ فهرس المستند بنجاح.",
     "close": "إغلاق",
     "no_generated_items": "لا تحتوي الاستجابة على عناصر للفهرس."
   },

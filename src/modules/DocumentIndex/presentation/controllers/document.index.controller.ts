@@ -21,6 +21,12 @@ export default class DocumentIndexController extends BaseController<
   public readonly generatedIndexState: Ref<DataState<GeneratedDocumentIndexModel>> = ref(
     new DataInitial<GeneratedDocumentIndexModel>(),
   ) as Ref<DataState<GeneratedDocumentIndexModel>>;
+  public readonly updatedIndexState: Ref<DataState<GeneratedDocumentIndexModel>> = ref(
+    new DataInitial<GeneratedDocumentIndexModel>(),
+  ) as Ref<DataState<GeneratedDocumentIndexModel>>;
+  public readonly savedIndexState: Ref<DataState<void>> = ref(new DataInitial<void>()) as Ref<
+    DataState<void>
+  >;
 
   protected get repository() {
     return DocumentIndexRepository.getInstance();
@@ -63,6 +69,25 @@ export default class DocumentIndexController extends BaseController<
     this.generatedIndexState.value = result;
 
     if (result.hasError && !(result instanceof DataCancelled)) this.handleErrorResponse(result);
+    return result;
+  }
+
+  async updateIndex(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<GeneratedDocumentIndexModel>> {
+    this.updatedIndexState.value = new DataLoading<GeneratedDocumentIndexModel>();
+    const result = await this.repository.updateIndex(params, options);
+    this.updatedIndexState.value = result;
+    if (result.hasError) this.handleErrorResponse(result);
+    return result;
+  }
+
+  async saveIndex(params: Params, options?: ApiCallOptions): Promise<DataState<void>> {
+    this.savedIndexState.value = new DataLoading<void>();
+    const result = await this.repository.saveIndex(params, options);
+    this.savedIndexState.value = result;
+    if (result.hasError) this.handleErrorResponse(result);
     return result;
   }
 }

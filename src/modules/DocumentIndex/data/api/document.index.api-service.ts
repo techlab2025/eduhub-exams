@@ -22,7 +22,15 @@ export default class DocumentIndexApiService extends BaseApiService {
     return DocumentIndexApiService.instance;
   }
 
-  generateIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
-    return this.customPost(this.documentIndexEndpoints.generate, params, options);
+  createIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+    return this.customPost(this.documentIndexEndpoints.createIndex, params, options);
+  }
+
+  updateIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+    return this.customPost(this.documentIndexEndpoints.updateIndex, params, options);
+  }
+
+  saveIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+    return this.customPost(this.documentIndexEndpoints.saveIndex, params, options);
   }
 }

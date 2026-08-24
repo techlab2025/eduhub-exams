@@ -7,10 +7,12 @@ import GenerateDocumentIndexParams from '../../../core/params/generate.document.
 import GeneratedDocumentIndexModel from '../../../core/models/generated.document.index.model';
 
 const generateIndex = vi.fn();
+const updateIndex = vi.fn();
+const saveIndex = vi.fn();
 
 vi.mock('../../../data/repositories/document.index.repository', () => ({
   default: {
-    getInstance: () => ({ generateIndex }),
+    getInstance: () => ({ generateIndex, updateIndex, saveIndex }),
   },
 }));
 
@@ -42,5 +44,17 @@ describe('DocumentIndexController', () => {
     );
 
     expect(result).toBeInstanceOf(DataCancelled);
+  });
+
+  it('delegates update and save operations to the repository', async () => {
+    const params = new GenerateDocumentIndexParams(17);
+    updateIndex.mockResolvedValue(new DataSuccess({ data: GeneratedDocumentIndexModel.example }));
+    saveIndex.mockResolvedValue(new DataSuccess({}));
+
+    await DocumentIndexController.getInstance().updateIndex(params);
+    await DocumentIndexController.getInstance().saveIndex(params);
+
+    expect(updateIndex).toHaveBeenCalledWith(params, undefined);
+    expect(saveIndex).toHaveBeenCalledWith(params, undefined);
   });
 });

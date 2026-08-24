@@ -1235,7 +1235,15 @@
     "cancel_indexing": "Cancel Indexing",
     "generated_title": "Generated Document Index",
     "generated_description": "Review the AI-generated hierarchy before editing and saving it as the document’s official index.",
+    "book_id": "Book ID",
+    "book_status": "Status",
+    "chapters_count": "Chapters",
     "level": "Level",
+    "levels": {
+      "chapter": "Chapter",
+      "lesson": "Lesson",
+      "topic": "Topic"
+    },
     "index_title": "Title",
     "from_pdf": "From PDF",
     "to_pdf": "To PDF",
@@ -1245,9 +1253,15 @@
     "no_review": "-",
     "edit_index": "Edit Index",
     "cancel_edit": "Cancel Edit",
+    "update_index": "Update Changes",
+    "updating_index": "Updating...",
     "save_index": "Save Index",
+    "saving_index": "Saving...",
+    "updated_successfully": "Document index updated successfully.",
+    "saved_successfully": "Document index saved successfully.",
     "close": "Close",
-    "no_generated_items": "The generated response does not contain index rows."
+    "no_generated_items": "The generated response does not contain index rows.",
+    "select_curriculum_description": "Start by selecting an Education Type, then complete the available hierarchy to reach the Subject."
   },
   "notification_plan": {
     "title": "Notification Plans",

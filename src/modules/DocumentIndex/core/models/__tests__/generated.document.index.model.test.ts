@@ -2,46 +2,60 @@ import { describe, expect, it } from 'vitest';
 import GeneratedDocumentIndexModel from '../generated.document.index.model';
 
 describe('GeneratedDocumentIndexModel', () => {
-  it('maps snake-case generated rows', () => {
+  it('maps the documented book hierarchy and source metadata', () => {
     const model = GeneratedDocumentIndexModel.fromJson({
-      document_id: 17,
-      items: [
+      book_id: 10,
+      book_status: 'completed',
+      chapters: [
         {
-          id: 3,
-          level: 'Lesson',
-          title: 'Reading Practice',
-          from_pdf: 4,
-          to_pdf: 7,
-          printed_page_label: '14-30',
-          needs_admin_review: true,
+          id: 22,
+          position: 0,
+          number: '1',
+          title: 'Chapter 1',
+          description: null,
+          source_pages: { start: 7, end: 31 },
+          source_hash: 'chapter-hash',
+          source_url_json: '/chapter/22',
+          confidence: 0.99,
+          is_inferred: false,
+          inference_level: 'explicit',
+          lessons: [
+            {
+              id: 84,
+              position: 0,
+              number: '1',
+              title: 'Lesson 1',
+              source_pages: { start: 9, end: 14 },
+              topics: [
+                {
+                  id: 221,
+                  position: 0,
+                  title: 'Topic 1',
+                  source_pages: { start: 10, end: 10 },
+                  important_concepts: ['concept'],
+                  subtopics: [],
+                },
+              ],
+            },
+          ],
         },
       ],
     });
 
-    expect(model.documentId).toBe(17);
-    expect(model.items[0]).toMatchObject({
-      id: 3,
-      level: 'Lesson',
-      title: 'Reading Practice',
-      fromPdf: 4,
-      toPdf: 7,
-      printedPageLabel: '14-30',
-      needsAdminReview: true,
+    expect(model).toMatchObject({ bookId: 10, bookStatus: 'completed' });
+    expect(model.chapters[0]).toMatchObject({
+      id: 22,
+      sourcePages: { start: 7, end: 31 },
+      sourceHash: 'chapter-hash',
     });
+    expect(model.chapters[0]?.lessons[0]?.topics[0]?.importantConcepts).toEqual(['concept']);
   });
 
-  it('accepts a response containing the rows directly', () => {
-    const model = GeneratedDocumentIndexModel.fromJson([
-      { level: 'Unit', title: 'Unit 1', fromPdf: 1, toPdf: 10 },
+  it('flattens chapter, lesson and topic nodes for the update dialog', () => {
+    expect(GeneratedDocumentIndexModel.example.editableItems).toEqual([
+      expect.objectContaining({ id: 22, level: 'chapter', fromPdf: 7, toPdf: 31 }),
+      expect.objectContaining({ id: 84, level: 'lesson', fromPdf: 9, toPdf: 14 }),
+      expect.objectContaining({ id: 221, level: 'topic', fromPdf: 10, toPdf: 10 }),
     ]);
-
-    expect(model.items).toHaveLength(1);
-  });
-
-  it('provides a complete dialog example including a review row', () => {
-    expect(GeneratedDocumentIndexModel.example.items).toHaveLength(9);
-    expect(GeneratedDocumentIndexModel.example.items.some((item) => item.needsAdminReview)).toBe(
-      true,
-    );
   });
 });
