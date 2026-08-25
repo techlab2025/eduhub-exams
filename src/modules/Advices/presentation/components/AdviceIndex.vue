@@ -27,6 +27,7 @@
   const headers = computed<TableHeader[]>(() => [
     { key: 'title', label: t('title') },
     { key: 'description', label: t('description') },
+    { key: 'advice_category', label: t('advice_category') },
   ]);
 
   const fetchItems = (page = 1, searchWord: string = '') =>
@@ -90,7 +91,11 @@
     >
       <template #success="{ data }">
         <AppTable :headers="headers" :items="data as AdviceModel[]" show-index>
-          <template #actions="{ item }">
+         
+         <template #cell-advice_category="{ item }">
+           {{ item.adviceCategory?.title }}
+         </template>
+         <template #actions="{ item }">
             <div class="row-actions">
               <DropList
                 :action-list="actionList(item)"
