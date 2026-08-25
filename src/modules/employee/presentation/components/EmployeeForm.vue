@@ -388,7 +388,11 @@
         />
       </div> -->
 
-      <div class="field-group" :class="{ disabled: props.loading }">
+      <div
+        class="field-group"
+        :class="{ disabled: props.loading }"
+        v-if="selectedEmployeeType.id == EmployeeTypeEnum.TEACHER"
+      >
         <UpdatedCustomInputSelect
           id="employee-subjects"
           v-model="selectedSubjects"
