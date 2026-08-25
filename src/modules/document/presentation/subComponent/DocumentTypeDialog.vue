@@ -193,5 +193,9 @@
   .p-toggleswitch,
   .item-actions {
     flex: 0 0 auto;
+    align-items: center !important;
+    :deep(button) {
+      padding-top: 5px !important;
+    }
   }
 </style>
