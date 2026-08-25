@@ -52,6 +52,11 @@
           name: 'Employees',
           icon: Sidebaremploye,
         },
+        // {
+        //   link: '/roles',
+        //   name: 'role.title_plural',
+        //   icon: SettingIcon,
+        // },
         {
           link: '/documents',
           name: 'Documents',

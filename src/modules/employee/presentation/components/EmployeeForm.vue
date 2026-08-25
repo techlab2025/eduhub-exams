@@ -21,6 +21,8 @@
   import type StageModel from '@/modules/Stages/core/models/stage.model';
   import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import { useI18n } from 'vue-i18n';
+  import RoleController from '@/modules/Role/presentation/controllers/role.controller';
+  import IndexRoleParams from '@/modules/Role/core/params/index.role.params';
 
   const emit = defineEmits(['updateData']);
 
@@ -36,7 +38,6 @@
   const password = ref<string>('');
   const image = ref<string>('');
   const isSuperadmin = ref<boolean>(false);
-  const role_id = ref<number>(1);
   const gender = ref<GenderENum>();
   const lastName = ref<string>('');
   const employeeId = ref('');
@@ -45,11 +46,14 @@
 
   const { t } = useI18n();
   const stageController = StageController.getInstance();
+  const roleController = RoleController.getInstance();
   const employeeTypeOptions: TitleInterface<number>[] = [
     new TitleInterface({ id: EmployeeTypeEnum.ADMIN, title: t('employee_type_admin') }),
     new TitleInterface({ id: EmployeeTypeEnum.TEACHER, title: t('employee_type_teacher') }),
   ];
   const selectedEmployeeType = ref<TitleInterface<number>>(employeeTypeOptions[0]!);
+  const roleOptions = ref<TitleInterface<number>[]>([]);
+  const selectedRole = ref<TitleInterface<number> | null>(null);
   const subjectOptions = ref<TitleInterface<number>[]>([]);
   const selectedSubjects = ref<TitleInterface<number>[]>([]);
   const isTeacher = computed(() => selectedEmployeeType.value.id === EmployeeTypeEnum.TEACHER);
@@ -86,6 +90,7 @@
       employeeStatus: checked.value ? EmployeeStatusEnm.active : EmployeeStatusEnm.disavtive,
       password: password.value,
       employeeType: selectedEmployeeType.value.id as EmployeeTypeEnum,
+      roleId: selectedRole.value?.id,
       educationClassificationSubjectIds: isTeacher.value
         ? selectedSubjects.value.map((subject) => subject.id)
         : [],
@@ -115,6 +120,13 @@
         selectedEmployeeType.value =
           employeeTypeOptions.find((option) => option.id === newEmployee.employeeType) ??
           employeeTypeOptions[0]!;
+        selectedRole.value = newEmployee.roleId
+          ? (roleOptions.value.find((option) => option.id === newEmployee.roleId) ??
+            new TitleInterface({
+              id: newEmployee.roleId,
+              title: newEmployee.roleName || String(newEmployee.roleId),
+            }))
+          : null;
         selectedSubjects.value = newEmployee.subjects.length
           ? mapSelectedSubjects(newEmployee.subjects)
           : mapSelectedSubjectIds(newEmployee.educationClassificationSubjectIds);
@@ -136,7 +148,7 @@
     password.value = '';
     image.value = '';
     isSuperadmin.value = false;
-    role_id.value = 1;
+    selectedRole.value = null;
     selectedEmployeeType.value = employeeTypeOptions[0]!;
     selectedSubjects.value = [];
     gender.value = 1;
@@ -158,6 +170,11 @@
     updateData();
   };
 
+  const handleRoleChange = (role: TitleInterface<number> | null) => {
+    selectedRole.value = role;
+    updateData();
+  };
+
   const fetchSubjectOptions = async () => {
     const result = await stageController.fetchList(new IndexStageParams('', 1, 100, 0));
     const options = ((result?.data ?? []) as StageModel[]).flatMap((stage) => [
@@ -170,6 +187,16 @@
     selectedSubjects.value = mapSelectedSubjects(selectedSubjects.value);
   };
 
+  // const fetchRoleOptions = async () => {
+  //   const result = await roleController.fetchList(new IndexRoleParams('', 1, 100, 0));
+  //   roleOptions.value = (result.data ?? []).map((role) => role.toOption());
+  //   if (selectedRole.value) {
+  //     selectedRole.value =
+  //       roleOptions.value.find((option) => option.id === selectedRole.value?.id) ??
+  //       selectedRole.value;
+  //   }
+  // };
+
   const draftRef =
     !route.params.id && localStorage.getItem('employee-draft')
       ? CustomToast<AddEmployeeParams>('employee-draft')
@@ -177,7 +204,6 @@
 
   watch(draftRef!, (newVal) => {
     if (newVal) {
-      console.log(newVal, 'newValnewVal');
       name.value = newVal.firstname;
       email.value = newVal.email;
       phone.value = newVal.phone;
@@ -191,6 +217,10 @@
       selectedEmployeeType.value =
         employeeTypeOptions.find((option) => option.id === newVal.employeeType) ??
         employeeTypeOptions[0]!;
+      selectedRole.value = newVal.roleId
+        ? (roleOptions.value.find((option) => option.id === newVal.roleId) ??
+          new TitleInterface({ id: newVal.roleId, title: String(newVal.roleId) }))
+        : null;
       selectedSubjects.value = mapSelectedSubjectIds(
         newVal.educationClassificationSubjectIds ?? [],
       );
@@ -198,7 +228,9 @@
     }
   });
 
-  onMounted(fetchSubjectOptions);
+  onMounted(() => Promise.all([fetchSubjectOptions(), 
+  // fetchRoleOptions()
+  ]));
 </script>
 
 <template>
@@ -326,6 +358,19 @@
           @update:model-value="handleEmployeeTypeChange"
         />
       </div>
+
+      <!-- <div class="field-group" :class="{ disabled: props.loading }">
+        <UpdatedCustomInputSelect
+          id="employee-role"
+          v-model="selectedRole"
+          :label="$t('role.employee_role')"
+          :placeholder="$t('role.select_employee_role')"
+          :static-options="roleOptions"
+          required
+          :reload="false"
+          @update:model-value="handleRoleChange"
+        />
+      </div> -->
 
       <div v-if="isTeacher" class="field-group" :class="{ disabled: props.loading }">
         <UpdatedCustomInputSelect

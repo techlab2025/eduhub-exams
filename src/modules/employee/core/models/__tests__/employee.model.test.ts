@@ -40,6 +40,7 @@ describe('EmployeeModel', () => {
     expect(model.name).toBe('Jane Doe');
     expect(model.isSuperadmin).toBe(true);
     expect(model.status).toBe(1);
+    expect(model.roleId).toBe(2);
   });
 
   it('should throw error if json is null in fromJson', () => {
@@ -73,6 +74,7 @@ describe('EmployeeModel', () => {
       gender: 1,
       status: 2,
       type: 2,
+      role: { id: 4, role_name: 'Content Manager' },
       subjects: [
         { id: 308, e_c_subject_id: 308, title: 'mostafaf 2.1' },
         { id: 285, e_c_subject_id: 285, title: 'mostafa 3' },
@@ -90,6 +92,8 @@ describe('EmployeeModel', () => {
       gender: 1,
       status: 2,
       employeeType: EmployeeTypeEnum.TEACHER,
+      roleId: 4,
+      roleName: 'Content Manager',
       email: 'Employeeid@gmail.com',
       phone: '0101546452312',
       educationClassificationSubjectIds: [308, 285],

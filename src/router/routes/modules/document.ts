@@ -2,15 +2,15 @@ import type { RouteRecordRaw } from '@/router/types';
 import DocumentIcon from '@/shared/icons/BreadcrumbIcons/DocumentIcon.vue';
 
 export const documentRoutes: RouteRecordRaw[] = [
-  // {
-  //   path: 'document-index',
-  //   name: 'Document Index',
-  //   component: () => import('@/views/DocumentIndex/IndexDocumentIndex.vue'),
-  //   meta: {
-  //     breadcrumb: 'Generate Document Index',
-  //     icon: DocumentIcon,
-  //   },
-  // },
+  {
+    path: 'document-index',
+    name: 'Document Index',
+    component: () => import('@/views/DocumentIndex/IndexDocumentIndex.vue'),
+    meta: {
+      breadcrumb: 'Generate Document Index',
+      icon: DocumentIcon,
+    },
+  },
   {
     path: 'documents',
     name: 'Documents',

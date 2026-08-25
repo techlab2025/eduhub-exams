@@ -18,12 +18,14 @@ describe('EditEmployeeParams', () => {
       employeeStatus: EmployeeStatusEnm.active,
       password: '',
       employeeType: EmployeeTypeEnum.TEACHER,
+      roleId: 4,
       educationClassificationSubjectIds: [10, 12],
     });
 
     expect(params.toMap()).toMatchObject({
       employee_id: 7,
-      employee_type: EmployeeTypeEnum.TEACHER,
+      type: EmployeeTypeEnum.TEACHER,
+      role_id: 4,
       e_c_subject_ids: [10, 12],
     });
   });

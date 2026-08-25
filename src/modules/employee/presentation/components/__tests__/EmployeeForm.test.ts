@@ -9,9 +9,12 @@ import StageController from '@/modules/Stages/presentation/controllers/stage.con
 import StageModel from '@/modules/Stages/core/models/stage.model';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import EmployeeModel from '../../../core/models/employee.model';
+import RoleController from '@/modules/Role/presentation/controllers/role.controller';
+import RoleModel from '@/modules/Role/core/models/role.model';
 
 const i18n = createI18n({ legacy: false, locale: 'en', messages: { en: {} } });
 const fetchStagesSpy = vi.spyOn(StageController.getInstance(), 'fetchList');
+const fetchRolesSpy = vi.spyOn(RoleController.getInstance(), 'fetchList');
 const educationClassificationTree = [
   StageModel.fromJson({
     id: 128,
@@ -144,6 +147,11 @@ describe('EmployeeForm', () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
     fetchStagesSpy.mockResolvedValue(new DataSuccess({ data: educationClassificationTree }));
+    fetchRolesSpy.mockResolvedValue(
+      new DataSuccess({
+        data: [new RoleModel({ id: 4, roleName: 'Content Manager', permissions: [] })],
+      }),
+    );
   });
 
   it('renders without crashing', () => {
@@ -163,10 +171,10 @@ describe('EmployeeForm', () => {
     await wrapper.vm.$nextTick();
 
     const selects = wrapper.findAllComponents(UpdatedCustomInputSelect);
-    expect(selects).toHaveLength(2);
-    expect(selects[1]?.props('type')).toBe(2);
+    expect(selects).toHaveLength(3);
+    expect(selects[2]?.props('type')).toBe(2);
 
-    selects[1]?.vm.$emit('update:modelValue', [
+    selects[2]?.vm.$emit('update:modelValue', [
       { id: 10, title: 'Math' },
       { id: 12, title: 'Science' },
     ]);
@@ -189,7 +197,7 @@ describe('EmployeeForm', () => {
     });
     await wrapper.vm.$nextTick();
 
-    const subjectSelect = wrapper.findAllComponents(UpdatedCustomInputSelect)[1];
+    const subjectSelect = wrapper.findAllComponents(UpdatedCustomInputSelect)[2];
     expect(fetchStagesSpy).toHaveBeenCalledOnce();
     expect(subjectSelect?.props('staticOptions')).toMatchObject([
       { id: 308, title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1' },
@@ -207,6 +215,8 @@ describe('EmployeeForm', () => {
       gender: 1,
       status: 2,
       type: 2,
+      role_id: 4,
+      role_name: 'Content Manager',
       subjects: [
         { id: 308, e_c_subject_id: 308, title: 'mostafaf 2.1' },
         { id: 285, e_c_subject_id: 285, title: 'mostafa 3' },
@@ -225,9 +235,22 @@ describe('EmployeeForm', () => {
 
     const selects = wrapper.findAllComponents(UpdatedCustomInputSelect);
     expect(selects[0]?.props('modelValue')).toMatchObject({ id: EmployeeTypeEnum.TEACHER });
-    expect(selects[1]?.props('modelValue')).toMatchObject([
+    expect(selects[1]?.props('modelValue')).toMatchObject({ id: 4, title: 'Content Manager' });
+    expect(selects[2]?.props('modelValue')).toMatchObject([
       { id: 308, title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1' },
       { id: 285, title: 'mostafa 1 -> mostafa 3' },
     ]);
+  });
+
+  it('emits the selected employee role id', async () => {
+    const wrapper = mountForm();
+    await flushPromises();
+
+    const roleSelect = wrapper.findAllComponents(UpdatedCustomInputSelect)[1];
+    roleSelect?.vm.$emit('update:modelValue', { id: 4, title: 'Content Manager' });
+    await wrapper.vm.$nextTick();
+
+    const emittedParams = wrapper.emitted('updateData')?.at(-1)?.[0];
+    expect(emittedParams?.toMap()).toMatchObject({ role_id: 4 });
   });
 });

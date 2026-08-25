@@ -19,6 +19,8 @@ export default class EmployeeModel {
   public readonly subjects: TitleInterface<number>[];
   public readonly gender: GenderENum;
   public readonly employeeType: EmployeeTypeEnum;
+  public readonly roleId?: number;
+  public readonly roleName: string;
   public readonly educationClassificationSubjectIds: number[];
 
   get name(): string {
@@ -40,6 +42,8 @@ export default class EmployeeModel {
     subjects?: TitleInterface<number>[];
     gender?: GenderENum;
     employeeType?: EmployeeTypeEnum;
+    roleId?: number;
+    roleName?: string;
     educationClassificationSubjectIds?: number[];
   }) {
     this.id = data.id;
@@ -55,6 +59,8 @@ export default class EmployeeModel {
     this.subjects = data.subjects ?? [];
     this.gender = data.gender as GenderENum;
     this.employeeType = data.employeeType ?? EmployeeTypeEnum.ADMIN;
+    this.roleId = data.roleId;
+    this.roleName = data.roleName ?? '';
     this.educationClassificationSubjectIds =
       data.educationClassificationSubjectIds ?? this.subjects.map((subject) => subject.id);
 
@@ -86,6 +92,8 @@ export default class EmployeeModel {
           )
       : [];
 
+    const role = (json.role ?? {}) as Record<string, unknown>;
+
     return new EmployeeModel({
       id: json.id || json.employee_id,
       firstname: json.first_name || json.name?.split(' ')[0] || '',
@@ -102,6 +110,8 @@ export default class EmployeeModel {
       employeeType: Number(
         json.type ?? json.employee_type ?? json.employeeType ?? EmployeeTypeEnum.ADMIN,
       ) as EmployeeTypeEnum,
+      roleId: Number(json.role_id ?? role.id ?? 0) || undefined,
+      roleName: String(json.role_name ?? role.role_name ?? role.name ?? ''),
       educationClassificationSubjectIds: Array.isArray(json.e_c_subject_ids)
         ? json.e_c_subject_ids.map(Number)
         : Array.isArray(json.subjects)
@@ -123,6 +133,8 @@ export default class EmployeeModel {
     subjects: [],
     gender: GenderENum.male,
     employeeType: EmployeeTypeEnum.ADMIN,
+    roleId: 1,
+    roleName: 'Content Manager',
     educationClassificationSubjectIds: [],
   });
 }
