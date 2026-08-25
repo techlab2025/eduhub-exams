@@ -5,6 +5,7 @@ import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 
 import DocumentTypeRepository from '@/modules/document/data/repositories/DocumentType/document.type.repository';
 import type DocumentTypeModel from '@/modules/document/core/models/documentType/document.type.model';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
 export default class DocumentTypeController extends BaseController<
   DocumentTypeModel,
@@ -58,5 +59,13 @@ export default class DocumentTypeController extends BaseController<
         'Accept-Language': (params as any)?.isLocale ? 'en' : '*',
       },
     });
+  }
+
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    if (result?.error?.title) {
+      dialogManager.toastError(result?.error?.title);
+    }
+    return result;
   }
 }
