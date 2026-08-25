@@ -170,11 +170,12 @@ describe('EmployeeForm', () => {
     });
     await wrapper.vm.$nextTick();
 
-    const selects = wrapper.findAllComponents(UpdatedCustomInputSelect);
-    expect(selects).toHaveLength(3);
-    expect(selects[2]?.props('type')).toBe(2);
+    const subjectSelect = wrapper
+      .findAllComponents(UpdatedCustomInputSelect)
+      .find((select) => select.props('id') === 'employee-subjects');
+    expect(subjectSelect?.props('type')).toBe(2);
 
-    selects[2]?.vm.$emit('update:modelValue', [
+    subjectSelect?.vm.$emit('update:modelValue', [
       { id: 10, title: 'Math' },
       { id: 12, title: 'Science' },
     ]);
@@ -197,7 +198,9 @@ describe('EmployeeForm', () => {
     });
     await wrapper.vm.$nextTick();
 
-    const subjectSelect = wrapper.findAllComponents(UpdatedCustomInputSelect)[2];
+    const subjectSelect = wrapper
+      .findAllComponents(UpdatedCustomInputSelect)
+      .find((select) => select.props('id') === 'employee-subjects');
     expect(fetchStagesSpy).toHaveBeenCalledOnce();
     expect(subjectSelect?.props('staticOptions')).toMatchObject([
       { id: 308, title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1' },
@@ -234,12 +237,41 @@ describe('EmployeeForm', () => {
     expect(inputs[5]?.element.value).toBe('0101546452312');
 
     const selects = wrapper.findAllComponents(UpdatedCustomInputSelect);
-    expect(selects[0]?.props('modelValue')).toMatchObject({ id: EmployeeTypeEnum.TEACHER });
-    expect(selects[1]?.props('modelValue')).toMatchObject({ id: 4, title: 'Content Manager' });
-    expect(selects[2]?.props('modelValue')).toMatchObject([
+    const employeeTypeSelect = selects.find((select) => select.props('id') === 'employee-type');
+    const subjectSelect = selects.find((select) => select.props('id') === 'employee-subjects');
+    expect(employeeTypeSelect?.props('modelValue')).toMatchObject({ id: EmployeeTypeEnum.TEACHER });
+    expect(subjectSelect?.props('modelValue')).toMatchObject([
       { id: 308, title: 'mostafa 1 -> mostafa 2 -> mostafaf 2.1' },
       { id: 285, title: 'mostafa 1 -> mostafa 3' },
     ]);
+  });
+
+  it('requires subjects for Admin employees only', async () => {
+    const wrapper = mountForm();
+    await flushPromises();
+
+    const subjectSelect = wrapper
+      .findAllComponents(UpdatedCustomInputSelect)
+      .find((select) => select.props('id') === 'employee-subjects');
+    expect(subjectSelect?.props('required')).toBe(true);
+
+    const form = wrapper.vm as unknown as { validate: () => boolean };
+    expect(form.validate()).toBe(false);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.get('.employee-field-error').text()).toBe('employee_subject_required');
+
+    const employeeTypeSelect = wrapper
+      .findAllComponents(UpdatedCustomInputSelect)
+      .find((select) => select.props('id') === 'employee-type');
+    employeeTypeSelect?.vm.$emit('update:modelValue', {
+      id: EmployeeTypeEnum.TEACHER,
+      title: 'Teacher',
+    });
+    await wrapper.vm.$nextTick();
+
+    expect(subjectSelect?.props('required')).toBe(false);
+    expect(form.validate()).toBe(true);
+    expect(wrapper.find('.employee-field-error').exists()).toBe(false);
   });
 
   it('emits the selected employee role id', async () => {

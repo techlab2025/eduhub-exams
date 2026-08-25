@@ -15,10 +15,14 @@
 
   const params = ref<EditEmployeeParams | null>(null);
   const loading = ref(false);
+  const employeeFormRef = ref<{ validate: () => boolean | Promise<boolean> } | null>(null);
   /**
    * Update employee
    */
   const saveEmployee = async () => {
+    const isFormValid = await employeeFormRef.value?.validate?.();
+    if (isFormValid === false) return;
+
     console.log(params.value, 'params');
     if (!params.value) {
       console.error('No employee parameters to save');
@@ -45,6 +49,7 @@
 <template>
   <div class="employee-edit-page">
     <EmployeeForm
+      ref="employeeFormRef"
       :employee="controller.itemData.value!"
       :form-key="formKey"
       :loading="loading"

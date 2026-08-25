@@ -192,6 +192,7 @@
   "document_branch_required": "Branch name is required.",
   "document_subject_required": "Subject is required.",
   "document_description_required": "Document description is required.",
+  "employee_subject_required": "At least one subject is required for Admin employees.",
   "invalid_phone_number_format": "Please enter a valid phone number (e.g. +20 123 456 7890).",
   "invalid_whatsapp_number_format": "Please enter a valid WhatsApp number (e.g. +20 123 456 7890).",
   "invalid_telegram_format": "Please enter a valid Telegram number or link (e.g. +20 123 456 7890 or https://t.me/username).",

@@ -84,6 +84,7 @@
   "document_branch_required": "اسم الفرع مطلوب.",
   "document_subject_required": "المادة مطلوبة.",
   "document_description_required": "وصف المستند مطلوب.",
+  "employee_subject_required": "يجب اختيار مادة واحدة على الأقل لموظف المسؤول.",
   "invalid_phone_number_format": "يرجى إدخال رقم هاتف صحيح (مثال: +20 123 456 7890).",
   "invalid_whatsapp_number_format": "يرجى إدخال رقم واتساب صحيح (مثال: +20 123 456 7890).",
   "invalid_telegram_format": "يرجى إدخال رقم أو رابط تيليغرام صحيح (مثال: +20 123 456 7890 أو https://t.me/username).",

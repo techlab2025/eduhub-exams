@@ -56,7 +56,16 @@
   const selectedRole = ref<TitleInterface<number> | null>(null);
   const subjectOptions = ref<TitleInterface<number>[]>([]);
   const selectedSubjects = ref<TitleInterface<number>[]>([]);
-  const isTeacher = computed(() => selectedEmployeeType.value.id === EmployeeTypeEnum.TEACHER);
+  const subjectError = ref('');
+  const isAdmin = computed(() => selectedEmployeeType.value.id === EmployeeTypeEnum.ADMIN);
+
+  const validate = (): boolean => {
+    subjectError.value =
+      isAdmin.value && selectedSubjects.value.length === 0 ? t('employee_subject_required') : '';
+    return !subjectError.value;
+  };
+
+  defineExpose({ validate });
 
   const mapSelectedSubjectIds = (subjectIds: number[]): TitleInterface<number>[] =>
     subjectIds.map(
@@ -91,9 +100,7 @@
       password: password.value,
       employeeType: selectedEmployeeType.value.id as EmployeeTypeEnum,
       roleId: selectedRole.value?.id,
-      educationClassificationSubjectIds: isTeacher.value
-        ? selectedSubjects.value.map((subject) => subject.id)
-        : [],
+      educationClassificationSubjectIds: selectedSubjects.value.map((subject) => subject.id),
     };
 
     let params: any;
@@ -166,7 +173,13 @@
 
   const handleEmployeeTypeChange = (employeeType: TitleInterface<number> | null) => {
     selectedEmployeeType.value = employeeType ?? employeeTypeOptions[0]!;
-    if (!isTeacher.value) selectedSubjects.value = [];
+    if (!isAdmin.value) subjectError.value = '';
+    updateData();
+  };
+
+  const handleSubjectsChange = (subjects: TitleInterface<number>[] | null) => {
+    selectedSubjects.value = subjects ?? [];
+    if (selectedSubjects.value.length > 0) subjectError.value = '';
     updateData();
   };
 
@@ -375,7 +388,7 @@
         />
       </div> -->
 
-      <div v-if="isTeacher" class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group" :class="{ disabled: props.loading }">
         <UpdatedCustomInputSelect
           id="employee-subjects"
           v-model="selectedSubjects"
@@ -383,11 +396,14 @@
           :label="$t('subjects')"
           :placeholder="$t('select_subjects')"
           :static-options="subjectOptions"
-          required
+          :required="isAdmin"
           :reload="false"
-          @update:model-value="updateData"
-          :maxSelectedLabels="1"
+          :max-selected-labels="1"
+          @update:model-value="handleSubjectsChange"
         />
+        <small v-if="subjectError" class="employee-field-error" role="alert">
+          {{ subjectError }}
+        </small>
       </div>
 
       <div class="field-group" :class="{ disabled: props.loading }">
@@ -442,3 +458,10 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+  .employee-field-error {
+    color: var(--danger);
+    font-size: 0.8rem;
+  }
+</style>

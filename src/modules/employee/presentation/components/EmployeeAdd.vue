@@ -11,10 +11,14 @@
 
   const params = ref<AddEmployeeParams | null>(null);
   const loading = ref(false);
+  const employeeFormRef = ref<{ validate: () => boolean | Promise<boolean> } | null>(null);
   /**
    * Save new employee
    */
   const saveEmployee = async () => {
+    const isFormValid = await employeeFormRef.value?.validate?.();
+    if (isFormValid === false) return;
+
     loading.value = true;
     try {
       if (!params.value) {
@@ -23,12 +27,10 @@
       }
 
       const result = await controller.create(params.value, undefined, formKey);
-      if(result?.data){
-      
+      if (result?.data) {
         router.push({ name: 'Employees' });
         await controller.fetchList();
       }
-
     } catch (error) {
       console.error('Error saving employee:', error);
     } finally {
@@ -61,6 +63,7 @@
 <template>
   <div class="employee-add-page">
     <EmployeeForm
+      ref="employeeFormRef"
       :form-key="formKey"
       :loading="loading"
       @update-data="updateData"
@@ -75,9 +78,9 @@
         </span>
       </button>
       <button class="btn btn-draft" @click="SaveDraft">{{ $t(`Save As draft`) }}</button>
-     <router-link to="/employees" class="btn btn-cancel">
-{{ $t(`cancel`) }}
-     </router-link>
+      <router-link to="/employees" class="btn btn-cancel">
+        {{ $t(`cancel`) }}
+      </router-link>
     </div>
 
     <!-- Error Display -->
