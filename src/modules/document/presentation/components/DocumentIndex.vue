@@ -264,7 +264,7 @@
           </AppTable>
         </div>
         <div class="delete-container" v-if="selectedRows.length > 0">
-          <div class="selected-count">{{ selectedRows.length }} question</div>
+          <div class="selected-count">{{ selectedRows.length }} Document</div>
           <button class="btn btn-danger" @click="deleteSelected">Delete Selected</button>
         </div>
 
