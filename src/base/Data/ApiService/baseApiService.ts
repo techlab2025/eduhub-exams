@@ -313,7 +313,7 @@ export default abstract class BaseApiService extends ServicesInterface {
   ): Promise<ApiResponse<T>> {
     const mergedOptions = this.mergeOptions({
       ...options,
-      enableRetry: isAutoRetry,
+      enableRetry: isAutoRetry ?? options?.enableRetry,
     });
     document.querySelector('#app')?.classList.add('loading');
 

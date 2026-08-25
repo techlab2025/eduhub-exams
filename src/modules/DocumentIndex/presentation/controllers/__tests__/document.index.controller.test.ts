@@ -21,7 +21,7 @@ import DocumentIndexController from '../document.index.controller';
 describe('DocumentIndexController', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('disables the timeout and retry for a long generation request', async () => {
+  it('applies controller retry configuration to a long generation request', async () => {
     generateIndex.mockResolvedValue(new DataSuccess({ data: GeneratedDocumentIndexModel.example }));
     const signal = new AbortController().signal;
 
@@ -29,11 +29,15 @@ describe('DocumentIndexController', () => {
       signal,
     });
 
-    expect(generateIndex).toHaveBeenCalledWith(expect.any(GenerateDocumentIndexParams), {
-      signal,
-      timeout: 0,
-      enableRetry: false,
-    });
+    expect(generateIndex).toHaveBeenCalledWith(
+      expect.any(GenerateDocumentIndexParams),
+      expect.objectContaining({
+        signal,
+        timeout: 0,
+        enableRetry: false,
+        retryOptions: { maxAttempts: 2 },
+      }),
+    );
   });
 
   it('keeps cancellation as a cancelled state', async () => {
@@ -54,7 +58,30 @@ describe('DocumentIndexController', () => {
     await DocumentIndexController.getInstance().updateIndex(params);
     await DocumentIndexController.getInstance().saveIndex(params);
 
-    expect(updateIndex).toHaveBeenCalledWith(params, undefined);
-    expect(saveIndex).toHaveBeenCalledWith(params, undefined);
+    const controllerOptions = expect.objectContaining({
+      enableRetry: false,
+      retryOptions: { maxAttempts: 2 },
+    });
+
+    expect(updateIndex).toHaveBeenCalledWith(params, controllerOptions);
+    expect(saveIndex).toHaveBeenCalledWith(params, controllerOptions);
+  });
+
+  it('allows custom calls to override the controller retry configuration', async () => {
+    const params = new GenerateDocumentIndexParams(17);
+    updateIndex.mockResolvedValue(new DataSuccess({ data: GeneratedDocumentIndexModel.example }));
+
+    await DocumentIndexController.getInstance().updateIndex(params, {
+      enableRetry: true,
+      retryOptions: { maxAttempts: 5 },
+    });
+
+    expect(updateIndex).toHaveBeenCalledWith(
+      params,
+      expect.objectContaining({
+        enableRetry: true,
+        retryOptions: { maxAttempts: 5 },
+      }),
+    );
   });
 });

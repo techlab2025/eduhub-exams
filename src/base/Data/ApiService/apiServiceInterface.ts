@@ -13,6 +13,7 @@ import {
   NetworkDisconnectException,
   RequestTimeoutException,
 } from '@/base/Core/Constants/exceptionConstants';
+import type { RetryOptions } from '@/base/Core/Config/environment.types';
 
 /**
  * HTTP method types for API calls
@@ -56,6 +57,9 @@ export interface ExtendedCallOptions extends Omit<ServiceCallParams, 'url' | 'ty
   /** Enable retry for this request */
   enableRetry?: boolean;
 
+  /** Override retry behavior for this request */
+  retryOptions?: Partial<RetryOptions>;
+
   /** Show error dialog on failure */
   showErrorDialog?: boolean;
 }
@@ -93,6 +97,7 @@ export default abstract class ServicesInterface {
     onUploadProgress,
     onDownloadProgress,
     enableRetry = true,
+    retryOptions,
   }: ServiceCallParams & ExtendedCallOptions): Promise<ApiResponse> {
     let response: AxiosResponse | undefined;
 
@@ -108,6 +113,7 @@ export default abstract class ServicesInterface {
       onUploadProgress,
       onDownloadProgress,
       enableRetry,
+      retryOptions,
     };
 
     try {

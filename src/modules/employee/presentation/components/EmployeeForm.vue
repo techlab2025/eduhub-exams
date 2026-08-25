@@ -340,7 +340,7 @@
           />
         </div>
       </div>
-      <div v-if="isTeacher" class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group" :class="{ disabled: props.loading }">
         <label class="field-label" for="employeeId">{{ $t('employee_ID') }}</label>
         <div class="input-wrap">
           <input

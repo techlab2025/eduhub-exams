@@ -60,11 +60,13 @@ export default class DocumentIndexController extends BaseController<
     options?: ApiCallOptions,
   ): Promise<DataState<GeneratedDocumentIndexModel>> {
     this.generatedIndexState.value = new DataLoading<GeneratedDocumentIndexModel>();
-    const result = await this.repository.generateIndex(params, {
-      ...options,
-      timeout: 0,
-      enableRetry: false,
-    });
+    const result = await this.repository.generateIndex(
+      params,
+      this.mergeOptions({
+        ...options,
+        timeout: 0,
+      }),
+    );
     this.generatedIndexState.value = result;
 
     if (result.hasError && !(result instanceof DataCancelled)) this.handleErrorResponse(result);
@@ -76,7 +78,7 @@ export default class DocumentIndexController extends BaseController<
     options?: ApiCallOptions,
   ): Promise<DataState<GeneratedDocumentIndexModel>> {
     this.updatedIndexState.value = new DataLoading<GeneratedDocumentIndexModel>();
-    const result = await this.repository.updateIndex(params, options);
+    const result = await this.repository.updateIndex(params, this.mergeOptions(options));
     this.updatedIndexState.value = result;
     if (result.hasError) this.handleErrorResponse(result);
     return result;
@@ -84,7 +86,7 @@ export default class DocumentIndexController extends BaseController<
 
   async saveIndex(params: Params, options?: ApiCallOptions): Promise<DataState<void>> {
     this.savedIndexState.value = new DataLoading<void>();
-    const result = await this.repository.saveIndex(params, options);
+    const result = await this.repository.saveIndex(params, this.mergeOptions(options));
     this.savedIndexState.value = result;
     if (result.hasError) this.handleErrorResponse(result);
     return result;

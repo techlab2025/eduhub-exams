@@ -146,11 +146,22 @@ export default abstract class BaseController<T, TList = T[]> {
    * Merges controller config into API call options.
    * Caller-supplied options always take priority over config defaults.
    */
-  private mergeOptions(options?: ApiCallOptions): ApiCallOptions {
+  protected mergeOptions(options?: ApiCallOptions): ApiCallOptions {
+    const maxAutoRetries = Math.max(
+      0,
+      this.config.maxAutoRetries ?? DEFAULT_CONFIG.maxAutoRetries ?? 0,
+    );
+
     return {
       showErrorDialog: this.config.showErrorDialog ?? false,
       showLoadingDialog: this.config.showLoadingDialog ?? false,
+      enableRetry: this.config.autoRetry ?? false,
       ...options,
+      retryOptions: {
+        // NetworkService counts the initial request as an attempt.
+        maxAttempts: maxAutoRetries + 1,
+        ...options?.retryOptions,
+      },
     };
   }
 

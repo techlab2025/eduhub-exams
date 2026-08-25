@@ -17,7 +17,7 @@ describe('DocumentIndexApiService', () => {
     await service.saveIndex(params);
 
     expect(customPost).toHaveBeenCalledWith(
-      expect.stringContaining('create_document_index'),
+      expect.stringContaining('start_document_index'),
       params,
       { signal, timeout: 0 },
     );
