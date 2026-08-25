@@ -153,19 +153,11 @@
 
     const subjectId = selectedSubject.value?.id;
     if (subjectId == null) return;
+    const effectiveSubjectId = selectedSubjectConfiguration.value?.id ?? subjectId;
 
     resultsRequested.value = true;
     await documentController.fetchList(
-      new IndexDocumentParams(
-        '',
-        1,
-        10,
-        0,
-        '',
-        undefined,
-        selectedSubjectConfiguration.value ? subjectId : undefined,
-        selectedSubjectConfiguration.value?.id,
-      ),
+      new IndexDocumentParams('', 1, 10, 0, '', undefined, effectiveSubjectId),
     );
   };
 

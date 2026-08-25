@@ -249,9 +249,10 @@
 }
 
 :global(.document-index-generation-dialog) {
-  width: min(400px, calc(100vw - 24px));
+  // width: min(400px, calc(100vw - 24px));
   overflow: hidden;
   border-radius: 26px;
+  padding: 40px;
 }
 
 :global(.document-index-generation-dialog__content) {

@@ -5043,6 +5043,10 @@ body::-webkit-scrollbar-thumb:hover {
   border-color: var(--PrimaryColor);
   color: var(--PrimaryColor);
 }
+.employee-page .action-btn.permissions:hover {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
 .employee-page .action-btn.delete:hover {
   border-color: var(--Red);
   color: var(--Red);

@@ -32,11 +32,11 @@ export default class IndexDocumentParams extends IndexParams {
       data['document_type_id'] = this.documentTypeId;
     }
     if (this.eCSubjectId) {
-      data['ec_subject_id'] = this.eCSubjectId;
+      data['e_c_subject_id'] = this.eCSubjectId;
     }
-    if (this.eCSubjectChildId) {
-      data['ec_subject_child_id'] = this.eCSubjectChildId;
-    }
+    // if (this.eCSubjectChildId) {
+    //   data['ec_subject_child_id'] = this.eCSubjectChildId;
+    // }
     data['order_dir'] = 1;
     return data;
   }

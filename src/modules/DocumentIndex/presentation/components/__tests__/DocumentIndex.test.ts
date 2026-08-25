@@ -156,7 +156,18 @@ describe('DocumentIndex', () => {
     expect(wrapper.findAllComponents(SelectStub)).toHaveLength(4);
   });
 
-  it('sends the selected subject and subject-child filters', async () => {
+  it('sends the selected subject as the e_c_subject_id filter', async () => {
+    const wrapper = mountDocumentIndex();
+    await flushPromises();
+
+    await selectCurriculumAndShowResults(wrapper);
+
+    expect(fetchDocuments).toHaveBeenCalledOnce();
+    const params = fetchDocuments.mock.calls[0]?.[0];
+    expect(params.toMap()).toMatchObject({ e_c_subject_id: 284 });
+  });
+
+  it('replaces the subject filter with the selected subject configuration', async () => {
     const wrapper = mountDocumentIndex();
     await flushPromises();
 
@@ -169,7 +180,7 @@ describe('DocumentIndex', () => {
 
     expect(fetchDocuments).toHaveBeenCalledOnce();
     const params = fetchDocuments.mock.calls[0]?.[0];
-    expect(params.toMap()).toMatchObject({ ec_subject_id: 284, ec_subject_child_id: 308 });
+    expect(params.toMap()).toMatchObject({ e_c_subject_id: 308 });
   });
 
   it('opens generated data and switches table rows into edit mode', async () => {
