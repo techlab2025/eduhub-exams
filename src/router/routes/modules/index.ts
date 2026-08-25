@@ -52,7 +52,7 @@ export const dashboardRoutes: RouteRecordRaw[] = [
   ...planRoutes,
   ...subscriptionRoutes,
   ...studentRoutes,
-  ...questionBatchRoutes,
+  // ...questionBatchRoutes,
   ...adviceRoutes,
-  ...notificationPlanRoutes,
+  // ...notificationPlanRoutes,
 ];
