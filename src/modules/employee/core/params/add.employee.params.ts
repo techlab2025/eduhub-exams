@@ -29,7 +29,7 @@ export default class AddEmployeeParams implements Params {
     // EmployeeRef: { required: true },
     gender: { required: true },
     employeeType: { required: true },
-    roleId: { required: true },
+    // roleId: { required: true },
   });
 
   constructor(data: {

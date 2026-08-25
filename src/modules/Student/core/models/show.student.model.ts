@@ -15,6 +15,7 @@ export default class ShowStudentModel {
   public readonly image!: string;
   public readonly serial!: string;
   public readonly status!: StudentStatusEnum;
+  public readonly hasActiveSubscription!: boolean;
   public readonly points!: number;
   public readonly rank!: string;
   public readonly phone!: string;
@@ -42,6 +43,7 @@ export default class ShowStudentModel {
     image: string;
     serial: string;
     status: StudentStatusEnum;
+    hasActiveSubscription: boolean;
     points: number;
     rank: string;
     phone: string;
@@ -68,6 +70,7 @@ export default class ShowStudentModel {
     this.image = data.image;
     this.serial = data.serial;
     this.status = data.status;
+    this.hasActiveSubscription = data.hasActiveSubscription;
     this.points = data.points;
     this.rank = data.rank;
     this.phone = data.phone;
@@ -97,7 +100,16 @@ export default class ShowStudentModel {
       json.application_information,
       StudentApplicationModel,
     );
-    const plan = SaftyConditions.nullableModelValue(json.plan, StudentPlanModel);
+    const plan = SaftyConditions.nullableModelValue(
+      json.current_plan ?? json.plan,
+      StudentPlanModel,
+    );
+    const hasActivePlan = SaftyConditions.booleanValue(
+      json.has_active_plan ??
+        json.hase_active_plan ??
+        json.hase_active_subscription ??
+        json.has_active_subscription,
+    );
     const performance = SaftyConditions.modelValue(json.performance, StudentPerformanceModel);
     const blockedBy = SaftyConditions.objectValue(json.blocked_by);
 
@@ -107,6 +119,7 @@ export default class ShowStudentModel {
       image: String(json.image ?? ''),
       serial: String(json.serial ?? ''),
       status: String(json.status ?? StudentStatusEnum.ACTIVE) as StudentStatusEnum,
+      hasActiveSubscription: Boolean(plan?.id) || hasActivePlan,
       points: Number(json.points ?? 0),
       rank: String(json.rank ?? ''),
       phone: String(json.phone ?? ''),
@@ -153,6 +166,7 @@ export default class ShowStudentModel {
     image: '',
     serial: 'Stu-001',
     status: StudentStatusEnum.ACTIVE,
+    hase_active_subscription: false,
     points: 1200,
     rank: 'Golden Rank',
     phone: '+2010203040',

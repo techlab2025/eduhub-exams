@@ -669,6 +669,7 @@
   "force_logout_dialog_message": "سيتم تسجيل خروج هذا الطالب ولن يتمكن من الوصول إلى التطبيق حتى يسجل الدخول مرة أخرى.",
   "force_logout_dialog_confirm": "تسجيل خروج إجباري",
   "archive_student_dialog_title": "هل أنت متأكد من أرشفة هذا الطالب؟",
+  "student_active_subscription_warning": "لدى هذا الطالب اشتراكات نشطة.",
   "archive_student_dialog_message": "لدى هذا الطالب خطة اشتراك. عند أرشفته سيتم تعليق الاشتراك.",
   "archive_student_dialog_confirm": "نعم، أرشف الطالب",
   "block_student_dialog_title": "هل أنت متأكد من حظر هذا الطالب؟",

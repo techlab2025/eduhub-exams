@@ -143,6 +143,7 @@ describe('StudentIndex', () => {
                   name: 'Ahmed',
                   image: '',
                   status: '1',
+                  hasActiveSubscription: true,
                   educationType: null,
                   educationStage: null,
                   grade: null,
@@ -170,10 +171,15 @@ describe('StudentIndex', () => {
             `,
           },
           StudentArchiveDialog: {
-            props: ['modelValue'],
+            props: ['modelValue', 'hasActiveSubscription'],
             emits: ['confirm'],
             template: `
-              <button v-if="modelValue" class="archive-dialog-confirm" @click="$emit('confirm')">
+              <button
+                v-if="modelValue"
+                class="archive-dialog-confirm"
+                :data-active-subscription="hasActiveSubscription"
+                @click="$emit('confirm')"
+              >
                 confirm archive
               </button>
             `,
@@ -202,6 +208,9 @@ describe('StudentIndex', () => {
     await flushPromises();
 
     expect(wrapper.find('.archive-dialog-confirm').exists()).toBe(true);
+    expect(wrapper.find('.archive-dialog-confirm').attributes('data-active-subscription')).toBe(
+      'true',
+    );
     expect(mocks.changeStatus).not.toHaveBeenCalled();
 
     await wrapper.find('.archive-dialog-confirm').trigger('click');
@@ -228,6 +237,7 @@ describe('StudentIndex', () => {
                   name: 'Ali',
                   image: '',
                   status: '1',
+                  hasActiveSubscription: true,
                   educationType: null,
                   educationStage: null,
                   grade: null,
@@ -246,12 +256,13 @@ describe('StudentIndex', () => {
           },
           StudentArchiveDialog: true,
           StudentBlockDialog: {
-            props: ['modelValue'],
+            props: ['modelValue', 'hasActiveSubscription'],
             emits: ['confirm'],
             template: `
               <button
                 v-if="modelValue"
                 class="block-dialog-confirm"
+                :data-active-subscription="hasActiveSubscription"
                 @click="$emit('confirm', 12, 'Policy violation: Repeated misuse')"
               >
                 confirm block
@@ -268,6 +279,9 @@ describe('StudentIndex', () => {
     await wrapper.find('.block-action').trigger('click');
 
     expect(wrapper.find('.block-dialog-confirm').exists()).toBe(true);
+    expect(wrapper.find('.block-dialog-confirm').attributes('data-active-subscription')).toBe(
+      'true',
+    );
     expect(mocks.changeStatus).not.toHaveBeenCalled();
 
     await wrapper.find('.block-dialog-confirm').trigger('click');

@@ -29,7 +29,7 @@ export default class EditEmployeeParams implements Params {
     phone: { required: true },
     password: { required: false },
     employeeType: { required: true },
-    roleId: { required: true },
+    // roleId: { required: true },
   });
 
   constructor(data: {

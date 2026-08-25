@@ -562,11 +562,13 @@
       <StudentArchiveDialog
         v-model="archiveDialogVisible"
         :loading="statusActionLoading"
+        :has-active-subscription="student?.hasActiveSubscription ?? false"
         @confirm="confirmArchive"
       />
       <StudentBlockDialog
         v-model="blockDialogVisible"
         :loading="statusActionLoading"
+        :has-active-subscription="student?.hasActiveSubscription ?? false"
         @confirm="confirmBlock"
       />
       <StudentForceLogoutDialog

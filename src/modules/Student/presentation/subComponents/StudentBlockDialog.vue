@@ -17,8 +17,9 @@
   withDefaults(
     defineProps<{
       loading?: boolean;
+      hasActiveSubscription?: boolean;
     }>(),
-    { loading: false },
+    { loading: false, hasActiveSubscription: false },
   );
 
   const emit = defineEmits<{
@@ -103,6 +104,9 @@
 
         <div class="student-block-copy">
           <h2>{{ $t('block_student_dialog_title') }}</h2>
+          <p v-if="hasActiveSubscription" class="student-active-subscription-warning" role="status">
+            {{ $t('student_active_subscription_warning') }}
+          </p>
           <p>{{ $t('block_student_dialog_message') }}</p>
         </div>
 
@@ -280,6 +284,17 @@
     }
   }
 
+  .student-block-copy .student-active-subscription-warning {
+    width: 100%;
+    max-width: none;
+    padding: 10px 14px;
+    color: var(--warning-dark);
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+  }
+
   .student-block-label-row {
     display: flex;
     align-items: center;
@@ -290,9 +305,9 @@
       color: var(--gray-5);
       font-size: 16px;
       font-weight: 600;
-      font-family: "demi";
+      font-family: 'demi';
     }
-  
+
     label span {
       color: var(--danger-alt);
     }
@@ -443,7 +458,7 @@
       border-radius: 50%;
       font-size: 14px;
       font-weight: 400;
-      font-family: "regular";
+      font-family: 'regular';
     }
   }
 

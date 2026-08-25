@@ -21,8 +21,8 @@
   import type StageModel from '@/modules/Stages/core/models/stage.model';
   import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import { useI18n } from 'vue-i18n';
-  import RoleController from '@/modules/Role/presentation/controllers/role.controller';
-  import IndexRoleParams from '@/modules/Role/core/params/index.role.params';
+  // import RoleController from '@/modules/Role/presentation/controllers/role.controller';
+  // import IndexRoleParams from '@/modules/Role/core/params/index.role.params';
 
   const emit = defineEmits(['updateData']);
 
@@ -46,7 +46,7 @@
 
   const { t } = useI18n();
   const stageController = StageController.getInstance();
-  const roleController = RoleController.getInstance();
+  // const roleController = RoleController.getInstance();
   const employeeTypeOptions: TitleInterface<number>[] = [
     new TitleInterface({ id: EmployeeTypeEnum.ADMIN, title: t('employee_type_admin') }),
     new TitleInterface({ id: EmployeeTypeEnum.TEACHER, title: t('employee_type_teacher') }),
@@ -170,10 +170,10 @@
     updateData();
   };
 
-  const handleRoleChange = (role: TitleInterface<number> | null) => {
-    selectedRole.value = role;
-    updateData();
-  };
+  // const handleRoleChange = (role: TitleInterface<number> | null) => {
+  //   selectedRole.value = role;
+  //   updateData();
+  // };
 
   const fetchSubjectOptions = async () => {
     const result = await stageController.fetchList(new IndexStageParams('', 1, 100, 0));

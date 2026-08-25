@@ -25,9 +25,32 @@ describe('StudentArchiveDialog', () => {
       'ArchiveIcon.gif',
     );
     expect(wrapper.text()).toContain('archive_student_dialog_title');
+    expect(wrapper.find('.student-active-subscription-warning').exists()).toBe(false);
 
     await wrapper.find('.archive-button').trigger('click');
 
     expect(confirm).toHaveBeenCalledOnce();
+  });
+
+  it('shows a warning when the student has active subscriptions', () => {
+    const wrapper = mount(Component, {
+      props: {
+        modelValue: true,
+        hasActiveSubscription: true,
+      },
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: {
+          Dialog: {
+            props: ['visible'],
+            template: '<div v-if="visible"><slot name="container" /></div>',
+          },
+        },
+      },
+    });
+
+    expect(wrapper.find('.student-active-subscription-warning').text()).toBe(
+      'student_active_subscription_warning',
+    );
   });
 });

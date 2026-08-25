@@ -5,8 +5,9 @@
   withDefaults(
     defineProps<{
       loading?: boolean;
+      hasActiveSubscription?: boolean;
     }>(),
-    { loading: false },
+    { loading: false, hasActiveSubscription: false },
   );
 
   const emit = defineEmits<{
@@ -30,6 +31,9 @@
 
         <div class="student-confirm-copy">
           <h2>{{ $t('archive_student_dialog_title') }}</h2>
+          <p v-if="hasActiveSubscription" class="student-active-subscription-warning" role="status">
+            {{ $t('student_active_subscription_warning') }}
+          </p>
           <p>{{ $t('archive_student_dialog_message') }}</p>
         </div>
 
@@ -126,6 +130,17 @@
         opacity: 0.65;
       }
     }
+  }
+
+  .student-confirm-copy .student-active-subscription-warning {
+    width: 100%;
+    max-width: none;
+    padding: 10px 14px;
+    color: var(--warning-dark);
+    background: var(--warning-light);
+    border: 1px solid var(--warning);
+    border-radius: var(--radius-md);
+    font-size: 14px;
   }
 
   .archive-button {

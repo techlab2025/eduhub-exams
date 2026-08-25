@@ -14,6 +14,7 @@ describe('StudentModel', () => {
         num_of_study_plan: 3,
         status: '3',
         join_date: '2026-01-05',
+        has_active_plan: false,
       }),
     ).toMatchObject({
       id: 5,
@@ -26,7 +27,19 @@ describe('StudentModel', () => {
       studyPlanCount: 3,
       status: StudentStatusEnum.BLOCK,
       joinDate: '2026-01-05',
+      hasActiveSubscription: true,
     });
+  });
+
+  it('uses the active-plan flag when there is no current plan', () => {
+    const model = StudentModel.fromJson({
+      id: 7,
+      current_plan: null,
+      has_active_plan: 1,
+    });
+
+    expect(model.currentPlan).toBeNull();
+    expect(model.hasActiveSubscription).toBe(true);
   });
 
   it('maps the nested education type hierarchy', () => {
@@ -70,6 +83,7 @@ describe('StudentModel', () => {
       studyPlanCount: 20,
       status: StudentStatusEnum.ACTIVE,
       joinDate: '09-05-2022',
+      hasActiveSubscription: true,
     });
   });
 });

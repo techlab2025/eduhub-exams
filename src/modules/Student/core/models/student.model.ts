@@ -1,3 +1,5 @@
+import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
+
 export const StudentStatusEnum = { ACTIVE: '1', ARCHIVE: '2', BLOCK: '3' } as const;
 export type StudentStatusEnum = (typeof StudentStatusEnum)[keyof typeof StudentStatusEnum];
 
@@ -36,6 +38,7 @@ export default class StudentModel {
   public readonly studyPlanCount: number;
   public readonly status: StudentStatusEnum;
   public readonly joinDate: string;
+  public readonly hasActiveSubscription: boolean;
   public readonly details: StudentDetailsData;
 
   constructor(
@@ -51,6 +54,7 @@ export default class StudentModel {
     studyPlanCount: number,
     status: StudentStatusEnum,
     joinDate: string,
+    hasActiveSubscription: boolean,
     details: StudentDetailsData,
   ) {
     this.id = id;
@@ -65,6 +69,7 @@ export default class StudentModel {
     this.studyPlanCount = studyPlanCount;
     this.status = status;
     this.joinDate = joinDate;
+    this.hasActiveSubscription = hasActiveSubscription;
     this.details = details;
     Object.freeze(this);
   }
@@ -88,6 +93,13 @@ export default class StudentModel {
       json.registration && typeof json.registration === 'object'
         ? (json.registration as Record<string, unknown>)
         : undefined;
+    const currentPlan = StudentModel.titleFromJson(json.current_plan ?? json.plan);
+    const hasActivePlan = SaftyConditions.booleanValue(
+      json.has_active_plan ??
+        json.hase_active_plan ??
+        json.hase_active_subscription ??
+        json.has_active_subscription,
+    );
 
     return new StudentModel(
       Number(json.id ?? json.student_id),
@@ -97,18 +109,19 @@ export default class StudentModel {
       StudentModel.titleFromJson(json.education_type),
       StudentModel.titleFromJson(json.education_stage),
       StudentModel.titleFromJson(json.grade),
-      StudentModel.titleFromJson(json.current_plan ?? json.plan),
+      currentPlan,
       Number(json.num_of_exams ?? 0),
       Number(json.num_of_study_plan ?? 0),
       String(json.status ?? StudentStatusEnum.ACTIVE) as StudentStatusEnum,
       String(json.join_date ?? registration?.register_date ?? ''),
+      Boolean(currentPlan?.id) || hasActivePlan,
       json as StudentDetailsData,
     );
   }
 
   static readonly example = StudentModel.fromJson({
     id: 1,
-    name: 'Ahmed Hawam', 
+    name: 'Ahmed Hawam',
     image: '',
     serial: 'ST-0001',
     education_type: {
@@ -129,5 +142,6 @@ export default class StudentModel {
     num_of_study_plan: 20,
     status: StudentStatusEnum.ACTIVE,
     join_date: '09-05-2022',
+    hase_active_subscription: false,
   });
 }

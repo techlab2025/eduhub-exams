@@ -1179,6 +1179,7 @@
   "force_logout_dialog_message": "This student will be logged out and will not be able to sign in or access the application until logging in again.",
   "force_logout_dialog_confirm": "Force Logout",
   "archive_student_dialog_title": "Are you sure you want to archive this student?",
+  "student_active_subscription_warning": "This student has active subscriptions.",
   "archive_student_dialog_message": "This student has a subscription plan. If you archive him, the subscription will be put on hold.",
   "archive_student_dialog_confirm": "Yes, archive this",
   "block_student_dialog_title": "Are you sure you want to block this student?",

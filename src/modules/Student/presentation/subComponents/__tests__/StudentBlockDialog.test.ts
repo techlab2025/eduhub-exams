@@ -37,6 +37,7 @@ describe('StudentBlockDialog', () => {
     const wrapper = mount(Component, {
       props: {
         modelValue: true,
+        hasActiveSubscription: true,
         onConfirm: confirm,
       },
       global: {
@@ -55,6 +56,9 @@ describe('StudentBlockDialog', () => {
 
     expect(wrapper.find('.student-block-image img').attributes('src')).toContain('BlockImage.gif');
     expect(wrapper.text()).toContain('block_student_dialog_title');
+    expect(wrapper.find('.student-active-subscription-warning').text()).toBe(
+      'student_active_subscription_warning',
+    );
     expect(mocks.fetchAsOptions).toHaveBeenCalledOnce();
     expect(mocks.fetchAsOptions.mock.calls[0][0].toMap()).toMatchObject({
       with_page: 0,

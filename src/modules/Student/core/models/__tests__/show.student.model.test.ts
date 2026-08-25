@@ -9,6 +9,7 @@ describe('ShowStudentModel', () => {
       image: 'student.png',
       serial: 'ST-4',
       status: '3',
+      has_active_plan: false,
       points: 1200,
       rank: 'Gold',
       phone: '+201000000000',
@@ -71,6 +72,7 @@ describe('ShowStudentModel', () => {
       image: 'student.png',
       serial: 'ST-4',
       status: '3',
+      hasActiveSubscription: true,
       points: 1200,
       rank: 'Gold',
       phone: '+201000000000',
@@ -121,8 +123,20 @@ describe('ShowStudentModel', () => {
     });
   });
 
+  it('uses has_active_plan when current_plan is missing', () => {
+    const model = ShowStudentModel.fromJson({
+      id: 5,
+      current_plan: null,
+      has_active_plan: true,
+    });
+
+    expect(model.plan).toBeNull();
+    expect(model.hasActiveSubscription).toBe(true);
+  });
+
   it('provides a complete example for the details page', () => {
     expect(ShowStudentModel.example.plan?.title).toBe('Premium');
+    expect(ShowStudentModel.example.hasActiveSubscription).toBe(true);
     expect(ShowStudentModel.example.placementTests).toHaveLength(2);
     expect(ShowStudentModel.example.notes).toHaveLength(3);
   });

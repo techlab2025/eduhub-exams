@@ -504,7 +504,7 @@
                     />
                   </span>
                 </div>
-              </div> 
+              </div>
               <span v-else>—</span>
             </template>
             <template #cell-currentPlan="{ item }">{{ item.currentPlan?.title ?? '—' }}</template>
@@ -514,7 +514,7 @@
               </span>
             </template>
             <template #actions="{ item }">
-              <DropList :action-list="actionList(item)" variant="student" />     
+              <DropList :action-list="actionList(item)" variant="student" />
             </template>
           </AppTable>
 
@@ -536,11 +536,13 @@
     <StudentArchiveDialog
       v-model="archiveDialogVisible"
       :loading="statusActionLoading"
+      :has-active-subscription="selectedStudent?.hasActiveSubscription ?? false"
       @confirm="confirmArchive"
     />
     <StudentBlockDialog
       v-model="blockDialogVisible"
       :loading="statusActionLoading"
+      :has-active-subscription="selectedStudent?.hasActiveSubscription ?? false"
       @confirm="confirmBlock"
     />
     <StudentForceLogoutDialog
@@ -558,9 +560,10 @@
 </template>
 
 <style scoped lang="scss">
-.subject-cell{
-  justify-content: left;
-}
+  .subject-cell {
+    justify-content: left;
+  }
+
   .Active {
     span {
       color: #2f7bff;
