@@ -89,6 +89,11 @@
           icon: SettingIcon,
         },
         {
+          link: '/document-index',
+          name: 'document index',
+          icon: DocumentIcon,
+        },
+        {
           link: '/block-reasons',
           name: 'block_reasons',
           icon: SettingIcon,

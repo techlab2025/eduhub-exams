@@ -64,6 +64,7 @@ export default class DocumentIndexController extends BaseController<
       params,
       this.mergeOptions({
         ...options,
+        useStaticData:true,
         timeout: 0,
       }),
     );
