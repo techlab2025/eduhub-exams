@@ -246,19 +246,18 @@ describe('EmployeeForm', () => {
     ]);
   });
 
-  it('requires subjects for Admin employees only', async () => {
+  it('hides subjects for Admin and requires them for Teacher', async () => {
     const wrapper = mountForm();
     await flushPromises();
 
-    const subjectSelect = wrapper
-      .findAllComponents(UpdatedCustomInputSelect)
-      .find((select) => select.props('id') === 'employee-subjects');
-    expect(subjectSelect?.props('required')).toBe(true);
-
     const form = wrapper.vm as unknown as { validate: () => boolean };
-    expect(form.validate()).toBe(false);
-    await wrapper.vm.$nextTick();
-    expect(wrapper.get('.employee-field-error').text()).toBe('employee_subject_required');
+    expect(
+      wrapper
+        .findAllComponents(UpdatedCustomInputSelect)
+        .some((select) => select.props('id') === 'employee-subjects'),
+    ).toBe(false);
+    expect(form.validate()).toBe(true);
+    expect(wrapper.find('.employee-field-error').exists()).toBe(false);
 
     const employeeTypeSelect = wrapper
       .findAllComponents(UpdatedCustomInputSelect)
@@ -269,7 +268,16 @@ describe('EmployeeForm', () => {
     });
     await wrapper.vm.$nextTick();
 
-    expect(subjectSelect?.props('required')).toBe(false);
+    const subjectSelect = wrapper
+      .findAllComponents(UpdatedCustomInputSelect)
+      .find((select) => select.props('id') === 'employee-subjects');
+    expect(subjectSelect?.props('required')).toBe(true);
+    expect(form.validate()).toBe(false);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.get('.employee-field-error').text()).toBe('employee_subject_required');
+
+    subjectSelect?.vm.$emit('update:modelValue', [{ id: 10, title: 'Math' }]);
+    await wrapper.vm.$nextTick();
     expect(form.validate()).toBe(true);
     expect(wrapper.find('.employee-field-error').exists()).toBe(false);
   });

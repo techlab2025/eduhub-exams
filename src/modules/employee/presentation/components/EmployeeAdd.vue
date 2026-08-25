@@ -77,7 +77,7 @@
           {{ $t('save_employee') }}
         </span>
       </button>
-      <button class="btn btn-draft" @click="SaveDraft">{{ $t(`Save As draft`) }}</button>
+      <!-- <button class="btn btn-draft" @click="SaveDraft">{{ $t(`Save As draft`) }}</button> -->
       <router-link to="/employees" class="btn btn-cancel">
         {{ $t(`cancel`) }}
       </router-link>
