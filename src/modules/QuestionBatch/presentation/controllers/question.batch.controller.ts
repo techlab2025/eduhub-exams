@@ -50,6 +50,10 @@ export default class QuestionBatchController extends BaseController<
     return QuestionBatchController.instance;
   }
 
+  fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<QuestionBatchModel[]>> {
+    return super.fetchList(params, { ...options, useStaticData: true });
+  }
+
   async generateBatch(
     params: Params,
     options?: ApiCallOptions,

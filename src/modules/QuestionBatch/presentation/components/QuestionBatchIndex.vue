@@ -22,13 +22,24 @@
   const perPage = ref(10);
 
   const headers = computed<TableHeader[]>(() => [
-    { key: 'title', label: t('question_batch.batch_title'), width: '25%' },
-    { key: 'curriculum', label: t('question_batch.curriculum'), width: '15%' },
-    { key: 'subject', label: t('question_batch.subject_label'), width: '15%' },
-    { key: 'numberOfQuestions', label: t('question_batch.questions_count'), width: '12%' },
-    { key: 'status', label: t('question_batch.status'), width: '13%' },
-    { key: 'generationDate', label: t('question_batch.generation_date'), width: '20%' },
+    { key: 'title', label: t('question_batch.id'), width: '14%', sortable: true },
+    { key: 'educationType', label: t('question_batch.education_type'), width: '18%' },
+    { key: 'eCSubject', label: t('question_batch.subject_label'), width: '12%' },
+    { key: 'curriculum', label: t('question_batch.curriculum'), width: '17%' },
+    { key: 'numberOfQuestions', label: t('question_batch.questions_count'), width: '10%' },
+    { key: 'sources', label: t('question_batch.sources'), width: '14%' },
+    { key: 'status', label: t('question_batch.status'), width: '11%' },
+    { key: 'createdAt', label: t('question_batch.created_at'), width: '13%' },
+    { key: 'generationDate', label: t('question_batch.generation_date'), width: '14%' },
   ]);
+
+  const sourcesLabel = (sources: string[]): string =>
+    sources.filter(Boolean).join(', ') || t('question_batch.not_available');
+
+  const formatGenerationDate = (value: string): string => {
+    const isoDate = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+    return isoDate ? `${isoDate[3]}-${isoDate[2]}-${isoDate[1]}` : value;
+  };
 
   const fetchBatches = async (page = 1) => {
     await controller.fetchList(new IndexQuestionBatchParams(word.value, page, perPage.value, 1));
@@ -50,7 +61,7 @@
       '1': t('question_batch.draft'),
       '2': t('question_batch.ready_for_review'),
       '3': t('question_batch.approved'),
-      '4': t('question_batch.rejected'),
+      '4': t('question_batch.failed'),
     };
     return labels[status] ?? status;
   };
@@ -78,13 +89,60 @@
     <DataStatusBuilder :controller="state" :on-retry="() => fetchBatches()">
       <template #success="{ data }">
         <div class="question-batch-index__table">
-          <AppTable :headers="headers" :items="data as QuestionBatchModel[]" show-index>
-            <template #cell-curriculum="{ item }">{{ item.curriculum.title }}</template>
-            <template #cell-subject="{ item }">{{ item.subject.title }}</template>
+          <AppTable
+            :headers="headers"
+            :items="data as QuestionBatchModel[]"
+            row-key="id"
+            selectable
+          >
+            <template #cell-title="{ item }">
+              <span class="question-batch-index__batch-id" :title="item.title">
+                {{ item.title }}
+              </span>
+            </template>
+            <template #cell-educationType="{ item }">
+              <div v-if="item.educationType.length" class="question-batch-index__education">
+                <div
+                  v-for="educationType in item.educationType"
+                  :key="educationType.id"
+                  class="question-batch-index__education-group"
+                >
+                  <span class="question-batch-index__education-root">
+                    {{ educationType.title }}
+                  </span>
+                  <span
+                    v-for="child in educationType.children"
+                    :key="child.id"
+                    class="question-batch-index__education-child"
+                  >
+                    {{ child.title }}
+                  </span>
+                </div>
+              </div>
+              <span v-else>{{ t('question_batch.not_available') }}</span>
+            </template>
+            <template #cell-eCSubject="{ item }">{{ item.eCSubject.title }}</template>
+            <template #cell-curriculum="{ item }">
+              <span class="question-batch-index__clamped-text" :title="item.curriculum.title">
+                {{ item.curriculum.title }}
+              </span>
+            </template>
+            <template #cell-sources="{ item }">
+              <span
+                class="question-batch-index__truncated-text"
+                :title="sourcesLabel(item.sources)"
+              >
+                {{ sourcesLabel(item.sources) }}
+              </span>
+            </template>
             <template #cell-status="{ item }">
               <span class="question-batch-index__status" :data-status="item.status">
                 {{ statusLabel(item.status) }}
               </span>
+            </template>
+            <template #cell-createdAt="{ item }">{{ item.createdAt.name }}</template>
+            <template #cell-generationDate="{ item }">
+              {{ formatGenerationDate(item.generationDate) }}
             </template>
           </AppTable>
         </div>
@@ -102,7 +160,7 @@
         </div>
       </template>
       <template #loader>
-        <TableSkelaton :rows="5" :columns="headers.length" show-index />
+        <TableSkelaton :rows="5" :columns="headers.length" selectable />
       </template>
     </DataStatusBuilder>
   </main>

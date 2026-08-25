@@ -64,6 +64,7 @@
     searchOnEnter?: boolean;
     searchParam?: string;
     wrapOptionLabels?: boolean;
+    maxSelectedLabels?: number;
   }
 
   const emit = defineEmits([
@@ -139,7 +140,7 @@
   const mergedOptions = computed(() => staticOptions?.value ?? dynamicOptions.value);
 
   const multiselectProps = computed(() =>
-    isMultiselect.value ? { display: 'chip', maxSelectedLabels: 6 } : {},
+    isMultiselect.value ? { display: 'chip', maxSelectedLabels: props.maxSelectedLabels || 6 } : {},
   );
 
   const selectedTitleMaxLength = 50;
@@ -434,6 +435,19 @@
       @filter="handleFilter"
       @keydown.enter="searchOptions"
     >
+      <template #chip="{ value, removeCallback }">
+        <span class="selected-chip" :title="getFullSelectedTitle(value)">
+          <span class="selected-chip__label">{{ getSelectedTitle(value) }}</span>
+          <button
+            class="selected-chip__remove"
+            type="button"
+            :aria-label="$t('remove')"
+            @click.stop="removeCallback($event, value)"
+          >
+            ×
+          </button>
+        </span>
+      </template>
       <template #option="{ option }">
         <span
           class="option-label"
@@ -523,6 +537,17 @@
       white-space: nowrap;
     }
 
+    :deep(.p-multiselect-label[data-p='has-chip']) {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    :deep(.p-multiselect-chip-item) {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
+    }
+
     .selected-value {
       display: block;
       min-width: 0;
@@ -540,6 +565,37 @@
         overflow-wrap: anywhere;
         line-height: 1.4;
       }
+    }
+
+    .selected-chip {
+      display: flex;
+      align-items: center;
+      gap: var(--xs-size-4);
+      min-width: 0;
+      max-width: 100%;
+      padding: var(--xs-size-2) var(--xs-size);
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      background: var(--BgWhite);
+      color: var(--PrimaryColor);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .selected-chip__label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .selected-chip__remove {
+      flex: 0 0 auto;
+      color: var(--PrimaryColor);
+      font-size: 16px;
+      line-height: 1;
     }
 
     &:focus {

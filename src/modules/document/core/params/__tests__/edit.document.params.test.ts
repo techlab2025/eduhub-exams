@@ -54,6 +54,20 @@ describe('EditDocumentParams', () => {
     expect(map).not.toHaveProperty('document_file');
   });
 
+  it('sends an asterisk for explicitly deleted assets', async () => {
+    const params = await EditDocumentParams.prepare(
+      makeParams({
+        images: ['*'],
+        files: ['*'],
+      }),
+    );
+
+    expect(params.toMap()).toMatchObject({
+      image: '*',
+      document_file: '*',
+    });
+  });
+
   it('validates required fields', () => {
     expect(makeParams().validate().isValid).toBe(true);
     expect(makeParams({ subjects: null as never }).validate().isValid).toBe(false);

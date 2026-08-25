@@ -219,6 +219,50 @@ describe('DocumentForm', () => {
     expect(emittedParams.translations.description).toEqual(DocumentShowModel.example.description);
   });
 
+  it('marks removed edit assets with an asterisk and omits unchanged assets', async () => {
+    const savedDocument = new DocumentShowModel({
+      ...DocumentShowModel.example,
+      images: 'https://cdn.example.test/cover.png',
+      files: 'https://cdn.example.test/document.pdf',
+    });
+    const wrapper = mount(DocumentForm, {
+      props: { document: savedDocument, formKey: 'edit-document-assets' },
+      global: {
+        stubs: {
+          UpdatedCustomInputSelect: true,
+          MultiLangInput: true,
+          HandleFilesUpload: {
+            name: 'HandleFilesUpload',
+            props: ['index', 'file'],
+            emits: ['change'],
+            template: '<div class="file-upload-stub" />',
+          },
+          DocumentIcon: true,
+          DeleteTagIcon: true,
+        },
+        mocks: { $t: (msg: string) => msg },
+      },
+    });
+    await flushPromises();
+
+    const unchangedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
+    expect(unchangedParams.images).toBe('');
+    expect(unchangedParams.files).toBe('');
+
+    const uploadInputs = wrapper.findAllComponents({ name: 'HandleFilesUpload' });
+    uploadInputs[0]?.vm.$emit('change', []);
+    await wrapper.vm.$nextTick();
+    const imageRemovedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
+    expect(imageRemovedParams.images).toBe('*');
+    expect(imageRemovedParams.files).toBe('');
+
+    uploadInputs[1]?.vm.$emit('change', []);
+    await wrapper.vm.$nextTick();
+    const bothRemovedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as AddDocumentParams;
+    expect(bothRemovedParams.images).toBe('*');
+    expect(bothRemovedParams.files).toBe('*');
+  });
+
   it('restores all dependent select values from the show-document response', async () => {
     const savedDocument = DocumentShowModel.fromJson({
       id: 10,
@@ -396,6 +440,8 @@ describe('DocumentForm', () => {
       'document_name_required',
       'document_reference_number_required',
       'document_type_required',
+      'document_education_classification_required',
+      'document_branch_required',
       'document_description_required',
     ]);
   });

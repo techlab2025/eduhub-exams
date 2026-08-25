@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute , useRouter } from 'vue-router';
   // import AppButton from '@/shared/HelpersComponents/AppButton.vue';
   import IconAccept from '@/shared/icons/IconAccept.vue';
   import DocumentController from '../controllers/document.controller';
@@ -11,6 +11,7 @@
 
   const controller = DocumentController.getInstance();
   const route = useRoute();
+  const router = useRouter();
   const formKey = route.fullPath;
 
   const params = ref<EditDocumentParams | null>(null);
@@ -25,7 +26,10 @@
     try {
       // ← حول الـ URLs لـ base64 قبل الإرسال
       const preparedParams = await EditDocumentParams.prepare(params.value);
-      await controller.update(preparedParams, undefined, formKey);
+      const res = await controller.update(preparedParams, undefined, formKey);
+      if (!res?.error?.displayMessage) {
+        router.push({ name: 'Documents' });
+      }
     } finally {
       loading.value = false;
     }

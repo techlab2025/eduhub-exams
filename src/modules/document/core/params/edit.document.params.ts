@@ -64,12 +64,14 @@ export default class EditDocumentParams implements Params {
   static async prepare(params: EditDocumentParams): Promise<EditDocumentParams> {
     const images = await Promise.all(
       params.images.map((img) =>
-        EditDocumentParams.isBase64(img) ? img : EditDocumentParams.urlToBase64(img),
+        img === '*' || EditDocumentParams.isBase64(img) ? img : EditDocumentParams.urlToBase64(img),
       ),
     );
     const files = await Promise.all(
       params.files.map((file) =>
-        EditDocumentParams.isBase64(file) ? file : EditDocumentParams.urlToBase64(file),
+        file === '*' || EditDocumentParams.isBase64(file)
+          ? file
+          : EditDocumentParams.urlToBase64(file),
       ),
     );
     params.images = images.filter(Boolean);
@@ -77,8 +79,8 @@ export default class EditDocumentParams implements Params {
     return params;
   }
 
-  toMap(): { [p: string]: any } {
-    const map: { [key: string]: any } = {
+  toMap(): Record<string, unknown> {
+    const map: Record<string, unknown> = {
       document_id: this.document_id,
       document_type_id: this.documentTypeId,
       stage_id: this.stage_id,
@@ -87,11 +89,14 @@ export default class EditDocumentParams implements Params {
       document_tags: this.tags,
     };
 
-    // ← بعت الصورة/الملف بس لو base64
-    if (this.images?.[0] && EditDocumentParams.isBase64(this.images[0])) {
+    // Unchanged URLs are omitted; only replacements or explicit removals are sent.
+    if (
+      this.images?.[0] &&
+      (this.images[0] === '*' || EditDocumentParams.isBase64(this.images[0]))
+    ) {
       map['image'] = this.images[0];
     }
-    if (this.files?.[0] && EditDocumentParams.isBase64(this.files[0])) {
+    if (this.files?.[0] && (this.files[0] === '*' || EditDocumentParams.isBase64(this.files[0]))) {
       map['document_file'] = this.files[0];
     }
 

@@ -54,7 +54,7 @@ export enum QuestionTypeEnum {
           "id": number,
           "title":string,
         }
-      ]
+      ] 
     }
   ],
   "e_c_subject":{
@@ -103,28 +103,7 @@ export enum QuestionTypeEnum {
 
 ```ts
 {
-  "title": [
-    {
-      "locale": "en",
-      "title": "batch title"
-    },
-    {
-      "locale": "ar",
-      "title": "عنوان الباتش"
-    }
-  ],
-    "description": [
-    {
-      "locale": "en",
-      "description": "plan description"
-    },
-    {
-      "locale": "ar",
-      "description": "وصف الخطة"
-    }
-  ]
-
-
+  
 }
 ```
 

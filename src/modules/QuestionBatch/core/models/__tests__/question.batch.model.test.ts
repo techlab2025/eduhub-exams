@@ -9,12 +9,13 @@ describe('QuestionBatchModel', () => {
         { locale: 'ar', title: 'حزمة عربية' },
         { locale: 'en', title: 'Arabic Batch' },
       ],
-      education_type: [{ id: 1, title: 'Governmental', children: [] }],
+      education_type: [{ id: 1, title: 'Governmental', children: [{ id: 2, title: 'Primary' }] }],
       e_c_subject: { id: 3, title: 'Arabic' },
       curriculum: { id: 1, title: 'Governmental' },
       number_of_questions: '10',
       'sources ': ['Book'],
       status: '2',
+      created_by: { id: 99, name: 'Legacy creator' },
       created_at: { id: 7, name: 'Ahmed' },
       generation_date: '2026-08-23',
     });
@@ -24,7 +25,13 @@ describe('QuestionBatchModel', () => {
       numberOfQuestions: 10,
       sources: ['Book'],
       status: '2',
+      eCSubject: { id: 3, title: 'Arabic' },
+      curriculum: { id: 1, title: 'Governmental' },
+      generationDate: '2026-08-23',
     });
-    expect(model.createdBy.name).toBe('Ahmed');
+    expect(model.educationType[0]?.children[0]).toMatchObject({ id: 2, title: 'Primary' });
+    expect(model.createdAt).toMatchObject({ id: 7, name: 'Ahmed' });
+    expect(model.subject).toBe(model.eCSubject);
+    expect(model.createdBy).toBe(model.createdAt);
   });
 });

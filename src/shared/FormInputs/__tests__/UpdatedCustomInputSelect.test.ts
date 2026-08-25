@@ -5,7 +5,8 @@ import UpdatedCustomInputSelect from '../UpdatedCustomInputSelect.vue';
 // Stubs
 const MultiSelectStub = {
   name: 'MultiSelect',
-  template: '<div class="multiselect-stub" />',
+  template:
+    '<div class="multiselect-stub"><slot v-for="item in modelValue" name="chip" :value="item" :remove-callback="() => undefined" /></div>',
   props: ['modelValue', 'options', 'placeholder', 'loading', 'emptyMessage', 'disabled'],
   emits: ['update:modelValue', 'filter'],
 };
@@ -68,6 +69,14 @@ describe('UpdatedCustomInputSelect', () => {
     const wrapper = createWrapper({ type: 2 });
     expect(wrapper.findComponent(MultiSelectStub).exists()).toBe(true);
     expect(wrapper.findComponent(SelectStub).exists()).toBe(false);
+  });
+
+  it('shortens long selected multiselect chips and keeps the full title as a tooltip', () => {
+    const title = 'General Education -> Pre-KG -> Nursery -> Junior KG -> Senior KG';
+    const wrapper = createWrapper({ type: 2, modelValue: [makeTitleInterface(1, title)] });
+
+    expect(wrapper.get('.selected-chip__label').text()).toBe(`${title.slice(0, 47)}...`);
+    expect(wrapper.get('.selected-chip').attributes('title')).toBe(title);
   });
 
   it('renders label when label prop is provided', () => {

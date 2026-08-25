@@ -228,9 +228,12 @@
     }
   });
 
-  onMounted(() => Promise.all([fetchSubjectOptions(), 
-  // fetchRoleOptions()
-  ]));
+  onMounted(() =>
+    Promise.all([
+      fetchSubjectOptions(),
+      // fetchRoleOptions()
+    ]),
+  );
 </script>
 
 <template>
@@ -383,6 +386,7 @@
           required
           :reload="false"
           @update:model-value="updateData"
+          :maxSelectedLabels="1"
         />
       </div>
 

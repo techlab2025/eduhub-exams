@@ -82,12 +82,14 @@
       @update:model-value="updateData"
     />
     <MultiLangInput
+      class="required-field"
       field-key="title"
       :label="$t('title')"
       :model-value="titleTranslations"
       @update:model-value="titleTranslations = $event"
     />
     <MultiLangInput
+      class="required-field"
       field-key="description"
       type="description"
       :label="$t('description')"

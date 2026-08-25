@@ -40,7 +40,15 @@
   const { t } = useI18n();
 
   type DocumentValidationErrors = Partial<
-    Record<'title' | 'referenceNumber' | 'documentType' | 'subject' | 'description', string>
+    Record<
+      | 'title'
+      | 'referenceNumber'
+      | 'documentType'
+      | 'educationClassification'
+      | 'branch'
+      | 'description',
+      string
+    >
   >;
 
   const validationErrors = ref<DocumentValidationErrors>({});
@@ -66,6 +74,8 @@
   const documentTypeController = DocumentTypeController.getInstance();
   const UploadedImage = ref<string>();
   const UploadedFiles = ref<string>();
+  const imageRemoved = ref(false);
+  const fileRemoved = ref(false);
 
   const hasTranslation = (value: Record<string, string>) =>
     Object.values(value).some((translation) => translation?.trim());
@@ -108,9 +118,15 @@
     if (!selectedDocumentType.value?.id) {
       errors.documentType = t('document_type_required');
     }
-    if (!selectedBranch.value?.id || !selectedSubject.value?.id) {
-      errors.subject = t('document_subject_required');
+    if (!selectedEducationClassification.value?.id) {
+      errors.educationClassification = t('document_education_classification_required');
     }
+    if (!selectedBranch.value?.id) {
+      errors.branch = t('document_branch_required');
+    }
+    // if (!selectedBranch.value?.id || !selectedSubject.value?.id) {
+    //   errors.subject = t('document_subject_required');
+    // }
     if (!hasTranslation(description.value)) {
       errors.description = t('document_description_required');
     }
@@ -142,6 +158,16 @@
   defineExpose({ validate });
 
   const updateData = () => {
+    const imagePayload = imageRemoved.value
+      ? '*'
+      : document && UploadedImage.value === document.images
+        ? ''
+        : UploadedImage.value || '';
+    const filePayload = fileRemoved.value
+      ? '*'
+      : document && UploadedFiles.value === document.files
+        ? ''
+        : UploadedFiles.value || '';
     const params = new AddDocumentParams({
       translations: new DocumentTranslationParams({
         description: description.value,
@@ -150,8 +176,8 @@
       documentTypeId: selectedDocumentType.value?.id || 0,
       stage_id: selectedBranch.value?.id || 0,
       subjects: selectedSubject.value?.id || 0,
-      files: UploadedFiles.value || '',
-      images: UploadedImage.value || '',
+      files: filePayload,
+      images: imagePayload,
       refNumber: RefrenceNumber.value,
       tags: tags.value,
     });
@@ -169,6 +195,7 @@
     selectedSubject.value = null;
     branchOptions.value = [];
     subjectOptions.value = [];
+    refreshVisibleValidation();
 
     if (selectedEducationClassification.value?.id) {
       const requestedClassificationId = selectedEducationClassification.value.id;
@@ -189,6 +216,7 @@
     selectedBranch.value = selected ?? null;
     selectedSubject.value = getBranchDefaultSubject(selectedBranch.value);
     subjectOptions.value = [];
+    refreshVisibleValidation();
 
     if (selectedBranch.value?.id) {
       const requestedBranchId = selectedBranch.value.id;
@@ -222,8 +250,10 @@
   const handleImageChange = (files: UploadedFile[]) => {
     if (files.length === 0) {
       UploadedImage.value = '';
+      imageRemoved.value = Boolean(document?.images);
     } else {
       UploadedImage.value = files[0]?.base64 || files[0]?.url || '';
+      imageRemoved.value = false;
     }
     updateData();
   };
@@ -231,8 +261,10 @@
   const handleFilsChange = (files: UploadedFile[]) => {
     if (files.length === 0) {
       UploadedFiles.value = '';
+      fileRemoved.value = Boolean(document?.files);
     } else {
       UploadedFiles.value = files[0]?.base64 || files[0]?.url || '';
+      fileRemoved.value = false;
     }
     updateData();
   };
@@ -332,6 +364,8 @@
       RefrenceNumber.value = newDoc.RefNumber;
       UploadedImage.value = newDoc.images;
       UploadedFiles.value = newDoc.files;
+      imageRemoved.value = false;
+      fileRemoved.value = false;
       selectedDocumentType.value = new TitleInterface({
         id: newDoc.documentType.id,
         title: newDoc.documentType.title,
@@ -449,6 +483,13 @@
           :reload="true"
           @update:model-value="handleEducationClassificationChange($event)"
         />
+        <small
+          v-if="validationErrors.educationClassification"
+          class="document-field-error"
+          data-document-error
+        >
+          {{ validationErrors.educationClassification }}
+        </small>
       </div>
       <div class="field-group required-field col-span-2">
         <UpdatedCustomInputSelect
@@ -461,6 +502,9 @@
           :disabled="!selectedEducationClassification"
           @update:model-value="handleBranchChange($event)"
         />
+        <small v-if="validationErrors.branch" class="document-field-error" data-document-error>
+          {{ validationErrors.branch }}
+        </small>
       </div>
       <div v-if="subjectOptions.length > 0 || selectedSubject" class="field-group col-span-2">
         <UpdatedCustomInputSelect
@@ -473,9 +517,9 @@
           :disabled="!selectedBranch"
           @update:model-value="handleSubjectChange($event)"
         />
-        <small v-if="validationErrors.subject" class="document-field-error" data-document-error>
+        <!-- <small v-if="validationErrors.subject" class="document-field-error" data-document-error>
           {{ validationErrors.subject }}
-        </small>
+        </small> -->
       </div>
 
       <div class="field-group required-field col-span-2">
@@ -534,6 +578,7 @@
           :have-content="true"
           :class="`image-input`"
           @change="handleImageChange"
+          :max-files="1"
         >
           <template #content>
             <div class="add-imaegs-data">
@@ -559,6 +604,7 @@
           :have-content="true"
           :class="`image-input`"
           @change="handleFilsChange"
+          :max-files="1"
         >
           <template #content>
             <div class="add-imaegs-data">

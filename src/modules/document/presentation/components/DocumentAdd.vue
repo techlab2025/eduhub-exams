@@ -1,12 +1,14 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import DocumentController from '../controllers/document.controller';
   import DocumentForm from './DocumentForm.vue';
   import type AddDocumentParams from '../../core/params/add.document.params';
 
   const controller = DocumentController.getInstance();
   const route = useRoute();
+  const router = useRouter();
+
   const formKey = route.fullPath;
 
   const params = ref<AddDocumentParams | null>(null);
@@ -20,7 +22,10 @@
     loading.value = true;
     try {
       console.log(params, 'params');
-      await controller.create(params.value, undefined, formKey);
+      const res = await controller.create(params.value, undefined, formKey);
+      if (!res?.error?.displayMessage) {
+        router.push({ name: 'Documents' });
+      }
     } finally {
       loading.value = false;
     }

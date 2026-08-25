@@ -120,6 +120,15 @@
 
     FilterDialogShow.value = false;
   };
+
+  const selectedRows = ref<DocumentModel[]>([]);
+  const deleteSelected = () => {
+    selectedRows.value.forEach((item) => {
+      // delete
+      deleteDocument(item.id!);
+    });
+    selectedRows.value = [];
+  };
 </script>
 
 <template>
@@ -209,6 +218,7 @@
             show-index
             hoverable
             striped
+            @selection-change="selectedRows = $event"
           >
             <template #cell-doecumentType="{ item }">
               {{ item.doecumentType?.title ?? 'N/A' }}
@@ -252,6 +262,10 @@
               </div>
             </template>
           </AppTable>
+        </div>
+        <div class="delete-container" v-if="selectedRows.length > 0">
+          <div class="selected-count">{{ selectedRows.length }} question</div>
+          <button class="btn btn-danger" @click="deleteSelected">Delete Selected</button>
         </div>
 
         <Pagination
@@ -309,6 +323,30 @@
 </template>
 
 <style scoped lang="scss">
+  .delete-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e6e6e6;
+    border-radius: 24px;
+    margin-block: 10px;
+    padding: 10px;
+
+    .btn-danger {
+      margin-left: auto;
+      color: white;
+      background-color: var(--Red);
+    }
+
+    .selected-count {
+      color: #121212;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'bold';
+    }
+  }
+
   :deep(.p-datepicker) {
     width: 100%;
   }
