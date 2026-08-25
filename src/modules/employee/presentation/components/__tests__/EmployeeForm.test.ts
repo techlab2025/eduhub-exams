@@ -246,6 +246,33 @@ describe('EmployeeForm', () => {
     ]);
   });
 
+  it('marks a removed employee image and omits it while unchanged', async () => {
+    const employee = EmployeeModel.fromJson({
+      id: 30,
+      employee_ref: 'EMP-30',
+      first_name: 'Mona',
+      last_name: 'Ali',
+      image: 'https://cdn.example.test/employee.png',
+      gender: 1,
+      status: 1,
+      type: EmployeeTypeEnum.ADMIN,
+      subjects: [],
+      email: 'mona@example.com',
+      phone: '01000000000',
+    });
+    const wrapper = mountForm(employee);
+    await flushPromises();
+
+    const unchangedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as { image: string };
+    expect(unchangedParams.image).toBe('');
+
+    wrapper.getComponent({ name: 'HandleFilesUpload' }).vm.$emit('change', []);
+    await wrapper.vm.$nextTick();
+
+    const removedParams = wrapper.emitted('updateData')?.at(-1)?.[0] as { image: string };
+    expect(removedParams.image).toBe('*');
+  });
+
   it('hides subjects for Admin and requires them for Teacher', async () => {
     const wrapper = mountForm();
     await flushPromises();

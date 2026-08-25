@@ -5,7 +5,7 @@
   import AddEmployeeParams from '../../core/params/add.employee.params';
   import EditEmployeeParams from '../../core/params/edit.employee.params';
   import EmployeeIcon from '@/shared/icons/EmployeeIcon.vue';
-  import HandleFilesUpload from '@/shared/FormInputs/HandleFilesUpload.vue';
+  import HandleFilesUpload, { type UploadedFile } from '@/shared/FormInputs/HandleFilesUpload.vue';
   import UplaodImageInput from '@/shared/icons/UploadImage/UplaodImageInput.vue';
   import InputSwitch from 'primevue/inputswitch';
   import RadioButton from 'primevue/radiobutton';
@@ -42,6 +42,7 @@
   const lastName = ref<string>('');
   const employeeId = ref('');
   const UploadedImage = ref<string[]>([]);
+  const imageRemoved = ref(false);
   const checked = ref(false); //employee status
 
   const { t } = useI18n();
@@ -88,12 +89,17 @@
   const route = useRoute();
 
   const updateData = () => {
+    const imagePayload = imageRemoved.value
+      ? '*'
+      : props.employee && UploadedImage.value[0] === props.employee.image
+        ? ''
+        : UploadedImage.value[0] || '';
     const data = {
       email: email.value,
       EmployeeRef: employeeId.value,
       firstname: name.value,
       gender: gender.value == 1 ? GenderENum.male : GenderENum.female,
-      image: String(UploadedImage.value),
+      image: imagePayload,
       lastname: lastName.value,
       phone: phone.value,
       employeeStatus: checked.value ? EmployeeStatusEnm.active : EmployeeStatusEnm.disavtive,
@@ -144,6 +150,7 @@
         employeeId.value = newEmployee.employeeId;
         checked.value = newEmployee.status == 1 ? true : false;
         UploadedImage.value = newEmployee.image ? [newEmployee.image] : [];
+        imageRemoved.value = false;
         updateData();
       }
     },
@@ -164,12 +171,19 @@
     lastName.value = '';
     employeeId.value = '';
     UploadedImage.value = [];
+    imageRemoved.value = false;
     checked.value = false;
     updateData();
   };
 
-  const handleImageChange = (file: any) => {
-    UploadedImage.value = file[0]?.base64;
+  const handleImageChange = (files: UploadedFile[]) => {
+    if (files.length === 0) {
+      UploadedImage.value = [];
+      imageRemoved.value = Boolean(props.employee?.image);
+    } else {
+      UploadedImage.value = [files[0]?.base64 || files[0]?.url || ''];
+      imageRemoved.value = false;
+    }
     updateData();
   };
 
@@ -230,6 +244,7 @@
       lastName.value = newVal.lastname;
       checked.value = Boolean(newVal.employeeStatus);
       UploadedImage.value = newVal.image ? [newVal.image] : [];
+      imageRemoved.value = false;
       password.value = newVal.password;
       employeeId.value = newVal.EmployeeRef;
       selectedEmployeeType.value =

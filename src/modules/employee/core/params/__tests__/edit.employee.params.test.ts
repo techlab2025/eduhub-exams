@@ -29,4 +29,27 @@ describe('EditEmployeeParams', () => {
       e_c_subject_ids: [10, 12],
     });
   });
+
+  it('sends an asterisk for a removed image and omits an unchanged image', () => {
+    const createParams = (image: string) =>
+      new EditEmployeeParams({
+        id: 7,
+        firstname: 'Mona',
+        lastname: 'Ali',
+        email: 'mona@example.com',
+        phone: '01000000000',
+        image,
+        EmployeeRef: 'EMP-1',
+        gender: GenderENum.female,
+        employeeStatus: EmployeeStatusEnm.active,
+        password: '',
+        employeeType: EmployeeTypeEnum.ADMIN,
+      });
+
+    expect(createParams('*').toMap()).toMatchObject({ image: '*' });
+    expect(createParams('').toMap()).not.toHaveProperty('image');
+    expect(createParams('https://cdn.example.test/employee.png').toMap()).not.toHaveProperty(
+      'image',
+    );
+  });
 });

@@ -69,7 +69,7 @@ export default class EditEmployeeParams implements Params {
       last_name: this.lastname,
       email: this.email,
       phone: this.phone,
-      ...(isBase64(this.image) && {
+      ...((this.image === '*' || (this.image.length > 0 && isBase64(this.image))) && {
         image: this.image,
       }),
       employee_ref: this.EmployeeRef,
