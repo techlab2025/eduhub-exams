@@ -58,6 +58,10 @@ vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
   dialogManager: { toastSuccess: vi.fn() },
 }));
 
+vi.mock('@/assets/images/Book Cover Design 1.png', () => ({
+  default: 'default-document-cover.png',
+}));
+
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
@@ -258,6 +262,45 @@ describe('DocumentIndex', () => {
     expect(fetchDocuments).toHaveBeenCalledOnce();
     const params = fetchDocuments.mock.calls[0]?.[0];
     expect(params.toMap()).toMatchObject({ e_c_subject_id: 284 });
+  });
+
+  it('uses the default cover for missing and failed document images', async () => {
+    documentListData.value = [
+      {
+        id: 17,
+        title: 'Document without image',
+        RefNumber: 'DOC-17',
+        doecumentType: { id: 1, title: 'Book' },
+        description: '',
+        image: '',
+        file: '',
+        indexFile: '',
+        hasIndex: false,
+        tranaslations: {},
+      },
+      {
+        id: 18,
+        title: 'Document with failed image',
+        RefNumber: 'DOC-18',
+        doecumentType: { id: 1, title: 'Book' },
+        description: '',
+        image: 'https://example.com/missing-cover.png',
+        file: '',
+        indexFile: '',
+        hasIndex: false,
+        tranaslations: {},
+      },
+    ];
+    const wrapper = mountDocumentIndex();
+    await flushPromises();
+    await selectCurriculumAndShowResults(wrapper);
+
+    const images = wrapper.findAll('.document-index-page__thumbnail img');
+    expect(images[0]?.attributes('src')).toBe('default-document-cover.png');
+    expect(images[1]?.attributes('src')).toBe('https://example.com/missing-cover.png');
+
+    await images[1]?.trigger('error');
+    expect(images[1]?.attributes('src')).toBe('default-document-cover.png');
   });
 
   it('replaces the subject filter with the selected subject configuration', async () => {

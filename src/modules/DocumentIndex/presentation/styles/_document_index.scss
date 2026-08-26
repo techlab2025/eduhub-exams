@@ -143,8 +143,9 @@
 
     h3 {
       margin: 0 0 5px;
-      color: var(--gray-900);
-      font-family: 'Medium';
+      color: rgba(18, 18, 18, 1);
+      font-family: 'Demi';
+      font-weight: 600;
       font-size: 15px;
     }
 
@@ -157,6 +158,22 @@
       line-height: 1.45;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
+      font-family: 'Demi';
+      font-weight: 400; 
+      font-size: 13px;
+      color: rgba(18, 18, 18, 1);
+    }
+    span{
+      font-family: 'Medium'; 
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(138, 138, 138, 1);
+    }
+    strong{
+      font-family: 'Demi';
+      font-weight: 600;
+      font-size: 13px;
+      color: rgba(75, 75, 75, 1);
     }
   }
 
@@ -411,15 +428,18 @@
 
     h2 {
       margin: 0 0 4px;
-      color: var(--gray-900);
+      color: rgba(17, 24, 39, 1);
       font-family: 'Bold';
-      font-size: 21px;
+      font-weight: 700;
+      font-size: 23px;
     }
 
     p {
       margin: 0;
-      color: var(--gray-600);
-      font-size: 13px;
+      font-size: 15px;
+      font-family: 'Medium';
+      font-weight: 500;
+      color: rgba(93, 93, 93, 1);
     }
   }
 

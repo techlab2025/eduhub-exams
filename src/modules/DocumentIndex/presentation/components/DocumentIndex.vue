@@ -39,6 +39,7 @@
     type DocumentIndexLevelTypeEnum as DocumentIndexLevel,
   } from '../../core/constant/DocumentIndexLevel.enum';
   import DocIndex from '@/shared/icons/DocIndex.vue';
+  import defaultDocumentCover from '@/assets/images/Book Cover Design 1.png';
 
   interface SubjectSelectLevel {
     options: TitleInterface<number>[];
@@ -267,7 +268,11 @@
   const documentDescription = (document: DocumentModel): string =>
     localizedText(document.description ?? document.tranaslations?.description);
 
-  const documentImage = (document: DocumentModel): string => document.image ?? '';
+  const documentImage = (document: DocumentModel): string =>
+    document.image?.trim() || defaultDocumentCover;
+  const handleDocumentImageError = (event: Event): void => {
+    if (event.target instanceof HTMLImageElement) event.target.src = defaultDocumentCover;
+  };
   const documentSourceFile = (document: DocumentModel): string => document.file ?? '';
   const documentIndexFile = (document: DocumentModel): string => document.indexFile ?? '';
   const hasDocumentIndex = (document: DocumentModel): boolean => document.hasIndex;
@@ -518,18 +523,10 @@
         >
           <div class="document-index-page__thumbnail">
             <img
-              v-if="documentImage(document)"
               :src="documentImage(document)"
               :alt="document.title"
+              @error="handleDocumentImageError"
             />
-            <svg v-else viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M6 3h8l4 4v14H6V3Z M14 3v5h4"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linejoin="round"
-              />
-            </svg>
           </div>
 
           <div class="document-index-page__result-content">
