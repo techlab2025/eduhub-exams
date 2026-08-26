@@ -1050,5 +1050,9 @@
       "update": "تعديل",
       "delete": "حذف"
     }
-  }
+  },
+  "No_Documents_Found": "لا توجد مستندات",
+  "There_are_no_documents_linked_to_this_subject_yet": "لا توجد مستندات مرتبطة بهذا الموضوع بعد",
+  "Upload_and_assign_a_document_to_this_subject_to_start_indexing":"يرجى رفع وتعيين مستند لهذا الموضوع لبدء عملية الفهرسة"
+
 }

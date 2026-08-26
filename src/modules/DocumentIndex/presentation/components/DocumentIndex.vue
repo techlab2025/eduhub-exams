@@ -14,7 +14,7 @@
   import {
     copyEditableDocumentIndexItems,
     type EditableDocumentIndexItem,
-  } from '../../core/models/editable.document.index.item.model';
+  } from '../../core/models/editable.document.index.item.model'; 
   import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
   import UpdateDocumentIndexParams from '../../core/params/update.document.index.params';
   import SaveDocumentIndexParams from '../../core/params/save.document.index.params';
@@ -36,6 +36,7 @@
     getDocumentIndexLevelKey,
     type DocumentIndexLevelTypeEnum as DocumentIndexLevel,
   } from '../../core/constant/DocumentIndexLevel.enum';
+import DocIndex from '@/shared/icons/DocIndex.vue';
 
   const emit = defineEmits<{
     saveIndex: [payload: { documentId: number; items: EditableDocumentIndexItem[] }];
@@ -393,6 +394,7 @@
           class="document-index-page__show-results"
           type="button"
           :disabled="isLoading"
+          :class="{ '--disabled': !selectedSubject }"
           @click="showResults"
         >
           {{ isLoading ? t('document_index.loading') : t('document_index.show_results') }}
@@ -426,7 +428,11 @@
         {{ t('document_index.load_failed') }}
       </div>
       <div v-else-if="documents.length === 0" class="document-index-page__state">
-        {{ t('document_index.no_documents') }}
+        <DocIndex />
+        <h2>{{ t('No_Documents_Found') }}</h2>
+        <p>{{ t('There_are_no_documents_linked_to_this_subject_yet') }}</p>
+        <p>{{ t('Upload_and_assign_a_document_to_this_subject_to_start_indexing') }}</p>
+        <!-- {{ t('document_index.no_documents') }} -->
       </div>
       <div v-else class="document-index-page__results">
         <article
