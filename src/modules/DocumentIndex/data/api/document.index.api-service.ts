@@ -12,7 +12,7 @@ export default class DocumentIndexApiService extends BaseApiService {
   private readonly documentIndexEndpoints = new DocumentIndexEndpoints();
 
   protected get endpoints(): Partial<ApiEndpoints> {
-    return {};
+    return { index: this.documentIndexEndpoints.indexPatches };
   }
 
   static getInstance(): DocumentIndexApiService {
@@ -24,6 +24,10 @@ export default class DocumentIndexApiService extends BaseApiService {
 
   createIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
     return this.customPost(this.documentIndexEndpoints.createIndex, params, options);
+  }
+
+  checkIndexStatus(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+    return this.customPost(this.documentIndexEndpoints.checkIndexStatus, params, options);
   }
 
   updateIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {

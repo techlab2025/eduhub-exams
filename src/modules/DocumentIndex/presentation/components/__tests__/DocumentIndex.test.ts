@@ -3,16 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-import GeneratedDocumentIndexModel from '../../../core/models/generated.document.index.model';
 import DocumentIndex from '../DocumentIndex.vue';
 
 const fetchEducationClassifications = vi.fn();
 const fetchBranches = vi.fn();
 const fetchSubjects = vi.fn();
 const fetchDocuments = vi.fn();
-const generateIndex = vi.fn();
-const updateIndex = vi.fn();
-const saveIndex = vi.fn();
+const startIndex = vi.fn();
+const routerPush = vi.fn();
 
 const documentListData = ref<Record<string, unknown>[]>([]);
 
@@ -48,9 +46,9 @@ vi.mock('@/modules/document/presentation/controllers/document.controller', () =>
   },
 }));
 
-vi.mock('../../controllers/document.index.controller', () => ({
+vi.mock('../../controllers/document.index.patch.controller', () => ({
   default: {
-    getInstance: () => ({ generateIndex, updateIndex, saveIndex }),
+    getInstance: () => ({ startIndex }),
   },
 }));
 
@@ -66,6 +64,10 @@ vi.mock('vue-i18n', () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
+vi.mock('vue-router', () => ({
+  useRouter: () => ({ push: routerPush }),
+}));
+
 const SelectStub = defineComponent({
   name: 'UpdatedCustomInputSelect',
   props: {
@@ -79,23 +81,11 @@ const SelectStub = defineComponent({
   },
 });
 
-const DialogStub = defineComponent({
-  name: 'PrimeDialogStub',
-  props: {
-    visible: { type: Boolean, default: false },
-  },
-  emits: ['update:visible', 'hide'],
-  setup(props, { slots }) {
-    return () => (props.visible ? h('div', { class: 'dialog-stub' }, slots.default?.()) : null);
-  },
-});
-
 const mountDocumentIndex = () =>
   mount(DocumentIndex, {
     global: {
       stubs: {
         UpdatedCustomInputSelect: SelectStub,
-        Dialog: DialogStub,
       },
     },
   });
@@ -154,39 +144,8 @@ describe('DocumentIndex', () => {
         }),
       );
     });
-    generateIndex.mockResolvedValue(
-      new DataSuccess({
-        data: GeneratedDocumentIndexModel.fromJson({
-          book_id: 10,
-          book_status: 'completed',
-          chapters: [
-            {
-              id: 22,
-              number: '1',
-              title: 'Chapter 1 — Reading',
-              source_pages: { start: 1, end: 64 },
-              lessons: [
-                {
-                  id: 84,
-                  number: '1',
-                  title: 'Lesson 1 — Reading',
-                  source_pages: { start: 4, end: 13 },
-                  topics: [
-                    {
-                      id: 221,
-                      title: 'Reading topic',
-                      source_pages: { start: 5, end: 6 },
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        }),
-      }),
-    );
-    updateIndex.mockResolvedValue(new DataSuccess({ data: GeneratedDocumentIndexModel.example }));
-    saveIndex.mockResolvedValue(new DataSuccess({}));
+    startIndex.mockResolvedValue(new DataSuccess({}));
+    routerPush.mockResolvedValue(undefined);
   });
 
   it('loads all education classifications and renders the three base selects', async () => {
@@ -330,7 +289,7 @@ describe('DocumentIndex', () => {
     expect(params.toMap()).toMatchObject({ e_c_subject_id: 308 });
   });
 
-  it('opens generated data and switches table rows into edit mode', async () => {
+  it('starts indexing and routes to the document index patch page without a loading dialog', async () => {
     documentListData.value = [
       {
         id: 17,
@@ -351,51 +310,8 @@ describe('DocumentIndex', () => {
     await wrapper.find('.document-index-page__result-button').trigger('click');
     await flushPromises();
 
-    expect(generateIndex).toHaveBeenCalledWith(
-      expect.objectContaining({ documentId: 17 }),
-      expect.objectContaining({ signal: expect.any(AbortSignal) }),
-    );
-    expect(wrapper.text()).toContain('document_index.generated_title');
-    expect(wrapper.text()).toContain('Chapter 1 — Reading');
-    expect(wrapper.text()).toContain('Reading topic');
-
-    await wrapper.find('.document-index-generated__secondary-action').trigger('click');
-    expect(wrapper.findAll('.document-index-generated input')).toHaveLength(12);
-
-    await wrapper.find('.document-index-generated__save-action').trigger('click');
-    await flushPromises();
-    expect(updateIndex).toHaveBeenCalledOnce();
-
-    await wrapper.find('.document-index-generated__save-action').trigger('click');
-    await flushPromises();
-    expect(saveIndex).toHaveBeenCalledOnce();
-  });
-
-  it('aborts the long-running request when cancel indexing is pressed', async () => {
-    documentListData.value = [
-      {
-        id: 17,
-        title: 'Arabic student book',
-        RefNumber: 'DOC-17',
-        doecumentType: { id: 1, title: 'Book' },
-        description: '',
-        image: '',
-        file: '',
-        indexFile: '',
-        hasIndex: false,
-        tranaslations: {},
-      },
-    ];
-    generateIndex.mockReturnValue(new Promise(() => undefined));
-    const wrapper = mountDocumentIndex();
-    await flushPromises();
-    await selectCurriculumAndShowResults(wrapper);
-    await wrapper.find('.document-index-page__result-button').trigger('click');
-
-    const options = generateIndex.mock.calls[0]?.[1];
-    expect(options.signal.aborted).toBe(false);
-    await wrapper.find('.document-index-generation button').trigger('click');
-    expect(options.signal.aborted).toBe(true);
+    expect(startIndex.mock.calls[0]?.[0].toMap()).toEqual({ document_id: 17 });
+    expect(routerPush).toHaveBeenCalledWith({ name: 'fetch-document-index-patch' });
     expect(wrapper.find('.document-index-generation').exists()).toBe(false);
   });
 });

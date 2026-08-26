@@ -513,9 +513,11 @@
     position: sticky;
     z-index: 1;
     top: 0;
-    background: var(--gray-100);
-    font-family: 'Medium';
-    font-size: 12px;
+    background: rgba(245, 245, 245, 1);
+    font-family: 'Demi';
+    font-weight: 600;
+    color: rgba(18, 18, 18, 1);
+    font-size: 13px;
     white-space: nowrap;
   }
 
