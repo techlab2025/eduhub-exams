@@ -51,6 +51,12 @@ describe('curriculum options', () => {
     ]);
   });
 
+  it('maps the subject endpoint response fields into select options', () => {
+    expect(createSubjectOptions([{ subject_id: 410, subject_title: 'Grammar' }])).toEqual([
+      expect.objectContaining({ id: 410, title: 'Grammar' }),
+    ]);
+  });
+
   it('uses the deepest child id and complete subject path for configurations', () => {
     const subject = findBranchById(branches, 362)?.subjects?.[0];
 

@@ -6,40 +6,36 @@ import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/da
 import GeneratedDocumentIndexModel from '../../../core/models/generated.document.index.model';
 import DocumentIndex from '../DocumentIndex.vue';
 
-const fetchStages = vi.fn();
+const fetchEducationClassifications = vi.fn();
+const fetchBranches = vi.fn();
+const fetchSubjects = vi.fn();
 const fetchDocuments = vi.fn();
 const generateIndex = vi.fn();
 const updateIndex = vi.fn();
 const saveIndex = vi.fn();
 
-const stageData = ref([
-  {
-    id: 128,
-    title: 'Governmental',
-    branches: [
-      {
-        id: 361,
-        title: 'Primary',
-        children: [],
-        subjects: [
-          {
-            id: 284,
-            e_c_subject_id: 284,
-            title: 'Arabic',
-            children: [{ id: 308, e_c_subject_id: 308, title: 'Unit 1', children: [] }],
-          },
-        ],
-      },
-    ],
-  },
-]);
 const documentListData = ref<Record<string, unknown>[]>([]);
 
-vi.mock('@/modules/Stages/presentation/controllers/stage.controller', () => ({
-  default: {
-    getInstance: () => ({ fetchList: fetchStages, listData: stageData }),
+vi.mock('@/modules/EducationClassification', () => ({
+  EducationClassificationController: {
+    getInstance: () => ({ fetchList: fetchEducationClassifications }),
   },
 }));
+
+vi.mock('@/modules/Subjects/presentation/controllers/subject.controller', () => ({
+  default: {
+    getInstance: () => ({ fetchList: fetchBranches }),
+  },
+}));
+
+vi.mock(
+  '@/modules/EducationClassification/presentation/controllers/educationSubject/education.subject.item.controller',
+  () => ({
+    default: {
+      getInstance: () => ({ fetchList: fetchSubjects }),
+    },
+  }),
+);
 
 vi.mock('@/modules/document/presentation/controllers/document.controller', () => ({
   default: {
@@ -101,10 +97,18 @@ const mountDocumentIndex = () =>
   });
 
 const selectCurriculumAndShowResults = async (wrapper: ReturnType<typeof mountDocumentIndex>) => {
-  const selects = wrapper.findAllComponents(SelectStub);
-  await selects[0]?.vm.$emit('update:modelValue', { id: 128, title: 'Governmental' });
-  await selects[1]?.vm.$emit('update:modelValue', { id: 361, title: 'Primary' });
-  await selects[2]?.vm.$emit('update:modelValue', { id: 284, title: 'Arabic' });
+  await wrapper
+    .findAllComponents(SelectStub)[0]
+    ?.vm.$emit('update:modelValue', { id: 128, title: 'Governmental' });
+  await flushPromises();
+  await wrapper
+    .findAllComponents(SelectStub)[1]
+    ?.vm.$emit('update:modelValue', { id: 361, title: 'Primary' });
+  await flushPromises();
+  await wrapper
+    .findAllComponents(SelectStub)[2]
+    ?.vm.$emit('update:modelValue', { id: 284, title: 'Arabic' });
+  await flushPromises();
   await wrapper.find('.document-index-page__show-results').trigger('click');
   await flushPromises();
 };
@@ -113,6 +117,39 @@ describe('DocumentIndex', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     documentListData.value = [];
+    fetchEducationClassifications.mockResolvedValue(
+      new DataSuccess({
+        data: [{ id: 128, title: 'Governmental' }],
+      }),
+    );
+    fetchBranches.mockResolvedValue(
+      new DataSuccess({
+        data: [{ id: 361, e_c_branch_id: 361, title: 'Primary', children: [] }],
+      }),
+    );
+    fetchSubjects.mockImplementation((params) => {
+      const { parent_id: parentId } = params.toMap();
+      if (parentId === 284) {
+        return Promise.resolve(
+          new DataSuccess({
+            data: [{ subject_id: 308, subject_title: 'Unit 1', has_children: true }],
+          }),
+        );
+      }
+      if (parentId === 308) {
+        return Promise.resolve(
+          new DataSuccess({
+            data: [{ subject_id: 309, subject_title: 'Lesson 1', has_children: false }],
+          }),
+        );
+      }
+      if (parentId === 309) return Promise.resolve(new DataSuccess({ data: [] }));
+      return Promise.resolve(
+        new DataSuccess({
+          data: [{ subject_id: 284, subject_title: 'Arabic', has_children: true }],
+        }),
+      );
+    });
     generateIndex.mockResolvedValue(
       new DataSuccess({
         data: GeneratedDocumentIndexModel.fromJson({
@@ -148,12 +185,68 @@ describe('DocumentIndex', () => {
     saveIndex.mockResolvedValue(new DataSuccess({}));
   });
 
-  it('loads the curriculum and renders four custom selects', async () => {
+  it('loads all education classifications and renders the three base selects', async () => {
     const wrapper = mountDocumentIndex();
     await flushPromises();
 
-    expect(fetchStages).toHaveBeenCalledOnce();
+    expect(fetchEducationClassifications).toHaveBeenCalledOnce();
+    expect(fetchEducationClassifications.mock.calls[0]?.[0].toMap()).toMatchObject({
+      with_pagination: 0,
+      page: 1,
+      per_page: 100,
+    });
+    expect(wrapper.findAllComponents(SelectStub)).toHaveLength(3);
+  });
+
+  it('loads branches and every available subject level with dependent ids', async () => {
+    const wrapper = mountDocumentIndex();
+    await flushPromises();
+
+    await wrapper
+      .findAllComponents(SelectStub)[0]
+      ?.vm.$emit('update:modelValue', { id: 128, title: 'Governmental' });
+    await flushPromises();
+    expect(fetchBranches.mock.calls[0]?.[0].toMap()).toMatchObject({
+      education_classification_id: 128,
+    });
+
+    await wrapper
+      .findAllComponents(SelectStub)[1]
+      ?.vm.$emit('update:modelValue', { id: 361, title: 'Primary' });
+    await flushPromises();
+    expect(fetchSubjects.mock.calls[0]?.[0].toMap()).toEqual({
+      education_classification_branch_id: 361,
+    });
+
+    await wrapper
+      .findAllComponents(SelectStub)[2]
+      ?.vm.$emit('update:modelValue', { id: 284, title: 'Arabic' });
+    await flushPromises();
+    expect(fetchSubjects.mock.calls[1]?.[0].toMap()).toEqual({
+      education_classification_branch_id: 361,
+      parent_id: 284,
+    });
     expect(wrapper.findAllComponents(SelectStub)).toHaveLength(4);
+
+    await wrapper
+      .findAllComponents(SelectStub)[3]
+      ?.vm.$emit('update:modelValue', { id: 308, title: 'Unit 1' });
+    await flushPromises();
+    expect(fetchSubjects.mock.calls[2]?.[0].toMap()).toEqual({
+      education_classification_branch_id: 361,
+      parent_id: 308,
+    });
+    expect(wrapper.findAllComponents(SelectStub)).toHaveLength(5);
+
+    await wrapper
+      .findAllComponents(SelectStub)[4]
+      ?.vm.$emit('update:modelValue', { id: 309, title: 'Lesson 1' });
+    await flushPromises();
+    expect(fetchSubjects.mock.calls[3]?.[0].toMap()).toEqual({
+      education_classification_branch_id: 361,
+      parent_id: 309,
+    });
+    expect(wrapper.findAllComponents(SelectStub)).toHaveLength(5);
   });
 
   it('sends the selected subject as the e_c_subject_id filter', async () => {
@@ -171,11 +264,22 @@ describe('DocumentIndex', () => {
     const wrapper = mountDocumentIndex();
     await flushPromises();
 
-    const selects = wrapper.findAllComponents(SelectStub);
-    await selects[0]?.vm.$emit('update:modelValue', { id: 128, title: 'Governmental' });
-    await selects[1]?.vm.$emit('update:modelValue', { id: 361, title: 'Primary' });
-    await selects[2]?.vm.$emit('update:modelValue', { id: 284, title: 'Arabic' });
-    await selects[3]?.vm.$emit('update:modelValue', { id: 308, title: 'Arabic → Unit 1' });
+    await wrapper
+      .findAllComponents(SelectStub)[0]
+      ?.vm.$emit('update:modelValue', { id: 128, title: 'Governmental' });
+    await flushPromises();
+    await wrapper
+      .findAllComponents(SelectStub)[1]
+      ?.vm.$emit('update:modelValue', { id: 361, title: 'Primary' });
+    await flushPromises();
+    await wrapper
+      .findAllComponents(SelectStub)[2]
+      ?.vm.$emit('update:modelValue', { id: 284, title: 'Arabic' });
+    await flushPromises();
+    await wrapper
+      .findAllComponents(SelectStub)[3]
+      ?.vm.$emit('update:modelValue', { id: 308, title: 'Unit 1' });
+    await flushPromises();
     await wrapper.find('.document-index-page__show-results').trigger('click');
 
     expect(fetchDocuments).toHaveBeenCalledOnce();

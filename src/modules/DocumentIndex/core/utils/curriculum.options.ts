@@ -3,14 +3,18 @@ import TitleInterface from '@/base/Data/Models/titleInterface';
 export interface CurriculumSubjectNode {
   id?: number;
   e_c_subject_id?: number;
+  subject_id?: number;
   title?: string;
+  subject_title?: string;
   full_title?: string;
   children?: CurriculumSubjectNode[];
 }
 
 export interface CurriculumBranchNode {
   id?: number;
+  e_c_branch_id?: number;
   title: string;
+  full_title?: string;
   children?: CurriculumBranchNode[];
   subjects?: CurriculumSubjectNode[];
 }
@@ -24,9 +28,15 @@ export function flattenLeafBranchOptions(
     const children = branch.children ?? [];
 
     if (children.length > 0) return flattenLeafBranchOptions(children, titles);
-    if (branch.id == null) return [];
+    const id = branch.e_c_branch_id ?? branch.id;
+    if (id == null) return [];
 
-    return [new TitleInterface<number>({ id: branch.id, title: titles.join(' → ') })];
+    return [
+      new TitleInterface<number>({
+        id,
+        title: branch.full_title || titles.filter(Boolean).join(' → '),
+      }),
+    ];
   });
 }
 
@@ -48,10 +58,15 @@ export function findBranchById(
 
 export function createSubjectOptions(subjects: CurriculumSubjectNode[]): TitleInterface<number>[] {
   return subjects.flatMap((subject) => {
-    const id = subject.e_c_subject_id ?? subject.id;
+    const id = subject.subject_id ?? subject.e_c_subject_id ?? subject.id;
     if (id == null) return [];
 
-    return [new TitleInterface<number>({ id, title: subject.title ?? '' })];
+    return [
+      new TitleInterface<number>({
+        id,
+        title: subject.subject_title ?? subject.full_title ?? subject.title ?? '',
+      }),
+    ];
   });
 }
 

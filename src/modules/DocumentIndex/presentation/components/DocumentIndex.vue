@@ -5,26 +5,28 @@
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
-  import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
-  import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
   import type StageModel from '@/modules/Stages/core/models/stage.model';
+  import { EducationClassificationController } from '@/modules/EducationClassification';
+  import type EducationClassificationModel from '@/modules/EducationClassification/core/models/education.classification.model';
+  import IndexEducationClassificationParams from '@/modules/EducationClassification/core/params/index.educationClassification.params';
+  import EducationSubjectItemController from '@/modules/EducationClassification/presentation/controllers/educationSubject/education.subject.item.controller';
+  import FetchSubjectParams from '@/modules/EducationClassification/core/params/EducationSubjects/fetch.subject.params';
+  import SubjectController from '@/modules/Subjects/presentation/controllers/subject.controller';
+  import IndexEducationClassificationBranchesParams from '@/modules/Subjects/core/params/index.educationClassificationBranches.params';
   import DocumentController from '@/modules/document/presentation/controllers/document.controller';
   import type DocumentModel from '@/modules/document/core/models/document.model';
   import GenerateDocumentIndexParams from '../../core/params/generate.document.index.params';
   import {
     copyEditableDocumentIndexItems,
     type EditableDocumentIndexItem,
-  } from '../../core/models/editable.document.index.item.model'; 
+  } from '../../core/models/editable.document.index.item.model';
   import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
   import UpdateDocumentIndexParams from '../../core/params/update.document.index.params';
   import SaveDocumentIndexParams from '../../core/params/save.document.index.params';
   import DocumentIndexController from '../controllers/document.index.controller';
   import {
     createSubjectOptions,
-    findBranchById,
-    findSubjectById,
     flattenLeafBranchOptions,
-    flattenSubjectConfigurationOptions,
     type CurriculumBranchNode,
     type CurriculumSubjectNode,
   } from '../../core/utils/curriculum.options';
@@ -36,23 +38,34 @@
     getDocumentIndexLevelKey,
     type DocumentIndexLevelTypeEnum as DocumentIndexLevel,
   } from '../../core/constant/DocumentIndexLevel.enum';
-import DocIndex from '@/shared/icons/DocIndex.vue';
+  import DocIndex from '@/shared/icons/DocIndex.vue';
+
+  interface SubjectSelectLevel {
+    options: TitleInterface<number>[];
+    selected: TitleInterface<number> | null;
+  }
 
   const emit = defineEmits<{
     saveIndex: [payload: { documentId: number; items: EditableDocumentIndexItem[] }];
   }>();
 
   const { t } = useI18n();
-  const stageController = StageController.getInstance();
+  const educationClassificationController = EducationClassificationController.getInstance();
+  const branchController = SubjectController.getInstance();
+  const subjectController = EducationSubjectItemController.getInstance();
   const documentController = DocumentController.getInstance();
   const documentIndexController = DocumentIndexController.getInstance();
-  const stageParams = new IndexStageParams('', 1, 100, 0);
+  const educationClassificationParams = new IndexEducationClassificationParams({
+    pageNumber: 1,
+    perPage: 100,
+    withPage: 0,
+  });
 
-  const curriculums = shallowRef<StageModel[]>([]);
+  const educationClassifications = shallowRef<EducationClassificationModel[]>([]);
+  const educationClassificationBranches = shallowRef<StageModel[]>([]);
   const selectedEducationType = ref<TitleInterface<number> | null>(null);
   const selectedEducationConfiguration = ref<TitleInterface<number> | null>(null);
-  const selectedSubject = ref<TitleInterface<number> | null>(null);
-  const selectedSubjectConfiguration = ref<TitleInterface<number> | null>(null);
+  const subjectLevels = ref<SubjectSelectLevel[]>([{ options: [], selected: null }]);
   const submitted = ref(false);
   const resultsRequested = ref(false);
   const generationDialogVisible = ref(false);
@@ -65,42 +78,71 @@ import DocIndex from '@/shared/icons/DocIndex.vue';
   const generatedIndexItems = ref<EditableDocumentIndexItem[]>([]);
   const originalGeneratedIndexItems = ref<EditableDocumentIndexItem[]>([]);
   let generationAbortController: AbortController | null = null;
+  let branchRequestId = 0;
+  let subjectRequestId = 0;
 
   const educationTypeOptions = computed(() =>
-    curriculums.value.flatMap((stage) =>
-      stage.id == null ? [] : [new TitleInterface<number>({ id: stage.id, title: stage.title })],
+    educationClassifications.value.map(
+      (classification) =>
+        new TitleInterface<number>({ id: classification.id, title: classification.title }),
     ),
   );
 
-  const selectedCurriculum = computed(() =>
-    curriculums.value.find((stage) => stage.id === selectedEducationType.value?.id),
-  );
-
-  const selectedCurriculumBranches = computed(
-    () => (selectedCurriculum.value?.branches ?? []) as CurriculumBranchNode[],
-  );
-
   const educationConfigurationOptions = computed(() =>
-    flattenLeafBranchOptions(selectedCurriculumBranches.value),
+    flattenLeafBranchOptions(educationClassificationBranches.value as CurriculumBranchNode[]),
   );
 
-  const selectedBranch = computed(() =>
-    findBranchById(selectedCurriculumBranches.value, selectedEducationConfiguration.value?.id),
-  );
+  const selectedSubject = computed(() => subjectLevels.value[0]?.selected ?? null);
+  const effectiveSubjectId = computed(() => {
+    for (let index = subjectLevels.value.length - 1; index >= 0; index -= 1) {
+      const selectedId = subjectLevels.value[index]?.selected?.id;
+      if (selectedId != null) return selectedId;
+    }
+    return undefined;
+  });
+  const subjectSelectId = (levelIndex: number): string =>
+    levelIndex === 0
+      ? 'document-index-subject'
+      : levelIndex === 1
+        ? 'document-index-subject-configuration'
+        : `document-index-subject-configuration-${levelIndex}`;
+  const subjectSelectLabel = (levelIndex: number): string =>
+    levelIndex === 0 ? t('document_index.subject') : t('document_index.subject_configuration');
+  const subjectSelectPlaceholder = (levelIndex: number): string =>
+    levelIndex === 0
+      ? t('document_index.select_subject')
+      : t('document_index.select_subject_configuration');
 
-  const branchSubjects = computed(
-    () => (selectedBranch.value?.subjects ?? []) as CurriculumSubjectNode[],
-  );
+  const resetSubjectLevels = () => {
+    subjectRequestId += 1;
+    subjectLevels.value = [{ options: [], selected: null }];
+  };
 
-  const subjectOptions = computed(() => createSubjectOptions(branchSubjects.value));
+  const setRootSubjectOptions = (subjects: CurriculumSubjectNode[]) => {
+    subjectLevels.value = [
+      {
+        options: createSubjectOptions(subjects),
+        selected: null,
+      },
+    ];
+  };
 
-  const selectedSubjectNode = computed(() =>
-    findSubjectById(branchSubjects.value, selectedSubject.value?.id),
-  );
+  const fetchEducationClassifications = async () => {
+    const result = await educationClassificationController.fetchList(educationClassificationParams);
+    if (result instanceof DataSuccess) {
+      educationClassifications.value = result.data ?? [];
+    }
+  };
 
-  const subjectConfigurationOptions = computed(() =>
-    flattenSubjectConfigurationOptions(selectedSubjectNode.value),
-  );
+  const fetchSubjects = async (
+    branchId: number,
+    parentId?: number,
+  ): Promise<CurriculumSubjectNode[]> => {
+    const result = await subjectController.fetchList(
+      new FetchSubjectParams({ stage_id: branchId, parent_id: parentId }),
+    );
+    return result instanceof DataSuccess ? (result.data ?? []) : [];
+  };
 
   const documents = computed(() => documentController.listData.value ?? []);
   const isLoading = computed(() => documentController.isListLoading());
@@ -112,53 +154,95 @@ import DocIndex from '@/shared/icons/DocIndex.vue';
       Boolean(selectedSubject.value?.id),
   );
 
-  const fetchStages = async () => {
-    await stageController.fetchList(stageParams);
-    curriculums.value = (stageController.listData.value ?? []) as StageModel[];
-  };
-
   const clearResults = () => {
     submitted.value = false;
     resultsRequested.value = false;
   };
 
-  const selectEducationType = (value: TitleInterface<number> | null | undefined) => {
+  const selectEducationType = async (value: TitleInterface<number> | null | undefined) => {
     selectedEducationType.value = value ?? null;
     selectedEducationConfiguration.value = null;
-    selectedSubject.value = null;
-    selectedSubjectConfiguration.value = null;
+    educationClassificationBranches.value = [];
+    resetSubjectLevels();
     clearResults();
+
+    const educationClassificationId = selectedEducationType.value?.id;
+    if (educationClassificationId == null) return;
+
+    const requestId = ++branchRequestId;
+    const result = await branchController.fetchList(
+      new IndexEducationClassificationBranchesParams({ educationClassificationId }),
+    );
+    if (
+      requestId !== branchRequestId ||
+      selectedEducationType.value?.id !== educationClassificationId
+    ) {
+      return;
+    }
+    if (result instanceof DataSuccess) {
+      educationClassificationBranches.value = result.data ?? [];
+    }
   };
 
-  const selectEducationConfiguration = (value: TitleInterface<number> | null | undefined) => {
+  const selectEducationConfiguration = async (value: TitleInterface<number> | null | undefined) => {
     selectedEducationConfiguration.value = value ?? null;
-    selectedSubject.value = null;
-    selectedSubjectConfiguration.value = null;
+    resetSubjectLevels();
     clearResults();
+
+    const branchId = selectedEducationConfiguration.value?.id;
+    if (branchId == null) return;
+
+    const requestId = ++subjectRequestId;
+    const subjects = await fetchSubjects(branchId);
+    if (requestId !== subjectRequestId || selectedEducationConfiguration.value?.id !== branchId) {
+      return;
+    }
+    setRootSubjectOptions(subjects);
   };
 
-  const selectSubject = (value: TitleInterface<number> | null | undefined) => {
-    selectedSubject.value = value ?? null;
-    selectedSubjectConfiguration.value = null;
-    clearResults();
-  };
+  const selectSubject = async (
+    levelIndex: number,
+    value: TitleInterface<number> | null | undefined,
+  ) => {
+    const level = subjectLevels.value[levelIndex];
+    if (!level) return;
 
-  const selectSubjectConfiguration = (value: TitleInterface<number> | null | undefined) => {
-    selectedSubjectConfiguration.value = value ?? null;
+    level.selected = value ?? null;
+    subjectLevels.value = subjectLevels.value.slice(0, levelIndex + 1);
     clearResults();
+
+    const branchId = selectedEducationConfiguration.value?.id;
+    const parentId = level.selected?.id;
+    if (branchId == null || parentId == null) {
+      subjectRequestId += 1;
+      return;
+    }
+
+    const requestId = ++subjectRequestId;
+    const subjects = await fetchSubjects(branchId, parentId);
+    if (
+      requestId !== subjectRequestId ||
+      selectedEducationConfiguration.value?.id !== branchId ||
+      subjectLevels.value[levelIndex]?.selected?.id !== parentId
+    ) {
+      return;
+    }
+
+    const options = createSubjectOptions(subjects);
+    if (options.length > 0) {
+      subjectLevels.value.push({ options, selected: null });
+    }
   };
 
   const showResults = async () => {
     submitted.value = true;
     if (!isReadyToSearch.value) return;
 
-    const subjectId = selectedSubject.value?.id;
-    if (subjectId == null) return;
-    const effectiveSubjectId = selectedSubjectConfiguration.value?.id ?? subjectId;
+    if (effectiveSubjectId.value == null) return;
 
     resultsRequested.value = true;
     await documentController.fetchList(
-      new IndexDocumentParams('', 1, 10, 0, '', undefined, effectiveSubjectId),
+      new IndexDocumentParams('', 1, 10, 0, '', undefined, effectiveSubjectId.value),
     );
   };
 
@@ -300,7 +384,7 @@ import DocIndex from '@/shared/icons/DocIndex.vue';
 
   const levelKey = (level: DocumentIndexLevel) => getDocumentIndexLevelKey(level);
 
-  onMounted(fetchStages);
+  onMounted(fetchEducationClassifications);
   onBeforeUnmount(cancelGeneration);
 </script>
 
@@ -327,7 +411,7 @@ import DocIndex from '@/shared/icons/DocIndex.vue';
             :required="true"
             :reload="true"
             @update:model-value="selectEducationType($event as TitleInterface<number> | null)"
-            @reload="fetchStages"
+            @reload="fetchEducationClassifications"
           />
           <small
             v-if="submitted && !selectedEducationType"
@@ -359,34 +443,26 @@ import DocIndex from '@/shared/icons/DocIndex.vue';
           </small>
         </div>
 
-        <div>
+        <div v-for="(subjectLevel, levelIndex) in subjectLevels" :key="subjectSelectId(levelIndex)">
           <UpdatedCustomInputSelect
-            id="document-index-subject"
-            :model-value="selectedSubject"
-            :label="t('document_index.subject')"
-            :placeholder="t('document_index.select_subject')"
-            :static-options="subjectOptions"
-            :required="true"
+            :id="subjectSelectId(levelIndex)"
+            :model-value="subjectLevel.selected"
+            :label="subjectSelectLabel(levelIndex)"
+            :placeholder="subjectSelectPlaceholder(levelIndex)"
+            :static-options="subjectLevel.options"
+            :required="levelIndex === 0"
             :reload="false"
-            :disabled="!selectedEducationConfiguration"
-            @update:model-value="selectSubject($event as TitleInterface<number> | null)"
+            :optional="levelIndex > 0"
+            :disabled="levelIndex === 0 && !selectedEducationConfiguration"
+            @update:model-value="selectSubject(levelIndex, $event as TitleInterface<number> | null)"
           />
-          <small v-if="submitted && !selectedSubject" class="document-index-page__field-error">
+          <small
+            v-if="levelIndex === 0 && submitted && !selectedSubject"
+            class="document-index-page__field-error"
+          >
             {{ t('document_index.required_field') }}
           </small>
         </div>
-
-        <UpdatedCustomInputSelect
-          id="document-index-subject-configuration"
-          :model-value="selectedSubjectConfiguration"
-          :label="t('document_index.subject_configuration')"
-          :placeholder="t('document_index.select_subject_configuration')"
-          :static-options="subjectConfigurationOptions"
-          :reload="false"
-          :optional="true"
-          :disabled="!selectedSubject || subjectConfigurationOptions.length === 0"
-          @update:model-value="selectSubjectConfiguration($event as TitleInterface<number> | null)"
-        />
       </div>
 
       <div class="document-index-page__actions">
