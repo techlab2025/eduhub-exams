@@ -12,6 +12,16 @@ export const documentRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: 'fetch-document-index-patch',
+    name: 'fetch-document-index-patch',
+    component: () => import('@/views/DocumentIndex/FetchDocumentIndexPatch.vue'),
+    meta: {
+      breadcrumb: 'Document Index Jobs',
+      icon: DocumentIcon,
+      parent: 'Document Index',
+    },
+  },
+  {
     path: 'documents',
     name: 'Documents',
     component: () => import('@/views/Document/IndexDocument.vue'),

@@ -842,7 +842,29 @@
     "updated_successfully": "تم تحديث فهرس المستند بنجاح.",
     "saved_successfully": "تم حفظ فهرس المستند بنجاح.",
     "close": "إغلاق",
-    "no_generated_items": "لا تحتوي الاستجابة على عناصر للفهرس."
+    "no_generated_items": "لا تحتوي الاستجابة على عناصر للفهرس.",
+    "select_curriculum_description": "ابدأ باختيار نوع التعليم، ثم أكمل التسلسل المتاح حتى تصل إلى المادة.",
+    "starting_index": "جارٍ البدء...",
+    "patches_title": "مهام فهرسة المستندات",
+    "patches_description": "تابع مهام فهرسة المستندات، وتحقق من حالتها، وأعد تشغيل المهام الفاشلة.",
+    "patch_id": "المعرّف",
+    "employee": "الموظف",
+    "created_by": "أنشأ بواسطة",
+    "date": "التاريخ",
+    "status": "الحالة",
+    "action": "الإجراء",
+    "status_in_progress": "قيد التنفيذ",
+    "status_complete": "مكتمل",
+    "status_failed": "فشل",
+    "check_status": "التحقق من الحالة",
+    "checking_status": "جارٍ التحقق...",
+    "restart": "إعادة التشغيل",
+    "restarting": "جارٍ إعادة التشغيل...",
+    "restarted_successfully": "تمت إعادة تشغيل فهرسة المستند بنجاح.",
+    "no_patches": "لا توجد مهام لفهرسة المستندات.",
+    "no_patches_description": "ابدأ فهرسة مستند لتظهر مهمته هنا.",
+    "patch_load_failed": "تعذر تحميل مهام فهرسة المستندات.",
+    "try_again": "إعادة المحاولة"
   },
   "notification_plan": {
     "title": "خطط الإشعارات",
@@ -1053,6 +1075,5 @@
   },
   "No_Documents_Found": "لا توجد مستندات",
   "There_are_no_documents_linked_to_this_subject_yet": "لا توجد مستندات مرتبطة بهذا الموضوع بعد",
-  "Upload_and_assign_a_document_to_this_subject_to_start_indexing":"يرجى رفع وتعيين مستند لهذا الموضوع لبدء عملية الفهرسة"
-
+  "Upload_and_assign_a_document_to_this_subject_to_start_indexing": "يرجى رفع وتعيين مستند لهذا الموضوع لبدء عملية الفهرسة"
 }
