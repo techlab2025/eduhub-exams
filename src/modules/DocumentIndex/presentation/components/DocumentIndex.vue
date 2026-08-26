@@ -634,7 +634,7 @@
               {{ t('document_index.generated_title') }}
             </h2>
             <p>{{ t('document_index.generated_description') }}</p>
-            <div v-if="generatedIndex" class="document-index-generated__summary">
+            <!-- <div v-if="generatedIndex" class="document-index-generated__summary">
               <span>
                 {{ t('document_index.book_id') }}
                 <strong>#{{ generatedIndex.bookId }}</strong>
@@ -647,7 +647,7 @@
                 {{ t('document_index.chapters_count') }}
                 <strong>{{ generatedIndex.chapters.length }}</strong>
               </span>
-            </div>
+            </div> -->
           </div>
           <button
             class="document-index-generated__close"
