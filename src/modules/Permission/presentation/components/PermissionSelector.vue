@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
+  import IconArrowDown from '@/shared/icons/IconArrowDown.vue';
   import { createAdminPermissions } from '../../core/constants/admin.permissions';
   import type {
     PermissionActionItem,
@@ -14,6 +15,7 @@
   });
   const emit = defineEmits<{ 'update:permissions': [value: PermissionCode[]] }>();
   const permissionModules = ref(createAdminPermissions());
+  const collapsedModules = ref(new Set<string>());
   const collapsedGroups = ref(new Set<string>());
 
   const getSelectedPermissions = (): PermissionCode[] =>
@@ -75,16 +77,21 @@
     next.has(code) ? next.delete(code) : next.add(code);
     collapsedGroups.value = next;
   };
+  const toggleModuleCollapsed = (code: string) => {
+    const next = new Set(collapsedModules.value);
+    next.has(code) ? next.delete(code) : next.add(code);
+    collapsedModules.value = next;
+  };
 </script>
 
 <template>
   <section class="permission-configurator" :aria-label="$t('permission.configure')">
     <header class="permission-configurator__heading">
-      <div>
+      <div class="permission-configurator__title-row">
         <h2>{{ $t('permission.configure') }}</h2>
-        <p>{{ $t('permission.configure_description') }}</p>
+        <span>{{ $t('permission.selected_count', { count: selectedCount }) }}</span>
       </div>
-      <span>{{ $t('permission.selected_count', { count: selectedCount }) }}</span>
+      <p>{{ $t('permission.configure_description') }}</p>
     </header>
 
     <div class="permission-cards">
@@ -94,20 +101,31 @@
         class="permission-module"
       >
         <header class="permission-module__header">
-          <span class="permission-module__number">{{ moduleIndex + 1 }}</span>
-          <label class="permission-module__check">
-            <input
-              type="checkbox"
-              :checked="isModuleFullyChecked(module)"
-              :indeterminate="isModulePartiallyChecked(module)"
-              :disabled="disabled"
-              @change="toggleModule(module, ($event.target as HTMLInputElement).checked)"
-            />
-            <span>{{ $t(module.labelKey) }}</span>
-          </label>
+          <div class="permission-module__title">
+            <span class="permission-module__number">{{ moduleIndex + 1 }}</span>
+            <label class="permission-module__check">
+              <input
+                type="checkbox"
+                :checked="isModuleFullyChecked(module)"
+                :indeterminate="isModulePartiallyChecked(module)"
+                :disabled="disabled"
+                @change="toggleModule(module, ($event.target as HTMLInputElement).checked)"
+              />
+              <span>{{ $t(module.labelKey) }}</span>
+            </label>
+          </div>
+          <button
+            type="button"
+            class="permission-module__chevron"
+            :aria-label="$t('permission.toggle_group')"
+            :aria-expanded="!collapsedModules.has(module.code)"
+            @click="toggleModuleCollapsed(module.code)"
+          >
+            <IconArrowDown />
+          </button>
         </header>
 
-        <div class="permission-groups">
+        <div v-show="!collapsedModules.has(module.code)" class="permission-groups">
           <article v-for="group in module.permissions" :key="group.code" class="permission-group">
             <header class="permission-group__header">
               <button
@@ -134,7 +152,7 @@
                   :aria-label="$t('permission.toggle_group')"
                   @click="toggleGroup(group.code)"
                 >
-                  <span :class="{ collapsed: collapsedGroups.has(group.code) }">⌄</span>
+                  <IconArrowDown :class="{ collapsed: collapsedGroups.has(group.code) }" />
                 </button>
               </div>
             </header>
@@ -179,52 +197,78 @@
 
 <style scoped lang="scss">
   .permission-configurator {
-    display: grid;
-    gap: var(--sm-size);
+    --permission-heading-font: 'Demi';
+
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
     min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--sidebar-group-text-color);
+    border-radius: 20px;
+    background: var(--background-color-soft-light);
+    font-family: 'Medium', sans-serif;
   }
 
   .permission-configurator__heading {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--sm-size);
+    flex-direction: column;
+    gap: 10px;
+
+    p {
+      margin: 0;
+      color: var(--gray-5);
+      font-size: 16px;
+      line-height: 1;
+    }
+  }
+
+  .permission-configurator__title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 
     h2 {
       margin: 0;
-      color: var(--gray-900);
-      font-size: var(--md-size);
-    }
-
-    p {
-      margin: var(--xs-size-4) 0 0;
-      color: var(--gray-500);
-      font-size: var(--xs-size);
-    }
-
-    > span {
-      flex: none;
-      color: var(--PrimaryColor);
-      font-size: var(--xs-size);
+      color: var(--title-card-color);
+      font-family: var(--permission-heading-font);
+      font-size: 24px;
       font-weight: 600;
+      line-height: 1;
+    }
+
+    span {
+      flex: none;
+      min-height: 36px;
+      padding: 6px 10px;
+      border: 1px solid var(--PrimaryColor-alpha-10);
+      border-radius: var(--radius-full);
+      background: var(--badge-bg);
+      color: var(--PrimaryColor);
+      font-size: 16px;
+      line-height: 1.5;
     }
   }
 
-  .permission-cards,
-  .permission-module,
-  .permission-groups {
-    display: grid;
-    gap: var(--sm-size);
+  .permission-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
   .permission-module {
-    padding: var(--sm-size);
-    border: 1px solid var(--border-weak);
-    border-radius: var(--radius-lg);
-    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 16px;
+    border-radius: 20px;
+    background: var(--BgWhite);
   }
 
   .permission-module__header,
+  .permission-module__title,
   .permission-module__check,
   .permission-group__header,
   .permission-group__bulk-actions,
@@ -235,8 +279,14 @@
   }
 
   .permission-module__header {
-    gap: var(--xs-size);
+    justify-content: space-between;
+    gap: 16px;
     color: var(--PrimaryColor);
+  }
+
+  .permission-module__title {
+    gap: 10px;
+    min-width: 0;
   }
 
   .permission-module__number {
@@ -244,57 +294,113 @@
     place-items: center;
     width: 24px;
     height: 24px;
-    border-radius: var(--radius-full);
-    background: var(--PrimaryColor-alpha-10);
-    font-weight: 700;
+    flex: none;
+    border-radius: 6px;
+    background: var(--PrimaryColor-alpha-8);
+    font-family: var(--permission-heading-font);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
   }
 
   .permission-module__check {
-    gap: var(--xs-size-4);
+    position: relative;
+    font-family: var(--permission-heading-font);
+    font-size: 20px;
     font-weight: 600;
+    line-height: 1;
 
     input {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--PrimaryColor);
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
+  }
+
+  .permission-module__chevron,
+  .permission-group__chevron {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    color: var(--Gray-6);
+
+    :deep(svg) {
+      width: 15px;
+      height: 8px;
+      transition: transform 160ms ease;
+    }
+
+    :deep(path) {
+      fill: var(--Gray-6);
+    }
+  }
+
+  .permission-module__chevron[aria-expanded='true'] :deep(svg) {
+    transform: rotate(180deg);
+  }
+
+  .permission-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   .permission-group {
     overflow: hidden;
-    border: 1px solid var(--border-weak);
-    border-radius: var(--radius-lg);
-    background: var(--bg-section);
+    border: 1px solid var(--sidebar-group-text-color);
+    border-radius: 14px;
+    background: var(--background-color-soft-light);
   }
 
   .permission-group__header {
     justify-content: space-between;
-    gap: var(--sm-size);
-    padding: var(--xs-size) var(--sm-size);
+    gap: 16px;
+    min-height: 64px;
+    padding: 12px 23px 14px;
   }
 
   .permission-group__toggle {
     display: grid;
-    gap: 2px;
+    gap: 8px;
     min-width: 0;
     text-align: start;
 
     span {
-      color: var(--gray-900);
+      color: var(--title-card-color);
+      font-family: var(--permission-heading-font);
+      font-size: 18px;
       font-weight: 600;
+      line-height: 1;
     }
 
     small {
       color: var(--PrimaryColor);
+      font-size: 14px;
+      line-height: 1;
     }
   }
 
   .permission-group__bulk-actions {
-    gap: var(--sm-size);
+    gap: 0;
 
     button:not(.permission-group__chevron) {
+      min-height: 31px;
+      padding-inline: 24px;
       color: var(--PrimaryColor);
-      font-size: var(--xs-size);
+      font-family: var(--permission-heading-font);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1;
+
+      + button:not(.permission-group__chevron) {
+        border-inline-start: 1px solid var(--sidebar-group-text-color);
+      }
     }
 
     button:disabled {
@@ -304,47 +410,47 @@
   }
 
   .permission-group__chevron {
-    display: grid;
-    place-items: center;
-    width: 28px;
-    height: 28px;
-    color: var(--gray-500);
+    margin-inline-start: 28px;
 
-    span {
-      transition: transform 160ms ease;
-    }
-
-    .collapsed {
+    :deep(.collapsed) {
       transform: rotate(180deg);
     }
   }
 
   .permission-group__body {
     flex-wrap: wrap;
-    gap: var(--sm-size);
-    padding: 0 var(--sm-size) var(--sm-size);
+    column-gap: 52px;
+    row-gap: 16px;
+    margin: 0 23px;
+    padding: 12px 0 14px;
+    border-top: 1px solid var(--sidebar-group-text-color);
   }
 
   .permission-group__actions-label {
     flex-basis: 100%;
-    color: var(--gray-500);
-    font-size: var(--xs-size);
+    color: var(--Gray-6);
+    font-family: var(--permission-heading-font);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
   }
 
   .permission-pill {
-    gap: var(--xs-size-4);
-    min-height: 30px;
-    color: var(--gray-700);
-    font-size: var(--xs-size);
+    gap: 10px;
+    min-height: 18px;
+    color: var(--Gray-6);
+    font-size: 16px;
+    line-height: normal;
   }
 
   .permission-pill__checkbox {
     position: relative;
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--border-weak);
-    border-radius: 3px;
-    background: var(--bg-card);
+    flex: none;
+    width: 16.5px;
+    height: 16.5px;
+    border: 0.75px solid var(--sidebar-group-text-color);
+    border-radius: 5px;
+    background: var(--BgWhite);
   }
 
   .permission-pill--selected .permission-pill__checkbox {
@@ -362,6 +468,7 @@
   }
 
   .permission-pill:focus-visible,
+  .permission-module__chevron:focus-visible,
   .permission-group__toggle:focus-visible,
   .permission-group__bulk-actions button:focus-visible {
     outline: 2px solid var(--PrimaryColor);
@@ -369,7 +476,6 @@
   }
 
   @media (max-width: 700px) {
-    .permission-configurator__heading,
     .permission-group__header {
       align-items: stretch;
       flex-direction: column;
@@ -377,6 +483,29 @@
 
     .permission-group__bulk-actions {
       justify-content: flex-end;
+    }
+
+    .permission-group__chevron {
+      margin-inline-start: 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .permission-configurator {
+      padding: 12px;
+    }
+
+    .permission-module {
+      padding-inline: 12px;
+    }
+
+    .permission-group__header {
+      padding-inline: 16px;
+    }
+
+    .permission-group__body {
+      column-gap: 24px;
+      margin-inline: 16px;
     }
   }
 </style>

@@ -26,12 +26,12 @@ import { studentRoutes } from './students';
 import { questionBatchRoutes } from './question-batch';
 import { adviceRoutes } from './advices';
 import { notificationPlanRoutes } from './notification-plans';
-// import { roleRoutes } from './role';
+import { roleRoutes } from './role';
 
 export const dashboardRoutes: RouteRecordRaw[] = [
   // ...countryRoutes,
   ...employeeRoutes,
-  // ...roleRoutes,
+  ...roleRoutes,
   ...documentRoutes,
   ...faqsRoutes,
   ...privacyRoutes,

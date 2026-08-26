@@ -72,4 +72,22 @@ export const createAdminPermissions = (): PermissionModuleItem[] => [
       },
     ],
   },
+  {
+    code: PermissionsEnum.QUESTION_BANK,
+    labelKey: 'permission.modules.question_bank',
+    permissions: [
+      {
+        code: PermissionsEnum.Generate_Questions,
+        labelKey: 'permission.groups.generate_questions',
+        checked: false,
+        permissions: [
+          {
+            code: PermissionsEnum.Generate_Questions,
+            labelKey: 'permission.actions.create',
+            checked: false,
+          },
+        ],
+      },
+    ],
+  },
 ];

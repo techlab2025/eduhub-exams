@@ -108,10 +108,14 @@
 
 <style scoped lang="scss">
   .role-form-page {
+    --role-heading-font: 'Demi';
+
     display: grid;
-    gap: var(--sm-size);
-    max-width: 1120px;
+    gap: 24px;
+    // max-width: 1036px;
     margin-inline: auto;
+    color: var(--Gray-6);
+    font-family: 'Medium', sans-serif;
   }
 
   .role-form-page__header,
@@ -119,13 +123,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--sm-size);
+    gap: 16px;
   }
 
   .role-form-page__header {
-    padding: var(--sm-size) var(--xl-size-base);
-    border-radius: var(--radius-lg);
-    background: var(--bg-section);
+    padding: 16px 24px;
+    border: 1px solid var(--sidebar-group-text-color);
+    border-radius: 20px;
+    background: var(--background-color-soft-light);
 
     h1,
     p {
@@ -133,36 +138,36 @@
     }
 
     h1 {
-      color: var(--gray-900);
-      font-size: var(--xl-size-base);
+      color: var(--title-card-color);
+      font-family: var(--role-heading-font);
+      font-size: 24px;
+      font-weight: 600;
     }
 
     p {
-      margin-top: var(--xs-size-4);
-      color: var(--gray-500);
-      font-size: var(--xs-size);
+      margin-top: 10px;
+      color: var(--gray-5);
+      font-size: 16px;
     }
   }
 
   .role-form-page__back {
     color: var(--PrimaryColor);
+    font-family: var(--role-heading-font);
     font-weight: 600;
-  }
-
-  .role-form-page__name-card,
-  .role-form-page__permissions-card {
-    padding: var(--sm-size);
-    border: 1px solid var(--border-weak);
-    border-radius: var(--radius-lg);
-    background: var(--bg-card);
   }
 
   .role-form-page__name-card {
     display: grid;
-    gap: var(--xs-size-4);
+    gap: 8px;
+    padding: 20px 16px;
+    border-radius: 20px;
+    background: #fafafa;
+    border: 1px solid #d0d0d0;
 
     label {
-      color: var(--gray-900);
+      color: var(--Gray-6);
+      font-family: var(--role-heading-font);
       font-weight: 600;
 
       span {
@@ -172,11 +177,12 @@
 
     input {
       min-height: 44px;
-      padding-inline: var(--sm-size);
-      border: 1px solid var(--border-weak);
-      border-radius: var(--radius-full);
-      background: var(--bg-main);
-      color: var(--gray-900);
+      padding-inline: 16px;
+      border: 1px solid var(--sidebar-group-text-color);
+      border-radius: 14px;
+      background: white;
+      color: var(--title-card-color);
+      font-family: 'Medium', sans-serif;
       outline: none;
 
       &:focus {
@@ -185,7 +191,7 @@
       }
 
       &[readonly] {
-        background: var(--bg-section);
+        background: var(--background-color-soft-light);
       }
     }
 
@@ -198,9 +204,9 @@
     position: sticky;
     bottom: 0;
     justify-content: flex-end;
-    padding: var(--sm-size);
-    border-top: 1px solid var(--border-weak);
-    background: var(--bg-card);
+    padding: 16px;
+    border-top: 1px solid var(--sidebar-group-text-color);
+    background: var(--BgWhite);
     z-index: 2;
 
     .btn {
@@ -211,8 +217,8 @@
   }
 
   .role-form-page__cancel {
-    border: 1px solid var(--border-weak);
-    color: var(--gray-700);
+    border: 1px solid var(--sidebar-group-text-color);
+    color: var(--Gray-6);
   }
 
   @media (max-width: 600px) {

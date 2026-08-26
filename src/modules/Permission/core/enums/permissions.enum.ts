@@ -1,7 +1,7 @@
 export const PermissionsEnum = {
-  ADMIN: 'A',
-  ORGANIZATION_EMPLOYEE: 'O',
-  SETTING: 'S',
+  ADMIN: 'ADMIN',
+  ORGANIZATION_EMPLOYEE: 'ORGANIZATION_EMPLOYEE',
+  SETTING: 'SETTING',
   CREATE_PERMISSION: 'C00',
   PERMISSION_FETCH: 'FP01',
   PERMISSION_DETAILS: 'PD02',
@@ -20,6 +20,8 @@ export const PermissionsEnum = {
   NOTIFICATION_PLAN_CREATE: 'NP03',
   NOTIFICATION_PLAN_UPDATE: 'NP04',
   NOTIFICATION_PLAN_DELETE: 'NP05',
+  QUESTION_BANK: 'QUESTION_BANK',
+  Generate_Questions: 'GEN01',
 } as const;
 
 export type PermissionCode = (typeof PermissionsEnum)[keyof typeof PermissionsEnum];
