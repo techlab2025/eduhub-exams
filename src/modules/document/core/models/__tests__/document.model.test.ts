@@ -11,7 +11,7 @@ describe('DocumentModel', () => {
       document_type: { id: 2, title: 'Book' },
       image: '/book.png',
       document_file: '/book.pdf',
-      document_index: { file: '/book-index.pdf' },
+      document_index: { id: 42, status: 2, file: '/book-index.pdf' },
       subjtecs: [],
       tranaslations: {},
       tags: [],
@@ -25,6 +25,8 @@ describe('DocumentModel', () => {
       file: '/book.pdf',
       indexFile: '/book-index.pdf',
       hasIndex: true,
+      indexPatchId: 42,
+      indexStatus: 2,
     });
   });
 });

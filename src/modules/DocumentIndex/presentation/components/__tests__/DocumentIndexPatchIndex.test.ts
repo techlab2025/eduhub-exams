@@ -1,7 +1,7 @@
 /* eslint-disable vue/one-component-per-file */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, h, ref } from 'vue';
+import { defineComponent, h, ref, type PropType } from 'vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import { DocumentIndexPatchStatusEnum } from '../../../core/constant/document.index.patch.status.enum';
 import DocumentIndexPatchModel from '../../../core/models/document.index.patch.model';
@@ -11,14 +11,17 @@ import DocumentIndexPatchIndex from '../DocumentIndexPatchIndex.vue';
 
 const fetchList = vi.fn();
 const checkStatus = vi.fn();
-const startIndex = vi.fn();
 const listState = ref(
   new DataSuccess({
     data: [
       DocumentIndexPatchModel.fromJson({
         id: 1,
         document_id: 11,
-        employee: { name: 'Employee One' },
+        transaction_id: 'TXN-001',
+        education_type: { title: 'Governmental' },
+        subject: { title: 'English' },
+        subject_configuration: { title: 'Unit' },
+        document: { id: 11, title: 'English Book' },
         created_by: { name: 'Admin One' },
         created_at: '2026-08-26 10:00:00',
         status: 1,
@@ -27,7 +30,11 @@ const listState = ref(
       DocumentIndexPatchModel.fromJson({
         id: 2,
         document_id: 12,
-        employee: { name: 'Employee Two' },
+        transaction_id: 'TXN-002',
+        education_type: { title: 'Governmental' },
+        subject: { title: 'Arabic' },
+        subject_configuration: { title: 'Lesson' },
+        document: { id: 12, title: 'Arabic Book' },
         created_by: { name: 'Admin Two' },
         created_at: '2026-08-26 11:00:00',
         status: 3,
@@ -36,7 +43,11 @@ const listState = ref(
       DocumentIndexPatchModel.fromJson({
         id: 3,
         document_id: 13,
-        employee: { name: 'Employee Three' },
+        transaction_id: 'TXN-003',
+        education_type: { title: 'Governmental' },
+        subject: { title: 'Arabic' },
+        subject_configuration: { title: 'Chapter' },
+        document: { id: 13, title: 'Arabic Student Book' },
         created_by: { name: 'Admin Three' },
         created_at: '2026-08-26 12:00:00',
         status: 2,
@@ -53,13 +64,8 @@ vi.mock('../../controllers/document.index.patch.controller', () => ({
       pagination: ref(null),
       fetchList,
       checkStatus,
-      startIndex,
     }),
   },
-}));
-
-vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
-  dialogManager: { toastSuccess: vi.fn() },
 }));
 
 vi.mock('vue-i18n', () => ({
@@ -81,21 +87,47 @@ const GeneratedDialogStub = defineComponent({
   },
 });
 
+const DropListStub = defineComponent({
+  name: 'DropList',
+  props: {
+    actionList: {
+      type: Array as PropType<Array<{ text: string; action?: () => void }>>,
+      required: true,
+    },
+  },
+  setup(props) {
+    return () =>
+      h(
+        'button',
+        {
+          class: 'drop-list-stub',
+          type: 'button',
+          onClick: () => props.actionList[0]?.action?.(),
+        },
+        props.actionList[0]?.text,
+      );
+  },
+});
+
 const mountPage = () =>
   mount(DocumentIndexPatchIndex, {
-    global: { stubs: { GeneratedDocumentIndexDialog: GeneratedDialogStub } },
+    global: {
+      stubs: {
+        DropList: DropListStub,
+        GeneratedDocumentIndexDialog: GeneratedDialogStub,
+      },
+    },
   });
 
 describe('DocumentIndexPatchIndex', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchList.mockResolvedValue(listState.value);
-    startIndex.mockResolvedValue(new DataSuccess({}));
     checkStatus.mockResolvedValue(
       new DataSuccess({
         data: new DocumentIndexStatusModel({
           status: DocumentIndexPatchStatusEnum.COMPLETE,
-          isApply: true,
+          isApply: false,
           documentId: 13,
           generatedIndex: GeneratedDocumentIndexModel.example,
         }),
@@ -103,7 +135,7 @@ describe('DocumentIndexPatchIndex', () => {
     );
   });
 
-  it('renders patch jobs with status actions and fetches the list endpoint', async () => {
+  it('renders transaction details with the designed statuses and actions', async () => {
     const wrapper = mountPage();
     await flushPromises();
 
@@ -113,31 +145,73 @@ describe('DocumentIndexPatchIndex', () => {
       page: 1,
       per_page: 10,
     });
-    expect(wrapper.text()).toContain('Employee One');
-    expect(wrapper.text()).toContain('document_index.status_in_progress');
+    expect(wrapper.text()).toContain('TXN-001');
+    expect(wrapper.text()).toContain('Governmental');
+    expect(wrapper.text()).toContain('English Book');
+    expect(wrapper.text()).toContain('document_index.status_pending');
+    expect(wrapper.text()).toContain('document_index.status_success');
     expect(wrapper.text()).toContain('document_index.status_failed');
-    expect(wrapper.find('[data-patch-id="2"]').text()).toBe('document_index.restart');
+    expect(wrapper.find('[data-patch-id="1"]').text()).toBe('document_index.view_progress');
+    expect(wrapper.find('[data-patch-id="3"]').text()).toBe('view');
+    expect(wrapper.find('[data-patch-id="2"]').exists()).toBe(false);
+    expect(wrapper.find('input[type="search"]').attributes('placeholder')).toBe(
+      'document_index.transaction_search_placeholder',
+    );
+    expect(wrapper.get('.document-index-patch-page__table').attributes()).toMatchObject({
+      role: 'region',
+      tabindex: '0',
+      'aria-label': 'document_index.patches_title',
+    });
+    expect(wrapper.get('.document-index-patch-page__table .table-responsive').exists()).toBe(true);
   });
 
-  it('opens the generated index dialog when the checked job is complete and applied', async () => {
+  it('opens the generated index dialog from the completed transaction view action', async () => {
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-patch-id="3"]').trigger('click');
+    await wrapper.find('[data-patch-id="3"] .drop-list-stub').trigger('click');
     await flushPromises();
 
     expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 3 });
     expect(wrapper.find('[data-testid="generated-dialog"]').text()).toBe('13');
   });
 
-  it('restarts failed unapplied jobs with their document id', async () => {
+  it('searches the transaction endpoint by the entered term', async () => {
+    vi.useFakeTimers();
+    const wrapper = mountPage();
+
+    try {
+      await wrapper.find('input[type="search"]').setValue('TXN-001');
+      vi.advanceTimersByTime(400);
+      await flushPromises();
+
+      const params = fetchList.mock.calls[fetchList.mock.calls.length - 1]?.[0];
+      expect(params.toMap()).toMatchObject({ page: 1, word: 'TXN-001' });
+    } finally {
+      wrapper.unmount();
+      vi.useRealTimers();
+    }
+  });
+
+  it('shows processing feedback when a pending transaction is being applied', async () => {
+    checkStatus.mockResolvedValueOnce(
+      new DataSuccess({
+        data: new DocumentIndexStatusModel({
+          status: DocumentIndexPatchStatusEnum.IN_PROGRESS,
+          isApply: true,
+          documentId: 11,
+          generatedIndex: GeneratedDocumentIndexModel.example,
+        }),
+      }),
+    );
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-patch-id="2"]').trigger('click');
+    await wrapper.find('[data-patch-id="1"] .drop-list-stub').trigger('click');
     await flushPromises();
 
-    expect(startIndex.mock.calls[0]?.[0].toMap()).toEqual({ document_id: 12 });
-    expect(fetchList).toHaveBeenCalledTimes(2);
+    expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 1 });
+    expect(wrapper.text()).toContain('document_index.processing_and_saving_index');
+    expect(wrapper.find('[data-testid="generated-dialog"]').exists()).toBe(false);
   });
 });

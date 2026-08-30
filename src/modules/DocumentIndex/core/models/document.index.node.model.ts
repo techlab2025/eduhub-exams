@@ -34,7 +34,9 @@ export const mapDocumentIndexNodeData = (json: unknown): DocumentIndexNodeData =
     sourceUrlJson: String(data.source_url_json ?? data.sourceUrlJson ?? ''),
     sourceUrlTxt: String(data.source_url_txt ?? data.sourceUrlTxt ?? ''),
     confidence: SaftyConditions.numberValue(data.confidence),
-    isInferred: SaftyConditions.booleanValue(data.is_inferred ?? data.isInferred),
+    isInferred: SaftyConditions.booleanValue(
+      data.is_inferred ?? data.isInferred ?? data.needs_admin_review ?? data.needsAdminReview,
+    ),
     inferenceLevel: String(data.inference_level ?? data.inferenceLevel ?? ''),
     printedPageLabel: String(data.printed_page_label ?? data.printedPageLabel ?? fallbackPageLabel),
   };
@@ -51,4 +53,5 @@ export const toEditableDocumentIndexItem = (
     fromPdf: node.sourcePages.start,
     toPdf: node.sourcePages.end,
     printedPageLabel: node.printedPageLabel,
+    needsAdminReview: node.isInferred,
   });

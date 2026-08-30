@@ -12,6 +12,7 @@ describe('UpdateDocumentIndexParams', () => {
         fromPdf: 7,
         toPdf: 31,
         printedPageLabel: '1-24',
+        needsAdminReview: false,
       },
       {
         id: 84,
@@ -20,6 +21,7 @@ describe('UpdateDocumentIndexParams', () => {
         fromPdf: 9,
         toPdf: 14,
         printedPageLabel: '3-8',
+        needsAdminReview: false,
       },
       {
         id: 221,
@@ -28,6 +30,7 @@ describe('UpdateDocumentIndexParams', () => {
         fromPdf: 10,
         toPdf: 10,
         printedPageLabel: '4',
+        needsAdminReview: false,
       },
     ]);
 

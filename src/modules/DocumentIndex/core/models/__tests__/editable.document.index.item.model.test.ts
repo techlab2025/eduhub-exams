@@ -11,8 +11,10 @@ describe('EditableDocumentIndexItem', () => {
       fromPdf: 1,
       toPdf: 10,
       printedPageLabel: '1-10',
+      needsAdminReview: true,
     };
 
     expect(item.title).toBe('Chapter 1');
+    expect(item.needsAdminReview).toBe(true);
   });
 });

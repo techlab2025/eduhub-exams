@@ -4,7 +4,7 @@ import { DocumentIndexEndpoints } from '../document.index.api.endpoints';
 describe('DocumentIndexEndpoints', () => {
   it('uses the documented patch workflow, update and save endpoints', () => {
     const endpoints = new DocumentIndexEndpoints();
-    expect(endpoints.indexPatches).toContain('dashboard/fetch_document_index_patch');
+    expect(endpoints.indexPatches).toContain('dashboard/fetch_document_transactions');
     expect(endpoints.createIndex).toContain('dashboard/start_document_index');
     expect(endpoints.checkIndexStatus).toContain('dashboard/check_document_index_status');
     expect(endpoints.updateIndex).toContain('dashboard/update_document_index');

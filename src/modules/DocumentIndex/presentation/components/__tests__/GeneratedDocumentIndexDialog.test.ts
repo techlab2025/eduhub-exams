@@ -48,6 +48,8 @@ describe('GeneratedDocumentIndexDialog', () => {
     });
 
     expect(wrapper.text()).toContain('Economic Resources and Activities');
+    expect(wrapper.text()).toContain('document_index.needs_admin_review');
+    expect(wrapper.text()).toContain('document_index.no_review');
     await wrapper.find('.document-index-generated__secondary-action').trigger('click');
     expect(wrapper.findAll('.document-index-generated input').length).toBeGreaterThan(0);
 

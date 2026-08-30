@@ -2,11 +2,14 @@
   import { computed, onMounted, ref, shallowRef } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-  import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+  import { debounce } from '@/base/Presentation/Utils/debouced';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
+  import DropList from '@/shared/HelpersComponents/DropList.vue';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
   import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
+  import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
+  import PlanViewIcon from '@/shared/icons/Plan/PlanViewIcon.vue';
   import {
     DocumentIndexPatchStatusEnum,
     type DocumentIndexPatchStatusEnum as DocumentIndexPatchStatus,
@@ -15,7 +18,6 @@
   import type DocumentIndexStatusModel from '../../core/models/document.index.status.model';
   import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
   import CheckDocumentIndexStatusParams from '../../core/params/check.document.index.status.params';
-  import GenerateDocumentIndexParams from '../../core/params/generate.document.index.params';
   import IndexDocumentIndexPatchParams from '../../core/params/index.document.index.patch.params';
   import DocumentIndexPatchController from '../controllers/document.index.patch.controller';
   import GeneratedDocumentIndexDialog from './GeneratedDocumentIndexDialog.vue';
@@ -25,26 +27,37 @@
   const state = computed(() => controller.listState.value);
   const currentPage = ref(1);
   const perPage = ref(10);
+  const word = ref('');
   const checkingPatchId = ref<number>();
-  const restartingPatchId = ref<number>();
   const checkedStatuses = ref<Record<number, DocumentIndexStatusModel>>({});
   const generatedDialogVisible = ref(false);
   const activeDocumentId = ref(0);
   const generatedIndex = shallowRef<GeneratedDocumentIndexModel | null>(null);
 
   const headers = computed<TableHeader[]>(() => [
-    { key: 'id', label: t('document_index.patch_id'), width: '10%' },
-    { key: 'employee', label: t('document_index.employee'), width: '20%' },
-    { key: 'createdBy', label: t('document_index.created_by'), width: '20%' },
-    { key: 'createdAt', label: t('document_index.date'), width: '20%' },
-    { key: 'status', label: t('document_index.status'), width: '15%' },
-    { key: 'action', label: t('document_index.action'), width: '15%', align: 'center' },
+    { key: 'transactionId', label: t('document_index.transaction_id'), width: '10%' },
+    { key: 'educationType', label: t('document_index.education_type_column'), width: '11%' },
+    { key: 'subject', label: t('document_index.subject_column'), width: '9%' },
+    {
+      key: 'subjectConfiguration',
+      label: t('document_index.subject_configuration_name'),
+      width: '15%',
+    },
+    { key: 'documentTitle', label: t('document_index.document_title'), width: '15%' },
+    { key: 'createdBy', label: t('document_index.created_by'), width: '12%' },
+    { key: 'createdAt', label: t('document_index.created_at'), width: '11%' },
+    { key: 'status', label: t('document_index.status'), width: '9%' },
+    { key: 'applied', label: t('document_index.applied'), width: '8%', align: 'center' },
   ]);
 
   const fetchPatches = async (page = currentPage.value) => {
     currentPage.value = page;
-    await controller.fetchList(new IndexDocumentIndexPatchParams(page, perPage.value, 1));
+    await controller.fetchList(
+      new IndexDocumentIndexPatchParams(page, perPage.value, 1, word.value.trim()),
+    );
   };
+
+  const searchTransactions = debounce(() => void fetchPatches(1), 400);
 
   const rowStatus = (patch: DocumentIndexPatchModel): DocumentIndexPatchStatus =>
     checkedStatuses.value[patch.id]?.status ?? patch.status;
@@ -54,29 +67,39 @@
 
   const statusLabel = (status: DocumentIndexPatchStatus): string => {
     if (status === DocumentIndexPatchStatusEnum.COMPLETE) {
-      return t('document_index.status_complete');
+      return t('document_index.status_success');
     }
     if (status === DocumentIndexPatchStatusEnum.FAILED) {
       return t('document_index.status_failed');
     }
-    return t('document_index.status_in_progress');
+    return t('document_index.status_pending');
   };
 
   const formatDate = (value: string): string => {
-    if (!value) return t('document_index.not_available');
+    if (!value) return '-';
     const date = new Date(value.includes(' ') ? value.replace(' ', 'T') : value);
     if (Number.isNaN(date.getTime())) return value;
     return new Intl.DateTimeFormat(locale.value, {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(date);
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
+      .format(date)
+      .replace(/\//g, '-');
   };
 
-  const canRestart = (patch: DocumentIndexPatchModel): boolean =>
-    rowStatus(patch) === DocumentIndexPatchStatusEnum.FAILED && !rowIsApply(patch);
+  const displayValue = (value: string): string => value || '-';
+
+  const appliedLabel = (patch: DocumentIndexPatchModel): string => {
+    if (rowStatus(patch) !== DocumentIndexPatchStatusEnum.COMPLETE) return '-';
+    return rowIsApply(patch) ? t('document_index.yes') : t('document_index.no');
+  };
+
+  const isProcessingSave = (patch: DocumentIndexPatchModel): boolean =>
+    rowStatus(patch) === DocumentIndexPatchStatusEnum.IN_PROGRESS && rowIsApply(patch);
 
   const checkStatus = async (patch: DocumentIndexPatchModel) => {
-    if (checkingPatchId.value != null || restartingPatchId.value != null) return;
+    if (checkingPatchId.value != null) return;
 
     checkingPatchId.value = patch.id;
     const result = await controller.checkStatus(new CheckDocumentIndexStatusParams(patch.id));
@@ -85,29 +108,26 @@
     if (!(result instanceof DataSuccess) || !result.data) return;
     checkedStatuses.value = { ...checkedStatuses.value, [patch.id]: result.data };
 
-    if (result.data.status === DocumentIndexPatchStatusEnum.COMPLETE && result.data.isApply) {
+    if (result.data.status === DocumentIndexPatchStatusEnum.COMPLETE) {
       activeDocumentId.value = result.data.documentId || patch.documentId;
       generatedIndex.value = result.data.generatedIndex;
       generatedDialogVisible.value = true;
     }
   };
 
-  const restart = async (patch: DocumentIndexPatchModel) => {
-    if (!patch.documentId || checkingPatchId.value != null || restartingPatchId.value != null) {
-      return;
-    }
-
-    restartingPatchId.value = patch.id;
-    const result = await controller.startIndex(new GenerateDocumentIndexParams(patch.documentId));
-    restartingPatchId.value = undefined;
-
-    if (!(result instanceof DataSuccess)) return;
-    const nextStatuses = { ...checkedStatuses.value };
-    delete nextStatuses[patch.id];
-    checkedStatuses.value = nextStatuses;
-    dialogManager.toastSuccess(t('document_index.restarted_successfully'));
-    await fetchPatches();
-  };
+  const actionList = (patch: DocumentIndexPatchModel) => [
+    {
+      text:
+        checkingPatchId.value === patch.id
+          ? t('document_index.checking_status')
+          : rowStatus(patch) === DocumentIndexPatchStatusEnum.COMPLETE
+            ? t('view')
+            : t('document_index.view_progress'),
+      icon: PlanViewIcon,
+      action: () => void checkStatus(patch),
+      skipDeleteConfirmation: true,
+    },
+  ];
 
   const changePage = (page: number) => void fetchPatches(page);
   const changePerPage = (count: number) => {
@@ -123,12 +143,27 @@
   <main class="document-index-patch-page">
     <header class="document-index-patch-page__heading">
       <h1>{{ t('document_index.patches_title') }}</h1>
-      <p>{{ t('document_index.patches_description') }}</p>
     </header>
+
+    <div class="document-index-patch-page__search-field">
+      <IndexSearchIcon aria-hidden="true" />
+      <input
+        v-model="word"
+        type="search"
+        :placeholder="t('document_index.transaction_search_placeholder')"
+        :aria-label="t('document_index.transaction_search_placeholder')"
+        @input="searchTransactions"
+      />
+    </div>
 
     <DataStatusBuilder :controller="state" :on-retry="() => fetchPatches()">
       <template #success="{ data }">
-        <div class="document-index-patch-page__table">
+        <div
+          class="document-index-patch-page__table"
+          role="region"
+          tabindex="0"
+          :aria-label="t('document_index.patches_title')"
+        >
           <AppTable
             :headers="headers"
             :items="(data ?? []) as DocumentIndexPatchModel[]"
@@ -136,6 +171,21 @@
             hoverable
             :empty-message="t('document_index.no_patches')"
           >
+            <template #cell-educationType="{ item }">
+              {{ displayValue(item.educationType) }}
+            </template>
+            <template #cell-subject="{ item }">
+              {{ displayValue(item.subject) }}
+            </template>
+            <template #cell-subjectConfiguration="{ item }">
+              {{ displayValue(item.subjectConfiguration) }}
+            </template>
+            <template #cell-documentTitle="{ item }">
+              {{ displayValue(item.documentTitle) }}
+            </template>
+            <template #cell-createdBy="{ item }">
+              {{ displayValue(item.createdBy) }}
+            </template>
             <template #cell-createdAt="{ item }">
               {{ formatDate(item.createdAt) }}
             </template>
@@ -144,35 +194,26 @@
                 {{ statusLabel(rowStatus(item)) }}
               </span>
             </template>
-            <template #cell-action="{ item }">
-              <!-- v-if="canRestart(item)" -->
-              <button
-                class="document-index-patch-page__action document-index-patch-page__action--restart"
-                type="button"
-                :data-patch-id="item.id"
-                :disabled="restartingPatchId === item.id"
-                @click="restart(item)"
+            <template #cell-applied="{ item }">
+              {{ appliedLabel(item) }}
+            </template>
+            <template #actions="{ item }">
+              <span
+                v-if="rowStatus(item) === DocumentIndexPatchStatusEnum.FAILED"
+                class="document-index-patch-page__unavailable"
               >
-                {{
-                  restartingPatchId === item.id
-                    ? t('document_index.restarting')
-                    : t('document_index.restart')
-                }}
-              </button>
-              <!-- v-else -->
-              <button
-                class="document-index-patch-page__action"
-                type="button"
-                :data-patch-id="item.id"
-                :disabled="checkingPatchId === item.id"
-                @click="checkStatus(item)"
+                -
+              </span>
+              <span
+                v-else-if="isProcessingSave(item)"
+                class="document-index-patch-page__processing"
+                :title="t('document_index.processing_and_saving_index')"
               >
-                {{
-                  checkingPatchId === item.id
-                    ? t('document_index.checking_status')
-                    : t('document_index.check_status')
-                }}
-              </button>
+                {{ t('document_index.processing_and_saving_index') }}
+              </span>
+              <div v-else class="document-index-patch-page__actions" :data-patch-id="item.id">
+                <DropList :action-list="actionList(item)" />
+              </div>
             </template>
           </AppTable>
         </div>

@@ -90,8 +90,14 @@
         },
         {
           link: '/document-index',
-          name: 'document index',
+          name: 'document_index.title',
           icon: DocumentIcon,
+          children: [
+            {
+              link: '/fetch-document-index-patch',
+              name: 'document_index.transactions_sidebar',
+            },
+          ],
         },
         {
           link: '/block-reasons',
@@ -292,7 +298,7 @@
             <div v-if="item.children" class="submenu">
               <router-link
                 v-for="child in item.children"
-                :key="child.status"
+                :key="child.name"
                 :to="child.link"
                 class="submenu-item"
                 :class="{ active: isMenuItemActive(child) }"

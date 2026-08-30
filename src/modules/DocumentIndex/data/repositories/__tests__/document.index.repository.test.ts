@@ -58,6 +58,7 @@ describe('DocumentIndexRepository', () => {
         fromPdf: 7,
         toPdf: 31,
         printedPageLabel: '1-24',
+        needsAdminReview: false,
       },
     ]);
 

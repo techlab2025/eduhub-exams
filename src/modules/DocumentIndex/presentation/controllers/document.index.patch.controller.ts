@@ -19,8 +19,8 @@ export default class DocumentIndexPatchController extends BaseController<
 > {
   private static instance: DocumentIndexPatchController;
 
-  public readonly startState: Ref<DataState<void>> = ref(new DataInitial<void>()) as Ref<
-    DataState<void>
+  public readonly startState: Ref<DataState<number>> = ref(new DataInitial<number>()) as Ref<
+    DataState<number>
   >;
   public readonly checkState: Ref<DataState<DocumentIndexStatusModel>> = ref(
     new DataInitial<DocumentIndexStatusModel>(),
@@ -53,13 +53,17 @@ export default class DocumentIndexPatchController extends BaseController<
     return DocumentIndexPatchController.instance;
   }
 
-  fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<DocumentIndexPatchModel[]>> {
-    return super.fetchList(params,  {...options , useStaticData:true});
+  fetchList(
+    params?: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<DocumentIndexPatchModel[]>> {
+    //  useStaticData: true
+    return super.fetchList(params, { ...options });
   }
-  
-  async startIndex(params: Params, options?: ApiCallOptions): Promise<DataState<void>> {
-    this.startState.value = new DataLoading<void>();
-    const result = await this.repository.startIndex(params, this.mergeOptions(options ));
+
+  async startIndex(params: Params, options?: ApiCallOptions): Promise<DataState<number>> {
+    this.startState.value = new DataLoading<number>();
+    const result = await this.repository.startIndex(params, this.mergeOptions(options));
     this.startState.value = result;
     if (result.hasError) this.handleErrorResponse(result);
     return result;

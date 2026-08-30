@@ -12,7 +12,7 @@ describe('document index node mapping', () => {
       title: 'Chapter 1',
       source_pages: { start: 7, end: 31 },
       source_hash: 'hash',
-      is_inferred: true,
+      needs_admin_review: true,
     });
 
     expect(node).toMatchObject({
@@ -27,6 +27,7 @@ describe('document index node mapping', () => {
       level: DocumentIndexLevelTypeEnum.CHAPTER,
       fromPdf: 7,
       toPdf: 31,
+      needsAdminReview: true,
     });
   });
 });

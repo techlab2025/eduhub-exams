@@ -9,4 +9,10 @@ describe('IndexDocumentIndexPatchParams', () => {
       per_page: 25,
     });
   });
+
+  it('maps the transaction-history search term', () => {
+    expect(new IndexDocumentIndexPatchParams(1, 10, 1, 'TXN-002').toMap()).toMatchObject({
+      word: 'TXN-002',
+    });
+  });
 });

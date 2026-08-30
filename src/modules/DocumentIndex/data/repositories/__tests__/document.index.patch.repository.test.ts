@@ -38,8 +38,8 @@ describe('DocumentIndexPatchRepository', () => {
   it('starts and checks a document index job', async () => {
     const service = DocumentIndexApiService.getInstance();
     vi.spyOn(service, 'createIndex').mockResolvedValue({
-      data: { status: true, data: { id: 12 } },
-      statusCode: 202,
+      data: { status: true, data: { transaction_id: 'TXN-012' } },
+      statusCode: 201,
     });
     vi.spyOn(service, 'checkIndexStatus').mockResolvedValue({
       data: {
@@ -54,16 +54,34 @@ describe('DocumentIndexPatchRepository', () => {
       statusCode: 200,
     });
 
-    await expect(
-      DocumentIndexPatchRepository.getInstance().startIndex(new GenerateDocumentIndexParams(17), {
+    const startResult = await DocumentIndexPatchRepository.getInstance().startIndex(
+      new GenerateDocumentIndexParams(17),
+      {
         useStaticData: false,
-      }),
-    ).resolves.toBeInstanceOf(DataSuccess);
+      },
+    );
+    expect(startResult).toBeInstanceOf(DataSuccess);
+    expect(startResult.data).toBe(12);
     const checkResult = await DocumentIndexPatchRepository.getInstance().checkStatus(
       new CheckDocumentIndexStatusParams(12),
       { useStaticData: false },
     );
     expect(checkResult).toBeInstanceOf(DataSuccess);
     expect(checkResult.data).toMatchObject({ status: 2, isApply: true, documentId: 17 });
+  });
+
+  it('uses the document id when a successful start response has no transaction payload', async () => {
+    vi.spyOn(DocumentIndexApiService.getInstance(), 'createIndex').mockResolvedValue({
+      data: { status: true, message: 'Document indexing started.' },
+      statusCode: 201,
+    });
+
+    const result = await DocumentIndexPatchRepository.getInstance().startIndex(
+      new GenerateDocumentIndexParams(17),
+      { useStaticData: false },
+    );
+
+    expect(result).toBeInstanceOf(DataSuccess);
+    expect(result.data).toBe(17);
   });
 });

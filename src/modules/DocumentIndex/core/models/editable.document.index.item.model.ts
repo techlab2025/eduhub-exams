@@ -11,6 +11,7 @@ export class EditableDocumentIndexItem {
   public fromPdf: number;
   public toPdf: number;
   public printedPageLabel: string;
+  public needsAdminReview: boolean;
 
   constructor(data: {
     id: number;
@@ -19,6 +20,7 @@ export class EditableDocumentIndexItem {
     fromPdf: number;
     toPdf: number;
     printedPageLabel: string;
+    needsAdminReview: boolean;
   }) {
     this.id = data.id;
     this.level = data.level;
@@ -26,5 +28,6 @@ export class EditableDocumentIndexItem {
     this.fromPdf = data.fromPdf;
     this.toPdf = data.toPdf;
     this.printedPageLabel = data.printedPageLabel;
+    this.needsAdminReview = data.needsAdminReview;
   }
 }

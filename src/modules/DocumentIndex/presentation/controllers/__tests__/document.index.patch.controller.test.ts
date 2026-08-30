@@ -19,7 +19,7 @@ describe('DocumentIndexPatchController', () => {
   beforeEach(() => vi.clearAllMocks());
 
   it('delegates start and status checks with controller options', async () => {
-    startIndex.mockResolvedValue(new DataSuccess({}));
+    startIndex.mockResolvedValue(new DataSuccess({ data: 12 }));
     checkStatus.mockResolvedValue(
       new DataSuccess({
         data: DocumentIndexStatusModel.fromJson({ status: 1, is_apply: false }),
