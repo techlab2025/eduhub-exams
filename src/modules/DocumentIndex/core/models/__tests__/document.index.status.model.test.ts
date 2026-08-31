@@ -6,7 +6,7 @@ describe('DocumentIndexStatusModel', () => {
   it('maps status flags and the completed generated index', () => {
     const model = DocumentIndexStatusModel.fromJson({
       status: 2,
-      is_apply: true,
+      applied: true,
       document_id: 17,
       generated_index: {
         book_id: 17,

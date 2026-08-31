@@ -1303,6 +1303,8 @@
     "processing_and_saving_index": "Processing and saving index...",
     "check_status": "Check Status",
     "checking_status": "Checking...",
+    "refresh": "Refresh",
+    "refreshing_status": "Refreshing...",
     "restart": "Restart",
     "restarting": "Restarting...",
     "restarted_successfully": "Document indexing restarted successfully.",

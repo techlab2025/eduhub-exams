@@ -19,7 +19,12 @@ describe('DocumentIndexPatchModel', () => {
       created_by: { id: 2, full_name: 'Portal Admin' },
       created_at: '2026-08-26 15:30:00',
       status: '3',
-      is_apply: 0,
+      applied: false,
+      generated_index: {
+        book_id: 17,
+        book_status: 'completed',
+        chapters: [],
+      },
     });
 
     expect(model).toEqual({
@@ -34,6 +39,7 @@ describe('DocumentIndexPatchModel', () => {
       createdAt: '2026-08-26 15:30:00',
       status: DocumentIndexPatchStatusEnum.FAILED,
       isApply: false,
+      generatedIndex: expect.objectContaining({ bookId: 17, bookStatus: 'completed' }),
     });
   });
 });

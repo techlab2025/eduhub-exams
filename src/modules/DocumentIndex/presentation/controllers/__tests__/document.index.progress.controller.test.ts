@@ -1,14 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-import { DocumentIndexPatchStatusEnum } from '../../../core/constant/document.index.patch.status.enum';
-import DocumentIndexStatusModel from '../../../core/models/document.index.status.model';
 
 const startIndex = vi.fn();
-const checkStatus = vi.fn();
 
 vi.mock('../document.index.patch.controller', () => ({
   default: {
-    getInstance: () => ({ startIndex, checkStatus }),
+    getInstance: () => ({ startIndex }),
   },
 }));
 
@@ -18,28 +15,19 @@ describe('DocumentIndexProgressController', () => {
   const controller = DocumentIndexProgressController.getInstance();
 
   beforeEach(() => {
-    vi.useFakeTimers();
     vi.clearAllMocks();
     controller.reset();
-    startIndex.mockResolvedValue(new DataSuccess({ data: 12 }));
-    checkStatus.mockResolvedValue(
-      new DataSuccess({
-        data: DocumentIndexStatusModel.fromJson({
-          status: DocumentIndexPatchStatusEnum.IN_PROGRESS,
-          is_apply: false,
-          document_id: 17,
-        }),
+  });
+
+  it('keeps progress active only while start_document_index is pending', async () => {
+    let resolveStart: ((result: DataSuccess<number>) => void) | undefined;
+    startIndex.mockReturnValueOnce(
+      new Promise<DataSuccess<number>>((resolve) => {
+        resolveStart = resolve;
       }),
     );
-  });
 
-  afterEach(() => {
-    controller.reset();
-    vi.useRealTimers();
-  });
-
-  it('keeps an active indexing job available after the dialog is minimized', async () => {
-    await controller.startIndex(17);
+    const request = controller.startIndex(17);
 
     expect(startIndex.mock.calls[0]?.[0].toMap()).toEqual({
       document_id: 17,
@@ -49,41 +37,55 @@ describe('DocumentIndexProgressController', () => {
     expect(controller.hasActiveIndexing.value).toBe(true);
 
     controller.minimize();
-
     expect(controller.generationDialogVisible.value).toBe(false);
-    expect(DocumentIndexProgressController.getInstance().hasActiveIndexing.value).toBe(true);
+    expect(controller.hasActiveIndexing.value).toBe(true);
+
+    controller.openActiveProgress();
+    expect(controller.generationDialogVisible.value).toBe(true);
+
+    resolveStart?.(new DataSuccess({ data: 12 }));
+
+    await expect(request).resolves.toBe(true);
+    expect(controller.generationDialogVisible.value).toBe(false);
+    expect(controller.hasActiveIndexing.value).toBe(false);
+    expect(controller.startingDocumentId.value).toBeUndefined();
   });
 
-  it('continues polling while the document page is not mounted', async () => {
-    await controller.startIndex(17);
-
-    await vi.advanceTimersByTimeAsync(5000);
-
-    expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 12 });
-    expect(controller.job(17)?.status).toBe(DocumentIndexPatchStatusEnum.IN_PROGRESS);
-  });
-
-  it('opens the generated index when the background job completes', async () => {
-    await controller.startIndex(17);
-    checkStatus.mockResolvedValueOnce(
-      new DataSuccess({
-        data: DocumentIndexStatusModel.fromJson({
-          status: DocumentIndexPatchStatusEnum.COMPLETE,
-          is_apply: true,
-          document_id: 17,
-          generated_index: {
-            book_id: 17,
-            book_status: 'completed',
-            chapters: [],
-          },
-        }),
+  it('closes local progress and ignores a start response after cancellation', async () => {
+    let resolveStart: ((result: DataSuccess<number>) => void) | undefined;
+    startIndex.mockReturnValueOnce(
+      new Promise<DataSuccess<number>>((resolve) => {
+        resolveStart = resolve;
       }),
     );
 
-    await controller.checkStatus(17, 12, { openWhenComplete: true, reschedule: false });
+    const request = controller.startIndex(17);
+    controller.requestCancel();
+    controller.confirmCancel();
 
     expect(controller.generationDialogVisible.value).toBe(false);
-    expect(controller.generatedDialogVisible.value).toBe(true);
-    expect(controller.generatedIndex.value?.bookId).toBe(17);
+    expect(controller.cancelConfirmationVisible.value).toBe(false);
+    expect(controller.hasActiveIndexing.value).toBe(false);
+
+    resolveStart?.(new DataSuccess({ data: 12 }));
+    await expect(request).resolves.toBe(false);
+  });
+
+  it('shows progress for a pending transaction without calling a status endpoint', () => {
+    controller.openProgress();
+
+    expect(controller.generationDialogVisible.value).toBe(true);
+    expect(controller.hasActiveIndexing.value).toBe(true);
+    expect(startIndex).not.toHaveBeenCalled();
+
+    controller.minimize();
+    expect(controller.generationDialogVisible.value).toBe(false);
+    expect(controller.hasActiveIndexing.value).toBe(true);
+
+    controller.openActiveProgress();
+    expect(controller.generationDialogVisible.value).toBe(true);
+
+    controller.confirmCancel();
+    expect(controller.hasActiveIndexing.value).toBe(false);
   });
 });

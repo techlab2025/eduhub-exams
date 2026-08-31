@@ -10,7 +10,8 @@ import GeneratedDocumentIndexModel from '../../../core/models/generated.document
 import DocumentIndexPatchIndex from '../DocumentIndexPatchIndex.vue';
 
 const fetchList = vi.fn();
-const checkStatus = vi.fn();
+const refreshStatus = vi.fn();
+const openProgress = vi.fn();
 const listState = ref(
   new DataSuccess({
     data: [
@@ -51,7 +52,25 @@ const listState = ref(
         created_by: { name: 'Admin Three' },
         created_at: '2026-08-26 12:00:00',
         status: 2,
-        is_apply: true,
+        applied: true,
+        generated_index: {
+          book_id: 13,
+          book_status: 'completed',
+          chapters: [],
+        },
+      }),
+      DocumentIndexPatchModel.fromJson({
+        id: 4,
+        document_id: 14,
+        transaction_id: 'TXN-004',
+        education_type: { title: 'Governmental' },
+        subject: { title: 'Science' },
+        subject_configuration: { title: 'Unit' },
+        document: { id: 14, title: 'Science Book' },
+        created_by: { name: 'Admin Four' },
+        created_at: '2026-08-26 13:00:00',
+        status: 2,
+        applied: false,
       }),
     ],
   }),
@@ -63,8 +82,14 @@ vi.mock('../../controllers/document.index.patch.controller', () => ({
       listState,
       pagination: ref(null),
       fetchList,
-      checkStatus,
+      refreshStatus,
     }),
+  },
+}));
+
+vi.mock('../../controllers/document.index.progress.controller', () => ({
+  default: {
+    getInstance: () => ({ openProgress }),
   },
 }));
 
@@ -123,16 +148,17 @@ describe('DocumentIndexPatchIndex', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     fetchList.mockResolvedValue(listState.value);
-    checkStatus.mockResolvedValue(
+    refreshStatus.mockResolvedValue(
       new DataSuccess({
         data: new DocumentIndexStatusModel({
           status: DocumentIndexPatchStatusEnum.COMPLETE,
-          isApply: false,
-          documentId: 13,
+          isApply: true,
+          documentId: 14,
           generatedIndex: GeneratedDocumentIndexModel.example,
         }),
       }),
     );
+    openProgress.mockResolvedValue(undefined);
   });
 
   it('renders transaction details with the designed statuses and actions', async () => {
@@ -153,6 +179,7 @@ describe('DocumentIndexPatchIndex', () => {
     expect(wrapper.text()).toContain('document_index.status_failed');
     expect(wrapper.find('[data-patch-id="1"]').text()).toBe('document_index.view_progress');
     expect(wrapper.find('[data-patch-id="3"]').text()).toBe('view');
+    expect(wrapper.find('[data-patch-id="4"]').text()).toBe('document_index.refresh');
     expect(wrapper.find('[data-patch-id="2"]').exists()).toBe(false);
     expect(wrapper.find('input[type="search"]').attributes('placeholder')).toBe(
       'document_index.transaction_search_placeholder',
@@ -165,6 +192,15 @@ describe('DocumentIndexPatchIndex', () => {
     expect(wrapper.get('.document-index-patch-page__table .table-responsive').exists()).toBe(true);
   });
 
+  it('opens the AI progress dialog from a pending transaction', async () => {
+    const wrapper = mountPage();
+    await flushPromises();
+
+    await wrapper.find('[data-patch-id="1"] .drop-list-stub').trigger('click');
+
+    expect(openProgress).toHaveBeenCalledOnce();
+  });
+
   it('opens the generated index dialog from the completed transaction view action', async () => {
     const wrapper = mountPage();
     await flushPromises();
@@ -172,7 +208,6 @@ describe('DocumentIndexPatchIndex', () => {
     await wrapper.find('[data-patch-id="3"] .drop-list-stub').trigger('click');
     await flushPromises();
 
-    expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 3 });
     expect(wrapper.find('[data-testid="generated-dialog"]').text()).toBe('13');
   });
 
@@ -193,25 +228,16 @@ describe('DocumentIndexPatchIndex', () => {
     }
   });
 
-  it('shows processing feedback when a pending transaction is being applied', async () => {
-    checkStatus.mockResolvedValueOnce(
-      new DataSuccess({
-        data: new DocumentIndexStatusModel({
-          status: DocumentIndexPatchStatusEnum.IN_PROGRESS,
-          isApply: true,
-          documentId: 11,
-          generatedIndex: GeneratedDocumentIndexModel.example,
-        }),
-      }),
-    );
+  it('refreshes a completed transaction that has not been applied', async () => {
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-patch-id="1"] .drop-list-stub').trigger('click');
+    await wrapper.find('[data-patch-id="4"] .drop-list-stub').trigger('click');
     await flushPromises();
 
-    expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 1 });
-    expect(wrapper.text()).toContain('document_index.processing_and_saving_index');
+    expect(refreshStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 4 });
+    expect(fetchList).toHaveBeenCalledTimes(2);
+    expect(wrapper.find('[data-patch-id="4"]').text()).toBe('view');
     expect(wrapper.find('[data-testid="generated-dialog"]').exists()).toBe(false);
   });
 });

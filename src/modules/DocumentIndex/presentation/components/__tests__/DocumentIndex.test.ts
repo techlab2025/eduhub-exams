@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
-import { DocumentIndexPatchStatusEnum } from '../../../core/constant/document.index.patch.status.enum';
 import DocumentIndexProgressController from '../../controllers/document.index.progress.controller';
 import DocumentIndex from '../DocumentIndex.vue';
 
@@ -12,7 +11,6 @@ const fetchBranches = vi.fn();
 const fetchSubjects = vi.fn();
 const fetchDocuments = vi.fn();
 const startIndex = vi.fn();
-const checkStatus = vi.fn();
 
 const documentListData = ref<Record<string, unknown>[]>([]);
 
@@ -50,7 +48,7 @@ vi.mock('@/modules/document/presentation/controllers/document.controller', () =>
 
 vi.mock('../../controllers/document.index.patch.controller', () => ({
   default: {
-    getInstance: () => ({ startIndex, checkStatus }),
+    getInstance: () => ({ startIndex }),
   },
 }));
 
@@ -146,16 +144,6 @@ describe('DocumentIndex', () => {
       );
     });
     startIndex.mockResolvedValue(new DataSuccess({ data: 12 }));
-    checkStatus.mockResolvedValue(
-      new DataSuccess({
-        data: {
-          status: 1,
-          isApply: false,
-          documentId: 17,
-          generatedIndex: { editableItems: [] },
-        },
-      }),
-    );
   });
 
   it('loads all education classifications and renders the three base selects', async () => {
@@ -299,7 +287,7 @@ describe('DocumentIndex', () => {
     expect(params.toMap()).toMatchObject({ e_c_subject_id: 308 });
   });
 
-  it('starts persistent indexing progress and can reopen it after minimizing', async () => {
+  it('keeps progress available only while start_document_index is pending', async () => {
     documentListData.value = [
       {
         id: 17,
@@ -314,6 +302,12 @@ describe('DocumentIndex', () => {
         tranaslations: {},
       },
     ];
+    let resolveStart: ((result: DataSuccess<number>) => void) | undefined;
+    startIndex.mockReturnValueOnce(
+      new Promise<DataSuccess<number>>((resolve) => {
+        resolveStart = resolve;
+      }),
+    );
     const wrapper = mountDocumentIndex();
     await flushPromises();
     await selectCurriculumAndShowResults(wrapper);
@@ -325,16 +319,22 @@ describe('DocumentIndex', () => {
       auto_generate: false,
     });
     expect(progressController.generationDialogVisible.value).toBe(true);
-    expect(progressController.indexingProgress).toBe(10);
-    expect(progressController.job(17)?.status).toBe(DocumentIndexPatchStatusEnum.IN_PROGRESS);
+    expect('indexingProgress' in progressController).toBe(false);
+    expect(progressController.hasActiveIndexing.value).toBe(true);
 
     progressController.minimize();
     expect(progressController.generationDialogVisible.value).toBe(false);
     expect(progressController.hasActiveIndexing.value).toBe(true);
 
-    await progressController.openActiveProgress();
-    expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 12 });
+    progressController.openActiveProgress();
     expect(progressController.generationDialogVisible.value).toBe(true);
+
+    resolveStart?.(new DataSuccess({ data: 12 }));
+    await flushPromises();
+
+    expect(progressController.generationDialogVisible.value).toBe(false);
+    expect(progressController.hasActiveIndexing.value).toBe(false);
+    expect(fetchDocuments).toHaveBeenCalledTimes(2);
     wrapper.unmount();
   });
 
@@ -371,12 +371,13 @@ describe('DocumentIndex', () => {
     resolveStart?.(new DataSuccess({ data: 12 }));
     await flushPromises();
 
-    expect(progressController.generationDialogVisible.value).toBe(true);
+    expect(progressController.generationDialogVisible.value).toBe(false);
     expect(progressController.startingDocumentId.value).toBeUndefined();
+    expect(fetchDocuments).toHaveBeenCalledTimes(2);
     wrapper.unmount();
   });
 
-  it('checks a completed index and opens the existing generated index dialog', async () => {
+  it('does not render the generated-index action while status checking is unavailable', async () => {
     documentListData.value = [
       {
         id: 17,
@@ -393,25 +394,11 @@ describe('DocumentIndex', () => {
         tranaslations: {},
       },
     ];
-    checkStatus.mockResolvedValueOnce(
-      new DataSuccess({
-        data: {
-          status: 2,
-          isApply: true,
-          documentId: 17,
-          generatedIndex: { editableItems: [] },
-        },
-      }),
-    );
     const wrapper = mountDocumentIndex();
     await flushPromises();
     await selectCurriculumAndShowResults(wrapper);
 
-    await wrapper.find('.document-index-page__result-button--outline').trigger('click');
-    await flushPromises();
-
-    expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 42 });
-    expect(progressController.generatedDialogVisible.value).toBe(true);
-    expect(progressController.activeDocumentId.value).toBe(17);
+    expect(wrapper.find('.document-index-page__result-button--outline').exists()).toBe(false);
+    expect(startIndex).not.toHaveBeenCalled();
   });
 });

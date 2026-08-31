@@ -881,6 +881,8 @@
     "processing_and_saving_index": "جارٍ معالجة الفهرس وحفظه...",
     "check_status": "التحقق من الحالة",
     "checking_status": "جارٍ التحقق...",
+    "refresh": "تحديث",
+    "refreshing_status": "جارٍ التحديث...",
     "restart": "إعادة التشغيل",
     "restarting": "جارٍ إعادة التشغيل...",
     "restarted_successfully": "تمت إعادة تشغيل فهرسة المستند بنجاح.",

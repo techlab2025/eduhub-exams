@@ -22,7 +22,7 @@ export default class DocumentIndexPatchController extends BaseController<
   public readonly startState: Ref<DataState<number>> = ref(new DataInitial<number>()) as Ref<
     DataState<number>
   >;
-  public readonly checkState: Ref<DataState<DocumentIndexStatusModel>> = ref(
+  public readonly refreshState: Ref<DataState<DocumentIndexStatusModel>> = ref(
     new DataInitial<DocumentIndexStatusModel>(),
   ) as Ref<DataState<DocumentIndexStatusModel>>;
 
@@ -69,13 +69,13 @@ export default class DocumentIndexPatchController extends BaseController<
     return result;
   }
 
-  async checkStatus(
+  async refreshStatus(
     params: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<DocumentIndexStatusModel>> {
-    this.checkState.value = new DataLoading<DocumentIndexStatusModel>();
-    const result = await this.repository.checkStatus(params, this.mergeOptions(options));
-    this.checkState.value = result;
+    this.refreshState.value = new DataLoading<DocumentIndexStatusModel>();
+    const result = await this.repository.refreshStatus(params, this.mergeOptions(options));
+    this.refreshState.value = result;
     if (result.hasError) this.handleErrorResponse(result);
     return result;
   }

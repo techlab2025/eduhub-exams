@@ -37,7 +37,7 @@ export default class DocumentIndexStatusModel {
     const data = SaftyConditions.objectValue(json);
     return new DocumentIndexStatusModel({
       status: toDocumentIndexPatchStatus(data.status),
-      isApply: SaftyConditions.booleanValue(data.is_apply ?? data.isApply),
+      isApply: SaftyConditions.booleanValue(data.applied ?? data.is_apply ?? data.isApply),
       documentId: SaftyConditions.numberValue(data.document_id ?? data.book_id),
       generatedIndex: GeneratedDocumentIndexModel.fromJson(generatedPayload(data)),
     });

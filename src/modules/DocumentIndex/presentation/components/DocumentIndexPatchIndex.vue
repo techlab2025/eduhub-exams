@@ -10,6 +10,7 @@
   import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   import PlanViewIcon from '@/shared/icons/Plan/PlanViewIcon.vue';
+  import RefreshIcon from '@/shared/icons/Question/reloadIcon.vue';
   import {
     DocumentIndexPatchStatusEnum,
     type DocumentIndexPatchStatusEnum as DocumentIndexPatchStatus,
@@ -17,18 +18,20 @@
   import type DocumentIndexPatchModel from '../../core/models/document.index.patch.model';
   import type DocumentIndexStatusModel from '../../core/models/document.index.status.model';
   import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
-  import CheckDocumentIndexStatusParams from '../../core/params/check.document.index.status.params';
   import IndexDocumentIndexPatchParams from '../../core/params/index.document.index.patch.params';
+  import RefreshDocumentIndexStatusParams from '../../core/params/refresh.document.index.status.params';
   import DocumentIndexPatchController from '../controllers/document.index.patch.controller';
+  import DocumentIndexProgressController from '../controllers/document.index.progress.controller';
   import GeneratedDocumentIndexDialog from './GeneratedDocumentIndexDialog.vue';
 
   const { t, locale } = useI18n();
   const controller = DocumentIndexPatchController.getInstance();
+  const progressController = DocumentIndexProgressController.getInstance();
   const state = computed(() => controller.listState.value);
   const currentPage = ref(1);
   const perPage = ref(10);
   const word = ref('');
-  const checkingPatchId = ref<number>();
+  const refreshingPatchId = ref<number>();
   const checkedStatuses = ref<Record<number, DocumentIndexStatusModel>>({});
   const generatedDialogVisible = ref(false);
   const activeDocumentId = ref(0);
@@ -95,39 +98,72 @@
     return rowIsApply(patch) ? t('document_index.yes') : t('document_index.no');
   };
 
-  const isProcessingSave = (patch: DocumentIndexPatchModel): boolean =>
-    rowStatus(patch) === DocumentIndexPatchStatusEnum.IN_PROGRESS && rowIsApply(patch);
+  const viewGeneratedIndex = (patch: DocumentIndexPatchModel) => {
+    activeDocumentId.value = patch.documentId;
+    generatedIndex.value = checkedStatuses.value[patch.id]?.generatedIndex ?? patch.generatedIndex;
+    generatedDialogVisible.value = true;
+  };
 
-  const checkStatus = async (patch: DocumentIndexPatchModel) => {
-    if (checkingPatchId.value != null) return;
+  const viewProgress = () => progressController.openProgress();
 
-    checkingPatchId.value = patch.id;
-    const result = await controller.checkStatus(new CheckDocumentIndexStatusParams(patch.id));
-    checkingPatchId.value = undefined;
+  const refreshStatus = async (patch: DocumentIndexPatchModel) => {
+    if (refreshingPatchId.value != null) return;
 
-    if (!(result instanceof DataSuccess) || !result.data) return;
-    checkedStatuses.value = { ...checkedStatuses.value, [patch.id]: result.data };
-
-    if (result.data.status === DocumentIndexPatchStatusEnum.COMPLETE) {
-      activeDocumentId.value = result.data.documentId || patch.documentId;
-      generatedIndex.value = result.data.generatedIndex;
-      generatedDialogVisible.value = true;
+    refreshingPatchId.value = patch.id;
+    try {
+      const result = await controller.refreshStatus(new RefreshDocumentIndexStatusParams(patch.id));
+      if (!(result instanceof DataSuccess)) return;
+      if (result.data) {
+        checkedStatuses.value = { ...checkedStatuses.value, [patch.id]: result.data };
+      }
+      await fetchPatches();
+    } finally {
+      refreshingPatchId.value = undefined;
     }
   };
 
-  const actionList = (patch: DocumentIndexPatchModel) => [
-    {
-      text:
-        checkingPatchId.value === patch.id
-          ? t('document_index.checking_status')
-          : rowStatus(patch) === DocumentIndexPatchStatusEnum.COMPLETE
-            ? t('view')
-            : t('document_index.view_progress'),
-      icon: PlanViewIcon,
-      action: () => void checkStatus(patch),
-      skipDeleteConfirmation: true,
-    },
-  ];
+  const hasRowAction = (patch: DocumentIndexPatchModel): boolean => {
+    return rowStatus(patch) !== DocumentIndexPatchStatusEnum.FAILED;
+  };
+
+  const actionList = (patch: DocumentIndexPatchModel) => {
+    const status = rowStatus(patch);
+    const isApplied = rowIsApply(patch);
+
+    if (status === DocumentIndexPatchStatusEnum.IN_PROGRESS) {
+      return [
+        {
+          text: t('document_index.view_progress'),
+          icon: PlanViewIcon,
+          action: viewProgress,
+          skipDeleteConfirmation: true,
+        },
+      ];
+    }
+
+    if (isApplied) {
+      return [
+        {
+          text: t('view'),
+          icon: PlanViewIcon,
+          action: () => viewGeneratedIndex(patch),
+          skipDeleteConfirmation: true,
+        },
+      ];
+    }
+
+    return [
+      {
+        text:
+          refreshingPatchId.value === patch.id
+            ? t('document_index.refreshing_status')
+            : t('document_index.refresh'),
+        icon: RefreshIcon,
+        action: () => void refreshStatus(patch),
+        skipDeleteConfirmation: true,
+      },
+    ];
+  };
 
   const changePage = (page: number) => void fetchPatches(page);
   const changePerPage = (count: number) => {
@@ -198,18 +234,8 @@
               {{ appliedLabel(item) }}
             </template>
             <template #actions="{ item }">
-              <span
-                v-if="rowStatus(item) === DocumentIndexPatchStatusEnum.FAILED"
-                class="document-index-patch-page__unavailable"
-              >
+              <span v-if="!hasRowAction(item)" class="document-index-patch-page__unavailable">
                 -
-              </span>
-              <span
-                v-else-if="isProcessingSave(item)"
-                class="document-index-patch-page__processing"
-                :title="t('document_index.processing_and_saving_index')"
-              >
-                {{ t('document_index.processing_and_saving_index') }}
               </span>
               <div v-else class="document-index-patch-page__actions" :data-patch-id="item.id">
                 <DropList :action-list="actionList(item)" />

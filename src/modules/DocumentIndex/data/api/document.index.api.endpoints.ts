@@ -5,7 +5,7 @@ export class DocumentIndexEndpoints extends BaseEndpoints {
 
   readonly indexPatches = this.url('fetch_document_transactions');
   readonly createIndex = this.url('start_document_index');
-  readonly checkIndexStatus = this.url('check_document_index_status');
+  readonly refreshIndexStatus = this.url('refresh_document_index_status');
   readonly updateIndex = this.url('update_document_index');
-  readonly saveIndex = this.url('save_document_index');
+  readonly saveIndex = this.url('fetch_document_index');
 }

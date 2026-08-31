@@ -6,8 +6,8 @@ describe('DocumentIndexEndpoints', () => {
     const endpoints = new DocumentIndexEndpoints();
     expect(endpoints.indexPatches).toContain('dashboard/fetch_document_transactions');
     expect(endpoints.createIndex).toContain('dashboard/start_document_index');
-    expect(endpoints.checkIndexStatus).toContain('dashboard/check_document_index_status');
+    expect(endpoints.refreshIndexStatus).toContain('dashboard/refresh_document_index_status');
     expect(endpoints.updateIndex).toContain('dashboard/update_document_index');
-    expect(endpoints.saveIndex).toContain('dashboard/save_document_index');
+    expect(endpoints.saveIndex).toContain('dashboard/fetch_document_index');
   });
 });

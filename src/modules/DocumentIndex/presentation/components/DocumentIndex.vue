@@ -18,9 +18,7 @@
     DocumentIndexPatchStatusEnum,
     type DocumentIndexPatchStatusEnum as DocumentIndexPatchStatus,
   } from '../../core/constant/document.index.patch.status.enum';
-  import DocumentIndexProgressController, {
-    type DocumentIndexProgressJob,
-  } from '../controllers/document.index.progress.controller';
+  import DocumentIndexProgressController from '../controllers/document.index.progress.controller';
   import {
     createSubjectOptions,
     flattenLeafBranchOptions,
@@ -133,12 +131,7 @@
       Boolean(selectedSubject.value?.id),
   );
 
-  const documentJob = (document: DocumentModel): DocumentIndexProgressJob | undefined =>
-    document.id == null ? undefined : documentIndexProgressController.job(document.id);
-
   const documentIndexStatus = (document: DocumentModel): DocumentIndexPatchStatus | undefined => {
-    const localStatus = documentJob(document)?.status;
-    if (localStatus != null) return localStatus;
     if (
       document.indexStatus === DocumentIndexPatchStatusEnum.IN_PROGRESS ||
       document.indexStatus === DocumentIndexPatchStatusEnum.COMPLETE ||
@@ -154,9 +147,6 @@
 
   const hasDocumentIndex = (document: DocumentModel): boolean =>
     documentIndexStatus(document) === DocumentIndexPatchStatusEnum.COMPLETE;
-
-  const isCheckingDocument = (document: DocumentModel): boolean =>
-    document.id != null && documentIndexProgressController.isChecking(document.id);
 
   const clearResults = () => {
     submitted.value = false;
@@ -290,16 +280,8 @@
 
   const generateDocumentIndex = async (document: DocumentModel) => {
     if (document.id == null) return;
-    await documentIndexProgressController.startIndex(document.id);
-  };
-
-  const showDocumentIndex = async (document: DocumentModel) => {
-    if (document.id == null || isCheckingDocument(document)) return;
-
-    await documentIndexProgressController.openDocumentIndex(
-      document.id,
-      document.indexPatchId || document.id,
-    );
+    const started = await documentIndexProgressController.startIndex(document.id);
+    if (started) await showResults();
   };
 
   onMounted(fetchEducationClassifications);
@@ -460,23 +442,10 @@
 
           <div class="document-index-page__result-actions">
             <button
-              v-if="hasDocumentIndex(document)"
-              class="document-index-page__result-button document-index-page__result-button--outline"
-              type="button"
-              :disabled="isCheckingDocument(document)"
-              @click="showDocumentIndex(document)"
-            >
-              {{
-                isCheckingDocument(document)
-                  ? t('document_index.checking_status')
-                  : t('document_index.show_index')
-              }}
-            </button>
-            <button
-              v-else-if="!isDocumentIndexing(document)"
+              v-if="!hasDocumentIndex(document) && !isDocumentIndexing(document)"
               class="document-index-page__result-button"
               type="button"
-              :disabled="startingDocumentId === document.id"
+              :disabled="startingDocumentId != null"
               @click="generateDocumentIndex(document)"
             >
               {{

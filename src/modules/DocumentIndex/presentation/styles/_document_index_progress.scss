@@ -108,46 +108,29 @@
   }
 
   &__progress-container {
-    position: relative;
     width: 100%;
-    height: 18px;
-    margin: 15px 0;
+    height: 8px;
+    margin: 18px 0;
   }
 
   &__progress {
+    position: relative;
     display: block;
     width: 100%;
     height: 100%;
     overflow: hidden;
-    appearance: none;
-    border: 1px solid var(--border-weak);
-    border-radius: 4px;
+    border-radius: var(--radius-full);
     background: var(--gray-200);
 
-    &::-webkit-progress-bar {
-      background: var(--gray-200);
-    }
-
-    &::-webkit-progress-value {
+    > span {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: -24%;
+      width: 24%;
+      border-radius: inherit;
       background: linear-gradient(90deg, var(--PrimaryColor-hover), var(--PrimaryColor));
+      animation: document-index-indeterminate 1.4s ease-in-out infinite;
     }
-
-    &::-moz-progress-bar {
-      background: linear-gradient(90deg, var(--PrimaryColor-hover), var(--PrimaryColor));
-    }
-  }
-
-  &__progress-value {
-    position: absolute;
-    z-index: 1;
-    inset-block-start: 50%;
-    inset-inline-end: 10px;
-    color: var(--PrimaryColor);
-    font-family: 'Medium';
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1;
-    transform: translateY(-50%);
   }
 
   &__cancel {
@@ -192,25 +175,22 @@
   }
 
   &__bar {
+    position: relative;
     display: block;
     width: 100%;
     height: 3px;
     overflow: hidden;
-    appearance: none;
-    border: 0;
     border-radius: var(--radius-full);
     background: var(--bg-card);
 
-    &::-webkit-progress-bar {
-      background: var(--bg-card);
-    }
-
-    &::-webkit-progress-value {
+    > span {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: -30%;
+      width: 30%;
+      border-radius: inherit;
       background: linear-gradient(90deg, var(--PrimaryColor-hover), var(--PrimaryColor));
-    }
-
-    &::-moz-progress-bar {
-      background: linear-gradient(90deg, var(--PrimaryColor-hover), var(--PrimaryColor));
+      animation: document-index-indeterminate 1.4s ease-in-out infinite;
     }
   }
 
@@ -303,6 +283,24 @@
   &__keep {
     background: var(--gray-200);
     color: var(--gray-800);
+  }
+}
+
+@keyframes document-index-indeterminate {
+  from {
+    inset-inline-start: -30%;
+  }
+
+  to {
+    inset-inline-start: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .document-index-generation__progress > span,
+  .document-index-floating-progress__bar > span {
+    inset-inline-start: 38%;
+    animation: none;
   }
 }
 

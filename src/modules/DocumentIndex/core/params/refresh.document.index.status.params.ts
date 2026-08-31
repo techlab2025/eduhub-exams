@@ -1,7 +1,7 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
-export default class CheckDocumentIndexStatusParams implements Params {
+export default class RefreshDocumentIndexStatusParams implements Params {
   public readonly patchId: number;
 
   public static readonly validation = new ClassValidation().setRules({
@@ -17,10 +17,10 @@ export default class CheckDocumentIndexStatusParams implements Params {
   }
 
   validate() {
-    return CheckDocumentIndexStatusParams.validation.validate(this);
+    return RefreshDocumentIndexStatusParams.validation.validate(this);
   }
 
   validateOrThrow() {
-    return CheckDocumentIndexStatusParams.validation.validateOrThrow(this);
+    return RefreshDocumentIndexStatusParams.validation.validateOrThrow(this);
   }
 }

@@ -13,7 +13,7 @@ describe('DocumentIndexApiService', () => {
     const signal = new AbortController().signal;
 
     await service.createIndex(params, { signal, timeout: 0 });
-    await service.checkIndexStatus(params);
+    await service.refreshIndexStatus(params);
     await service.updateIndex(params);
     await service.saveIndex(params);
 
@@ -23,7 +23,7 @@ describe('DocumentIndexApiService', () => {
       { signal, timeout: 0 },
     );
     expect(customPost).toHaveBeenCalledWith(
-      expect.stringContaining('check_document_index_status'),
+      expect.stringContaining('refresh_document_index_status'),
       params,
       undefined,
     );
@@ -33,7 +33,7 @@ describe('DocumentIndexApiService', () => {
       undefined,
     );
     expect(customPost).toHaveBeenCalledWith(
-      expect.stringContaining('save_document_index'),
+      expect.stringContaining('fetch_document_index'),
       params,
       undefined,
     );

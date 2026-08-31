@@ -9,6 +9,7 @@ import { ErrorModel, ErrorType } from '@/base/Core/NetworkStructure/Resources/er
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
+import { DocumentIndexPatchStatusEnum } from '../../core/constant/document.index.patch.status.enum';
 import DocumentIndexPatchModel from '../../core/models/document.index.patch.model';
 import DocumentIndexStatusModel from '../../core/models/document.index.status.model';
 import DocumentIndexApiService from '../api/document.index.api-service';
@@ -139,14 +140,14 @@ export default class DocumentIndexPatchRepository extends BaseRepository<
     }
   }
 
-  async checkStatus(
+  async refreshStatus(
     params: Params,
     options?: ApiCallOptions,
   ): Promise<DataState<DocumentIndexStatusModel>> {
     if (options?.useStaticData ?? env.useStaticData) {
       return new DataSuccess({
         data: DocumentIndexStatusModel.fromJson({
-          status: 2,
+          status: DocumentIndexPatchStatusEnum.COMPLETE,
           is_apply: true,
           document_id: DocumentIndexPatchModel.example.documentId,
           generated_index: {
@@ -159,7 +160,7 @@ export default class DocumentIndexPatchRepository extends BaseRepository<
     }
 
     return this.executeCustom(
-      () => this.apiService.checkIndexStatus(params, options),
+      () => this.apiService.refreshIndexStatus(params, options),
       DocumentIndexStatusModel.fromJson,
       { captureRetryFn: false },
     );

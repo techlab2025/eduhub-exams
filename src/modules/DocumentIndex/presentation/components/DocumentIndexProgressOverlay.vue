@@ -5,20 +5,10 @@
   import AiArrow from '@/shared/icons/AiArrow.vue';
   import IconWarning from '@/shared/icons/IconWarning.vue';
   import DocumentIndexProgressController from '../controllers/document.index.progress.controller';
-  import GeneratedDocumentIndexDialog from './GeneratedDocumentIndexDialog.vue';
 
   const { t } = useI18n();
   const controller = DocumentIndexProgressController.getInstance();
-  const {
-    activeDocumentId,
-    cancelConfirmationVisible,
-    generatedDialogVisible,
-    generatedIndex,
-    generationDialogVisible,
-    hasActiveIndexing,
-    startingDocumentId,
-  } = controller;
-  const { indexingProgress } = controller;
+  const { cancelConfirmationVisible, generationDialogVisible, hasActiveIndexing } = controller;
 
   onBeforeUnmount(() => controller.reset());
 </script>
@@ -31,14 +21,13 @@
     aria-live="polite"
   >
     <strong>{{ t('document_index.ai_indexing') }}</strong>
-    <progress
+    <div
       class="document-index-floating-progress__bar"
-      :value="indexingProgress"
-      max="100"
+      role="progressbar"
       :aria-label="t('document_index.indexing_document')"
     >
-      {{ indexingProgress }}%
-    </progress>
+      <span aria-hidden="true"></span>
+    </div>
     <button type="button" @click="controller.openActiveProgress">
       {{ t('document_index.view_progress') }}
     </button>
@@ -72,25 +61,17 @@
       <h2>{{ t('document_index.indexing_analysis') }}</h2>
       <p>{{ t('document_index.indexing_background_description') }}</p>
       <div class="document-index-generation__progress-container">
-        <progress
+        <div
           class="document-index-generation__progress"
-          :value="indexingProgress"
-          max="100"
+          role="progressbar"
           :aria-label="t('document_index.indexing_document')"
-          :aria-valuenow="indexingProgress"
-          aria-valuemin="0"
-          aria-valuemax="100"
         >
-          {{ indexingProgress }}%
-        </progress>
-        <strong class="document-index-generation__progress-value" aria-hidden="true">
-          {{ indexingProgress }}%
-        </strong>
+          <span aria-hidden="true"></span>
+        </div>
       </div>
       <button
         class="document-index-generation__cancel"
         type="button"
-        :disabled="startingDocumentId != null"
         @click="controller.requestCancel"
       >
         {{ t('document_index.cancel_indexing') }}
@@ -132,12 +113,6 @@
       </footer>
     </section>
   </Dialog>
-
-  <GeneratedDocumentIndexDialog
-    v-model:visible="generatedDialogVisible"
-    :document-id="activeDocumentId ?? 0"
-    :generated-index="generatedIndex"
-  />
 </template>
 
 <style scoped lang="scss">

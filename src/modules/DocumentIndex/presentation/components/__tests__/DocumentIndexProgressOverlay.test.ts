@@ -5,11 +5,10 @@ import { defineComponent, h } from 'vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 
 const startIndex = vi.fn();
-const checkStatus = vi.fn();
 
 vi.mock('../../controllers/document.index.patch.controller', () => ({
   default: {
-    getInstance: () => ({ startIndex, checkStatus }),
+    getInstance: () => ({ startIndex }),
   },
 }));
 
@@ -29,21 +28,11 @@ const DialogStub = defineComponent({
   },
 });
 
-const GeneratedDialogStub = defineComponent({
-  name: 'GeneratedDocumentIndexDialog',
-  props: { visible: { type: Boolean, default: false } },
-  emits: ['update:visible'],
-  setup() {
-    return () => null;
-  },
-});
-
 const mountOverlay = () =>
   mount(DocumentIndexProgressOverlay, {
     global: {
       stubs: {
         Dialog: DialogStub,
-        GeneratedDocumentIndexDialog: GeneratedDialogStub,
       },
     },
   });
@@ -54,25 +43,28 @@ describe('DocumentIndexProgressOverlay', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     controller.reset();
-    startIndex.mockResolvedValue(new DataSuccess({ data: 12 }));
-    checkStatus.mockResolvedValue(
-      new DataSuccess({
-        data: {
-          status: 1,
-          isApply: false,
-          documentId: 17,
-          generatedIndex: { editableItems: [] },
-        },
-      }),
-    );
   });
 
-  it('pins minimized progress to the global overlay and reopens the dialog', async () => {
-    await controller.startIndex(17);
+  it('pins minimized start progress and closes it when start_document_index resolves', async () => {
+    let resolveStart: ((result: DataSuccess<number>) => void) | undefined;
+    startIndex.mockReturnValueOnce(
+      new Promise<DataSuccess<number>>((resolve) => {
+        resolveStart = resolve;
+      }),
+    );
+    const request = controller.startIndex(17);
     const wrapper = mountOverlay();
 
     expect(wrapper.find('.document-index-generation').exists()).toBe(true);
-    expect(wrapper.find('.document-index-generation__progress-value').text()).toBe('10%');
+    expect(wrapper.find('.document-index-generation__progress-value').exists()).toBe(false);
+    expect(wrapper.find('.document-index-generation').text()).not.toContain('10%');
+    expect(wrapper.get('.document-index-generation__progress').attributes()).toMatchObject({
+      role: 'progressbar',
+      'aria-label': 'document_index.indexing_document',
+    });
+    expect(wrapper.get('.document-index-generation__progress').attributes('aria-valuenow')).toBe(
+      undefined,
+    );
 
     await wrapper.find('.document-index-generation__minimize').trigger('click');
 
@@ -81,16 +73,24 @@ describe('DocumentIndexProgressOverlay', () => {
     expect(wrapper.find('.document-index-floating-progress').text()).toContain(
       'document_index.ai_indexing',
     );
+    expect(wrapper.get('.document-index-floating-progress__bar').attributes('aria-valuenow')).toBe(
+      undefined,
+    );
 
     await wrapper.find('.document-index-floating-progress button').trigger('click');
+    expect(wrapper.find('.document-index-generation').exists()).toBe(true);
+
+    resolveStart?.(new DataSuccess({ data: 12 }));
+    await request;
     await flushPromises();
 
-    expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 12 });
-    expect(wrapper.find('.document-index-generation').exists()).toBe(true);
+    expect(wrapper.find('.document-index-generation').exists()).toBe(false);
+    expect(wrapper.find('.document-index-floating-progress').exists()).toBe(false);
   });
 
-  it('cancels the active floating job through the confirmation dialog', async () => {
-    await controller.startIndex(17);
+  it('cancels the active start progress through the confirmation dialog', async () => {
+    startIndex.mockReturnValueOnce(new Promise(() => undefined));
+    void controller.startIndex(17);
     const wrapper = mountOverlay();
 
     await wrapper.find('.document-index-generation__cancel').trigger('click');

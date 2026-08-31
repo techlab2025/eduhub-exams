@@ -4,6 +4,7 @@ import {
   toDocumentIndexPatchStatus,
   type DocumentIndexPatchStatusEnum as DocumentIndexPatchStatus,
 } from '../constant/document.index.patch.status.enum';
+import GeneratedDocumentIndexModel from './generated.document.index.model';
 
 const displayName = (value: unknown): string => {
   if (Array.isArray(value)) return value.map(displayName).filter(Boolean).join(', ');
@@ -13,6 +14,19 @@ const displayName = (value: unknown): string => {
   return String(
     data.name ?? data.full_name ?? data.title ?? data.employee_name ?? data.created_by_name ?? '',
   );
+};
+
+const generatedIndex = (data: Record<string, unknown>): GeneratedDocumentIndexModel | null => {
+  const documentIndex = SaftyConditions.objectValue(data.document_index);
+  const payload =
+    data.generated_index ??
+    data.index_data ??
+    data.result ??
+    documentIndex.generated_index ??
+    documentIndex;
+  return Object.keys(SaftyConditions.objectValue(payload)).length > 0
+    ? GeneratedDocumentIndexModel.fromJson(payload)
+    : null;
 };
 
 export default class DocumentIndexPatchModel {
@@ -27,6 +41,7 @@ export default class DocumentIndexPatchModel {
   public readonly createdAt: string;
   public readonly status: DocumentIndexPatchStatus;
   public readonly isApply: boolean;
+  public readonly generatedIndex: GeneratedDocumentIndexModel | null;
 
   constructor(data: {
     id: number;
@@ -40,6 +55,7 @@ export default class DocumentIndexPatchModel {
     createdAt: string;
     status: DocumentIndexPatchStatus;
     isApply: boolean;
+    generatedIndex: GeneratedDocumentIndexModel | null;
   }) {
     this.id = data.id;
     this.transactionId = data.transactionId;
@@ -52,6 +68,7 @@ export default class DocumentIndexPatchModel {
     this.createdAt = data.createdAt;
     this.status = data.status;
     this.isApply = data.isApply;
+    this.generatedIndex = data.generatedIndex;
     Object.freeze(this);
   }
 
@@ -101,7 +118,8 @@ export default class DocumentIndexPatchModel {
       createdBy: displayName(data.created_by ?? data.creator ?? data.createdBy),
       createdAt: String(data.created_at ?? data.date ?? data.createdAt ?? ''),
       status: toDocumentIndexPatchStatus(data.status),
-      isApply: SaftyConditions.booleanValue(data.is_apply ?? data.isApply),
+      isApply: SaftyConditions.booleanValue(data.applied ?? data.is_apply ?? data.isApply),
+      generatedIndex: generatedIndex(data),
     });
   }
 
@@ -117,5 +135,6 @@ export default class DocumentIndexPatchModel {
     createdAt: '2026-08-26 15:30:00',
     status: DocumentIndexPatchStatusEnum.IN_PROGRESS,
     isApply: false,
+    generatedIndex: null,
   });
 }
