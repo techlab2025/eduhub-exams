@@ -18,8 +18,8 @@ const params = new StoreQuestionBatchParams({
   status: QuestionBatchStatusEnum.DRAFT,
   numberOfQuestionsType: NumberOfQuestionTypeEnum.ANY_NUMBER,
   numberOfQuestions: 10,
-  questionType: QuestionBatchTypeEnum.MCQ,
-  questionDifficulty: QuestionBatchDifficultyEnum.HARD,
+  questionType: [QuestionBatchTypeEnum.MCQ],
+  questionDifficulty: [QuestionBatchDifficultyEnum.HARD],
 });
 
 describe('QuestionBatchRepository', () => {

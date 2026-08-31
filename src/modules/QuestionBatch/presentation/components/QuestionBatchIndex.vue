@@ -7,7 +7,6 @@
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
   import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
-  import IndexPluseIcon from '@/shared/icons/IndexPluseIcon.vue';
   import { debounce } from '@/base/Presentation/Utils/debouced';
   import type QuestionBatchModel from '../../core/models/question.batch.model';
   import IndexQuestionBatchParams from '../../core/params/index.question.batch.params';
@@ -81,9 +80,9 @@
           @input="search"
         />
       </div>
-      <router-link :to="{ name: 'Generate Question Batch' }" class="question-batch-index__add">
+      <!-- <router-link :to="{ name: 'Generate Question Batch' }" class="question-batch-index__add">
         <IndexPluseIcon /> {{ t('question_batch.new_batch') }}
-      </router-link>
+      </router-link> -->
     </header>
 
     <DataStatusBuilder :controller="state" :on-retry="() => fetchBatches()">

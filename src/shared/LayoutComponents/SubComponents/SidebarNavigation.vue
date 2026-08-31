@@ -99,6 +99,18 @@
           icon: SettingIcon,
         },
         {
+          link: '/question-batches',
+          name: 'question_batch.title',
+          icon: SettingIcon,
+          children: [
+            {
+              link: '/question-batches/generate',
+              name: 'question_batch.generate',
+            },
+          ],
+        },
+
+        {
           link: '/plans',
           name: 'plans',
           icon: SettingIcon,

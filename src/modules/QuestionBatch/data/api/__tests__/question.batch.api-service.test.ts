@@ -20,8 +20,8 @@ describe('QuestionBatchApiService', () => {
       status: QuestionBatchStatusEnum.DRAFT,
       numberOfQuestionsType: NumberOfQuestionTypeEnum.ANY_NUMBER,
       numberOfQuestions: 10,
-      questionType: QuestionBatchTypeEnum.ANY_TYPE,
-      questionDifficulty: QuestionBatchDifficultyEnum.ANY_DIFFICULTY,
+      questionType: [QuestionBatchTypeEnum.ANY_TYPE],
+      questionDifficulty: [QuestionBatchDifficultyEnum.ANY_DIFFICULTY],
     });
     const signal = new AbortController().signal;
 
