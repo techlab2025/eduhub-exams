@@ -124,6 +124,7 @@
     { id: QuestionBatchTypeEnum.RANKING, title: t('question_batch.ranking') },
     { id: QuestionBatchTypeEnum.COMPLETION, title: t('question_batch.completion') },
     { id: QuestionBatchTypeEnum.MATCHING, title: t('question_batch.matching') },
+    
   ]);
 
   const fetchStages = async () => {
