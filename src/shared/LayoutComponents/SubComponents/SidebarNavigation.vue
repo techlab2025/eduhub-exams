@@ -89,6 +89,11 @@
           icon: SettingIcon,
         },
         {
+          link: '/question-batches',
+          name: 'question_batch.title',
+          icon: SettingIcon,
+        },
+        {
           link: '/document-index',
           name: 'document_index.title',
           icon: DocumentIcon,

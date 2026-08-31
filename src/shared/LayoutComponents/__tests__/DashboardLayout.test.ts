@@ -4,6 +4,7 @@ import DashboardLayout from '../DashboardLayout.vue';
 import FeatureHeader from '../../FeatureHeader/FeatureHeader.vue';
 import SidebarNavigation from '../SubComponents/SidebarNavigation.vue';
 import Navbar from '../SubComponents/Navbar.vue';
+import DocumentIndexProgressOverlay from '@/modules/DocumentIndex/presentation/components/DocumentIndexProgressOverlay.vue';
 
 describe('DashboardLayout.vue', () => {
   it('renders the layout components', () => {
@@ -16,6 +17,7 @@ describe('DashboardLayout.vue', () => {
     expect(wrapper.findComponent(SidebarNavigation).exists()).toBe(true);
     expect(wrapper.findComponent(Navbar).exists()).toBe(true);
     expect(wrapper.findComponent(FeatureHeader).exists()).toBe(true);
+    expect(wrapper.findComponent(DocumentIndexProgressOverlay).exists()).toBe(true);
   });
 
   it('renders the default slot content', () => {

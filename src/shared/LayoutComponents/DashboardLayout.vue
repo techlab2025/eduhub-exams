@@ -2,6 +2,7 @@
   import SidebarNavigation from './SubComponents/SidebarNavigation.vue';
   import Navbar from './SubComponents/Navbar.vue';
   import FeatureHeader from '../FeatureHeader/FeatureHeader.vue';
+  import DocumentIndexProgressOverlay from '@/modules/DocumentIndex/presentation/components/DocumentIndexProgressOverlay.vue';
 </script>
 
 <template>
@@ -16,6 +17,7 @@
         <slot />
       </div>
     </section>
+    <DocumentIndexProgressOverlay />
   </main>
 </template>
 

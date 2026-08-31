@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { DocumentIndexPatchStatusEnum } from '../../../core/constant/document.index.patch.status.enum';
+import DocumentIndexProgressController from '../../controllers/document.index.progress.controller';
 import DocumentIndex from '../DocumentIndex.vue';
 
 const fetchEducationClassifications = vi.fn();
@@ -77,41 +79,11 @@ const SelectStub = defineComponent({
   },
 });
 
-const DialogStub = defineComponent({
-  name: 'PrimeDialogStub',
-  props: { visible: { type: Boolean, default: false } },
-  emits: ['update:visible'],
-  setup(props, { slots }) {
-    return () => (props.visible ? h('div', { class: 'dialog-stub' }, slots.default?.()) : null);
-  },
-});
-
-const GeneratedDialogStub = defineComponent({
-  name: 'GeneratedDocumentIndexDialog',
-  props: {
-    visible: { type: Boolean, default: false },
-    documentId: { type: Number, default: 0 },
-    generatedIndex: { type: Object, default: null },
-  },
-  emits: ['update:visible'],
-  setup(props) {
-    return () =>
-      props.visible
-        ? h('div', {
-            'data-testid': 'generated-index-dialog',
-            'data-document-id': props.documentId,
-          })
-        : null;
-  },
-});
-
 const mountDocumentIndex = () =>
   mount(DocumentIndex, {
     global: {
       stubs: {
         UpdatedCustomInputSelect: SelectStub,
-        Dialog: DialogStub,
-        GeneratedDocumentIndexDialog: GeneratedDialogStub,
       },
     },
   });
@@ -134,8 +106,11 @@ const selectCurriculumAndShowResults = async (wrapper: ReturnType<typeof mountDo
 };
 
 describe('DocumentIndex', () => {
+  const progressController = DocumentIndexProgressController.getInstance();
+
   beforeEach(() => {
     vi.clearAllMocks();
+    progressController.reset();
     documentListData.value = [];
     fetchEducationClassifications.mockResolvedValue(
       new DataSuccess({
@@ -324,7 +299,7 @@ describe('DocumentIndex', () => {
     expect(params.toMap()).toMatchObject({ e_c_subject_id: 308 });
   });
 
-  it('starts indexing in the AI dialog and collapses it into the result action', async () => {
+  it('starts persistent indexing progress and can reopen it after minimizing', async () => {
     documentListData.value = [
       {
         id: 17,
@@ -349,24 +324,21 @@ describe('DocumentIndex', () => {
       document_id: 17,
       auto_generate: false,
     });
-    expect(wrapper.find('.document-index-generation').exists()).toBe(true);
-    expect(wrapper.find('.document-index-page__indexing-action').exists()).toBe(false);
+    expect(progressController.generationDialogVisible.value).toBe(true);
+    expect(progressController.indexingProgress).toBe(10);
+    expect(progressController.job(17)?.status).toBe(DocumentIndexPatchStatusEnum.IN_PROGRESS);
 
-    await wrapper.find('.document-index-generation__minimize').trigger('click');
-    expect(wrapper.find('.document-index-generation').exists()).toBe(false);
-    expect(wrapper.find('.document-index-page__indexing-action').text()).toContain(
-      'document_index.ai_indexing',
-    );
+    progressController.minimize();
+    expect(progressController.generationDialogVisible.value).toBe(false);
+    expect(progressController.hasActiveIndexing.value).toBe(true);
 
-    await wrapper.find('.document-index-page__indexing-action button').trigger('click');
-    await flushPromises();
+    await progressController.openActiveProgress();
     expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 12 });
-    expect(wrapper.find('.document-index-generation').exists()).toBe(true);
-    expect(wrapper.find('.document-index-page__indexing-action').exists()).toBe(false);
+    expect(progressController.generationDialogVisible.value).toBe(true);
     wrapper.unmount();
   });
 
-  it('opens the cancel confirmation and returns to the AI dialog when indexing is kept', async () => {
+  it('opens the AI dialog immediately while the start request is pending', async () => {
     documentListData.value = [
       {
         id: 17,
@@ -381,26 +353,26 @@ describe('DocumentIndex', () => {
         tranaslations: {},
       },
     ];
+    let resolveStart: ((result: DataSuccess<number>) => void) | undefined;
+    startIndex.mockReturnValueOnce(
+      new Promise<DataSuccess<number>>((resolve) => {
+        resolveStart = resolve;
+      }),
+    );
     const wrapper = mountDocumentIndex();
     await flushPromises();
     await selectCurriculumAndShowResults(wrapper);
+
     await wrapper.find('.document-index-page__result-button').trigger('click');
+
+    expect(progressController.generationDialogVisible.value).toBe(true);
+    expect(progressController.startingDocumentId.value).toBe(17);
+
+    resolveStart?.(new DataSuccess({ data: 12 }));
     await flushPromises();
 
-    await wrapper.find('.document-index-generation__cancel').trigger('click');
-    expect(wrapper.find('.document-index-cancel').exists()).toBe(true);
-
-    await wrapper.find('.document-index-cancel__keep').trigger('click');
-    expect(wrapper.find('.document-index-cancel').exists()).toBe(false);
-    expect(wrapper.find('.document-index-generation').exists()).toBe(true);
-
-    await wrapper.find('.document-index-generation__cancel').trigger('click');
-    await wrapper.find('.document-index-cancel__confirm').trigger('click');
-    expect(wrapper.find('.document-index-generation').exists()).toBe(false);
-    expect(wrapper.find('.document-index-cancel').exists()).toBe(false);
-    expect(wrapper.find('.document-index-page__result-button').text()).toBe(
-      'document_index.generate_index',
-    );
+    expect(progressController.generationDialogVisible.value).toBe(true);
+    expect(progressController.startingDocumentId.value).toBeUndefined();
     wrapper.unmount();
   });
 
@@ -439,8 +411,7 @@ describe('DocumentIndex', () => {
     await flushPromises();
 
     expect(checkStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 42 });
-    expect(
-      wrapper.find('[data-testid="generated-index-dialog"]').attributes('data-document-id'),
-    ).toBe('17');
+    expect(progressController.generatedDialogVisible.value).toBe(true);
+    expect(progressController.activeDocumentId.value).toBe(17);
   });
 });

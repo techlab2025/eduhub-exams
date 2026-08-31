@@ -1,7 +1,6 @@
 <script setup lang="ts">
-  import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue';
+  import { computed, onMounted, ref, shallowRef } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import Dialog from 'primevue/dialog';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
@@ -15,16 +14,13 @@
   import IndexEducationClassificationBranchesParams from '@/modules/Subjects/core/params/index.educationClassificationBranches.params';
   import DocumentController from '@/modules/document/presentation/controllers/document.controller';
   import type DocumentModel from '@/modules/document/core/models/document.model';
-  import GenerateDocumentIndexParams from '../../core/params/generate.document.index.params';
-  import CheckDocumentIndexStatusParams from '../../core/params/check.document.index.status.params';
   import {
     DocumentIndexPatchStatusEnum,
     type DocumentIndexPatchStatusEnum as DocumentIndexPatchStatus,
   } from '../../core/constant/document.index.patch.status.enum';
-  import type DocumentIndexStatusModel from '../../core/models/document.index.status.model';
-  import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
-  import DocumentIndexPatchController from '../controllers/document.index.patch.controller';
-  import GeneratedDocumentIndexDialog from './GeneratedDocumentIndexDialog.vue';
+  import DocumentIndexProgressController, {
+    type DocumentIndexProgressJob,
+  } from '../controllers/document.index.progress.controller';
   import {
     createSubjectOptions,
     flattenLeafBranchOptions,
@@ -34,8 +30,6 @@
   import IndexDocumentParams from '@/modules/document/core/params/index.document.params';
   import NorCurriculumIcon from '@/shared/icons/DocuecmntIndex/NorCurriculumIcon.vue';
   import DocIndex from '@/shared/icons/DocIndex.vue';
-  import IconArrowDown from '@/shared/icons/IconArrowDown.vue';
-  import IconWarning from '@/shared/icons/IconWarning.vue';
   import defaultDocumentCover from '@/assets/images/Book Cover Design 1.png';
 
   interface SubjectSelectLevel {
@@ -43,18 +37,13 @@
     selected: TitleInterface<number> | null;
   }
 
-  interface DocumentIndexJob {
-    patchId: number;
-    status: DocumentIndexPatchStatus;
-    generatedIndex: GeneratedDocumentIndexModel | null;
-  }
-
   const { t } = useI18n();
   const educationClassificationController = EducationClassificationController.getInstance();
   const branchController = SubjectController.getInstance();
   const subjectController = EducationSubjectItemController.getInstance();
   const documentController = DocumentController.getInstance();
-  const documentIndexPatchController = DocumentIndexPatchController.getInstance();
+  const documentIndexProgressController = DocumentIndexProgressController.getInstance();
+  const { startingDocumentId } = documentIndexProgressController;
   const educationClassificationParams = new IndexEducationClassificationParams({
     pageNumber: 1,
     perPage: 100,
@@ -68,16 +57,6 @@
   const subjectLevels = ref<SubjectSelectLevel[]>([{ options: [], selected: null }]);
   const submitted = ref(false);
   const resultsRequested = ref(false);
-  const startingDocumentId = ref<number>();
-  const checkingDocumentIds = ref<Set<number>>(new Set());
-  const documentIndexJobs = ref<Record<number, DocumentIndexJob>>({});
-  const activeDocumentId = ref<number>();
-  const generationDialogVisible = ref(false);
-  const cancelConfirmationVisible = ref(false);
-  const generatedDialogVisible = ref(false);
-  const generatedIndex = shallowRef<GeneratedDocumentIndexModel | null>(null);
-  const statusPollTimers = new Map<number, ReturnType<typeof window.setTimeout>>();
-  const cancelledPatchIds = new Set<number>();
   let branchRequestId = 0;
   let subjectRequestId = 0;
 
@@ -154,8 +133,8 @@
       Boolean(selectedSubject.value?.id),
   );
 
-  const documentJob = (document: DocumentModel): DocumentIndexJob | undefined =>
-    document.id == null ? undefined : documentIndexJobs.value[document.id];
+  const documentJob = (document: DocumentModel): DocumentIndexProgressJob | undefined =>
+    document.id == null ? undefined : documentIndexProgressController.job(document.id);
 
   const documentIndexStatus = (document: DocumentModel): DocumentIndexPatchStatus | undefined => {
     const localStatus = documentJob(document)?.status;
@@ -173,32 +152,11 @@
   const isDocumentIndexing = (document: DocumentModel): boolean =>
     documentIndexStatus(document) === DocumentIndexPatchStatusEnum.IN_PROGRESS;
 
-  const shouldShowIndexingAction = (document: DocumentModel): boolean =>
-    isDocumentIndexing(document) &&
-    !(generationDialogVisible.value && activeDocumentId.value === document.id);
-
   const hasDocumentIndex = (document: DocumentModel): boolean =>
     documentIndexStatus(document) === DocumentIndexPatchStatusEnum.COMPLETE;
 
   const isCheckingDocument = (document: DocumentModel): boolean =>
-    document.id != null && checkingDocumentIds.value.has(document.id);
-
-  const setCheckingDocument = (documentId: number, isChecking: boolean) => {
-    const nextIds = new Set(checkingDocumentIds.value);
-    if (isChecking) nextIds.add(documentId);
-    else nextIds.delete(documentId);
-    checkingDocumentIds.value = nextIds;
-  };
-
-  const updateDocumentJob = (documentId: number, job: DocumentIndexJob) => {
-    documentIndexJobs.value = { ...documentIndexJobs.value, [documentId]: job };
-  };
-
-  const clearStatusPoll = (documentId: number) => {
-    const timer = statusPollTimers.get(documentId);
-    if (timer != null) window.clearTimeout(timer);
-    statusPollTimers.delete(documentId);
-  };
+    document.id != null && documentIndexProgressController.isChecking(document.id);
 
   const clearResults = () => {
     submitted.value = false;
@@ -330,172 +288,21 @@
     if (file) window.open(file, '_blank', 'noopener,noreferrer');
   };
 
-  const showGeneratedIndex = (
-    documentId: number,
-    nextGeneratedIndex: GeneratedDocumentIndexModel,
-  ) => {
-    activeDocumentId.value = documentId;
-    generatedIndex.value = nextGeneratedIndex;
-    generatedDialogVisible.value = true;
-  };
-
-  interface CheckStatusOptions {
-    openWhenComplete?: boolean;
-    showProgressWhenPending?: boolean;
-    reschedule?: boolean;
-  }
-
-  const checkDocumentIndexStatus = async (
-    documentId: number,
-    patchId: number,
-    options: CheckStatusOptions = {},
-  ): Promise<DocumentIndexStatusModel | null> => {
-    if (checkingDocumentIds.value.has(documentId)) return null;
-
-    setCheckingDocument(documentId, true);
-    const result = await documentIndexPatchController.checkStatus(
-      new CheckDocumentIndexStatusParams(patchId),
-    );
-    setCheckingDocument(documentId, false);
-
-    if (cancelledPatchIds.has(patchId)) return null;
-    if (!(result instanceof DataSuccess) || !result.data) return null;
-
-    const status = result.data;
-    updateDocumentJob(documentId, {
-      patchId,
-      status: status.status,
-      generatedIndex:
-        status.status === DocumentIndexPatchStatusEnum.COMPLETE
-          ? status.generatedIndex
-          : (documentIndexJobs.value[documentId]?.generatedIndex ?? null),
-    });
-
-    if (status.status === DocumentIndexPatchStatusEnum.COMPLETE) {
-      clearStatusPoll(documentId);
-      const shouldOpen =
-        options.openWhenComplete ||
-        (generationDialogVisible.value && activeDocumentId.value === documentId);
-      if (activeDocumentId.value === documentId) {
-        generationDialogVisible.value = false;
-        cancelConfirmationVisible.value = false;
-      }
-      if (shouldOpen) showGeneratedIndex(documentId, status.generatedIndex);
-      return status;
-    }
-
-    if (status.status === DocumentIndexPatchStatusEnum.FAILED) {
-      clearStatusPoll(documentId);
-      if (activeDocumentId.value === documentId) {
-        generationDialogVisible.value = false;
-        cancelConfirmationVisible.value = false;
-      }
-      return status;
-    }
-
-    if (options.showProgressWhenPending) {
-      activeDocumentId.value = documentId;
-      generationDialogVisible.value = true;
-    }
-    if (options.reschedule !== false) scheduleStatusPoll(documentId, patchId);
-    return status;
-  };
-
-  const scheduleStatusPoll = (documentId: number, patchId: number) => {
-    clearStatusPoll(documentId);
-    statusPollTimers.set(
-      documentId,
-      window.setTimeout(() => {
-        void checkDocumentIndexStatus(documentId, patchId);
-      }, 5000),
-    );
-  };
-
   const generateDocumentIndex = async (document: DocumentModel) => {
-    if (document.id == null || startingDocumentId.value != null) return;
-
-    startingDocumentId.value = document.id;
-    const result = await documentIndexPatchController.startIndex(
-      new GenerateDocumentIndexParams(document.id, false),
-    );
-    startingDocumentId.value = undefined;
-
-    if (!(result instanceof DataSuccess) || !result.data) return;
-
-    cancelledPatchIds.delete(result.data);
-    updateDocumentJob(document.id, {
-      patchId: result.data,
-      status: DocumentIndexPatchStatusEnum.IN_PROGRESS,
-      generatedIndex: null,
-    });
-    activeDocumentId.value = document.id;
-    generatedIndex.value = null;
-    cancelConfirmationVisible.value = false;
-    generationDialogVisible.value = true;
-    scheduleStatusPoll(document.id, result.data);
+    if (document.id == null) return;
+    await documentIndexProgressController.startIndex(document.id);
   };
 
   const showDocumentIndex = async (document: DocumentModel) => {
     if (document.id == null || isCheckingDocument(document)) return;
 
-    const job = documentJob(document);
-    if (job?.status === DocumentIndexPatchStatusEnum.COMPLETE && job.generatedIndex) {
-      showGeneratedIndex(document.id, job.generatedIndex);
-      return;
-    }
-
-    const patchId = job?.patchId || document.indexPatchId || document.id;
-    await checkDocumentIndexStatus(document.id, patchId, {
-      openWhenComplete: true,
-      showProgressWhenPending: true,
-    });
-  };
-
-  const viewIndexingProgress = async (document: DocumentModel) => {
-    if (document.id == null || isCheckingDocument(document)) return;
-
-    const patchId = documentJob(document)?.patchId || document.indexPatchId || document.id;
-    activeDocumentId.value = document.id;
-    cancelConfirmationVisible.value = false;
-    generationDialogVisible.value = true;
-    await checkDocumentIndexStatus(document.id, patchId, { openWhenComplete: true });
-  };
-
-  const minimizeGeneration = () => {
-    generationDialogVisible.value = false;
-    cancelConfirmationVisible.value = false;
-  };
-
-  const requestCancelIndexing = () => {
-    cancelConfirmationVisible.value = true;
-  };
-
-  const keepIndexing = () => {
-    cancelConfirmationVisible.value = false;
-  };
-
-  const confirmCancelIndexing = () => {
-    const documentId = activeDocumentId.value;
-    if (documentId != null) {
-      clearStatusPoll(documentId);
-      const job = documentIndexJobs.value[documentId];
-      if (job) {
-        cancelledPatchIds.add(job.patchId);
-        const nextJobs = { ...documentIndexJobs.value };
-        delete nextJobs[documentId];
-        documentIndexJobs.value = nextJobs;
-      }
-    }
-    generationDialogVisible.value = false;
-    cancelConfirmationVisible.value = false;
-    activeDocumentId.value = undefined;
+    await documentIndexProgressController.openDocumentIndex(
+      document.id,
+      document.indexPatchId || document.id,
+    );
   };
 
   onMounted(fetchEducationClassifications);
-  onBeforeUnmount(() => {
-    statusPollTimers.forEach((timer) => window.clearTimeout(timer));
-    statusPollTimers.clear();
-  });
 </script>
 
 <template>
@@ -665,26 +472,6 @@
                   : t('document_index.show_index')
               }}
             </button>
-            <div
-              v-else-if="shouldShowIndexingAction(document)"
-              class="document-index-page__indexing-action"
-            >
-              <span>{{ t('document_index.ai_indexing') }}</span>
-              <div class="document-index-page__indexing-progress" aria-hidden="true">
-                <i></i>
-              </div>
-              <button
-                type="button"
-                :disabled="isCheckingDocument(document)"
-                @click="viewIndexingProgress(document)"
-              >
-                {{
-                  isCheckingDocument(document)
-                    ? t('document_index.checking_status')
-                    : t('document_index.view_progress')
-                }}
-              </button>
-            </div>
             <button
               v-else-if="!isDocumentIndexing(document)"
               class="document-index-page__result-button"
@@ -729,87 +516,6 @@
         </article>
       </div>
     </section>
-
-    <Dialog
-      v-model:visible="generationDialogVisible"
-      modal
-      :closable="false"
-      :close-on-escape="false"
-      :dismissable-mask="false"
-      :show-header="false"
-      :pt="{
-        root: 'document-index-generation-dialog',
-        content: 'document-index-generation-dialog__content',
-      }"
-    >
-      <section class="document-index-generation" role="status" aria-live="polite">
-        <button
-          class="document-index-generation__minimize"
-          type="button"
-          :aria-label="t('document_index.minimize_indexing')"
-          @click="minimizeGeneration"
-        >
-          <IconArrowDown />
-        </button>
-        <div class="document-index-generation__brand" aria-hidden="true">
-          <span class="document-index-generation__sparkle">✦</span>
-          <strong>AI</strong>
-        </div>
-        <h2>{{ t('document_index.indexing_analysis') }}</h2>
-        <p>{{ t('document_index.indexing_background_description') }}</p>
-        <div class="document-index-generation__progress" aria-hidden="true">
-          <span></span>
-        </div>
-        <button
-          class="document-index-generation__cancel"
-          type="button"
-          @click="requestCancelIndexing"
-        >
-          {{ t('document_index.cancel_indexing') }}
-        </button>
-      </section>
-    </Dialog>
-
-    <Dialog
-      v-model:visible="cancelConfirmationVisible"
-      modal
-      :closable="false"
-      :close-on-escape="false"
-      :dismissable-mask="false"
-      :show-header="false"
-      :pt="{
-        root: 'document-index-cancel-dialog',
-        content: 'document-index-cancel-dialog__content',
-      }"
-    >
-      <section class="document-index-cancel" aria-labelledby="document-index-cancel-title">
-        <h2 id="document-index-cancel-title">
-          {{ t('document_index.cancel_confirmation_title') }}
-        </h2>
-        <div class="document-index-cancel__warning">
-          <IconWarning aria-hidden="true" />
-          <p>{{ t('document_index.cancel_confirmation_description') }}</p>
-        </div>
-        <footer>
-          <button
-            class="document-index-cancel__confirm"
-            type="button"
-            @click="confirmCancelIndexing"
-          >
-            {{ t('document_index.cancel') }}
-          </button>
-          <button class="document-index-cancel__keep" type="button" @click="keepIndexing">
-            {{ t('document_index.keep_indexing') }}
-          </button>
-        </footer>
-      </section>
-    </Dialog>
-
-    <GeneratedDocumentIndexDialog
-      v-model:visible="generatedDialogVisible"
-      :document-id="activeDocumentId ?? 0"
-      :generated-index="generatedIndex"
-    />
   </main>
 </template>
 
