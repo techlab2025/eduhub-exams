@@ -34,6 +34,7 @@ export default class QuestionBatchModel {
   public readonly status: QuestionBatchStatusEnum;
   public readonly createdAt: QuestionBatchCreatorModel;
   public readonly generationDate: string;
+  public readonly canDelete: boolean;
 
   constructor(data: {
     id: number;
@@ -46,6 +47,7 @@ export default class QuestionBatchModel {
     status: QuestionBatchStatusEnum;
     createdAt: QuestionBatchCreatorModel;
     generationDate: string;
+    canDelete: boolean;
   }) {
     this.id = data.id;
     this.title = data.title;
@@ -57,6 +59,7 @@ export default class QuestionBatchModel {
     this.status = data.status;
     this.createdAt = data.createdAt;
     this.generationDate = data.generationDate;
+    this.canDelete = data.canDelete;
     Object.freeze(this);
   }
 
@@ -75,6 +78,12 @@ export default class QuestionBatchModel {
     const rawCreator =
       (typeof data.created_at === 'object' ? data.created_at : undefined) ?? data.created_by ?? {};
     const rawSources = data.sources ?? data['sources '];
+    const hasDeleteFlag = data.can_delete !== undefined || data.is_deletable !== undefined;
+    const canDelete = hasDeleteFlag
+      ? SaftyConditions.booleanValue(data.can_delete ?? data.is_deletable)
+      : !SaftyConditions.booleanValue(
+          data.is_used ?? data.is_used_in_exam_or_exercise ?? data.has_used_questions,
+        );
     return new QuestionBatchModel({
       id: SaftyConditions.numberValue(data.id),
       title: localizedString(data.title),
@@ -90,6 +99,7 @@ export default class QuestionBatchModel {
       generationDate: String(
         data.generation_date ?? (typeof data.created_at === 'string' ? data.created_at : ''),
       ),
+      canDelete,
     });
   }
 

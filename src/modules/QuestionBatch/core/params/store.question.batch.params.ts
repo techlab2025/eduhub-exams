@@ -12,8 +12,8 @@ export default class StoreQuestionBatchParams implements Params {
   public readonly status: QuestionBatchStatusEnum;
   public readonly numberOfQuestionsType: NumberOfQuestionTypeEnum;
   public readonly numberOfQuestions: number;
-  public readonly questionType: QuestionBatchTypeEnum;
-  public readonly questionDifficulty: QuestionBatchDifficultyEnum;
+  public readonly questionType: readonly QuestionBatchTypeEnum[];
+  public readonly questionDifficulty: readonly QuestionBatchDifficultyEnum[];
 
   public static readonly validation = new ClassValidation().setRules({
     educationClassificationId: { required: true, min: 1 },
@@ -33,8 +33,8 @@ export default class StoreQuestionBatchParams implements Params {
     status: QuestionBatchStatusEnum;
     numberOfQuestionsType: NumberOfQuestionTypeEnum;
     numberOfQuestions: number;
-    questionType: QuestionBatchTypeEnum;
-    questionDifficulty: QuestionBatchDifficultyEnum;
+    questionType: readonly QuestionBatchTypeEnum[];
+    questionDifficulty: readonly QuestionBatchDifficultyEnum[];
   }) {
     this.educationClassificationId = data.educationClassificationId;
     this.eCSubjectId = data.eCSubjectId;
@@ -42,11 +42,11 @@ export default class StoreQuestionBatchParams implements Params {
     this.status = data.status;
     this.numberOfQuestionsType = data.numberOfQuestionsType;
     this.numberOfQuestions = data.numberOfQuestions;
-    this.questionType = data.questionType;
-    this.questionDifficulty = data.questionDifficulty;
+    this.questionType = [...data.questionType];
+    this.questionDifficulty = [...data.questionDifficulty];
   }
 
-  toMap(): Record<string, string | number> {
+  toMap(): Record<string, string | number | string[]> {
     return {
       education_classification_id: this.educationClassificationId,
       e_c_subject_id: this.eCSubjectId,
@@ -54,8 +54,8 @@ export default class StoreQuestionBatchParams implements Params {
       status: this.status,
       number_of_questions_type: this.numberOfQuestionsType,
       number_of_questions: this.numberOfQuestions,
-      question_type: this.questionType,
-      question_difficulty: this.questionDifficulty,
+      question_type: [...this.questionType],
+      question_difficulty: [...this.questionDifficulty],
     };
   }
 

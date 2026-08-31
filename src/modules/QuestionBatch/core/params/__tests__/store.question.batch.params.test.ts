@@ -14,8 +14,8 @@ describe('StoreQuestionBatchParams', () => {
       status: QuestionBatchStatusEnum.DRAFT,
       numberOfQuestionsType: NumberOfQuestionTypeEnum.SPECIFIC_NUMBER,
       numberOfQuestions: 10,
-      questionType: QuestionBatchTypeEnum.MCQ,
-      questionDifficulty: QuestionBatchDifficultyEnum.HARD,
+      questionType: [QuestionBatchTypeEnum.MCQ, QuestionBatchTypeEnum.TRUE_FALSE],
+      questionDifficulty: [QuestionBatchDifficultyEnum.EASY, QuestionBatchDifficultyEnum.HARD],
     }).toMap();
     expect(map).toEqual({
       education_classification_id: 12,
@@ -24,8 +24,29 @@ describe('StoreQuestionBatchParams', () => {
       status: '1',
       number_of_questions_type: '2',
       number_of_questions: 10,
-      question_type: '2',
-      question_difficulty: '4',
+      question_type: ['2', '3'],
+      question_difficulty: ['2', '4'],
+    });
+  });
+
+  it('rejects empty question type and difficulty selections', () => {
+    const params = new StoreQuestionBatchParams({
+      educationClassificationId: 12,
+      eCSubjectId: 284,
+      documentId: 7,
+      status: QuestionBatchStatusEnum.DRAFT,
+      numberOfQuestionsType: NumberOfQuestionTypeEnum.ANY_NUMBER,
+      numberOfQuestions: 10,
+      questionType: [],
+      questionDifficulty: [],
+    });
+
+    expect(params.validate()).toMatchObject({
+      isValid: false,
+      errors: expect.arrayContaining([
+        expect.objectContaining({ field: 'questionType' }),
+        expect.objectContaining({ field: 'questionDifficulty' }),
+      ]),
     });
   });
 });

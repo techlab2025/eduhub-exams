@@ -2,9 +2,15 @@
   import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
+  import Accordion from 'primevue/accordion';
+  import AccordionContent from 'primevue/accordioncontent';
+  import AccordionHeader from 'primevue/accordionheader';
+  import AccordionPanel from 'primevue/accordionpanel';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
+  import AccordionToggleIcon from '@/shared/icons/questions/AccordionToggleIcon.vue';
+  import NoImge from '@/shared/icons/NoImge.vue';
   import StageController from '@/modules/Stages/presentation/controllers/stage.controller';
   import IndexStageParams from '@/modules/Stages/core/params/index.stage.params';
   import type StageModel from '@/modules/Stages/core/models/stage.model';
@@ -46,8 +52,11 @@
   const selectedDocumentId = ref<number>();
   const numberType = ref<NumberOfQuestionTypeEnum>(NumberOfQuestionTypeEnum.ANY_NUMBER);
   const numberOfQuestions = ref(10);
-  const difficulty = ref<QuestionBatchDifficultyEnum>(QuestionBatchDifficultyEnum.ANY_DIFFICULTY);
-  const questionType = ref<QuestionBatchTypeEnum>(QuestionBatchTypeEnum.ANY_TYPE);
+  const difficulties = ref<QuestionBatchDifficultyEnum[]>([
+    QuestionBatchDifficultyEnum.ANY_DIFFICULTY,
+  ]);
+  const questionTypes = ref<QuestionBatchTypeEnum[]>([QuestionBatchTypeEnum.ANY_TYPE]);
+  const expandedSections = ref(['curriculum', 'documents', 'settings']);
   const submitted = ref(false);
   const loadingDialogVisible = ref(false);
   const reviewDialogVisible = ref(false);
@@ -93,6 +102,8 @@
       selectedSubject.value?.id != null &&
       selectedReviewer.value?.id != null &&
       selectedDocumentId.value != null &&
+      difficulties.value.length > 0 &&
+      questionTypes.value.length > 0 &&
       (numberType.value === NumberOfQuestionTypeEnum.ANY_NUMBER || numberOfQuestions.value > 0),
   );
 
@@ -113,6 +124,7 @@
     { id: QuestionBatchTypeEnum.RANKING, title: t('question_batch.ranking') },
     { id: QuestionBatchTypeEnum.COMPLETION, title: t('question_batch.completion') },
     { id: QuestionBatchTypeEnum.MATCHING, title: t('question_batch.matching') },
+    
   ]);
 
   const fetchStages = async () => {
@@ -148,6 +160,45 @@
     await fetchDocuments();
   };
 
+  const preventNonDigitKey = (event: KeyboardEvent) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || event.key.length > 1) return;
+    if (!/^\d$/.test(event.key)) event.preventDefault();
+  };
+
+  const preventNonDigitPaste = (event: ClipboardEvent) => {
+    const pastedValue = event.clipboardData?.getData('text') ?? '';
+    if (!/^\d+$/.test(pastedValue)) event.preventDefault();
+  };
+
+  const updateMultiSelection = <T extends string>(
+    selection: T[],
+    value: T,
+    anyValue: T,
+    isChecked: boolean,
+  ): T[] => {
+    if (value === anyValue) return isChecked ? [anyValue] : [];
+    if (!isChecked) return selection.filter((item) => item !== value);
+    return [...selection.filter((item) => item !== anyValue && item !== value), value];
+  };
+
+  const updateDifficulty = (value: QuestionBatchDifficultyEnum, event: Event) => {
+    difficulties.value = updateMultiSelection(
+      difficulties.value,
+      value,
+      QuestionBatchDifficultyEnum.ANY_DIFFICULTY,
+      (event.target as HTMLInputElement).checked,
+    );
+  };
+
+  const updateQuestionType = (value: QuestionBatchTypeEnum, event: Event) => {
+    questionTypes.value = updateMultiSelection(
+      questionTypes.value,
+      value,
+      QuestionBatchTypeEnum.ANY_TYPE,
+      (event.target as HTMLInputElement).checked,
+    );
+  };
+
   const generate = async () => {
     submitted.value = true;
     if (!canGenerate.value) return;
@@ -168,8 +219,8 @@
         status: QuestionBatchStatusEnum.DRAFT,
         numberOfQuestionsType: numberType.value,
         numberOfQuestions: numberOfQuestions.value,
-        questionType: questionType.value,
-        questionDifficulty: difficulty.value,
+        questionType: questionTypes.value,
+        questionDifficulty: difficulties.value,
       }),
       { signal: request.signal, useStaticData: props.useStaticData },
     );
@@ -212,112 +263,188 @@
       <p>{{ t('question_batch.generate_description') }}</p>
     </header>
 
-    <section class="question-batch-section">
-      <h2>{{ t('question_batch.curriculum_scope') }} <span>⌃</span></h2>
-      <div class="question-batch-section__fields">
-        <UpdatedCustomInputSelect
-          id="question-batch-education-type"
-          :model-value="selectedEducationType"
-          :label="t('question_batch.education_type')"
-          :placeholder="t('question_batch.select_education_type')"
-          :static-options="educationTypes"
-          required
-          @update:model-value="updateEducationType($event as TitleInterface<number> | null)"
-          @reload="fetchStages"
-        />
-        <UpdatedCustomInputSelect
-          id="question-batch-configuration"
-          :model-value="selectedConfiguration"
-          :label="t('question_batch.education_configuration')"
-          :placeholder="t('question_batch.select_education_configuration')"
-          :static-options="configurations"
-          :reload="false"
-          :disabled="!selectedEducationType"
-          required
-          @update:model-value="updateConfiguration($event as TitleInterface<number> | null)"
-        />
-        <UpdatedCustomInputSelect
-          id="question-batch-subject"
-          :model-value="selectedSubject"
-          :label="t('question_batch.subject')"
-          :placeholder="t('question_batch.select_subject')"
-          :static-options="subjects"
-          :reload="false"
-          :disabled="!selectedConfiguration"
-          required
-          @update:model-value="updateSubject($event as TitleInterface<number> | null)"
-        />
-        <UpdatedCustomInputSelect
-          id="question-batch-reviewer"
-          v-model="selectedReviewer"
-          :label="t('question_batch.reviewer')"
-          :placeholder="t('question_batch.select_reviewer')"
-          :static-options="reviewers"
-          required
-          @reload="fetchReviewers"
-        />
-        <p v-if="submitted && !canGenerate" class="question-batch-generate__error">
-          {{ t('question_batch.complete_required_fields') }}
-        </p>
-      </div>
-    </section>
-
-    <section class="question-batch-section">
-      <h2>{{ t('question_batch.documents_sources') }} <span>⌃</span></h2>
-      <div class="question-batch-documents">
-        <label
-          v-for="document in documents"
-          :key="document.id"
-          class="question-batch-document"
-          :class="{ 'question-batch-document--selected': selectedDocumentId === document.id }"
-        >
-          <input v-model="selectedDocumentId" type="radio" name="document" :value="document.id" />
-          <img v-if="document.image" :src="document.image" :alt="document.title" />
-          <span v-else class="question-batch-document__placeholder" aria-hidden="true">▤</span>
-          <span>
-            <small>{{ document.doecumentType?.title || t('question_batch.document') }}</small>
-            <strong>{{ document.title }}</strong>
-            <em>{{ t('question_batch.reference') }}: {{ document.RefNumber }}</em>
+    <Accordion v-model:value="expandedSections" multiple class="question-batch-accordion">
+      <AccordionPanel value="curriculum" class="question-batch-section">
+        <AccordionHeader class="question-batch-section__header">
+          <span class="question-batch-section__title">
+            {{ t('question_batch.curriculum_scope') }}
           </span>
-        </label>
-        <p v-if="selectedSubject && documents.length === 0" class="question-batch-documents__empty">
-          {{ t('question_batch.no_documents') }}
-        </p>
-      </div>
-    </section>
+          <span class="question-batch-section__divider" aria-hidden="true"></span>
+          <template #toggleicon>
+            <AccordionToggleIcon
+              class="question-batch-section__toggle-icon"
+              :class="{
+                'question-batch-section__toggle-icon--collapsed':
+                  !expandedSections.includes('curriculum'),
+              }"
+            />
+          </template>
+        </AccordionHeader>
+        <AccordionContent :pt="{ content: 'question-batch-section__content' }">
+          <div class="question-batch-section__fields">
+            <UpdatedCustomInputSelect
+              id="question-batch-education-type"
+              :model-value="selectedEducationType"
+              :label="t('question_batch.education_type')"
+              :placeholder="t('question_batch.select_education_type')"
+              :static-options="educationTypes"
+              required
+              @update:model-value="updateEducationType($event as TitleInterface<number> | null)"
+              @reload="fetchStages"
+            />
+            <UpdatedCustomInputSelect
+              id="question-batch-configuration"
+              :model-value="selectedConfiguration"
+              :label="t('question_batch.education_configuration')"
+              :placeholder="t('question_batch.select_education_configuration')"
+              :static-options="configurations"
+              :reload="false"
+              :disabled="!selectedEducationType"
+              required
+              @update:model-value="updateConfiguration($event as TitleInterface<number> | null)"
+            />
+            <UpdatedCustomInputSelect
+              id="question-batch-subject"
+              :model-value="selectedSubject"
+              :label="t('question_batch.subject')"
+              :placeholder="t('question_batch.select_subject')"
+              :static-options="subjects"
+              :reload="false"
+              :disabled="!selectedConfiguration"
+              required
+              @update:model-value="updateSubject($event as TitleInterface<number> | null)"
+            />
+            <UpdatedCustomInputSelect
+              id="question-batch-reviewer"
+              v-model="selectedReviewer"
+              :label="t('question_batch.reviewer')"
+              :placeholder="t('question_batch.select_reviewer')"
+              :static-options="reviewers"
+              required
+              @reload="fetchReviewers"
+            />
+            <p v-if="submitted && !canGenerate" class="question-batch-generate__error">
+              {{ t('question_batch.complete_required_fields') }}
+            </p>
+          </div>
+        </AccordionContent>
+      </AccordionPanel>
 
-    <section class="question-batch-section">
-      <h2>{{ t('question_batch.generate_setting') }} <span>⌃</span></h2>
-      <fieldset class="question-batch-options">
-        <legend>{{ t('question_batch.number_of_questions') }}</legend>
-        <label v-for="option in numberOptions" :key="option.id">
-          <input v-model="numberType" type="radio" name="number-type" :value="option.id" />
-          <span>{{ option.title }}</span>
-        </label>
-        <input
-          v-if="numberType === NumberOfQuestionTypeEnum.SPECIFIC_NUMBER"
-          v-model.number="numberOfQuestions"
-          class="question-batch-options__number"
-          type="number"
-          min="1"
-          :aria-label="t('question_batch.number_of_questions')"
-        />
-      </fieldset>
-      <fieldset class="question-batch-options question-batch-options--four">
-        <legend>{{ t('question_batch.difficulty') }}</legend>
-        <label v-for="option in difficultyOptions" :key="option.id">
-          <input v-model="difficulty" type="radio" name="difficulty" :value="option.id" />
-          <span>{{ option.title }}</span>
-        </label>
-      </fieldset>
-      <fieldset class="question-batch-options question-batch-options--six">
-        <legend>{{ t('question_batch.questions_type') }}</legend>
-        <label v-for="option in questionTypeOptions" :key="option.id">
-          <input v-model="questionType" type="radio" name="question-type" :value="option.id" />
-          <span>{{ option.title }}</span>
-        </label>
-      </fieldset>
-    </section>
+      <AccordionPanel value="documents" class="question-batch-section">
+        <AccordionHeader class="question-batch-section__header">
+          <span class="question-batch-section__title">
+            {{ t('question_batch.documents_sources') }}
+          </span>
+          <span class="question-batch-section__divider" aria-hidden="true"></span>
+          <template #toggleicon>
+            <AccordionToggleIcon
+              class="question-batch-section__toggle-icon"
+              :class="{
+                'question-batch-section__toggle-icon--collapsed':
+                  !expandedSections.includes('documents'),
+              }"
+            />
+          </template>
+        </AccordionHeader>
+        <AccordionContent :pt="{ content: 'question-batch-section__content' }">
+          <div class="question-batch-documents">
+            <label
+              v-for="document in documents"
+              :key="document.id"
+              class="question-batch-document"
+              :class="{ 'question-batch-document--selected': selectedDocumentId === document.id }"
+            >
+              <input
+                v-model="selectedDocumentId"
+                type="radio"
+                name="document"
+                :value="document.id"
+              />
+              <img v-if="document.image" :src="document.image" :alt="document.title" />
+              <span v-else class="question-batch-document__placeholder" aria-hidden="true">
+                <NoImge />
+              </span>
+              <span>
+                <small>{{ document.doecumentType?.title || t('question_batch.document') }}</small>
+                <strong>{{ document.title }}</strong>
+                <em>{{ t('question_batch.reference') }}: {{ document.RefNumber }}</em>
+              </span>
+            </label>
+            <p
+              v-if="selectedSubject && documents.length === 0"
+              class="question-batch-documents__empty"
+            >
+              {{ t('question_batch.no_documents') }}
+            </p>
+          </div>
+        </AccordionContent>
+      </AccordionPanel>
+
+      <AccordionPanel value="settings" class="question-batch-section">
+        <AccordionHeader class="question-batch-section__header">
+          <span class="question-batch-section__title">
+            {{ t('question_batch.generate_setting') }}
+          </span>
+          <span class="question-batch-section__divider" aria-hidden="true"></span>
+          <template #toggleicon>
+            <AccordionToggleIcon
+              class="question-batch-section__toggle-icon"
+              :class="{
+                'question-batch-section__toggle-icon--collapsed':
+                  !expandedSections.includes('settings'),
+              }"
+            />
+          </template>
+        </AccordionHeader>
+        <AccordionContent :pt="{ content: 'question-batch-section__content' }">
+          <fieldset class="question-batch-options">
+            <legend>{{ t('question_batch.number_of_questions') }}</legend>
+            <label v-for="option in numberOptions" :key="option.id">
+              <input v-model="numberType" type="radio" name="number-type" :value="option.id" />
+              <span>{{ option.title }}</span>
+            </label>
+            <input
+              v-if="numberType === NumberOfQuestionTypeEnum.SPECIFIC_NUMBER"
+              v-model.number="numberOfQuestions"
+              class="question-batch-options__number"
+              type="number"
+              min="1"
+              step="1"
+              inputmode="numeric"
+              :aria-label="t('question_batch.number_of_questions')"
+              @keydown="preventNonDigitKey"
+              @paste="preventNonDigitPaste"
+            />
+          </fieldset>
+          <fieldset class="question-batch-options question-batch-options--four">
+            <legend>{{ t('question_batch.difficulty') }}</legend>
+            <label v-for="option in difficultyOptions" :key="option.id">
+              <input
+                type="checkbox"
+                name="difficulty"
+                :value="option.id"
+                :checked="difficulties.includes(option.id)"
+                @change="updateDifficulty(option.id, $event)"
+              />
+              <span>{{ option.title }}</span>
+            </label>
+          </fieldset>
+          <fieldset class="question-batch-options question-batch-options--six">
+            <legend>{{ t('question_batch.questions_type') }}</legend>
+            <label v-for="option in questionTypeOptions" :key="option.id">
+              <input
+                type="checkbox"
+                name="question-type"
+                :value="option.id"
+                :checked="questionTypes.includes(option.id)"
+                @change="updateQuestionType(option.id, $event)"
+              />
+              <span>{{ option.title }}</span>
+            </label>
+          </fieldset>
+        </AccordionContent>
+      </AccordionPanel>
+    </Accordion>
 
     <footer class="question-batch-generate__actions">
       <button type="button" class="question-batch-generate__submit" @click="generate">
