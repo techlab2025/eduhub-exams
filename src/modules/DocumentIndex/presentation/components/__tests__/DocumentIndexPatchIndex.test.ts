@@ -16,7 +16,6 @@ const listState = ref(
   new DataSuccess({
     data: [
       DocumentIndexPatchModel.fromJson({
-        id: 1,
         document_id: 11,
         transaction_id: 'TXN-001',
         education_type: { title: 'Governmental' },
@@ -29,7 +28,6 @@ const listState = ref(
         is_apply: false,
       }),
       DocumentIndexPatchModel.fromJson({
-        id: 2,
         document_id: 12,
         transaction_id: 'TXN-002',
         education_type: { title: 'Governmental' },
@@ -42,7 +40,6 @@ const listState = ref(
         is_apply: false,
       }),
       DocumentIndexPatchModel.fromJson({
-        id: 3,
         document_id: 13,
         transaction_id: 'TXN-003',
         education_type: { title: 'Governmental' },
@@ -60,7 +57,6 @@ const listState = ref(
         },
       }),
       DocumentIndexPatchModel.fromJson({
-        id: 4,
         document_id: 14,
         transaction_id: 'TXN-004',
         education_type: { title: 'Governmental' },
@@ -177,10 +173,12 @@ describe('DocumentIndexPatchIndex', () => {
     expect(wrapper.text()).toContain('document_index.status_pending');
     expect(wrapper.text()).toContain('document_index.status_success');
     expect(wrapper.text()).toContain('document_index.status_failed');
-    expect(wrapper.find('[data-patch-id="1"]').text()).toBe('document_index.view_progress');
-    expect(wrapper.find('[data-patch-id="3"]').text()).toBe('view');
-    expect(wrapper.find('[data-patch-id="4"]').text()).toBe('document_index.refresh');
-    expect(wrapper.find('[data-patch-id="2"]').exists()).toBe(false);
+    expect(wrapper.find('[data-transaction-id="TXN-001"]').text()).toBe(
+      'document_index.view_progress',
+    );
+    expect(wrapper.find('[data-transaction-id="TXN-003"]').text()).toBe('view');
+    expect(wrapper.find('[data-transaction-id="TXN-004"]').text()).toBe('document_index.refresh');
+    expect(wrapper.find('[data-transaction-id="TXN-002"]').exists()).toBe(false);
     expect(wrapper.find('input[type="search"]').attributes('placeholder')).toBe(
       'document_index.transaction_search_placeholder',
     );
@@ -196,7 +194,7 @@ describe('DocumentIndexPatchIndex', () => {
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-patch-id="1"] .drop-list-stub').trigger('click');
+    await wrapper.find('[data-transaction-id="TXN-001"] .drop-list-stub').trigger('click');
 
     expect(openProgress).toHaveBeenCalledOnce();
   });
@@ -205,7 +203,7 @@ describe('DocumentIndexPatchIndex', () => {
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-patch-id="3"] .drop-list-stub').trigger('click');
+    await wrapper.find('[data-transaction-id="TXN-003"] .drop-list-stub').trigger('click');
     await flushPromises();
 
     expect(wrapper.find('[data-testid="generated-dialog"]').text()).toBe('13');
@@ -228,16 +226,36 @@ describe('DocumentIndexPatchIndex', () => {
     }
   });
 
-  it('refreshes a completed transaction that has not been applied', async () => {
+  it('refreshes only the selected transaction when rows do not have patch ids', async () => {
+    refreshStatus.mockResolvedValueOnce(
+      new DataSuccess({
+        data: new DocumentIndexStatusModel({
+          status: DocumentIndexPatchStatusEnum.IN_PROGRESS,
+          isApply: false,
+          documentId: 14,
+          generatedIndex: GeneratedDocumentIndexModel.example,
+        }),
+      }),
+    );
     const wrapper = mountPage();
     await flushPromises();
 
-    await wrapper.find('[data-patch-id="4"] .drop-list-stub').trigger('click');
+    await wrapper.find('[data-transaction-id="TXN-004"] .drop-list-stub').trigger('click');
     await flushPromises();
 
-    expect(refreshStatus.mock.calls[0]?.[0].toMap()).toEqual({ id: 4 });
+    expect(refreshStatus.mock.calls[0]?.[0].toMap()).toEqual({ transaction_id: 'TXN-004' });
     expect(fetchList).toHaveBeenCalledTimes(2);
-    expect(wrapper.find('[data-patch-id="4"]').text()).toBe('view');
+    expect(
+      wrapper.findAll('.document-index-patch-page__status').map((status) => status.text()),
+    ).toEqual([
+      'document_index.status_pending',
+      'document_index.status_failed',
+      'document_index.status_success',
+      'document_index.status_pending',
+    ]);
+    expect(wrapper.find('[data-transaction-id="TXN-004"]').text()).toBe(
+      'document_index.view_progress',
+    );
     expect(wrapper.find('[data-testid="generated-dialog"]').exists()).toBe(false);
   });
 });

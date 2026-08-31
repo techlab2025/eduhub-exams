@@ -18,7 +18,7 @@ describe('DocumentIndexPatchModel', () => {
       document: { id: 17, title: 'Arabic Student Book' },
       created_by: { id: 2, full_name: 'Portal Admin' },
       created_at: '2026-08-26 15:30:00',
-      status: '3',
+      index_status: 'failed',
       applied: false,
       generated_index: {
         book_id: 17,

@@ -9,10 +9,18 @@ export type DocumentIndexPatchStatusEnum =
 
 export const toDocumentIndexPatchStatus = (value: unknown): DocumentIndexPatchStatusEnum => {
   const status = Number(value);
-  if (status === DocumentIndexPatchStatusEnum.COMPLETE) {
+  const normalizedStatus = typeof value === 'string' ? value.trim().toLowerCase() : '';
+
+  if (
+    status === DocumentIndexPatchStatusEnum.COMPLETE ||
+    ['complete', 'completed', 'success', 'succeeded'].includes(normalizedStatus)
+  ) {
     return DocumentIndexPatchStatusEnum.COMPLETE;
   }
-  if (status === DocumentIndexPatchStatusEnum.FAILED) {
+  if (
+    status === DocumentIndexPatchStatusEnum.FAILED ||
+    ['failed', 'failure', 'error'].includes(normalizedStatus)
+  ) {
     return DocumentIndexPatchStatusEnum.FAILED;
   }
   return DocumentIndexPatchStatusEnum.IN_PROGRESS;

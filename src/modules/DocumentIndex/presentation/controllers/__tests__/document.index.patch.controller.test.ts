@@ -26,7 +26,7 @@ describe('DocumentIndexPatchController', () => {
       }),
     );
     const startParams = new GenerateDocumentIndexParams(17);
-    const refreshParams = new RefreshDocumentIndexStatusParams(12);
+    const refreshParams = new RefreshDocumentIndexStatusParams('TXN-012');
 
     await DocumentIndexPatchController.getInstance().startIndex(startParams);
     await DocumentIndexPatchController.getInstance().refreshStatus(refreshParams);

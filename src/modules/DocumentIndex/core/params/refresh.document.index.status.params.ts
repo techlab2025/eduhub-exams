@@ -2,18 +2,18 @@ import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 
 export default class RefreshDocumentIndexStatusParams implements Params {
-  public readonly patchId: number;
+  public readonly transactionId: string;
 
   public static readonly validation = new ClassValidation().setRules({
-    patchId: { required: true, min: 1 },
+    transactionId: { required: true, minLength: 1 },
   });
 
-  constructor(patchId: number) {
-    this.patchId = patchId;
+  constructor(transactionId: string) {
+    this.transactionId = transactionId;
   }
 
-  toMap(): Record<string, number> {
-    return { id: this.patchId };
+  toMap(): Record<string, string> {
+    return { transaction_id: this.transactionId };
   }
 
   validate() {

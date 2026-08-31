@@ -63,7 +63,7 @@ describe('DocumentIndexPatchRepository', () => {
     expect(startResult).toBeInstanceOf(DataSuccess);
     expect(startResult.data).toBe(12);
     const refreshResult = await DocumentIndexPatchRepository.getInstance().refreshStatus(
-      new RefreshDocumentIndexStatusParams(12),
+      new RefreshDocumentIndexStatusParams('TXN-012'),
       { useStaticData: false },
     );
     expect(refreshResult).toBeInstanceOf(DataSuccess);

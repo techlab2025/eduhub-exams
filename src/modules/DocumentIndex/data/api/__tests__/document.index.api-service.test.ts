@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import GenerateDocumentIndexParams from '../../../core/params/generate.document.index.params';
+import RefreshDocumentIndexStatusParams from '../../../core/params/refresh.document.index.status.params';
 import DocumentIndexApiService from '../document.index.api-service';
 
 describe('DocumentIndexApiService', () => {
@@ -10,10 +11,11 @@ describe('DocumentIndexApiService', () => {
       statusCode: 200,
     });
     const params = new GenerateDocumentIndexParams(17);
+    const refreshParams = new RefreshDocumentIndexStatusParams('TXN-012');
     const signal = new AbortController().signal;
 
     await service.createIndex(params, { signal, timeout: 0 });
-    await service.refreshIndexStatus(params);
+    await service.refreshIndexStatus(refreshParams);
     await service.updateIndex(params);
     await service.saveIndex(params);
 
@@ -24,7 +26,7 @@ describe('DocumentIndexApiService', () => {
     );
     expect(customPost).toHaveBeenCalledWith(
       expect.stringContaining('refresh_document_index_status'),
-      params,
+      refreshParams,
       undefined,
     );
     expect(customPost).toHaveBeenCalledWith(

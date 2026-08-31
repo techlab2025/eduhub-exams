@@ -117,7 +117,7 @@ export default class DocumentIndexPatchModel {
       documentTitle: displayName(data.document_title ?? data.book_title ?? document),
       createdBy: displayName(data.created_by ?? data.creator ?? data.createdBy),
       createdAt: String(data.created_at ?? data.date ?? data.createdAt ?? ''),
-      status: toDocumentIndexPatchStatus(data.status),
+      status: toDocumentIndexPatchStatus(data.index_status ?? data.status),
       isApply: SaftyConditions.booleanValue(data.applied ?? data.is_apply ?? data.isApply),
       generatedIndex: generatedIndex(data),
     });

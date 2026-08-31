@@ -31,8 +31,8 @@
   const currentPage = ref(1);
   const perPage = ref(10);
   const word = ref('');
-  const refreshingPatchId = ref<number>();
-  const checkedStatuses = ref<Record<number, DocumentIndexStatusModel>>({});
+  const refreshingTransactionId = ref<string>();
+  const checkedStatuses = ref<Record<string, DocumentIndexStatusModel>>({});
   const generatedDialogVisible = ref(false);
   const activeDocumentId = ref(0);
   const generatedIndex = shallowRef<GeneratedDocumentIndexModel | null>(null);
@@ -63,10 +63,10 @@
   const searchTransactions = debounce(() => void fetchPatches(1), 400);
 
   const rowStatus = (patch: DocumentIndexPatchModel): DocumentIndexPatchStatus =>
-    checkedStatuses.value[patch.id]?.status ?? patch.status;
+    checkedStatuses.value[patch.transactionId]?.status ?? patch.status;
 
   const rowIsApply = (patch: DocumentIndexPatchModel): boolean =>
-    checkedStatuses.value[patch.id]?.isApply ?? patch.isApply;
+    checkedStatuses.value[patch.transactionId]?.isApply ?? patch.isApply;
 
   const statusLabel = (status: DocumentIndexPatchStatus): string => {
     if (status === DocumentIndexPatchStatusEnum.COMPLETE) {
@@ -100,25 +100,31 @@
 
   const viewGeneratedIndex = (patch: DocumentIndexPatchModel) => {
     activeDocumentId.value = patch.documentId;
-    generatedIndex.value = checkedStatuses.value[patch.id]?.generatedIndex ?? patch.generatedIndex;
+    generatedIndex.value =
+      checkedStatuses.value[patch.transactionId]?.generatedIndex ?? patch.generatedIndex;
     generatedDialogVisible.value = true;
   };
 
   const viewProgress = () => progressController.openProgress();
 
   const refreshStatus = async (patch: DocumentIndexPatchModel) => {
-    if (refreshingPatchId.value != null) return;
+    if (refreshingTransactionId.value != null) return;
 
-    refreshingPatchId.value = patch.id;
+    refreshingTransactionId.value = patch.transactionId;
     try {
-      const result = await controller.refreshStatus(new RefreshDocumentIndexStatusParams(patch.id));
+      const result = await controller.refreshStatus(
+        new RefreshDocumentIndexStatusParams(patch.transactionId),
+      );
       if (!(result instanceof DataSuccess)) return;
       if (result.data) {
-        checkedStatuses.value = { ...checkedStatuses.value, [patch.id]: result.data };
+        checkedStatuses.value = {
+          ...checkedStatuses.value,
+          [patch.transactionId]: result.data,
+        };
       }
       await fetchPatches();
     } finally {
-      refreshingPatchId.value = undefined;
+      refreshingTransactionId.value = undefined;
     }
   };
 
@@ -155,7 +161,7 @@
     return [
       {
         text:
-          refreshingPatchId.value === patch.id
+          refreshingTransactionId.value === patch.transactionId
             ? t('document_index.refreshing_status')
             : t('document_index.refresh'),
         icon: RefreshIcon,
@@ -203,7 +209,7 @@
           <AppTable
             :headers="headers"
             :items="(data ?? []) as DocumentIndexPatchModel[]"
-            row-key="id"
+            row-key="transactionId"
             hoverable
             :empty-message="t('document_index.no_patches')"
           >
@@ -237,7 +243,11 @@
               <span v-if="!hasRowAction(item)" class="document-index-patch-page__unavailable">
                 -
               </span>
-              <div v-else class="document-index-patch-page__actions" :data-patch-id="item.id">
+              <div
+                v-else
+                class="document-index-patch-page__actions"
+                :data-transaction-id="item.transactionId"
+              >
                 <DropList :action-list="actionList(item)" />
               </div>
             </template>
