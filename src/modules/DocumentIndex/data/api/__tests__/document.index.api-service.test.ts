@@ -40,6 +40,11 @@ describe('DocumentIndexApiService', () => {
       params,
       undefined,
     );
+    expect(customPost).toHaveBeenCalledWith(
+      expect.stringContaining('save_document_index'),
+      params,
+      undefined,
+    );
     expect(customPost).toHaveBeenCalledTimes(5);
   });
 });
