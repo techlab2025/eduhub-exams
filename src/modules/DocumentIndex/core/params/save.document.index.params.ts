@@ -1,26 +1,8 @@
-import type Params from '@/base/Core/Params/params';
-import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type { EditableDocumentIndexItem } from '../models/editable.document.index.item.model';
+import UpdateDocumentIndexParams from './update.document.index.params';
 
-export default class SaveDocumentIndexParams implements Params {
-  public readonly documentId: number;
-
-  public static readonly validation = new ClassValidation().setRules({
-    documentId: { required: true, min: 1 },
-  });
-
-  constructor(documentId: number) {
-    this.documentId = documentId;
-  }
-
-  toMap(): Record<string, number> {
-    return { document_id: this.documentId };
-  }
-
-  validate() {
-    return SaveDocumentIndexParams.validation.validate(this);
-  }
-
-  validateOrThrow() {
-    return SaveDocumentIndexParams.validation.validateOrThrow(this);
+export default class SaveDocumentIndexParams extends UpdateDocumentIndexParams {
+  constructor(transactionId: string, items: EditableDocumentIndexItem[]) {
+    super(transactionId, items);
   }
 }

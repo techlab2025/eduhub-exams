@@ -90,6 +90,7 @@ const GeneratedDialogStub = defineComponent({
   props: {
     visible: { type: Boolean, default: false },
     documentId: { type: Number, default: 0 },
+    transactionId: { type: String, default: '' },
     generatedIndex: {
       type: Object as PropType<GeneratedDocumentIndexModel | null>,
       default: null,
@@ -102,7 +103,7 @@ const GeneratedDialogStub = defineComponent({
         ? h(
             'div',
             { 'data-testid': 'generated-dialog' },
-            `${props.documentId}:${String(props.generatedIndex?.bookId ?? '')}`,
+            `${props.documentId}:${props.transactionId}:${String(props.generatedIndex?.bookId ?? '')}`,
           )
         : null;
   },
@@ -481,7 +482,7 @@ describe('DocumentIndex', () => {
     expect(fetchDocumentIndex.mock.calls[0]?.[0].toMap()).toEqual({
       transaction_id: 'TXN-042',
     });
-    expect(wrapper.get('[data-testid="generated-dialog"]').text()).toBe('17:10');
+    expect(wrapper.get('[data-testid="generated-dialog"]').text()).toBe('17:TXN-042:10');
     expect(startIndex).not.toHaveBeenCalled();
   });
 });

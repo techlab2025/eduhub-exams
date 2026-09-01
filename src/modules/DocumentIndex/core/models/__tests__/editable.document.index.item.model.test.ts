@@ -7,6 +7,7 @@ describe('EditableDocumentIndexItem', () => {
     const item: EditableDocumentIndexItem = {
       id: 1,
       level: DocumentIndexLevelTypeEnum.CHAPTER,
+      type: 'subject',
       title: 'Chapter 1',
       fromPdf: 1,
       toPdf: 10,
@@ -15,6 +16,7 @@ describe('EditableDocumentIndexItem', () => {
     };
 
     expect(item.title).toBe('Chapter 1');
+    expect(item.type).toBe('subject');
     expect(item.needsAdminReview).toBe(true);
   });
 });

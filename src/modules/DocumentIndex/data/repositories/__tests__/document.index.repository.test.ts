@@ -67,7 +67,7 @@ describe('DocumentIndexRepository', () => {
       data: { status: true, message: 'saved' },
       statusCode: 200,
     });
-    const updateParams = new UpdateDocumentIndexParams(17, [
+    const updateParams = new UpdateDocumentIndexParams('TXN-012', [
       {
         id: 22,
         level: DocumentIndexLevelTypeEnum.CHAPTER,
@@ -83,9 +83,12 @@ describe('DocumentIndexRepository', () => {
       DocumentIndexRepository.getInstance().updateIndex(updateParams, { useStaticData: false }),
     ).resolves.toBeInstanceOf(DataSuccess);
     await expect(
-      DocumentIndexRepository.getInstance().saveIndex(new SaveDocumentIndexParams(17), {
-        useStaticData: false,
-      }),
+      DocumentIndexRepository.getInstance().saveIndex(
+        new SaveDocumentIndexParams('TXN-012', updateParams.items),
+        {
+          useStaticData: false,
+        },
+      ),
     ).resolves.toBeInstanceOf(DataSuccess);
   });
 

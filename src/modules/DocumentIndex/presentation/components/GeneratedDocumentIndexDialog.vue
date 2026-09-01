@@ -16,6 +16,7 @@
 
   const props = defineProps<{
     documentId: number;
+    transactionId: string;
     generatedIndex: GeneratedDocumentIndexModel | null;
   }>();
   const visible = defineModel<boolean>('visible', { required: true });
@@ -61,11 +62,11 @@
   };
 
   const updateIndex = async () => {
-    if (!props.documentId) return;
+    if (!props.transactionId) return;
 
     isUpdating.value = true;
     const result = await controller.updateIndex(
-      new UpdateDocumentIndexParams(props.documentId, items.value),
+      new UpdateDocumentIndexParams(props.transactionId, items.value),
     );
     isUpdating.value = false;
 
@@ -77,10 +78,12 @@
   };
 
   const saveIndex = async () => {
-    if (!props.documentId || isEditing.value) return;
+    if (!props.documentId || !props.transactionId || isEditing.value) return;
 
     isSaving.value = true;
-    const result = await controller.saveIndex(new SaveDocumentIndexParams(props.documentId));
+    const result = await controller.saveIndex(
+      new SaveDocumentIndexParams(props.transactionId, items.value),
+    );
     isSaving.value = false;
 
     if (!(result instanceof DataSuccess)) return;

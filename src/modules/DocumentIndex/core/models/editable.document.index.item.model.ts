@@ -1,4 +1,9 @@
-import type { DocumentIndexLevelTypeEnum } from '../constant/DocumentIndexLevel.enum';
+import type {
+  DocumentIndexLevelKey,
+  DocumentIndexLevelTypeEnum,
+} from '../constant/DocumentIndexLevel.enum';
+
+export type DocumentIndexRowType = DocumentIndexLevelKey | 'subject';
 
 export const copyEditableDocumentIndexItems = (
   items: EditableDocumentIndexItem[],
@@ -7,6 +12,7 @@ export const copyEditableDocumentIndexItems = (
 export class EditableDocumentIndexItem {
   public id: number;
   public level: DocumentIndexLevelTypeEnum;
+  public type?: DocumentIndexRowType;
   public levelLabel?: string;
   public depth?: number;
   public title: string;
@@ -18,6 +24,7 @@ export class EditableDocumentIndexItem {
   constructor(data: {
     id: number;
     level: DocumentIndexLevelTypeEnum;
+    type?: DocumentIndexRowType;
     levelLabel?: string;
     depth?: number;
     title: string;
@@ -28,6 +35,7 @@ export class EditableDocumentIndexItem {
   }) {
     this.id = data.id;
     this.level = data.level;
+    this.type = data.type;
     this.levelLabel = data.levelLabel;
     this.depth = data.depth;
     this.title = data.title;

@@ -42,6 +42,7 @@ describe('GeneratedDocumentIndexDialog', () => {
       props: {
         visible: true,
         documentId: 17,
+        transactionId: 'TXN-012',
         generatedIndex: GeneratedDocumentIndexModel.example,
       },
       global: { stubs: { Dialog: DialogStub } },
@@ -56,14 +57,35 @@ describe('GeneratedDocumentIndexDialog', () => {
     await wrapper.find('.document-index-generated__save-action').trigger('click');
     await flushPromises();
     expect(updateIndex).toHaveBeenCalledOnce();
+    expect(updateIndex.mock.calls[0]?.[0].toMap()).toMatchObject({
+      transaction_id: 'TXN-012',
+      rows: [
+        {
+          id: 22,
+          type: 'chapter',
+          level: 'explicit',
+          title: 'Economic Resources and Activities',
+          from_pdf: 7,
+          to_pdf: 31,
+          printed_page_label: '7-31',
+        },
+        expect.any(Object),
+        expect.any(Object),
+      ],
+    });
 
     await wrapper.find('.document-index-generated__save-action').trigger('click');
     await flushPromises();
     expect(saveIndex).toHaveBeenCalledOnce();
+    expect(saveIndex.mock.calls[0]?.[0].toMap()).toMatchObject({
+      transaction_id: 'TXN-012',
+      rows: expect.any(Array),
+    });
+    expect(saveIndex.mock.calls[0]?.[0].toMap().rows).toHaveLength(3);
     expect(wrapper.emitted('saved')?.[0]?.[0]).toMatchObject({ documentId: 17 });
   });
 
-  it('renders the fetched subject and all recursive children as table rows', () => {
+  it('renders and submits the fetched hierarchy with its backend row types', async () => {
     const fetchedIndex = GeneratedDocumentIndexModel.fromJson({
       book_id: 61,
       book_status: 'completed',
@@ -97,6 +119,7 @@ describe('GeneratedDocumentIndexDialog', () => {
       props: {
         visible: true,
         documentId: 61,
+        transactionId: 'TXN-061',
         generatedIndex: fetchedIndex,
       },
       global: { stubs: { Dialog: DialogStub } },
@@ -109,5 +132,17 @@ describe('GeneratedDocumentIndexDialog', () => {
     expect(wrapper.text()).toContain('explicit');
     expect(wrapper.text()).toContain('inferred');
     expect(wrapper.text()).toContain('document_index.needs_review');
+
+    await wrapper.find('.document-index-generated__secondary-action').trigger('click');
+    await wrapper.find('.document-index-generated__save-action').trigger('click');
+    await flushPromises();
+
+    expect(updateIndex.mock.calls[0]?.[0].toMap()).toMatchObject({
+      rows: [
+        { id: 380, type: 'subject' },
+        { id: 381, type: 'subject' },
+        { id: 385, type: 'topic' },
+      ],
+    });
   });
 });

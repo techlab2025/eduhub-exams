@@ -105,6 +105,7 @@ const GeneratedDialogStub = defineComponent({
   props: {
     visible: { type: Boolean, default: false },
     documentId: { type: Number, default: 0 },
+    transactionId: { type: String, default: '' },
     generatedIndex: { type: Object, default: null },
   },
   emits: ['update:visible', 'saved'],
@@ -114,7 +115,7 @@ const GeneratedDialogStub = defineComponent({
         ? h(
             'div',
             { 'data-testid': 'generated-dialog' },
-            `${props.documentId}:${String(props.generatedIndex?.bookId ?? '')}`,
+            `${props.documentId}:${props.transactionId}:${String(props.generatedIndex?.bookId ?? '')}`,
           )
         : null;
   },
@@ -224,7 +225,7 @@ describe('DocumentIndexPatchIndex', () => {
     expect(fetchDocumentIndex.mock.calls[0]?.[0].toMap()).toEqual({
       transaction_id: 'TXN-003',
     });
-    expect(wrapper.find('[data-testid="generated-dialog"]').text()).toBe('13:10');
+    expect(wrapper.find('[data-testid="generated-dialog"]').text()).toBe('13:TXN-003:10');
   });
 
   it('searches the transaction endpoint by the entered term', async () => {

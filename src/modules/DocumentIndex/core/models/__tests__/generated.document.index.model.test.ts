@@ -119,6 +119,7 @@ describe('GeneratedDocumentIndexModel', () => {
     expect(model.editableItems).toEqual([
       expect.objectContaining({
         id: 380,
+        type: 'subject',
         levelLabel: 'explicit',
         title: 'علوم',
         fromPdf: 56,
@@ -129,6 +130,7 @@ describe('GeneratedDocumentIndexModel', () => {
       }),
       expect.objectContaining({
         id: 381,
+        type: 'subject',
         levelLabel: 'explicit',
         title: 'التفاعلات الكيميائية وآثارها البيئية',
         fromPdf: 62,
@@ -137,8 +139,8 @@ describe('GeneratedDocumentIndexModel', () => {
         needsAdminReview: true,
         depth: 1,
       }),
-      expect.objectContaining({ id: 385, levelLabel: 'inferred', depth: 2 }),
-      expect.objectContaining({ id: 386, levelLabel: 'explicit', depth: 3 }),
+      expect.objectContaining({ id: 385, type: 'topic', levelLabel: 'inferred', depth: 2 }),
+      expect.objectContaining({ id: 386, type: 'topic', levelLabel: 'explicit', depth: 3 }),
     ]);
   });
 });

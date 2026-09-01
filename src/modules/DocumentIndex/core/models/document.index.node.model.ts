@@ -1,6 +1,9 @@
 import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
 import type { DocumentIndexLevelTypeEnum } from '../constant/DocumentIndexLevel.enum';
-import { EditableDocumentIndexItem } from './editable.document.index.item.model';
+import {
+  EditableDocumentIndexItem,
+  type DocumentIndexRowType,
+} from './editable.document.index.item.model';
 import DocumentIndexSourcePagesModel from './document.index.source.pages.model';
 
 export interface DocumentIndexNodeData {
@@ -59,10 +62,12 @@ export const toEditableDocumentIndexItem = (
   node: DocumentIndexNodeData,
   level: DocumentIndexLevelTypeEnum,
   depth = 0,
+  type?: DocumentIndexRowType,
 ): EditableDocumentIndexItem =>
   new EditableDocumentIndexItem({
     id: node.id,
     level,
+    type,
     levelLabel: node.inferenceLevel,
     depth,
     title: node.title,

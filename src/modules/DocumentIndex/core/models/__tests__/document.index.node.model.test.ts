@@ -25,9 +25,12 @@ describe('document index node mapping', () => {
       printedPageLabel: '7-24',
       needsAdminReview: true,
     });
-    expect(toEditableDocumentIndexItem(node, DocumentIndexLevelTypeEnum.CHAPTER)).toMatchObject({
+    expect(
+      toEditableDocumentIndexItem(node, DocumentIndexLevelTypeEnum.CHAPTER, 0, 'subject'),
+    ).toMatchObject({
       id: 22,
       level: DocumentIndexLevelTypeEnum.CHAPTER,
+      type: 'subject',
       fromPdf: 7,
       toPdf: 31,
       levelLabel: 'explicit',

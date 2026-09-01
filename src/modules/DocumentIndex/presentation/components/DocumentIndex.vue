@@ -62,6 +62,7 @@
   const resultsRequested = ref(false);
   const generatedDialogVisible = ref(false);
   const activeDocumentId = ref(0);
+  const activeTransactionId = ref('');
   const generatedIndex = shallowRef<GeneratedDocumentIndexModel | null>(null);
   let branchRequestId = 0;
   let subjectRequestId = 0;
@@ -301,6 +302,7 @@
     if (!(result instanceof DataSuccess) || !result.data) return;
 
     activeDocumentId.value = document.id;
+    activeTransactionId.value = document.transactionId;
     generatedIndex.value = result.data;
     generatedDialogVisible.value = true;
   };
@@ -527,6 +529,7 @@
     <GeneratedDocumentIndexDialog
       v-model:visible="generatedDialogVisible"
       :document-id="activeDocumentId"
+      :transaction-id="activeTransactionId"
       :generated-index="generatedIndex"
       @saved="refreshAfterSave"
     />

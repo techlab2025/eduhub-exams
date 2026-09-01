@@ -1,6 +1,9 @@
 import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
 import { DocumentIndexLevelTypeEnum } from '../constant/DocumentIndexLevel.enum';
-import type { EditableDocumentIndexItem } from './editable.document.index.item.model';
+import type {
+  DocumentIndexRowType,
+  EditableDocumentIndexItem,
+} from './editable.document.index.item.model';
 import DocumentIndexChapterModel from './document.index.chapter.model';
 import { mapDocumentIndexNodeData, toEditableDocumentIndexItem } from './document.index.node.model';
 
@@ -10,6 +13,9 @@ const hierarchyLevel = (depth: number): DocumentIndexLevelTypeEnum => {
   return DocumentIndexLevelTypeEnum.TOPIC;
 };
 
+const hierarchyRowType = (depth: number): DocumentIndexRowType =>
+  depth <= 1 ? 'subject' : 'topic';
+
 const flattenHierarchy = (json: unknown, depth = 0): EditableDocumentIndexItem[] => {
   const data = SaftyConditions.objectValue(json);
   if (Object.keys(data).length === 0) return [];
@@ -18,6 +24,7 @@ const flattenHierarchy = (json: unknown, depth = 0): EditableDocumentIndexItem[]
     mapDocumentIndexNodeData(data),
     hierarchyLevel(depth),
     depth,
+    hierarchyRowType(depth),
   );
   const children = Array.isArray(data.children) ? data.children : [];
   return [item, ...children.flatMap((child) => flattenHierarchy(child, depth + 1))];
