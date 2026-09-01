@@ -11,6 +11,7 @@ import DocumentIndexPatchIndex from '../DocumentIndexPatchIndex.vue';
 
 const fetchList = vi.fn();
 const refreshStatus = vi.fn();
+const fetchDocumentIndex = vi.fn();
 const openProgress = vi.fn();
 const listState = ref(
   new DataSuccess({
@@ -89,6 +90,12 @@ vi.mock('../../controllers/document.index.progress.controller', () => ({
   },
 }));
 
+vi.mock('../../controllers/document.index.controller', () => ({
+  default: {
+    getInstance: () => ({ fetchIndex: fetchDocumentIndex }),
+  },
+}));
+
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({ t: (key: string) => key, locale: ref('en') }),
 }));
@@ -98,12 +105,17 @@ const GeneratedDialogStub = defineComponent({
   props: {
     visible: { type: Boolean, default: false },
     documentId: { type: Number, default: 0 },
+    generatedIndex: { type: Object, default: null },
   },
   emits: ['update:visible', 'saved'],
   setup(props) {
     return () =>
       props.visible
-        ? h('div', { 'data-testid': 'generated-dialog' }, String(props.documentId))
+        ? h(
+            'div',
+            { 'data-testid': 'generated-dialog' },
+            `${props.documentId}:${String(props.generatedIndex?.bookId ?? '')}`,
+          )
         : null;
   },
 });
@@ -154,6 +166,9 @@ describe('DocumentIndexPatchIndex', () => {
         }),
       }),
     );
+    fetchDocumentIndex.mockResolvedValue(
+      new DataSuccess({ data: GeneratedDocumentIndexModel.example }),
+    );
     openProgress.mockResolvedValue(undefined);
   });
 
@@ -199,14 +214,17 @@ describe('DocumentIndexPatchIndex', () => {
     expect(openProgress).toHaveBeenCalledOnce();
   });
 
-  it('opens the generated index dialog from the completed transaction view action', async () => {
+  it('fetches the document index details before opening the completed transaction', async () => {
     const wrapper = mountPage();
     await flushPromises();
 
     await wrapper.find('[data-transaction-id="TXN-003"] .drop-list-stub').trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('[data-testid="generated-dialog"]').text()).toBe('13');
+    expect(fetchDocumentIndex.mock.calls[0]?.[0].toMap()).toEqual({
+      transaction_id: 'TXN-003',
+    });
+    expect(wrapper.find('[data-testid="generated-dialog"]').text()).toBe('13:10');
   });
 
   it('searches the transaction endpoint by the entered term', async () => {

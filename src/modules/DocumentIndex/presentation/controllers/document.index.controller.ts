@@ -24,6 +24,9 @@ export default class DocumentIndexController extends BaseController<
   public readonly updatedIndexState: Ref<DataState<GeneratedDocumentIndexModel>> = ref(
     new DataInitial<GeneratedDocumentIndexModel>(),
   ) as Ref<DataState<GeneratedDocumentIndexModel>>;
+  public readonly fetchedIndexState: Ref<DataState<GeneratedDocumentIndexModel>> = ref(
+    new DataInitial<GeneratedDocumentIndexModel>(),
+  ) as Ref<DataState<GeneratedDocumentIndexModel>>;
   public readonly savedIndexState: Ref<DataState<void>> = ref(new DataInitial<void>()) as Ref<
     DataState<void>
   >;
@@ -81,6 +84,17 @@ export default class DocumentIndexController extends BaseController<
     this.updatedIndexState.value = new DataLoading<GeneratedDocumentIndexModel>();
     const result = await this.repository.updateIndex(params, this.mergeOptions(options));
     this.updatedIndexState.value = result;
+    if (result.hasError) this.handleErrorResponse(result);
+    return result;
+  }
+
+  async fetchIndex(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<GeneratedDocumentIndexModel>> {
+    this.fetchedIndexState.value = new DataLoading<GeneratedDocumentIndexModel>();
+    const result = await this.repository.fetchIndex(params, this.mergeOptions(options));
+    this.fetchedIndexState.value = result;
     if (result.hasError) this.handleErrorResponse(result);
     return result;
   }

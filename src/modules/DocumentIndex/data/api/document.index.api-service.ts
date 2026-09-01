@@ -34,6 +34,10 @@ export default class DocumentIndexApiService extends BaseApiService {
     return this.customPost(this.documentIndexEndpoints.updateIndex, params, options);
   }
 
+  fetchIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
+    return this.customPost(this.documentIndexEndpoints.fetchIndex, params, options);
+  }
+
   saveIndex(params: Params, options?: ApiCallOptions): Promise<ApiResponse> {
     return this.customPost(this.documentIndexEndpoints.saveIndex, params, options);
   }

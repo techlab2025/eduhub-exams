@@ -12,6 +12,7 @@ describe('DocumentModel', () => {
       image: '/book.png',
       document_file: '/book.pdf',
       document_index: { id: 42, status: 2, file: '/book-index.pdf' },
+      transaction_id: 90,
       subjtecs: [],
       tranaslations: {},
       tags: [],
@@ -27,6 +28,7 @@ describe('DocumentModel', () => {
       hasIndex: true,
       indexPatchId: 42,
       indexStatus: 2,
+      transactionId: '90',
     });
   });
 });

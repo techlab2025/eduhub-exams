@@ -107,6 +107,21 @@ export default class DocumentIndexRepository extends BaseRepository<
     );
   }
 
+  async fetchIndex(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<GeneratedDocumentIndexModel>> {
+    if (options?.useStaticData ?? env.useStaticData) {
+      return new DataSuccess({ data: GeneratedDocumentIndexModel.example });
+    }
+
+    return this.executeCustom(
+      () => this.apiService.fetchIndex(params, options),
+      GeneratedDocumentIndexModel.fromJson,
+      { captureRetryFn: false },
+    );
+  }
+
   async saveIndex(params: Params, options?: ApiCallOptions): Promise<DataState<void>> {
     if (options?.useStaticData ?? env.useStaticData) return new DataSuccess<void>({});
 

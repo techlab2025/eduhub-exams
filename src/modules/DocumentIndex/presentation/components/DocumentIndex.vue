@@ -18,6 +18,9 @@
     DocumentIndexPatchStatusEnum,
     type DocumentIndexPatchStatusEnum as DocumentIndexPatchStatus,
   } from '../../core/constant/document.index.patch.status.enum';
+  import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
+  import FetchDocumentIndexParams from '../../core/params/fetch.document.index.params';
+  import DocumentIndexController from '../controllers/document.index.controller';
   import DocumentIndexProgressController from '../controllers/document.index.progress.controller';
   import {
     createSubjectOptions,
@@ -29,6 +32,7 @@
   import NorCurriculumIcon from '@/shared/icons/DocuecmntIndex/NorCurriculumIcon.vue';
   import DocIndex from '@/shared/icons/DocIndex.vue';
   import defaultDocumentCover from '@/assets/images/Book Cover Design 1.png';
+  import GeneratedDocumentIndexDialog from './GeneratedDocumentIndexDialog.vue';
 
   interface SubjectSelectLevel {
     options: TitleInterface<number>[];
@@ -40,6 +44,7 @@
   const branchController = SubjectController.getInstance();
   const subjectController = EducationSubjectItemController.getInstance();
   const documentController = DocumentController.getInstance();
+  const documentIndexController = DocumentIndexController.getInstance();
   const documentIndexProgressController = DocumentIndexProgressController.getInstance();
   const { startingDocumentId } = documentIndexProgressController;
   const educationClassificationParams = new IndexEducationClassificationParams({
@@ -55,6 +60,9 @@
   const subjectLevels = ref<SubjectSelectLevel[]>([{ options: [], selected: null }]);
   const submitted = ref(false);
   const resultsRequested = ref(false);
+  const generatedDialogVisible = ref(false);
+  const activeDocumentId = ref(0);
+  const generatedIndex = shallowRef<GeneratedDocumentIndexModel | null>(null);
   let branchRequestId = 0;
   let subjectRequestId = 0;
 
@@ -284,6 +292,29 @@
     if (started) await showResults();
   };
 
+  const showDocumentIndex = async (document: DocumentModel) => {
+    if (document.id == null || !document.transactionId) return;
+
+    const result = await documentIndexController.fetchIndex(
+      new FetchDocumentIndexParams(document.transactionId),
+    );
+    if (!(result instanceof DataSuccess) || !result.data) return;
+
+    activeDocumentId.value = document.id;
+    generatedIndex.value = result.data;
+    generatedDialogVisible.value = true;
+  };
+
+  const handleDocumentIndexAction = (document: DocumentModel) => {
+    if (document.hasIndex) {
+      void showDocumentIndex(document);
+      return;
+    }
+    void generateDocumentIndex(document);
+  };
+
+  const refreshAfterSave = () => void showResults();
+
   onMounted(fetchEducationClassifications);
 </script>
 
@@ -442,16 +473,23 @@
 
           <div class="document-index-page__result-actions">
             <button
-              v-if="!hasDocumentIndex(document) && !isDocumentIndexing(document)"
+              v-if="!isDocumentIndexing(document)"
               class="document-index-page__result-button"
+              :class="{
+                'document-index-page__result-button--outline': document.hasIndex,
+              }"
               type="button"
-              :disabled="startingDocumentId != null"
-              @click="generateDocumentIndex(document)"
+              :disabled="!document.hasIndex && startingDocumentId != null"
+              @click="handleDocumentIndexAction(document)"
             >
               {{
-                startingDocumentId === document.id
+                !document.hasIndex && startingDocumentId === document.id
                   ? t('document_index.starting_index')
-                  : t('document_index.generate_index')
+                  : t(
+                      document.hasIndex
+                        ? 'document_index.show_index'
+                        : 'document_index.generate_index',
+                    )
               }}
             </button>
 
@@ -485,6 +523,13 @@
         </article>
       </div>
     </section>
+
+    <GeneratedDocumentIndexDialog
+      v-model:visible="generatedDialogVisible"
+      :document-id="activeDocumentId"
+      :generated-index="generatedIndex"
+      @saved="refreshAfterSave"
+    />
   </main>
 </template>
 

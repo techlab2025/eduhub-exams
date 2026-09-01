@@ -12,7 +12,14 @@ const displayName = (value: unknown): string => {
 
   const data = SaftyConditions.objectValue(value);
   return String(
-    data.name ?? data.full_name ?? data.title ?? data.employee_name ?? data.created_by_name ?? '',
+    data.name ??
+      data.full_name ??
+      data.title ??
+      data.singular_title ??
+      data.plural_title ??
+      data.employee_name ??
+      data.created_by_name ??
+      '',
   );
 };
 

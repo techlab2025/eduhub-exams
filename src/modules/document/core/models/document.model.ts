@@ -25,6 +25,7 @@ export default class DocumentModel {
   public readonly file: string;
   public readonly indexFile: string;
   public readonly hasIndex: boolean;
+  public readonly transactionId: string;
   public readonly indexPatchId: number;
   public readonly indexStatus: number;
 
@@ -43,6 +44,7 @@ export default class DocumentModel {
     file?: string;
     indexFile?: string;
     hasIndex?: boolean;
+    transactionId?: string;
     indexPatchId?: number;
     indexStatus?: number;
   }) {
@@ -60,6 +62,7 @@ export default class DocumentModel {
     this.file = data.file ?? '';
     this.indexFile = data.indexFile ?? '';
     this.hasIndex = data.hasIndex ?? Boolean(this.indexFile);
+    this.transactionId = data.transactionId ?? '';
     this.indexPatchId = data.indexPatchId ?? 0;
     this.indexStatus = data.indexStatus ?? 0;
 
@@ -129,6 +132,14 @@ export default class DocumentModel {
           : Object.keys(documentIndex).length > 0 ||
             typeof data.index_file === 'string' ||
             Object.keys(index).length > 0,
+      transactionId: String(
+        data.transaction_id ??
+          data.transactionId ??
+          documentIndex.transaction_id ??
+          index.transaction_id ??
+          indexPatch.transaction_id ??
+          '',
+      ),
       indexPatchId: Number(
         data.document_index_patch_id ??
           data.index_patch_id ??

@@ -1,8 +1,9 @@
 /* eslint-disable vue/one-component-per-file */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, h, ref } from 'vue';
+import { defineComponent, h, ref, type PropType } from 'vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import GeneratedDocumentIndexModel from '../../../core/models/generated.document.index.model';
 import DocumentIndexProgressController from '../../controllers/document.index.progress.controller';
 import DocumentIndex from '../DocumentIndex.vue';
 
@@ -10,6 +11,7 @@ const fetchEducationClassifications = vi.fn();
 const fetchBranches = vi.fn();
 const fetchSubjects = vi.fn();
 const fetchDocuments = vi.fn();
+const fetchDocumentIndex = vi.fn();
 const startIndex = vi.fn();
 
 const documentListData = ref<Record<string, unknown>[]>([]);
@@ -52,6 +54,12 @@ vi.mock('../../controllers/document.index.patch.controller', () => ({
   },
 }));
 
+vi.mock('../../controllers/document.index.controller', () => ({
+  default: {
+    getInstance: () => ({ fetchIndex: fetchDocumentIndex }),
+  },
+}));
+
 vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
   dialogManager: { toastSuccess: vi.fn() },
 }));
@@ -77,11 +85,35 @@ const SelectStub = defineComponent({
   },
 });
 
+const GeneratedDialogStub = defineComponent({
+  name: 'GeneratedDocumentIndexDialog',
+  props: {
+    visible: { type: Boolean, default: false },
+    documentId: { type: Number, default: 0 },
+    generatedIndex: {
+      type: Object as PropType<GeneratedDocumentIndexModel | null>,
+      default: null,
+    },
+  },
+  emits: ['update:visible', 'saved'],
+  setup(props) {
+    return () =>
+      props.visible
+        ? h(
+            'div',
+            { 'data-testid': 'generated-dialog' },
+            `${props.documentId}:${String(props.generatedIndex?.bookId ?? '')}`,
+          )
+        : null;
+  },
+});
+
 const mountDocumentIndex = () =>
   mount(DocumentIndex, {
     global: {
       stubs: {
         UpdatedCustomInputSelect: SelectStub,
+        GeneratedDocumentIndexDialog: GeneratedDialogStub,
       },
     },
   });
@@ -144,6 +176,9 @@ describe('DocumentIndex', () => {
       );
     });
     startIndex.mockResolvedValue(new DataSuccess({ data: 12 }));
+    fetchDocumentIndex.mockResolvedValue(
+      new DataSuccess({ data: GeneratedDocumentIndexModel.example }),
+    );
   });
 
   it('loads all education classifications and renders the three base selects', async () => {
@@ -377,7 +412,46 @@ describe('DocumentIndex', () => {
     wrapper.unmount();
   });
 
-  it('does not render the generated-index action while status checking is unavailable', async () => {
+  it('uses has_index to choose between show and generate index actions', async () => {
+    documentListData.value = [
+      {
+        id: 17,
+        title: 'Configured book',
+        RefNumber: 'DOC-17',
+        doecumentType: { id: 1, title: 'Book' },
+        description: 'Student book',
+        image: '',
+        file: '/book.pdf',
+        indexFile: '/configured-book-index.pdf',
+        hasIndex: true,
+        transactionId: 'TXN-017',
+        tranaslations: {},
+      },
+      {
+        id: 18,
+        title: 'Unconfigured book',
+        RefNumber: 'DOC-18',
+        doecumentType: { id: 1, title: 'Book' },
+        description: 'Student book',
+        image: '',
+        file: '/book-2.pdf',
+        indexFile: '',
+        hasIndex: false,
+        tranaslations: {},
+      },
+    ];
+    const wrapper = mountDocumentIndex();
+    await flushPromises();
+    await selectCurriculumAndShowResults(wrapper);
+
+    const actions = wrapper.findAll('.document-index-page__result-button');
+    expect(actions[0]?.text()).toBe('document_index.show_index');
+    expect(actions[0]?.classes()).toContain('document-index-page__result-button--outline');
+    expect(actions[1]?.text()).toBe('document_index.generate_index');
+    expect(actions[1]?.classes()).not.toContain('document-index-page__result-button--outline');
+  });
+
+  it('fetches the existing index by transaction id and opens its dialog', async () => {
     documentListData.value = [
       {
         id: 17,
@@ -389,6 +463,7 @@ describe('DocumentIndex', () => {
         file: '/book.pdf',
         indexFile: '/book-index.pdf',
         hasIndex: true,
+        transactionId: 'TXN-042',
         indexPatchId: 42,
         indexStatus: 2,
         tranaslations: {},
@@ -398,7 +473,15 @@ describe('DocumentIndex', () => {
     await flushPromises();
     await selectCurriculumAndShowResults(wrapper);
 
-    expect(wrapper.find('.document-index-page__result-button--outline').exists()).toBe(false);
+    const action = wrapper.get('.document-index-page__result-button--outline');
+    expect(action.text()).toBe('document_index.show_index');
+    await action.trigger('click');
+    await flushPromises();
+
+    expect(fetchDocumentIndex.mock.calls[0]?.[0].toMap()).toEqual({
+      transaction_id: 'TXN-042',
+    });
+    expect(wrapper.get('[data-testid="generated-dialog"]').text()).toBe('17:10');
     expect(startIndex).not.toHaveBeenCalled();
   });
 });

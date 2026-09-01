@@ -18,14 +18,17 @@
   import type DocumentIndexPatchModel from '../../core/models/document.index.patch.model';
   import type DocumentIndexStatusModel from '../../core/models/document.index.status.model';
   import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
+  import FetchDocumentIndexParams from '../../core/params/fetch.document.index.params';
   import IndexDocumentIndexPatchParams from '../../core/params/index.document.index.patch.params';
   import RefreshDocumentIndexStatusParams from '../../core/params/refresh.document.index.status.params';
   import DocumentIndexPatchController from '../controllers/document.index.patch.controller';
+  import DocumentIndexController from '../controllers/document.index.controller';
   import DocumentIndexProgressController from '../controllers/document.index.progress.controller';
   import GeneratedDocumentIndexDialog from './GeneratedDocumentIndexDialog.vue';
 
   const { t, locale } = useI18n();
   const controller = DocumentIndexPatchController.getInstance();
+  const documentIndexController = DocumentIndexController.getInstance();
   const progressController = DocumentIndexProgressController.getInstance();
   const state = computed(() => controller.listState.value);
   const currentPage = ref(1);
@@ -98,10 +101,16 @@
     return rowIsApply(patch) ? t('document_index.yes') : t('document_index.no');
   };
 
-  const viewGeneratedIndex = (patch: DocumentIndexPatchModel) => {
+  const viewGeneratedIndex = async (patch: DocumentIndexPatchModel) => {
+    if (!patch.documentId) return;
+
+    const result = await documentIndexController.fetchIndex(
+      new FetchDocumentIndexParams(patch.transactionId),
+    );
+    if (!(result instanceof DataSuccess) || !result.data) return;
+
     activeDocumentId.value = patch.documentId;
-    generatedIndex.value =
-      checkedStatuses.value[patch.transactionId]?.generatedIndex ?? patch.generatedIndex;
+    generatedIndex.value = result.data;
     generatedDialogVisible.value = true;
   };
 
@@ -152,7 +161,7 @@
         {
           text: t('view'),
           icon: PlanViewIcon,
-          action: () => viewGeneratedIndex(patch),
+          action: () => void viewGeneratedIndex(patch),
           skipDeleteConfirmation: true,
         },
       ];

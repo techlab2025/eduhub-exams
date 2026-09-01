@@ -4,6 +4,7 @@ import {
   DataSuccess,
 } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import GenerateDocumentIndexParams from '../../../core/params/generate.document.index.params';
+import FetchDocumentIndexParams from '../../../core/params/fetch.document.index.params';
 import SaveDocumentIndexParams from '../../../core/params/save.document.index.params';
 import UpdateDocumentIndexParams from '../../../core/params/update.document.index.params';
 import DocumentIndexApiService from '../../api/document.index.api-service';
@@ -32,6 +33,22 @@ describe('DocumentIndexRepository', () => {
 
     const result = await DocumentIndexRepository.getInstance().generateIndex(
       new GenerateDocumentIndexParams(17),
+      { useStaticData: false },
+    );
+
+    expect(result).toBeInstanceOf(DataSuccess);
+    expect(result.data).toMatchObject({ bookId: 10, bookStatus: 'completed' });
+    expect(result.data?.chapters[0]).toMatchObject({ id: 22, title: 'Chapter 1' });
+  });
+
+  it('fetches and parses the saved document index details', async () => {
+    vi.spyOn(DocumentIndexApiService.getInstance(), 'fetchIndex').mockResolvedValue({
+      data: { status: true, data: bookResponse },
+      statusCode: 200,
+    });
+
+    const result = await DocumentIndexRepository.getInstance().fetchIndex(
+      new FetchDocumentIndexParams('TXN-012'),
       { useStaticData: false },
     );
 

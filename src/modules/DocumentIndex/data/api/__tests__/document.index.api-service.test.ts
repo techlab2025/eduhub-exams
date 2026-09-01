@@ -17,6 +17,7 @@ describe('DocumentIndexApiService', () => {
     await service.createIndex(params, { signal, timeout: 0 });
     await service.refreshIndexStatus(refreshParams);
     await service.updateIndex(params);
+    await service.fetchIndex(params);
     await service.saveIndex(params);
 
     expect(customPost).toHaveBeenCalledWith(
@@ -39,5 +40,6 @@ describe('DocumentIndexApiService', () => {
       params,
       undefined,
     );
+    expect(customPost).toHaveBeenCalledTimes(5);
   });
 });
