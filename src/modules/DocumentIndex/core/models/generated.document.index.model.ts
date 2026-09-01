@@ -1,31 +1,63 @@
 import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
+import { DocumentIndexLevelTypeEnum } from '../constant/DocumentIndexLevel.enum';
 import type { EditableDocumentIndexItem } from './editable.document.index.item.model';
 import DocumentIndexChapterModel from './document.index.chapter.model';
+import { mapDocumentIndexNodeData, toEditableDocumentIndexItem } from './document.index.node.model';
+
+const hierarchyLevel = (depth: number): DocumentIndexLevelTypeEnum => {
+  if (depth === 0) return DocumentIndexLevelTypeEnum.CHAPTER;
+  if (depth === 1) return DocumentIndexLevelTypeEnum.LESSON;
+  return DocumentIndexLevelTypeEnum.TOPIC;
+};
+
+const flattenHierarchy = (json: unknown, depth = 0): EditableDocumentIndexItem[] => {
+  const data = SaftyConditions.objectValue(json);
+  if (Object.keys(data).length === 0) return [];
+
+  const item = toEditableDocumentIndexItem(
+    mapDocumentIndexNodeData(data),
+    hierarchyLevel(depth),
+    depth,
+  );
+  const children = Array.isArray(data.children) ? data.children : [];
+  return [item, ...children.flatMap((child) => flattenHierarchy(child, depth + 1))];
+};
 
 export default class GeneratedDocumentIndexModel {
   public readonly bookId: number;
   public readonly bookStatus: string;
   public readonly chapters: DocumentIndexChapterModel[];
+  private readonly hierarchyItems: EditableDocumentIndexItem[];
 
-  constructor(data: { bookId: number; bookStatus: string; chapters: DocumentIndexChapterModel[] }) {
+  constructor(data: {
+    bookId: number;
+    bookStatus: string;
+    chapters: DocumentIndexChapterModel[];
+    hierarchyItems?: EditableDocumentIndexItem[];
+  }) {
     this.bookId = data.bookId;
     this.bookStatus = data.bookStatus;
     this.chapters = data.chapters;
+    this.hierarchyItems = data.hierarchyItems ?? [];
     Object.freeze(this);
   }
 
   get editableItems(): EditableDocumentIndexItem[] {
-    return this.chapters.flatMap((chapter) => chapter.toEditableItems());
+    return this.hierarchyItems.length > 0
+      ? this.hierarchyItems
+      : this.chapters.flatMap((chapter) => chapter.toEditableItems());
   }
 
   static fromJson(json: unknown): GeneratedDocumentIndexModel {
     const data = SaftyConditions.objectValue(json);
+    const subject = SaftyConditions.objectValue(data.subject);
     return new GeneratedDocumentIndexModel({
       bookId: SaftyConditions.numberValue(data.book_id ?? data.bookId),
       bookStatus: String(data.book_status ?? data.bookStatus ?? ''),
       chapters: (Array.isArray(data.chapters) ? data.chapters : []).map(
         DocumentIndexChapterModel.fromJson,
       ),
+      hierarchyItems: Object.keys(subject).length > 0 ? flattenHierarchy(subject) : [],
     });
   }
 

@@ -62,4 +62,52 @@ describe('GeneratedDocumentIndexDialog', () => {
     expect(saveIndex).toHaveBeenCalledOnce();
     expect(wrapper.emitted('saved')?.[0]?.[0]).toMatchObject({ documentId: 17 });
   });
+
+  it('renders the fetched subject and all recursive children as table rows', () => {
+    const fetchedIndex = GeneratedDocumentIndexModel.fromJson({
+      book_id: 61,
+      book_status: 'completed',
+      subject: {
+        id: 380,
+        title: 'علوم',
+        inference_level: 'explicit',
+        source_pages: { start: 56, end: 68 },
+        children: [
+          {
+            id: 381,
+            title: 'التفاعلات الكيميائية',
+            inference_level: 'explicit',
+            source_pages: { start: 62, end: 108 },
+            Needs_Admn_Review: true,
+            children: [
+              {
+                id: 385,
+                title: 'أنواع التفاعلات الكيميائية',
+                inference_level: 'inferred',
+                source_pages: { start: 64, end: 72 },
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    const wrapper = mount(GeneratedDocumentIndexDialog, {
+      props: {
+        visible: true,
+        documentId: 61,
+        generatedIndex: fetchedIndex,
+      },
+      global: { stubs: { Dialog: DialogStub } },
+    });
+
+    expect(wrapper.findAll('tbody tr')).toHaveLength(3);
+    expect(wrapper.text()).toContain('علوم');
+    expect(wrapper.text()).toContain('التفاعلات الكيميائية');
+    expect(wrapper.text()).toContain('أنواع التفاعلات الكيميائية');
+    expect(wrapper.text()).toContain('explicit');
+    expect(wrapper.text()).toContain('inferred');
+    expect(wrapper.text()).toContain('document_index.needs_review');
+  });
 });

@@ -7,6 +7,8 @@ export const copyEditableDocumentIndexItems = (
 export class EditableDocumentIndexItem {
   public id: number;
   public level: DocumentIndexLevelTypeEnum;
+  public levelLabel?: string;
+  public depth?: number;
   public title: string;
   public fromPdf: number;
   public toPdf: number;
@@ -16,6 +18,8 @@ export class EditableDocumentIndexItem {
   constructor(data: {
     id: number;
     level: DocumentIndexLevelTypeEnum;
+    levelLabel?: string;
+    depth?: number;
     title: string;
     fromPdf: number;
     toPdf: number;
@@ -24,6 +28,8 @@ export class EditableDocumentIndexItem {
   }) {
     this.id = data.id;
     this.level = data.level;
+    this.levelLabel = data.levelLabel;
+    this.depth = data.depth;
     this.title = data.title;
     this.fromPdf = data.fromPdf;
     this.toPdf = data.toPdf;

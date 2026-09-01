@@ -12,21 +12,26 @@ describe('document index node mapping', () => {
       title: 'Chapter 1',
       source_pages: { start: 7, end: 31 },
       source_hash: 'hash',
-      needs_admin_review: true,
+      inference_level: 'explicit',
+      Printed_Page_Label: '7-24',
+      Needs_Admn_Review: true,
     });
 
     expect(node).toMatchObject({
       id: 22,
       sourcePages: { start: 7, end: 31 },
       sourceHash: 'hash',
-      isInferred: true,
-      printedPageLabel: '7-31',
+      inferenceLevel: 'explicit',
+      printedPageLabel: '7-24',
+      needsAdminReview: true,
     });
     expect(toEditableDocumentIndexItem(node, DocumentIndexLevelTypeEnum.CHAPTER)).toMatchObject({
       id: 22,
       level: DocumentIndexLevelTypeEnum.CHAPTER,
       fromPdf: 7,
       toPdf: 31,
+      levelLabel: 'explicit',
+      printedPageLabel: '7-24',
       needsAdminReview: true,
     });
   });

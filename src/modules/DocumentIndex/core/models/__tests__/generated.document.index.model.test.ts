@@ -74,4 +74,71 @@ describe('GeneratedDocumentIndexModel', () => {
       }),
     ]);
   });
+
+  it('flattens the fetched subject and every nested child into dialog rows', () => {
+    const model = GeneratedDocumentIndexModel.fromJson({
+      book_id: 61,
+      book_status: 'completed',
+      subject: {
+        id: 380,
+        title: 'علوم',
+        inference_level: 'explicit',
+        source_pages: { start: 56, end: 68 },
+        Printed_Page_Label: '56-68',
+        Needs_Admn_Review: false,
+        children: [
+          {
+            id: 381,
+            title: 'التفاعلات الكيميائية وآثارها البيئية',
+            inference_level: 'explicit',
+            source_pages: { start: 62, end: 108 },
+            Printed_Page_Label: '62-108',
+            Needs_Admn_Review: true,
+            children: [
+              {
+                id: 385,
+                title: 'أنواع التفاعلات الكيميائية',
+                inference_level: 'inferred',
+                source_pages: { start: 64, end: 72 },
+                children: [
+                  {
+                    id: 386,
+                    title: 'تفاعل الاتحاد',
+                    inference_level: 'explicit',
+                    source_pages: { start: 65, end: 66 },
+                    children: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    expect(model.editableItems).toEqual([
+      expect.objectContaining({
+        id: 380,
+        levelLabel: 'explicit',
+        title: 'علوم',
+        fromPdf: 56,
+        toPdf: 68,
+        printedPageLabel: '56-68',
+        needsAdminReview: false,
+        depth: 0,
+      }),
+      expect.objectContaining({
+        id: 381,
+        levelLabel: 'explicit',
+        title: 'التفاعلات الكيميائية وآثارها البيئية',
+        fromPdf: 62,
+        toPdf: 108,
+        printedPageLabel: '62-108',
+        needsAdminReview: true,
+        depth: 1,
+      }),
+      expect.objectContaining({ id: 385, levelLabel: 'inferred', depth: 2 }),
+      expect.objectContaining({ id: 386, levelLabel: 'explicit', depth: 3 }),
+    ]);
+  });
 });

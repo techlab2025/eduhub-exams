@@ -4,11 +4,7 @@
   import { useI18n } from 'vue-i18n';
   import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
-  import {
-    DocumentIndexLevelTypeEnum,
-    getDocumentIndexLevelKey,
-    type DocumentIndexLevelTypeEnum as DocumentIndexLevel,
-  } from '../../core/constant/DocumentIndexLevel.enum';
+  import { getDocumentIndexLevelKey } from '../../core/constant/DocumentIndexLevel.enum';
   import {
     copyEditableDocumentIndexItems,
     type EditableDocumentIndexItem,
@@ -96,17 +92,7 @@
     close();
   };
 
-  const levelClass = (level: DocumentIndexLevel): string => {
-    if (level === DocumentIndexLevelTypeEnum.CHAPTER) {
-      return 'document-index-generated__level--chapter';
-    }
-    if (level === DocumentIndexLevelTypeEnum.LESSON) {
-      return 'document-index-generated__level--lesson';
-    }
-    return '';
-  };
-
-  const levelKey = (level: DocumentIndexLevel) => getDocumentIndexLevelKey(level);
+  const levelKey = (level: EditableDocumentIndexItem['level']) => getDocumentIndexLevelKey(level);
 </script>
 
 <template>
@@ -154,8 +140,11 @@
           <tbody>
             <tr v-for="item in items" :key="item.id">
               <td>
-                <span class="document-index-generated__level" :class="levelClass(item.level)">
-                  {{ t(`document_index.levels.${levelKey(item.level)}`) }}
+                <span
+                  class="document-index-generated__level"
+                  :style="{ paddingInlineStart: `${(item.depth ?? 0) * 12}px` }"
+                >
+                  {{ item.levelLabel || t(`document_index.levels.${levelKey(item.level)}`) }}
                 </span>
               </td>
               <td>
