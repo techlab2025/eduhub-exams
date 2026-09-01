@@ -18,9 +18,12 @@
     DocumentIndexPatchStatusEnum,
     type DocumentIndexPatchStatusEnum as DocumentIndexPatchStatus,
   } from '../../core/constant/document.index.patch.status.enum';
+  import type DocumentIndexPatchModel from '../../core/models/document.index.patch.model';
   import type GeneratedDocumentIndexModel from '../../core/models/generated.document.index.model';
   import FetchDocumentIndexParams from '../../core/params/fetch.document.index.params';
+  import IndexDocumentIndexPatchParams from '../../core/params/index.document.index.patch.params';
   import DocumentIndexController from '../controllers/document.index.controller';
+  import DocumentIndexPatchController from '../controllers/document.index.patch.controller';
   import DocumentIndexProgressController from '../controllers/document.index.progress.controller';
   import {
     createSubjectOptions,
@@ -45,6 +48,7 @@
   const subjectController = EducationSubjectItemController.getInstance();
   const documentController = DocumentController.getInstance();
   const documentIndexController = DocumentIndexController.getInstance();
+  const documentIndexPatchController = DocumentIndexPatchController.getInstance();
   const documentIndexProgressController = DocumentIndexProgressController.getInstance();
   const { startingDocumentId } = documentIndexProgressController;
   const educationClassificationParams = new IndexEducationClassificationParams({
@@ -293,16 +297,42 @@
     if (started) await showResults();
   };
 
+  const resolveDocumentTransactionId = async (document: DocumentModel): Promise<string> => {
+    if (document.transactionId) return document.transactionId;
+    if (document.id == null) return '';
+
+    const result = await documentIndexPatchController.fetchList(
+      new IndexDocumentIndexPatchParams(1, 100, 0),
+    );
+    if (!(result instanceof DataSuccess) || !result.data) return '';
+
+    const transactions = result.data as DocumentIndexPatchModel[];
+    const matchingTransactions = transactions.filter(
+      (transaction) => transaction.documentId === document.id,
+    );
+    const transaction =
+      matchingTransactions.find(
+        (item) => item.isApply && item.status === DocumentIndexPatchStatusEnum.COMPLETE,
+      ) ??
+      matchingTransactions.find((item) => item.status === DocumentIndexPatchStatusEnum.COMPLETE) ??
+      matchingTransactions.find((item) => item.isApply) ??
+      matchingTransactions[0];
+    return transaction?.transactionId ?? '';
+  };
+
   const showDocumentIndex = async (document: DocumentModel) => {
-    if (document.id == null || !document.transactionId) return;
+    if (document.id == null) return;
+
+    const transactionId = await resolveDocumentTransactionId(document);
+    if (!transactionId) return;
 
     const result = await documentIndexController.fetchIndex(
-      new FetchDocumentIndexParams(document.transactionId),
+      new FetchDocumentIndexParams(transactionId),
     );
     if (!(result instanceof DataSuccess) || !result.data) return;
 
     activeDocumentId.value = document.id;
-    activeTransactionId.value = document.transactionId;
+    activeTransactionId.value = transactionId;
     generatedIndex.value = result.data;
     generatedDialogVisible.value = true;
   };

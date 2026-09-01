@@ -189,6 +189,14 @@ describe('DocumentIndexPatchIndex', () => {
     expect(wrapper.text()).toContain('document_index.status_pending');
     expect(wrapper.text()).toContain('document_index.status_success');
     expect(wrapper.text()).toContain('document_index.status_failed');
+    expect(
+      wrapper.findAll('.document-index-patch-page__applied').map((cell) => cell.text()),
+    ).toEqual([
+      'document_index.no',
+      'document_index.no',
+      'document_index.yes',
+      'document_index.no',
+    ]);
     expect(wrapper.find('[data-transaction-id="TXN-001"]').text()).toBe(
       'document_index.view_progress',
     );

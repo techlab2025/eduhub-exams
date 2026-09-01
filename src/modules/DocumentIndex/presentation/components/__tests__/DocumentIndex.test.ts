@@ -12,6 +12,7 @@ const fetchBranches = vi.fn();
 const fetchSubjects = vi.fn();
 const fetchDocuments = vi.fn();
 const fetchDocumentIndex = vi.fn();
+const fetchTransactions = vi.fn();
 const startIndex = vi.fn();
 
 const documentListData = ref<Record<string, unknown>[]>([]);
@@ -50,7 +51,7 @@ vi.mock('@/modules/document/presentation/controllers/document.controller', () =>
 
 vi.mock('../../controllers/document.index.patch.controller', () => ({
   default: {
-    getInstance: () => ({ startIndex }),
+    getInstance: () => ({ startIndex, fetchList: fetchTransactions }),
   },
 }));
 
@@ -180,6 +181,7 @@ describe('DocumentIndex', () => {
     fetchDocumentIndex.mockResolvedValue(
       new DataSuccess({ data: GeneratedDocumentIndexModel.example }),
     );
+    fetchTransactions.mockResolvedValue(new DataSuccess({ data: [] }));
   });
 
   it('loads all education classifications and renders the three base selects', async () => {
@@ -484,5 +486,51 @@ describe('DocumentIndex', () => {
     });
     expect(wrapper.get('[data-testid="generated-dialog"]').text()).toBe('17:TXN-042:10');
     expect(startIndex).not.toHaveBeenCalled();
+  });
+
+  it('resolves a missing transaction id before opening the existing index dialog', async () => {
+    documentListData.value = [
+      {
+        id: 17,
+        title: 'Indexed book without transaction data',
+        RefNumber: 'DOC-17',
+        doecumentType: { id: 1, title: 'Book' },
+        description: 'Student book',
+        image: '',
+        file: '/book.pdf',
+        indexFile: '',
+        hasIndex: true,
+        transactionId: '',
+        tranaslations: {},
+      },
+    ];
+    fetchTransactions.mockResolvedValueOnce(
+      new DataSuccess({
+        data: [
+          {
+            documentId: 17,
+            transactionId: '96',
+            status: 2,
+            isApply: true,
+          },
+        ],
+      }),
+    );
+    const wrapper = mountDocumentIndex();
+    await flushPromises();
+    await selectCurriculumAndShowResults(wrapper);
+
+    await wrapper.get('.document-index-page__result-button--outline').trigger('click');
+    await flushPromises();
+
+    expect(fetchTransactions.mock.calls[0]?.[0].toMap()).toMatchObject({
+      with_pagination: 0,
+      page: 1,
+      per_page: 100,
+    });
+    expect(fetchDocumentIndex.mock.calls[0]?.[0].toMap()).toEqual({
+      transaction_id: '96',
+    });
+    expect(wrapper.get('[data-testid="generated-dialog"]').text()).toBe('17:96:10');
   });
 });

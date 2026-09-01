@@ -97,10 +97,8 @@
 
   const displayValue = (value: string): string => value || '-';
 
-  const appliedLabel = (patch: DocumentIndexPatchModel): string => {
-    if (rowStatus(patch) !== DocumentIndexPatchStatusEnum.COMPLETE) return '-';
-    return rowIsApply(patch) ? t('document_index.yes') : t('document_index.no');
-  };
+  const appliedLabel = (patch: DocumentIndexPatchModel): string =>
+    rowIsApply(patch) ? t('document_index.yes') : t('document_index.no');
 
   const viewGeneratedIndex = async (patch: DocumentIndexPatchModel) => {
     if (!patch.documentId) return;
@@ -248,7 +246,9 @@
               </span>
             </template>
             <template #cell-applied="{ item }">
-              {{ appliedLabel(item) }}
+              <span class="document-index-patch-page__applied">
+                {{ appliedLabel(item) }}
+              </span>
             </template>
             <template #actions="{ item }">
               <span v-if="!hasRowAction(item)" class="document-index-patch-page__unavailable">
