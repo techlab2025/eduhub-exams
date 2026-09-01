@@ -45,10 +45,21 @@ describe('DocumentIndexPatchRepository', () => {
       data: {
         status: true,
         data: {
-          status: 2,
-          is_apply: true,
-          document_id: 17,
-          generated_index: { book_id: 17, book_status: 'completed', chapters: [] },
+          data: [
+            {
+              transaction_id: 13,
+              index_status: 'failed',
+              is_apply: false,
+              document_id: 18,
+            },
+            {
+              transaction_id: 12,
+              index_status: 'completed',
+              is_apply: true,
+              document_id: 17,
+              document_index: { book_id: 17, book_status: 'completed', chapters: [] },
+            },
+          ],
         },
       },
       statusCode: 200,
@@ -63,7 +74,7 @@ describe('DocumentIndexPatchRepository', () => {
     expect(startResult).toBeInstanceOf(DataSuccess);
     expect(startResult.data).toBe(12);
     const refreshResult = await DocumentIndexPatchRepository.getInstance().refreshStatus(
-      new RefreshDocumentIndexStatusParams('TXN-012'),
+      new RefreshDocumentIndexStatusParams('12'),
       { useStaticData: false },
     );
     expect(refreshResult).toBeInstanceOf(DataSuccess);

@@ -36,7 +36,7 @@ export default class DocumentIndexStatusModel {
   static fromJson(json: unknown): DocumentIndexStatusModel {
     const data = SaftyConditions.objectValue(json);
     return new DocumentIndexStatusModel({
-      status: toDocumentIndexPatchStatus(data.status),
+      status: toDocumentIndexPatchStatus(data.index_status ?? data.status),
       isApply: SaftyConditions.booleanValue(data.applied ?? data.is_apply ?? data.isApply),
       documentId: SaftyConditions.numberValue(data.document_id ?? data.book_id),
       generatedIndex: GeneratedDocumentIndexModel.fromJson(generatedPayload(data)),

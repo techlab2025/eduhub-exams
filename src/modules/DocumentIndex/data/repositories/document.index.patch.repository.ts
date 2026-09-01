@@ -64,6 +64,27 @@ const isSuccessfulStartResponse = (statusCode: number, body: Record<string, unkn
   body.status !== '0' &&
   body.status !== 'false';
 
+const refreshStatusPayload = (value: unknown, transactionId: string): unknown => {
+  const data = SaftyConditions.objectValue(value);
+  const rows = Array.isArray(value)
+    ? value
+    : Array.isArray(data.data)
+      ? data.data
+      : undefined;
+
+  if (!rows) return value;
+
+  const matchingRow = rows.find((row) => {
+    const item = SaftyConditions.objectValue(row);
+    return String(item.transaction_id ?? item.transactionId ?? '') === transactionId;
+  });
+
+  if (matchingRow) return matchingRow;
+  if (rows.length === 1) return rows[0];
+
+  throw new Error(`No refresh status found for transaction ${transactionId}.`);
+};
+
 export default class DocumentIndexPatchRepository extends BaseRepository<
   DocumentIndexPatchModel,
   DocumentIndexPatchModel[]
@@ -159,9 +180,10 @@ export default class DocumentIndexPatchRepository extends BaseRepository<
       });
     }
 
+    const transactionId = String(params.toMap().transaction_id ?? '');
     return this.executeCustom(
       () => this.apiService.refreshIndexStatus(params, options),
-      DocumentIndexStatusModel.fromJson,
+      (data) => DocumentIndexStatusModel.fromJson(refreshStatusPayload(data, transactionId)),
       { captureRetryFn: false },
     );
   }

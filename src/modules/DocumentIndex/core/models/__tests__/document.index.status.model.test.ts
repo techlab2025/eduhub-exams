@@ -21,4 +21,21 @@ describe('DocumentIndexStatusModel', () => {
     expect(model.generatedIndex).toMatchObject({ bookId: 17, bookStatus: 'completed' });
     expect(model.generatedIndex.chapters[0]?.title).toBe('Chapter 1');
   });
+
+  it('maps the index_status field returned by the refresh endpoint', () => {
+    const model = DocumentIndexStatusModel.fromJson({
+      transaction_id: 90,
+      index_status: 'completed',
+      is_apply: false,
+      document_id: 147,
+      document_index: {
+        book_id: 147,
+        book_status: 'completed',
+        chapters: [],
+      },
+    });
+
+    expect(model.status).toBe(DocumentIndexPatchStatusEnum.COMPLETE);
+    expect(model.documentId).toBe(147);
+  });
 });
