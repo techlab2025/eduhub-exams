@@ -137,7 +137,7 @@
               <th>{{ t('document_index.from_pdf') }}</th>
               <th>{{ t('document_index.to_pdf') }}</th>
               <th>{{ t('document_index.printed_page_label') }}</th>
-              <th>{{ t('document_index.needs_admin_review') }}</th>
+              <!-- <th>{{ t('document_index.needs_admin_review') }}</th> -->
             </tr>
           </thead>
           <tbody>
@@ -188,12 +188,12 @@
                 />
                 <span v-else>{{ item.printedPageLabel }}</span>
               </td>
-              <td>
+              <!-- <td>
                 <span v-if="item.needsAdminReview" class="document-index-generated__review">
                   {{ t('document_index.needs_review') }}
                 </span>
                 <span v-else>{{ t('document_index.no_review') }}</span>
-              </td>
+              </td> -->
             </tr>
             <tr v-if="items.length === 0">
               <td colspan="6" class="document-index-generated__empty">
