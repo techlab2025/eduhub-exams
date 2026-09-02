@@ -1,6 +1,19 @@
 import TitleModel from '@/base/Core/Models/titleModel';
 import NotificationPlanActionModel from './notification.plan.action.model';
 
+const getDisplayName = (value: unknown): string => {
+  if (typeof value === 'string') return value;
+  if (!value || typeof value !== 'object') return '';
+
+  const creator = value as Record<string, unknown>;
+  const directName = creator.name ?? creator.title ?? creator.full_name ?? creator.fullName;
+  if (directName) return String(directName);
+
+  return [creator.first_name ?? creator.firstName, creator.last_name ?? creator.lastName]
+    .filter(Boolean)
+    .join(' ');
+};
+
 export default class NotificationPlanModel {
   public readonly notification_plan_id: number;
   public readonly notificationPlanId: number;
@@ -11,6 +24,8 @@ export default class NotificationPlanModel {
   public readonly employees: TitleModel[];
   public readonly hierarchies: TitleModel[];
   public readonly heirarchy: 0 | 1;
+  public readonly createdBy: string;
+  public readonly createdAt: string;
 
   constructor(data: {
     notificationPlanId: number;
@@ -20,6 +35,8 @@ export default class NotificationPlanModel {
     employees?: TitleModel[];
     hierarchies?: TitleModel[];
     heirarchy?: 0 | 1;
+    createdBy?: string;
+    createdAt?: string;
   }) {
     this.notification_plan_id = data.notificationPlanId;
     this.notificationPlanId = data.notificationPlanId;
@@ -30,6 +47,8 @@ export default class NotificationPlanModel {
     this.employees = data.employees ?? [];
     this.hierarchies = data.hierarchies ?? [];
     this.heirarchy = data.heirarchy ?? (this.hierarchies.length ? 1 : 0);
+    this.createdBy = data.createdBy ?? '';
+    this.createdAt = data.createdAt ?? '';
     Object.freeze(this);
   }
 
@@ -61,6 +80,8 @@ export default class NotificationPlanModel {
         TitleModel.fromMap(hierarchy as Record<string, unknown>),
       ),
       heirarchy: Number(data.heirarchy ?? (hierarchies.length ? 1 : 0)) === 1 ? 1 : 0,
+      createdBy: getDisplayName(data.created_by ?? data.creator ?? data.createdBy),
+      createdAt: String(data.created_at ?? data.createdAt ?? ''),
     });
   }
 

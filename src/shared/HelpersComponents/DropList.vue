@@ -20,6 +20,7 @@
     action?: () => void;
     skipDeleteConfirmation?: boolean;
     danger?: boolean;
+    toggleValue?: boolean;
   }
 
   defineEmits(['delete']);
@@ -45,12 +46,17 @@
 
   onBeforeUnmount(handleHide);
 
+  const runAction = (action: ActionItem) => {
+    action.action?.();
+    op.value?.hide();
+  };
+
   const props = defineProps<{
     actionList: ActionItem[];
     showActions?: boolean;
     deleteDialogTitle?: string;
     deleteDialogMessage?: string;
-    variant?: 'default' | 'student';
+    variant?: 'default' | 'student' | 'notification-plan';
   }>();
 </script>
 
@@ -62,7 +68,13 @@
   </div>
 
   <Popover ref="op" @hide="handleHide">
-    <div class="list-body" :class="{ 'student-list-body': props.variant === 'student' }">
+    <div
+      class="list-body"
+      :class="{
+        'student-list-body': props.variant === 'student',
+        'notification-plan-list-body': props.variant === 'notification-plan',
+      }"
+    >
       <ul class="border-none">
         <li
           v-for="action in props.actionList"
@@ -73,6 +85,10 @@
           <router-link v-if="action.link" :to="action.link" class="flex items-center gap-[5px]">
             <template v-if="props.variant === 'student'">
               <span class="student-action-icon"><component :is="action.icon" /></span>
+              <span>{{ action.text }}</span>
+            </template>
+            <template v-else-if="props.variant === 'notification-plan'">
+              <span class="notification-plan-action-icon"><component :is="action.icon" /></span>
               <span>{{ action.text }}</span>
             </template>
             <template v-else>
@@ -87,11 +103,25 @@
               (action.text != $t('delete') || action.skipDeleteConfirmation === true)
             "
             class="flex items-center gap-sm"
-            @click="action.action"
+            @click="runAction(action)"
           >
             <template v-if="props.variant === 'student'">
               <span class="student-action-icon"><component :is="action.icon" /></span>
               <span>{{ action.text }}</span>
+            </template>
+            <template v-else-if="props.variant === 'notification-plan'">
+              <span class="notification-plan-action-icon">
+                <component :is="action.icon" />
+              </span>
+              <span>{{ action.text }}</span>
+              <span
+                v-if="action.toggleValue !== undefined"
+                class="notification-plan-action-toggle"
+                :class="{ checked: action.toggleValue }"
+                aria-hidden="true"
+              >
+                <span></span>
+              </span>
             </template>
             <template v-else>
               <span>{{ action.text }}</span>
@@ -101,10 +131,26 @@
 
           <DeleteDialog
             v-else-if="action.text == $t('delete')"
+            hasbtn
             :title="deleteDialogTitle"
             :message="deleteDialogMessage"
             @delete="action.action"
-          />
+          >
+            <template #btn>
+              <template v-if="props.variant === 'student'">
+                <span class="student-action-icon"><component :is="action.icon" /></span>
+                <span>{{ action.text }}</span>
+              </template>
+              <template v-else-if="props.variant === 'notification-plan'">
+                <span class="notification-plan-action-icon"><component :is="action.icon" /></span>
+                <span>{{ action.text }}</span>
+              </template>
+              <template v-else>
+                <span>{{ action.text }}</span>
+                <component :is="action.icon" />
+              </template>
+            </template>
+          </DeleteDialog>
         </li>
         <slot name="custom"></slot>
       </ul>
@@ -167,5 +213,82 @@
 
   .list-item-danger .student-action-icon {
     background: var(--danger-light);
+  }
+
+  .notification-plan-list-body {
+    min-width: 184px;
+    overflow: hidden;
+    border: 1px solid var(--gray-200);
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg);
+
+    .list-item {
+      min-height: 48px;
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 0.875rem;
+      font-weight: 500;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      a,
+      button {
+        min-height: 48px;
+        justify-content: flex-start !important;
+        gap: 10px;
+        padding: 10px 14px;
+      }
+
+      &.list-item-danger {
+        color: var(--Red);
+      }
+    }
+  }
+
+  .notification-plan-action-icon {
+    width: 20px;
+    height: 20px;
+    display: grid;
+    flex: 0 0 20px;
+    place-items: center;
+
+    :deep(svg) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .notification-plan-action-toggle {
+    width: 34px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    margin-inline-start: auto;
+    padding: 2px;
+    background: var(--gray-300);
+    border-radius: var(--radius-full);
+
+    > span {
+      width: 14px;
+      height: 14px;
+      background: var(--BgWhite);
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast);
+    }
+
+    &.checked {
+      background: var(--PrimaryColor);
+
+      > span {
+        transform: translateX(16px);
+      }
+    }
+  }
+
+  :global([dir='rtl']) .notification-plan-action-toggle.checked > span {
+    transform: translateX(-16px);
   }
 </style>

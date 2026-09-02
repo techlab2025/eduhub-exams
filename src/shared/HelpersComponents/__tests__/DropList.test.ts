@@ -106,4 +106,28 @@ describe('DropList', () => {
     expect(wrapper.find('.student-action-icon').exists()).toBe(true);
     expect(wrapper.find('.list-item button').text()).toContain('Block');
   });
+
+  it('renders the notification-plan menu with a status switch', () => {
+    const wrapper = mount(DropList, {
+      props: {
+        variant: 'notification-plan',
+        actionList: [
+          {
+            text: 'Deactivate',
+            icon: ActionsIcon,
+            action: vi.fn(),
+            toggleValue: true,
+          },
+        ],
+      },
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: { Popover: PopoverStub },
+      },
+    });
+
+    expect(wrapper.find('.notification-plan-list-body').exists()).toBe(true);
+    expect(wrapper.find('.notification-plan-action-toggle').classes()).toContain('checked');
+    expect(wrapper.find('.notification-plan-action-icon').exists()).toBe(true);
+  });
 });

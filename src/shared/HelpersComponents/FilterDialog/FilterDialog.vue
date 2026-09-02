@@ -18,7 +18,13 @@
 </script>
 
 <template>
-  <button class="btn fillter-button" @click="visible = true">
+  <button
+    class="btn fillter-button"
+    type="button"
+    aria-haspopup="dialog"
+    :aria-expanded="visible"
+    @click="visible = true"
+  >
     {{ $t('Filter') }}
     <DialogIconFillter />
   </button>
