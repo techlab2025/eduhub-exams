@@ -7851,10 +7851,6 @@ body::-webkit-scrollbar-thumb:hover {
 .document-form-card .field-group.tags-group input {
   border: none !important;
 }
-.document-form-card .field-group .selected-value--placeholder,
-.document-form-card .field-group .input-select .selected-value {
-  padding: 11px !important;
-}
 .document-form-card .field-group .image-input .upload-area {
   background-color: var(--standard-white) !important;
 }
@@ -17977,10 +17973,6 @@ label,
   font-size: 15px !important;
   font-weight: 500 !important;
   letter-spacing: 0;
-}
-
-.document-form-card .p-select-label.p-placeholder {
-  padding: 0 !important;
 }
 
 .p-inputtext {

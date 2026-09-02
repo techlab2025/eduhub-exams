@@ -5,6 +5,9 @@ import DocumentForm from '../DocumentForm.vue';
 import DocumentShowModel from '../../../core/models/document.show.model';
 import type AddDocumentParams from '../../../core/params/add.document.params';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import documentFormStyles from '../../styles/_document_form.scss?raw';
+import globalStyles from '@/styles/main.scss?raw';
+import compiledStyles from '@/styles/main.min.css?raw';
 
 const toastWarningMock = vi.hoisted(() => vi.fn());
 const { branchTree, fetchClassificationsMock, fetchBranchesMock, fetchSubjectsMock } = vi.hoisted(
@@ -203,6 +206,19 @@ describe('DocumentForm', () => {
       },
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it('does not apply document select padding based on selection state', () => {
+    const stateSpecificPaddingRules = [
+      /\.input-select\s+\.selected-value\s*\{[^}]*padding:/s,
+      /\.p-select-label\.p-placeholder\s*\{[^}]*padding:/s,
+    ];
+
+    for (const rule of stateSpecificPaddingRules) {
+      expect(documentFormStyles).not.toMatch(rule);
+      expect(globalStyles).not.toMatch(rule);
+      expect(compiledStyles).not.toMatch(rule);
+    }
   });
 
   it('emits the populated edit data without requiring a description change', () => {
