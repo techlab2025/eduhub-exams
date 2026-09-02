@@ -35,7 +35,7 @@ describe('RoleForm', () => {
           id: 7,
           roleName: 'Support Agent',
           translations: { en: 'Support Agent', ar: 'موظف دعم' },
-          permissions: ['OE01'],
+          permissions: ['ADM01'],
         }),
       }),
     );
@@ -60,7 +60,7 @@ describe('RoleForm', () => {
     expect(create).toHaveBeenCalledOnce();
     expect(create.mock.calls[0]?.[0].toMap()).toEqual({
       translations: { title: { en: 'Content Manager', ar: 'مدير المحتوى' } },
-      permissions: ['OE01', 'OE02', 'OE03', 'OE04', 'OE05'],
+      permissions: ['ADM01', 'ADM02', 'ADM03', 'ADM04', 'ADM05'],
     });
     expect(push).toHaveBeenCalledWith({ name: 'Roles' });
   });
