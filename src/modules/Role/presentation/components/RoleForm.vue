@@ -4,6 +4,7 @@
   import { useRoute, useRouter } from 'vue-router';
   import { isDataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
   import PermissionSelector from '@/modules/Permission/presentation/components/PermissionSelector.vue';
+  import MultiLangInput from '@/shared/MultiLangInput.vue';
   import RoleController from '../controllers/role.controller';
   import ShowRoleParams from '../../core/params/show.role.params';
   import StoreRoleParams from '../../core/params/store.role.params';
@@ -16,7 +17,7 @@
   const router = useRouter();
   const controller = RoleController.getInstance();
   const roleId = computed(() => Number(route.params.id));
-  const roleName = ref('');
+  const title = ref<Record<string, string>>({});
   const selectedPermissions = ref<string[]>([]);
   const loading = ref(false);
   const submitted = ref(false);
@@ -29,18 +30,21 @@
     const result = await controller.fetchOne(new ShowRoleParams(roleId.value));
     loading.value = false;
     if (!isDataSuccess(result) || !result.data) return;
-    roleName.value = result.data.roleName;
+    title.value =
+      Object.keys(result.data.translations).length > 0
+        ? { ...result.data.translations }
+        : { en: result.data.roleName };
     selectedPermissions.value = [...result.data.permissions];
   };
 
   const saveRole = async () => {
     submitted.value = true;
-    if (!roleName.value.trim() || isReadonly.value) return;
+    if (!Object.values(title.value).some((value) => value.trim()) || isReadonly.value) return;
     loading.value = true;
     const params =
       props.mode === 'edit'
-        ? new UpdateRoleParams(roleId.value, roleName.value, selectedPermissions.value)
-        : new StoreRoleParams(roleName.value, selectedPermissions.value);
+        ? new UpdateRoleParams(roleId.value, title.value, selectedPermissions.value)
+        : new StoreRoleParams(title.value, selectedPermissions.value);
     const result =
       props.mode === 'edit'
         ? await controller.update(params, { useJson: true })
@@ -64,18 +68,20 @@
       </router-link>
     </header>
 
-    <section class="role-form-page__name-card">
-      <label for="role-name">{{ $t('role.name') }} <span aria-hidden="true">*</span></label>
-      <input
-        id="role-name"
-        v-model="roleName"
-        type="text"
-        :placeholder="$t('role.name_placeholder')"
-        :readonly="isReadonly"
-        :disabled="loading"
-        :aria-invalid="submitted && !roleName.trim()"
+    <section
+      class="role-form-page__name-card"
+      :aria-disabled="loading || isReadonly"
+      :inert="loading || isReadonly"
+    >
+      <MultiLangInput
+        field-key="title"
+        :label="$t('role.name')"
+        :languages="['en', 'ar']"
+        :model-value="title"
+        type="title"
+        @update:model-value="title = $event"
       />
-      <small v-if="submitted && !roleName.trim()" role="alert">
+      <small v-if="submitted && !Object.values(title).some((value) => value.trim())" role="alert">
         {{ $t('role.name_required') }}
       </small>
     </section>
@@ -164,36 +170,6 @@
     border-radius: 20px;
     background: #fafafa;
     border: 1px solid #d0d0d0;
-
-    label {
-      color: var(--Gray-6);
-      font-family: var(--role-heading-font);
-      font-weight: 600;
-
-      span {
-        color: var(--danger-color);
-      }
-    }
-
-    input {
-      min-height: 44px;
-      padding-inline: 16px;
-      border: 1px solid var(--sidebar-group-text-color);
-      border-radius: 14px;
-      background: white;
-      color: var(--title-card-color);
-      font-family: 'Medium', sans-serif;
-      outline: none;
-
-      &:focus {
-        border-color: var(--PrimaryColor);
-        box-shadow: 0 0 0 3px var(--PrimaryColor-alpha-10);
-      }
-
-      &[readonly] {
-        background: var(--background-color-soft-light);
-      }
-    }
 
     small {
       color: var(--danger-color);

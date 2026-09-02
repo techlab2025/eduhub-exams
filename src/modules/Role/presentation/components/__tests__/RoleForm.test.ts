@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createI18n } from 'vue-i18n';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import MultiLangInput from '@/shared/MultiLangInput.vue';
 import RoleModel from '../../../core/models/role.model';
 import RoleForm from '../RoleForm.vue';
 
@@ -30,27 +31,36 @@ describe('RoleForm', () => {
     update.mockResolvedValue(new DataSuccess({ data: RoleModel.example }));
     fetchOne.mockResolvedValue(
       new DataSuccess({
-        data: new RoleModel({ id: 7, roleName: 'Support Agent', permissions: ['OE01'] }),
+        data: new RoleModel({
+          id: 7,
+          roleName: 'Support Agent',
+          translations: { en: 'Support Agent', ar: 'موظف دعم' },
+          permissions: ['OE01'],
+        }),
       }),
     );
   });
 
-  it('stores role_name and selected permissions', async () => {
+  it('stores translated role titles and selected permissions', async () => {
     const wrapper = mount(RoleForm, {
       global: {
         plugins: [i18n],
         stubs: { RouterLink: { template: '<a><slot /></a>' } },
       },
     });
-    await wrapper.get('#role-name').setValue('Content Manager');
-    await wrapper.get('.permission-pill').trigger('click');
+    wrapper.getComponent(MultiLangInput).vm.$emit('update:modelValue', {
+      en: 'Content Manager',
+      ar: 'مدير المحتوى',
+    });
+    await wrapper.vm.$nextTick();
+    await wrapper.get('.permission-group__bulk-actions button').trigger('click');
     await wrapper.get('footer button').trigger('click');
     await flushPromises();
 
     expect(create).toHaveBeenCalledOnce();
     expect(create.mock.calls[0]?.[0].toMap()).toEqual({
-      role_name: 'Content Manager',
-      permissions: ['OE00'],
+      translations: { title: { en: 'Content Manager', ar: 'مدير المحتوى' } },
+      permissions: ['OE01', 'OE02', 'OE03', 'OE04', 'OE05'],
     });
     expect(push).toHaveBeenCalledWith({ name: 'Roles' });
   });
@@ -66,7 +76,10 @@ describe('RoleForm', () => {
     await flushPromises();
 
     expect(fetchOne).toHaveBeenCalledOnce();
-    expect((wrapper.get('#role-name').element as HTMLInputElement).value).toBe('Support Agent');
+    expect(wrapper.getComponent(MultiLangInput).props('modelValue')).toEqual({
+      en: 'Support Agent',
+      ar: 'موظف دعم',
+    });
     expect(wrapper.findAll('.permission-pill--selected')).toHaveLength(1);
   });
 });

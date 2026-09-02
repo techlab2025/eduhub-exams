@@ -20,10 +20,9 @@
 
   const getSelectedPermissions = (): PermissionCode[] =>
     permissionModules.value.flatMap((module) =>
-      module.permissions.flatMap((group) => [
-        ...(group.checked ? [group.code] : []),
-        ...group.permissions.filter(({ checked }) => checked).map(({ code }) => code),
-      ]),
+      module.permissions.flatMap((group) =>
+        group.permissions.filter(({ checked }) => checked).map(({ code }) => code),
+      ),
     );
   const selectedCount = computed(() => getSelectedPermissions().length);
   const emitSelection = () => emit('update:permissions', getSelectedPermissions());
@@ -32,10 +31,11 @@
     const selectedCodes = new Set(permissions);
     permissionModules.value.forEach((module) =>
       module.permissions.forEach((group) => {
-        group.checked = selectedCodes.has(group.code);
+        const hasLegacyAllPermission = selectedCodes.has(group.code);
         group.permissions.forEach((permission) => {
-          permission.checked = selectedCodes.has(permission.code);
+          permission.checked = hasLegacyAllPermission || selectedCodes.has(permission.code);
         });
+        group.checked = group.permissions.every(({ checked }) => checked);
       }),
     );
   };
@@ -50,15 +50,11 @@
       (group) => group.checked || group.permissions.some(({ checked }) => checked),
     ) && !isModuleFullyChecked(module);
   const groupSelectedCount = (group: PermissionGroupItem) =>
-    Number(group.checked) + group.permissions.filter(({ checked }) => checked).length;
+    group.permissions.filter(({ checked }) => checked).length;
 
   const setGroup = (group: PermissionGroupItem, checked: boolean) => {
     group.checked = checked;
     group.permissions.forEach((permission) => (permission.checked = checked));
-    emitSelection();
-  };
-  const toggleGroupPermission = (group: PermissionGroupItem) => {
-    group.checked = !group.checked;
     emitSelection();
   };
   const toggleModule = (module: PermissionModuleItem, checked: boolean) => {
@@ -68,8 +64,9 @@
     });
     emitSelection();
   };
-  const togglePermission = (permission: PermissionActionItem) => {
+  const togglePermission = (group: PermissionGroupItem, permission: PermissionActionItem) => {
     permission.checked = !permission.checked;
+    group.checked = group.permissions.every(({ checked }) => checked);
     emitSelection();
   };
   const toggleGroup = (code: string) => {
@@ -162,18 +159,6 @@
                 {{ $t('permission.actions_label') }}
               </span>
               <button
-                type="button"
-                class="permission-pill"
-                :class="{ 'permission-pill--selected': group.checked }"
-                :disabled="disabled"
-                role="checkbox"
-                :aria-checked="group.checked"
-                @click="toggleGroupPermission(group)"
-              >
-                <span class="permission-pill__checkbox" aria-hidden="true"></span>
-                {{ $t('permission.actions.all') }}
-              </button>
-              <button
                 v-for="permission in group.permissions"
                 :key="permission.code"
                 type="button"
@@ -182,7 +167,7 @@
                 :disabled="disabled"
                 role="checkbox"
                 :aria-checked="permission.checked"
-                @click="togglePermission(permission)"
+                @click="togglePermission(group, permission)"
               >
                 <span class="permission-pill__checkbox" aria-hidden="true"></span>
                 {{ $t(permission.labelKey) }}

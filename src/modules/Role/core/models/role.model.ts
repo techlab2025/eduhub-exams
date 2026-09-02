@@ -10,6 +10,7 @@ const permissionCode = (value: unknown): string => {
 export default class RoleModel {
   public readonly id: number;
   public readonly roleName: string;
+  public readonly translations: Record<string, string>;
   public readonly permissions: string[];
   public readonly permissionsCount: number;
   public readonly usersCount: number;
@@ -19,6 +20,7 @@ export default class RoleModel {
   constructor(data: {
     id: number;
     roleName: string;
+    translations?: Record<string, string>;
     permissions?: string[];
     permissionsCount?: number;
     usersCount?: number;
@@ -27,6 +29,7 @@ export default class RoleModel {
   }) {
     this.id = data.id;
     this.roleName = data.roleName;
+    this.translations = data.translations ?? {};
     this.permissions = data.permissions ?? [];
     this.permissionsCount = data.permissionsCount ?? this.permissions.length;
     this.usersCount = data.usersCount ?? 0;
@@ -48,10 +51,17 @@ export default class RoleModel {
       : Array.isArray(record.permission)
         ? record.permission
         : [];
+    const rawTranslations =
+      record.translations && typeof record.translations === 'object'
+        ? (record.translations as Record<string, unknown>)
+        : {};
+    const rawTitle = record.title ?? rawTranslations.title ?? record.role_name ?? record.name ?? '';
+    const translations = this.mapTranslations(rawTitle);
 
     return new RoleModel({
       id: Number(record.id ?? record.role_id ?? 0),
-      roleName: String(record.role_name ?? record.name ?? record.title ?? ''),
+      roleName: this.resolveTitle(rawTitle),
+      translations,
       permissions: rawPermissions.map(permissionCode).filter(Boolean),
       permissionsCount: Number(
         record.permissions_count ?? record.permission_count ?? rawPermissions.length,
@@ -64,6 +74,32 @@ export default class RoleModel {
       ),
       createdAt: String(record.created_at ?? record.createdAt ?? ''),
     });
+  }
+
+  private static resolveTitle(title: unknown): string {
+    if (typeof title === 'string') return title;
+    const translations = this.mapTranslations(title);
+    return translations.en ?? translations.ar ?? Object.values(translations)[0] ?? '';
+  }
+
+  private static mapTranslations(title: unknown): Record<string, string> {
+    if (!title || typeof title !== 'object') return {};
+    if (!Array.isArray(title)) {
+      return Object.fromEntries(
+        Object.entries(title as Record<string, unknown>)
+          .filter(([, value]) => typeof value === 'string')
+          .map(([locale, value]) => [locale, String(value)]),
+      );
+    }
+    return Object.fromEntries(
+      title
+        .filter(
+          (item): item is Record<string, unknown> =>
+            Boolean(item) && typeof item === 'object' && !Array.isArray(item),
+        )
+        .filter((item) => item.locale && typeof item.title === 'string')
+        .map((item) => [String(item.locale), String(item.title)]),
+    );
   }
 
   static get example(): RoleModel {

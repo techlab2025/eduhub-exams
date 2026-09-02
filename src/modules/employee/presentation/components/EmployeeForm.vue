@@ -21,8 +21,8 @@
   import type StageModel from '@/modules/Stages/core/models/stage.model';
   import type BranchesModel from '@/modules/Stages/core/models/branches.model';
   import { useI18n } from 'vue-i18n';
-  // import RoleController from '@/modules/Role/presentation/controllers/role.controller';
-  // import IndexRoleParams from '@/modules/Role/core/params/index.role.params';
+  import RoleController from '@/modules/Role/presentation/controllers/role.controller';
+  import IndexRoleParams from '@/modules/Role/core/params/index.role.params';
 
   const emit = defineEmits(['updateData']);
 
@@ -47,7 +47,7 @@
 
   const { t } = useI18n();
   const stageController = StageController.getInstance();
-  // const roleController = RoleController.getInstance();
+  const roleController = RoleController.getInstance();
   const employeeTypeOptions: TitleInterface<number>[] = [
     new TitleInterface({ id: EmployeeTypeEnum.ADMIN, title: t('employee_type_admin') }),
     new TitleInterface({ id: EmployeeTypeEnum.TEACHER, title: t('employee_type_teacher') }),
@@ -202,10 +202,10 @@
     updateData();
   };
 
-  // const handleRoleChange = (role: TitleInterface<number> | null) => {
-  //   selectedRole.value = role;
-  //   updateData();
-  // };
+  const handleRoleChange = (role: TitleInterface<number> | null) => {
+    selectedRole.value = role;
+    updateData();
+  };
 
   const fetchSubjectOptions = async () => {
     const result = await stageController.fetchList(new IndexStageParams('', 1, 100, 0));
@@ -219,15 +219,15 @@
     selectedSubjects.value = mapSelectedSubjects(selectedSubjects.value);
   };
 
-  // const fetchRoleOptions = async () => {
-  //   const result = await roleController.fetchList(new IndexRoleParams('', 1, 100, 0));
-  //   roleOptions.value = (result.data ?? []).map((role) => role.toOption());
-  //   if (selectedRole.value) {
-  //     selectedRole.value =
-  //       roleOptions.value.find((option) => option.id === selectedRole.value?.id) ??
-  //       selectedRole.value;
-  //   }
-  // };
+  const fetchRoleOptions = async () => {
+    const result = await roleController.fetchList(new IndexRoleParams('', 1, 100, 0));
+    roleOptions.value = (result.data ?? []).map((role) => role.toOption());
+    if (selectedRole.value) {
+      selectedRole.value =
+        roleOptions.value.find((option) => option.id === selectedRole.value?.id) ??
+        selectedRole.value;
+    }
+  };
 
   const draftRef =
     !route.params.id && localStorage.getItem('employee-draft')
@@ -395,7 +395,7 @@
         />
       </div>
 
-      <!-- <div class="field-group" :class="{ disabled: props.loading }">
+      <div class="field-group" :class="{ disabled: props.loading }">
         <UpdatedCustomInputSelect
           id="employee-role"
           v-model="selectedRole"
@@ -406,7 +406,7 @@
           :reload="false"
           @update:model-value="handleRoleChange"
         />
-      </div> -->
+      </div>
 
       <div v-if="isTeacher" class="field-group" :class="{ disabled: props.loading }">
         <UpdatedCustomInputSelect
