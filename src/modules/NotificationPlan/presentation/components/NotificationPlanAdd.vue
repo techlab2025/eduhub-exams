@@ -36,9 +36,19 @@
       :loading="loading"
       @update-data="params = $event as AddNotificationPlanParams"
     />
-    <button class="btn btn-primary w-full" type="button" :disabled="loading" @click="save">
-      {{ $t('notification_plan.form.save') }}
-    </button>
+    <footer class="notification-plan-editor__actions">
+      <button class="btn btn-primary" type="button" :disabled="loading" @click="save">
+        {{ $t('notification_plan.form.save') }}
+      </button>
+      <button
+        class="btn btn-cancel"
+        type="button"
+        :disabled="loading"
+        @click="router.push({ name: 'Notification Plans' })"
+      >
+        {{ $t('notification_plan.form.cancel') }}
+      </button>
+    </footer>
   </section>
 </template>
 
@@ -46,5 +56,35 @@
   .notification-plan-editor {
     display: grid;
     gap: var(--xl-size-base);
+  }
+
+  .notification-plan-editor__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+
+    .btn-primary {
+      width: min(100%, 318px);
+    }
+
+    .btn-cancel {
+      width: min(100%, 164px);
+    }
+
+    button {
+      min-height: 52px;
+      border-radius: var(--radius-full);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .notification-plan-editor__actions {
+      flex-direction: column;
+
+      .btn-primary,
+      .btn-cancel {
+        width: 100%;
+      }
+    }
   }
 </style>

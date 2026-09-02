@@ -10,9 +10,18 @@ describe('NotificationPlanModel', () => {
       actions: [{ value: 13, name: 'team_added', label: 'Investigation Team Added' }],
       employees: [{ id: 2, name: 'Employee Two' }],
       hierarchies: [{ id: 5, title: 'Team Leader' }],
+      created_by: { first_name: 'Portal', last_name: 'Admin' },
+      created_at: '2026-09-02T09:20:42.000000Z',
     });
 
-    expect(model).toMatchObject({ id: 9, title: 'Team Leader', isActive: true, heirarchy: 1 });
+    expect(model).toMatchObject({
+      id: 9,
+      title: 'Team Leader',
+      isActive: true,
+      heirarchy: 1,
+      createdBy: 'Portal Admin',
+      createdAt: '2026-09-02T09:20:42.000000Z',
+    });
     expect(model.actions[0]?.value).toBe(13);
     expect(model.employees[0]?.title).toBe('Employee Two');
     expect(model.hierarchies[0]?.id).toBe(5);

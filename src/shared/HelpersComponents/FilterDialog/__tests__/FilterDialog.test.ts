@@ -26,6 +26,8 @@ describe('FilterDialog.vue', () => {
       global: globalConfig,
     });
     expect(wrapper.find('.fillter-button').exists()).toBe(true);
+    expect(wrapper.find('.fillter-button').attributes('type')).toBe('button');
+    expect(wrapper.find('.fillter-button').attributes('aria-haspopup')).toBe('dialog');
     expect(wrapper.text()).toContain('Filter');
   });
 
