@@ -102,7 +102,7 @@ export default class DocumentModel {
     return new DocumentModel({
       id: SaftyConditions.numberValue(data.id),
       title: String(data.title ?? ''),
-      RefNumber: String(data.ref_number ?? ''),
+      RefNumber: String(data.reference_number ?? ''),
       doecumentType: SaftyConditions.titleValueCheck(data.document_type) ?? { id: 0, title: '' },
       Subjtecs: Array.isArray(data.subjtecs)
         ? data.subjtecs

@@ -98,7 +98,7 @@
   const displayValue = (value: string): string => value || '-';
 
   const appliedLabel = (patch: DocumentIndexPatchModel): string =>
-    rowIsApply(patch) ? t('document_index.yes') : t('document_index.no');
+    rowIsApply(patch) ? t('document_index.yes') : t('-');
 
   const viewGeneratedIndex = async (patch: DocumentIndexPatchModel) => {
     if (!patch.documentId) return;
@@ -246,7 +246,7 @@
               </span>
             </template>
             <template #cell-applied="{ item }">
-              <span class="document-index-patch-page__applied">
+              <span class="document-index-patch-page__applied" >
                 {{ appliedLabel(item) }}
               </span>
             </template>

@@ -204,7 +204,7 @@
         </table>
       </div>
 
-      <footer class="document-index-generated__actions">
+      <!-- <footer class="document-index-generated__actions">
         <button
           v-if="isEditing"
           class="document-index-generated__secondary-action document-index-generated__secondary-action--cancel"
@@ -241,7 +241,7 @@
         >
           {{ isSaving ? t('document_index.saving_index') : t('document_index.save_index') }}
         </button>
-      </footer>
+      </footer> -->
     </section>
   </Dialog>
 </template>
