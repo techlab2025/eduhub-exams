@@ -143,4 +143,42 @@ describe('GeneratedDocumentIndexModel', () => {
       expect.objectContaining({ id: 386, type: 'topic', levelLabel: 'explicit', depth: 3 }),
     ]);
   });
+
+  it('maps the level and page range from fetched flat rows', () => {
+    const model = GeneratedDocumentIndexModel.fromJson({
+      book_id: 77,
+      book_status: 'completed',
+      subject: {
+        id: 380,
+        title: 'علوم',
+        inference_level: 'explicit',
+        source_pages: { start: 7, end: 109 },
+      },
+      rows: [
+        {
+          id: 11,
+          type: 'subject',
+          level: 'Subject',
+          title: 'علوم',
+          from_pdf: 7,
+          to_pdf: 109,
+          printed_page_label: null,
+          needs_admin_review: false,
+        },
+      ],
+    });
+
+    expect(model.editableItems).toEqual([
+      expect.objectContaining({
+        id: 11,
+        type: 'subject',
+        levelLabel: 'Subject',
+        title: 'علوم',
+        fromPdf: 7,
+        toPdf: 109,
+        printedPageLabel: '7-109',
+        needsAdminReview: false,
+      }),
+    ]);
+  });
 });

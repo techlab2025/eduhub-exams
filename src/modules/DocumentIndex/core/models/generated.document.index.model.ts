@@ -1,8 +1,8 @@
 import { SaftyConditions } from '@/base/Presentation/Utils/SaftyConditions';
 import { DocumentIndexLevelTypeEnum } from '../constant/DocumentIndexLevel.enum';
-import type {
-  DocumentIndexRowType,
+import {
   EditableDocumentIndexItem,
+  type DocumentIndexRowType,
 } from './editable.document.index.item.model';
 import DocumentIndexChapterModel from './document.index.chapter.model';
 import { mapDocumentIndexNodeData, toEditableDocumentIndexItem } from './document.index.node.model';
@@ -15,6 +15,43 @@ const hierarchyLevel = (depth: number): DocumentIndexLevelTypeEnum => {
 
 const hierarchyRowType = (depth: number): DocumentIndexRowType =>
   depth <= 1 ? 'subject' : 'topic';
+
+const normalizeRowType = (value: unknown): DocumentIndexRowType => {
+  const type = String(value ?? '').toLowerCase();
+  if (type === 'subject' || type === 'chapter' || type === 'lesson' || type === 'topic') {
+    return type;
+  }
+  return 'topic';
+};
+
+const rowHierarchyLevel = (type: DocumentIndexRowType): DocumentIndexLevelTypeEnum => {
+  if (type === 'lesson') return DocumentIndexLevelTypeEnum.LESSON;
+  if (type === 'topic') return DocumentIndexLevelTypeEnum.TOPIC;
+  return DocumentIndexLevelTypeEnum.CHAPTER;
+};
+
+const mapFlatRow = (json: unknown): EditableDocumentIndexItem => {
+  const data = SaftyConditions.objectValue(json);
+  const type = normalizeRowType(data.type);
+  const fromPdf = SaftyConditions.numberValue(data.from_pdf ?? data.fromPdf);
+  const toPdf = SaftyConditions.numberValue(data.to_pdf ?? data.toPdf);
+  const fallbackPageLabel = fromPdf || toPdf ? `${fromPdf}-${toPdf}` : '';
+
+  return new EditableDocumentIndexItem({
+    id: SaftyConditions.numberValue(data.id),
+    level: rowHierarchyLevel(type),
+    type,
+    levelLabel: String(data.level ?? data.levelLabel ?? ''),
+    depth: SaftyConditions.numberValue(data.depth),
+    title: String(data.title ?? ''),
+    fromPdf,
+    toPdf,
+    printedPageLabel: String(data.printed_page_label ?? data.printedPageLabel ?? fallbackPageLabel),
+    needsAdminReview: SaftyConditions.booleanValue(
+      data.needs_admin_review ?? data.needsAdminReview,
+    ),
+  });
+};
 
 const flattenHierarchy = (json: unknown, depth = 0): EditableDocumentIndexItem[] => {
   const data = SaftyConditions.objectValue(json);
@@ -58,13 +95,18 @@ export default class GeneratedDocumentIndexModel {
   static fromJson(json: unknown): GeneratedDocumentIndexModel {
     const data = SaftyConditions.objectValue(json);
     const subject = SaftyConditions.objectValue(data.subject);
+    const hierarchyItems = Array.isArray(data.rows)
+      ? data.rows.map(mapFlatRow)
+      : Object.keys(subject).length > 0
+        ? flattenHierarchy(subject)
+        : [];
     return new GeneratedDocumentIndexModel({
       bookId: SaftyConditions.numberValue(data.book_id ?? data.bookId),
       bookStatus: String(data.book_status ?? data.bookStatus ?? ''),
       chapters: (Array.isArray(data.chapters) ? data.chapters : []).map(
         DocumentIndexChapterModel.fromJson,
       ),
-      hierarchyItems: Object.keys(subject).length > 0 ? flattenHierarchy(subject) : [],
+      hierarchyItems,
     });
   }
 
