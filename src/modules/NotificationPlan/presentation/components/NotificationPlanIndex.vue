@@ -204,16 +204,17 @@
 
 <template>
   <section class="notification-plan-index">
-    <header class="notification-plan-index__page-actions">
+    <Teleport to=".feature-header-container .actions">
       <button
         class="btn btn-primary notification-plan-index__add"
         type="button"
+        :aria-label="$t('notification_plan.add')"
         @click="router.push('/notification-plans/add')"
       >
         <IndexPluseIcon aria-hidden="true" />
-        {{ $t('notification_plan.add') }}
+        <span>{{ $t('notification_plan.add') }}</span>
       </button>
-    </header>
+    </Teleport>
 
     <div class="notification-plan-index__toolbar">
       <form class="notification-plan-index__search" role="search" @submit.prevent="fetchItems()">
@@ -306,7 +307,9 @@
               />
             </section>
 
-            <section class="notification-plan-filter__section notification-plan-filter__status">
+            <section
+              class="notification-plan-filter__section notification-plan-filter__status add_space"
+            >
               <header>
                 <h2>{{ $t('notification_plan.status_filter') }}</h2>
               </header>
@@ -333,10 +336,10 @@
         </template>
         <template #footer>
           <div class="notification-plan-filter__actions">
-            <button class="btn btn-primary" type="button" @click="applyFilters">
+            <button class="btn btn-primary btn-full" type="button" @click="applyFilters">
               {{ $t('notification_plan.apply') }}
             </button>
-            <button class="btn btn-cancel" type="button" @click="resetFilters">
+            <button class="btn btn-cancel btn-full" type="button" @click="resetFilters">
               {{ $t('notification_plan.form.reset') }}
             </button>
           </div>
@@ -415,8 +418,15 @@
     </DataStatusBuilder>
   </section>
 </template>
-
 <style scoped lang="scss">
+  .add_space {
+    gap: 1rem;
+  }
+
+  .btn-full {
+    width: 100%;
+  }
+
   .notification-plan-index {
     min-width: 0;
     display: grid;
@@ -424,18 +434,22 @@
     padding-bottom: 32px;
   }
 
-  .notification-plan-index__page-actions {
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .notification-plan-index__add {
-    min-height: 46px;
+    min-width: 176px;
+    min-height: 42px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     gap: 8px;
-    padding-inline: 22px;
+    padding-inline: 18px;
     border-radius: var(--radius-full);
+    line-height: 1;
+    white-space: nowrap;
+
+    span {
+      white-space: nowrap;
+    }
   }
 
   .notification-plan-index__toolbar {
@@ -682,6 +696,16 @@
   }
 
   @media (max-width: 768px) {
+    .notification-plan-index__add {
+      min-width: 42px;
+      width: 42px;
+      padding: 0;
+
+      span {
+        display: none;
+      }
+    }
+
     .notification-plan-index__toolbar {
       align-items: stretch;
       flex-direction: column;

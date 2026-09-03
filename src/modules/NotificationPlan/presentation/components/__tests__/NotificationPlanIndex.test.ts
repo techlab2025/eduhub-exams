@@ -87,6 +87,7 @@ const mountIndex = () =>
         AppTable: AppTableStub,
         DataStatusBuilder: DataStatusBuilderStub,
         FilterDialog: FilterDialogStub,
+        teleport: true,
       },
     },
   });
@@ -181,6 +182,9 @@ describe('NotificationPlanIndex', () => {
   it('navigates to the create page from the add action', async () => {
     const wrapper = mountIndex();
 
+    expect(wrapper.get('teleport-stub').attributes('to')).toBe(
+      '.feature-header-container .actions',
+    );
     await wrapper.find('.notification-plan-index__add').trigger('click');
 
     expect(pushMock).toHaveBeenCalledWith('/notification-plans/add');

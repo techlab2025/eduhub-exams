@@ -168,9 +168,9 @@
 
     <template #success>
       <main v-if="plan" class="notification-plan-details">
-        <header class="notification-plan-details__page-heading">
+        <!-- <header class="notification-plan-details__page-heading">
           <h1>{{ $t('notification_plan.details.page_title') }}</h1>
-        </header>
+        </header> -->
 
         <section class="notification-plan-details__summary">
           <div>
@@ -212,38 +212,40 @@
               </div>
             </section>
 
-            <section class="notification-plan-details__triggers-heading">
-              <h2>{{ $t('notification_plan.details.triggers.title') }}</h2>
-              <p>{{ $t('notification_plan.details.triggers.description') }}</p>
-            </section>
-
-            <div v-if="configuredFeatures.length" class="notification-plan-details__features">
-              <article
-                v-for="feature in configuredFeatures"
-                :key="feature.id"
-                class="notification-plan-details__feature"
-              >
-                <header>
-                  <h3>{{ feature.title }}</h3>
-                  <img :src="notificationMessageIcon" alt="" aria-hidden="true" />
-                </header>
-                <div class="notification-plan-details__feature-body">
-                  <div class="notification-plan-details__action-list">
-                    <span v-for="action in feature.actions" :key="action.id">
-                      <IconCheck aria-hidden="true" />
-                      {{ action.title }}
-                    </span>
+            <div class="notification_border">
+              <section class="notification-plan-details__triggers-heading">
+                <h2>{{ $t('notification_plan.details.triggers.title') }}</h2>
+                <p>{{ $t('notification_plan.details.triggers.description') }}</p>
+              </section>
+  
+              <div v-if="configuredFeatures.length" class="notification-plan-details__features">
+                <article
+                  v-for="feature in configuredFeatures"
+                  :key="feature.id"
+                  class="notification-plan-details__feature"
+                >
+                  <header>
+                    <h3>{{ feature.title }}</h3>
+                    <img :src="notificationMessageIcon" alt="" aria-hidden="true" />
+                  </header>
+                  <div class="notification-plan-details__feature-body">
+                    <div class="notification-plan-details__action-list">
+                      <span v-for="action in feature.actions" :key="action.id">
+                        <IconCheck aria-hidden="true" />
+                        {{ action.title }}
+                      </span>
+                    </div>
+                    <div v-if="feature.message" class="notification-plan-details__message">
+                      <strong>{{ $t('notification_plan.details.message_template') }}</strong>
+                      <p>{{ feature.message }}</p>
+                    </div>
                   </div>
-                  <div v-if="feature.message" class="notification-plan-details__message">
-                    <strong>{{ $t('notification_plan.details.message_template') }}</strong>
-                    <p>{{ feature.message }}</p>
-                  </div>
-                </div>
-              </article>
+                </article>
+              </div>
+              <p v-else class="notification-plan-details__empty-triggers">
+                {{ $t('notification_plan.details.triggers.empty') }}
+              </p>
             </div>
-            <p v-else class="notification-plan-details__empty-triggers">
-              {{ $t('notification_plan.details.triggers.empty') }}
-            </p>
           </div>
 
           <aside class="notification-plan-details__record notification-plan-details__card">
