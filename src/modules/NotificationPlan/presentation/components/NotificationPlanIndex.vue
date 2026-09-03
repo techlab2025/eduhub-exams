@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-  import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
@@ -12,7 +11,6 @@
   import NotificationPlanEditIcon from '@/icons/NotificationPlanActions/NotificationPlanEditIcon.vue';
   import NotificationPlanStatusIcon from '@/icons/NotificationPlanActions/NotificationPlanStatusIcon.vue';
   import NotificationPlanDeleteIcon from '@/icons/NotificationPlanActions/NotificationPlanDeleteIcon.vue';
-  import IndexPluseIcon from '@/shared/icons/IndexPluseIcon.vue';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   import ReloadIcon from '@/shared/icons/CustomSelect/ReloadIcon.vue';
   import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
@@ -27,7 +25,6 @@
   import DeleteNotificationPlanParams from '../../core/params/delete.notification.plan.params';
   import ToggleNotificationPlanStatusParams from '../../core/params/toggle.notification.plan.status.params';
 
-  const router = useRouter();
   const { locale, t } = useI18n();
   const controller = NotificationPlanController.getInstance();
   const state = computed(() => controller.listState.value);
@@ -204,18 +201,6 @@
 
 <template>
   <section class="notification-plan-index">
-    <Teleport to=".feature-header-container .actions">
-      <button
-        class="btn btn-primary notification-plan-index__add"
-        type="button"
-        :aria-label="$t('notification_plan.add')"
-        @click="router.push('/notification-plans/add')"
-      >
-        <IndexPluseIcon aria-hidden="true" />
-        <span>{{ $t('notification_plan.add') }}</span>
-      </button>
-    </Teleport>
-
     <div class="notification-plan-index__toolbar">
       <form class="notification-plan-index__search" role="search" @submit.prevent="fetchItems()">
         <IndexSearchIcon aria-hidden="true" />
@@ -432,24 +417,6 @@
     display: grid;
     gap: 20px;
     padding-bottom: 32px;
-  }
-
-  .notification-plan-index__add {
-    min-width: 176px;
-    min-height: 42px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    gap: 8px;
-    padding-inline: 18px;
-    border-radius: var(--radius-full);
-    line-height: 1;
-    white-space: nowrap;
-
-    span {
-      white-space: nowrap;
-    }
   }
 
   .notification-plan-index__toolbar {
@@ -696,16 +663,6 @@
   }
 
   @media (max-width: 768px) {
-    .notification-plan-index__add {
-      min-width: 42px;
-      width: 42px;
-      padding: 0;
-
-      span {
-        display: none;
-      }
-    }
-
     .notification-plan-index__toolbar {
       align-items: stretch;
       flex-direction: column;

@@ -5,7 +5,14 @@ export const notificationPlanRoutes: RouteRecordRaw[] = [
     path: 'notification-plans',
     name: 'Notification Plans',
     component: () => import('@/views/NotificationPlan/IndexNotificationPlan.vue'),
-    meta: { breadcrumb: 'notification_plan.title' },
+    meta: {
+      breadcrumb: 'notification_plan.title',
+      headerAction: {
+        icon: 'plus',
+        label: 'notification_plan.add',
+        to: '/notification-plans/add',
+      },
+    },
   },
   {
     path: 'notification-plans/add',

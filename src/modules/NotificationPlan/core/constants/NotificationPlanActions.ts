@@ -1,26 +1,5 @@
 import { NotificationPlanQuestionActionEnum } from '../enums/notification.plan.question.enum';
 
-type NotificationPlanTranslationKey = `notification_plan.${string}`;
-
-export interface NotificationPlanActionDefinition {
-  readonly action_title: NotificationPlanTranslationKey;
-  readonly action_id: number;
-}
-
-export interface NotificationPlanSubFeatureDefinition {
-  readonly id: string;
-  readonly sub_feature_title: NotificationPlanTranslationKey;
-  readonly sub_feature_description: NotificationPlanTranslationKey;
-  readonly message: NotificationPlanTranslationKey;
-  readonly actions: readonly NotificationPlanActionDefinition[];
-}
-
-export interface NotificationPlanFeatureDefinition {
-  readonly id: string;
-  readonly feature_title: NotificationPlanTranslationKey;
-  readonly sub_feature: readonly NotificationPlanSubFeatureDefinition[];
-}
-
 export const NotificationPlanActions = [
   {
     id: 'questions',
@@ -71,4 +50,4 @@ export const NotificationPlanActions = [
     feature_title: 'notification_plan.features.documents',
     sub_feature: [],
   },
-] as const satisfies readonly NotificationPlanFeatureDefinition[];
+] as const;
