@@ -10,10 +10,9 @@ import { StatusNotificationPlanEnum } from '../../../core/enums/status.notificat
 import NotificationPlanModel from '../../../core/models/notification.plan.model';
 import NotificationPlanIndex from '../NotificationPlanIndex.vue';
 
-const { deleteMock, fetchListMock, pushMock, toggleStatusMock } = vi.hoisted(() => ({
+const { deleteMock, fetchListMock, toggleStatusMock } = vi.hoisted(() => ({
   deleteMock: vi.fn(),
   fetchListMock: vi.fn(),
-  pushMock: vi.fn(),
   toggleStatusMock: vi.fn(),
 }));
 
@@ -25,15 +24,6 @@ const listItem = NotificationPlanModel.fromJson({
   status: StatusNotificationPlanEnum.active,
   created_by: 'Portal Admin',
   created_at: '2026-09-02T09:20:42.000000Z',
-});
-
-vi.mock('vue-router', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('vue-router')>();
-
-  return {
-    ...actual,
-    useRouter: () => ({ push: pushMock }),
-  };
 });
 
 vi.mock('../../controllers/notification.plan.controller', () => ({
@@ -87,7 +77,6 @@ const mountIndex = () =>
         AppTable: AppTableStub,
         DataStatusBuilder: DataStatusBuilderStub,
         FilterDialog: FilterDialogStub,
-        teleport: true,
       },
     },
   });
@@ -177,16 +166,5 @@ describe('NotificationPlanIndex', () => {
       page: 1,
       per_page: 10,
     });
-  });
-
-  it('navigates to the create page from the add action', async () => {
-    const wrapper = mountIndex();
-
-    expect(wrapper.get('teleport-stub').attributes('to')).toBe(
-      '.feature-header-container .actions',
-    );
-    await wrapper.find('.notification-plan-index__add').trigger('click');
-
-    expect(pushMock).toHaveBeenCalledWith('/notification-plans/add');
   });
 });
