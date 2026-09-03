@@ -132,17 +132,17 @@
           name: 'subscriptions',
           icon: SettingIcon,
         },
-        // {
-        //   link: '/notification-plans',
-        //   name: 'notification_plan.title',
-        //   icon: SettingIcon,
-        //   children: [
-        //     {
-        //       link: '/notification-plans/add',
-        //       name: 'notification_plan.add',
-        //     },
-        //   ],
-        // },
+        {
+          link: '/notification-plans',
+          name: 'notification_plan.title',
+          icon: SettingIcon,
+          children: [
+            {
+              link: '/notification-plans/add',
+              name: 'notification_plan.add',
+            },
+          ],
+        },
         {
           link: '/students',
           name: 'students',

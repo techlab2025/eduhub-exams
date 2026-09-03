@@ -1346,7 +1346,11 @@
       "created_at": "Created At"
     },
     "actions": {
-      "course_assigend": "Course Assigned"
+      "course_assigend": "Course Assigned",
+      "add_question": "Add Question",
+      "approve_question": "Approve Question",
+      "reject_question": "Reject Question",
+      "edit_question": "Edit Question"
     },
     "features": {
       "questions": "Questions",
@@ -1378,7 +1382,7 @@
       "configure_triggers": "Configure Notification Triggers",
       "reset": "Reset",
       "trigger_group": "Questions",
-      "sub_features": "Sub-Features Under Questions",
+      "sub_features": "Sub-Features Under {feature}",
       "trigger_item_title": "Question Control",
       "trigger_item_description": "Select the events that should notify the recipients selected for this plan.",
       "question_control": "Question Control",

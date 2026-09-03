@@ -7,7 +7,10 @@
   import TitleInterface from '@/base/Data/Models/titleInterface';
   import EmployeeController from '@/modules/employee/presentation/controllers/employee.controller';
   import IndexEmployeeParams from '@/modules/employee/core/params/index.employee.params';
-  import { NotificationPlanActionEnum } from '../../core/enums/notification.plan.action.enum';
+  import {
+    NotificationPlanActions,
+    type NotificationPlanActionDefinition,
+  } from '../../core/constants/NotificationPlanActions';
   import type NotificationPlanModel from '../../core/models/notification.plan.model';
   import AddNotificationPlanParams from '../../core/params/add.notification.plan.params';
   import EditNotificationPlanParams from '../../core/params/edit.notification.plan.params';
@@ -25,11 +28,14 @@
     afterFeature: string;
   }
 
-  const createDefaultMessage = (): MessageSegments => ({
+  const firstSubFeature = NotificationPlanActions.flatMap(({ sub_feature }) => sub_feature)[0];
+  const defaultMessageKey = firstSubFeature?.message ?? 'notification_plan.form.template_suffix';
+
+  const createDefaultMessage = (messageKey = defaultMessageKey): MessageSegments => ({
     beforeExecutor: t('notification_plan.form.template_updated'),
     beforeAction: t('notification_plan.form.template_has'),
     beforeFeature: '',
-    afterFeature: t('notification_plan.form.template_suffix'),
+    afterFeature: t(messageKey),
   });
 
   const title = ref('');
@@ -39,8 +45,8 @@
   const hierarchyIdsText = ref('');
   const selectedActions = ref<number[]>([]);
   const subActions = ref<Record<number, number | null>>({});
-  const expandedFeature = ref<'questions' | 'documents' | null>('questions');
-  const expandedSubFeature = ref<string | null>('question-control');
+  const expandedFeature = ref<string | null>(NotificationPlanActions[0]?.id ?? null);
+  const expandedSubFeature = ref<string | null>(firstSubFeature?.id ?? null);
   const editingMessage = ref(false);
   const savedMessage = ref<MessageSegments>(createDefaultMessage());
   const draftMessage = ref<MessageSegments>(createDefaultMessage());
@@ -55,44 +61,41 @@
     status: null,
   });
 
-  const actionDefinitions = computed(() => [
-    {
-      value: NotificationPlanActionEnum.COURSE_ASSIGEND,
-      label:
-        props.plan?.actions.find(
-          ({ value }) => value === NotificationPlanActionEnum.COURSE_ASSIGEND,
-        )?.label || t('notification_plan.actions.course_assigend'),
-      description: t('notification_plan.form.trigger_item_description'),
-    },
-  ]);
+  const actionContexts = NotificationPlanActions.flatMap((feature) =>
+    feature.sub_feature.flatMap((subFeature) =>
+      subFeature.actions.map((action) => ({ action, feature, subFeature })),
+    ),
+  );
 
-  const subFeatureDefinitions = computed(() => [
-    {
-      id: 'question-control',
-      title: t('notification_plan.form.question_control'),
-      number: 1,
-      hasActions: true,
-    },
-    {
-      id: 'generate-questions',
-      title: t('notification_plan.form.generate_questions'),
-      number: 2,
-      hasActions: false,
-    },
-    {
-      id: 'question-batches',
-      title: t('notification_plan.form.question_batches'),
-      number: 3,
-      hasActions: false,
-    },
-  ]);
+  const selectedActionContext = computed(() => {
+    const selectedAction = selectedActions.value[0] ?? props.plan?.actions[0]?.value;
+    return actionContexts.find(({ action }) => action.action_id === selectedAction);
+  });
+
+  const selectedPlanAction = computed(() => {
+    const selectedAction = selectedActions.value[0] ?? props.plan?.actions[0]?.value;
+    return props.plan?.actions.find(({ value }) => value === selectedAction);
+  });
+
+  const getActionLabel = (action: NotificationPlanActionDefinition) =>
+    props.plan?.actions.find(({ value }) => value === action.action_id)?.label ||
+    t(action.action_title);
+
+  const hasSelectedActions = (actions: readonly NotificationPlanActionDefinition[]) =>
+    actions.some(({ action_id }) => selectedActions.value.includes(action_id));
 
   const lockedMessageValues = computed(() => [
-    props.plan?.actions[0]?.executorName ||
+    selectedPlanAction.value?.executorName ||
       selectedEmployees.value[0]?.title ||
       t('notification_plan.form.template_executor_value'),
-    actionDefinitions.value[0]?.label || t('notification_plan.form.template_action_value'),
-    props.plan?.actions[0]?.featureName || t('notification_plan.form.template_feature_value'),
+    selectedPlanAction.value?.label ||
+      (selectedActionContext.value
+        ? t(selectedActionContext.value.action.action_title)
+        : t('notification_plan.form.template_action_value')),
+    selectedPlanAction.value?.featureName ||
+      (selectedActionContext.value
+        ? t(selectedActionContext.value.feature.feature_title)
+        : t('notification_plan.form.template_feature_value')),
   ]);
 
   const composeMessage = (segments: MessageSegments) =>
@@ -132,7 +135,7 @@
     };
   };
 
-  const toggleFeature = (feature: 'questions' | 'documents') => {
+  const toggleFeature = (feature: string) => {
     expandedFeature.value = expandedFeature.value === feature ? null : feature;
   };
 
@@ -205,9 +208,18 @@
   };
 
   const toggleAction = (action: number, enabled: boolean) => {
+    const hadSelectedActions = selectedActions.value.length > 0;
     selectedActions.value = enabled
       ? Array.from(new Set([...selectedActions.value, action]))
       : selectedActions.value.filter((value) => value !== action);
+    if (enabled && !hadSelectedActions) {
+      const messageKey = actionContexts.find(
+        ({ action: definition }) => definition.action_id === action,
+      )?.subFeature.message;
+      savedMessage.value = createDefaultMessage(messageKey);
+      draftMessage.value = { ...savedMessage.value };
+      returnedMessage.value = '';
+    }
     if (!enabled) subActions.value[action] = null;
     if (!enabled) editingMessage.value = false;
     updateData();
@@ -221,6 +233,9 @@
     selectedActions.value = [];
     subActions.value = {};
     editingMessage.value = false;
+    savedMessage.value = createDefaultMessage();
+    draftMessage.value = { ...savedMessage.value };
+    returnedMessage.value = '';
     updateData();
   };
 
@@ -314,24 +329,30 @@
         </button>
       </header>
 
-      <section class="notification-plan-feature">
+      <section
+        v-for="feature in NotificationPlanActions"
+        :key="feature.id"
+        class="notification-plan-feature"
+      >
         <button
           class="notification-plan-feature__header"
           type="button"
-          :aria-expanded="expandedFeature === 'questions'"
-          @click="toggleFeature('questions')"
+          :aria-expanded="expandedFeature === feature.id"
+          @click="toggleFeature(feature.id)"
         >
-          <strong>{{ $t('notification_plan.form.trigger_group') }}</strong>
+          <strong>{{ $t(feature.feature_title) }}</strong>
           <span class="notification-plan-feature__chevron" aria-hidden="true">
             <IconArrowDown />
           </span>
         </button>
 
-        <div v-if="expandedFeature === 'questions'" class="notification-plan-feature__content">
-          <h3>{{ $t('notification_plan.form.sub_features') }}</h3>
+        <div v-if="expandedFeature === feature.id" class="notification-plan-feature__content">
+          <h3 v-if="feature.sub_feature.length">
+            {{ $t('notification_plan.form.sub_features', { feature: $t(feature.feature_title) }) }}
+          </h3>
 
           <article
-            v-for="subFeature in subFeatureDefinitions"
+            v-for="(subFeature, subFeatureIndex) in feature.sub_feature"
             :key="subFeature.id"
             class="notification-plan-action"
           >
@@ -341,14 +362,14 @@
               :aria-expanded="expandedSubFeature === subFeature.id"
               @click="toggleSubFeature(subFeature.id)"
             >
-              <span class="notification-plan-action__number">{{ subFeature.number }}</span>
+              <span class="notification-plan-action__number">{{ subFeatureIndex + 1 }}</span>
               <span class="notification-plan-action__copy">
-                <strong>{{ subFeature.title }}</strong>
-                <small>{{ $t('notification_plan.form.trigger_item_description') }}</small>
+                <strong>{{ $t(subFeature.sub_feature_title) }}</strong>
+                <small>{{ $t(subFeature.sub_feature_description) }}</small>
               </span>
               <span class="notification-plan-action__controls">
                 <img
-                  v-if="expandedSubFeature === subFeature.id && subFeature.hasActions"
+                  v-if="expandedSubFeature === subFeature.id && subFeature.actions.length"
                   :src="notificationMessageIcon"
                   alt=""
                   width="43"
@@ -361,23 +382,26 @@
             </button>
 
             <div v-if="expandedSubFeature === subFeature.id" class="notification-plan-action__body">
-              <template v-if="subFeature.hasActions">
+              <template v-if="subFeature.actions.length">
                 <div class="notification-plan-action__choices">
                   <label
-                    v-for="action in actionDefinitions"
-                    :key="action.value"
+                    v-for="action in subFeature.actions"
+                    :key="action.action_id"
                     class="notification-plan-checkbox"
                   >
                     <input
                       type="checkbox"
-                      :checked="selectedActions.includes(action.value)"
-                      @change="handleActionChange(action.value, $event)"
+                      :checked="selectedActions.includes(action.action_id)"
+                      @change="handleActionChange(action.action_id, $event)"
                     />
-                    <span>{{ action.label }}</span>
+                    <span>{{ getActionLabel(action) }}</span>
                   </label>
                 </div>
 
-                <div v-if="selectedActions.length" class="notification-plan-template">
+                <div
+                  v-if="hasSelectedActions(subFeature.actions)"
+                  class="notification-plan-template"
+                >
                   <header class="notification-plan-template__header">
                     <span>
                       <strong>{{ $t('notification_plan.form.message_template') }}</strong>
@@ -487,23 +511,8 @@
               </p>
             </div>
           </article>
-        </div>
-      </section>
 
-      <section class="notification-plan-feature">
-        <button
-          class="notification-plan-feature__header"
-          type="button"
-          :aria-expanded="expandedFeature === 'documents'"
-          @click="toggleFeature('documents')"
-        >
-          <strong>{{ $t('notification_plan.form.documents') }}</strong>
-          <span class="notification-plan-feature__chevron" aria-hidden="true">
-            <IconArrowDown />
-          </span>
-        </button>
-        <div v-if="expandedFeature === 'documents'" class="notification-plan-feature__content">
-          <p class="notification-plan-action__empty">
+          <p v-if="!feature.sub_feature.length" class="notification-plan-action__empty">
             {{ $t('notification_plan.form.no_actions_configured') }}
           </p>
         </div>
@@ -541,504 +550,3 @@
     </section>
   </form>
 </template>
-
-<style scoped lang="scss">
-  .notification-plan-form {
-    display: grid;
-    gap: 24px;
-    color: var(--gray-900);
-
-    &.is-loading {
-      pointer-events: none;
-      opacity: 0.65;
-    }
-  }
-
-  .notification-plan-form__intro {
-    display: grid;
-    gap: 4px;
-
-    h1,
-    p {
-      margin: 0;
-    }
-
-    h1 {
-      font-family: 'Bold';
-      font-weight: 700;
-      font-size: 24px;
-    }
-
-    p {
-      color: var(--gray-600);
-      font-family: var(--font-family);
-      font-size: 16px;
-      font-weight: 700;
-    }
-  }
-
-  .notification-plan-card {
-    display: grid;
-    gap: 18px;
-    padding: 18px;
-    background: var(--background-color-soft-light);
-    border: 1px solid var(--gray-300);
-    border-radius: 24px;
-
-    label {
-      font-family: var(--font-family);
-    }
-  }
-
-  .notification-plan-card--details {
-    gap: 20px;
-  }
-
-  .notification-plan-field {
-    display: grid;
-    gap: 10px;
-    color: var(--gray-800);
-    font-size: 0.875rem;
-    font-weight: 600;
-
-    b {
-      color: var(--Red);
-    }
-
-    > input {
-      width: 100%;
-      min-height: 52px;
-      padding-inline: 18px;
-      color: var(--gray-900);
-      background: var(--BgWhite);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-full);
-      outline: none;
-      transition: var(--transition-fast);
-
-      &:focus {
-        border-color: var(--PrimaryColor);
-        box-shadow: 0 0 0 3px var(--PrimaryColor-light);
-      }
-
-      &::placeholder {
-        color: var(--gray-400);
-      }
-    }
-  }
-
-  .notification-plan-field--recipients {
-    :deep(.p-multiselect) {
-      min-height: 52px;
-      border-color: var(--gray-200) !important;
-      border-radius: var(--radius-full) !important;
-    }
-
-    :deep(.p-multiselect-label) {
-      min-height: 50px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 18px !important;
-    }
-  }
-
-  .notification-plan-card__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-
-    h2 {
-      margin: 0;
-      font-weight: 700;
-      font-family: 'bold';
-      font-size: 18px;
-
-      b {
-        color: var(--Red);
-        font-family: var(--font-family);
-        font-size: 14px;
-        font-weight: 600;
-      }
-    }
-  }
-
-  .notification-plan-reset {
-    padding: 0;
-    color: var(--Red);
-    background: transparent;
-    border: 0;
-    font-size: 0.75rem;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .notification-plan-feature {
-    overflow: hidden;
-    background: var(--gray-50);
-    border: 1px solid var(--gray-200);
-    border-radius: 16px;
-  }
-
-  .notification-plan-feature__header {
-    width: 100%;
-    min-height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px 18px;
-    color: var(--gray-900);
-    text-align: start;
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid var(--gray-200);
-    cursor: pointer;
-
-    svg {
-      color: var(--gray-500);
-    }
-  }
-
-  .notification-plan-feature__chevron {
-    display: flex;
-    transition: var(--transition-fast);
-  }
-
-  .notification-plan-feature__header[aria-expanded='true'] .notification-plan-feature__chevron {
-    transform: rotate(180deg);
-  }
-
-  .notification-plan-feature__content {
-    display: grid;
-    gap: 12px;
-    padding: 14px;
-
-    h3 {
-      margin: 0;
-      color: var(--PrimaryColor);
-      font-size: 0.875rem;
-      font-weight: 700;
-    }
-  }
-
-  .notification-plan-action {
-    overflow: hidden;
-    background: var(--BgWhite);
-    border: 1px solid var(--gray-100);
-    border-radius: 14px;
-  }
-
-  .notification-plan-action__header {
-    width: 100%;
-    min-height: 68px;
-    display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) auto;
-    gap: 12px;
-    align-items: center;
-    padding: 12px;
-    color: inherit;
-    text-align: start;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-  }
-
-  .notification-plan-action__number {
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    color: var(--PrimaryColor);
-    background: var(--success-green-light-std);
-    border-radius: 8px;
-    font-weight: 700;
-  }
-
-  .notification-plan-action__copy {
-    min-width: 0;
-    display: grid;
-    gap: 3px;
-
-    small {
-      color: var(--gray-500);
-      font-size: 0.75rem;
-      font-weight: 400;
-    }
-  }
-
-  .notification-plan-action__chevron {
-    display: flex;
-    transition: var(--transition-fast);
-  }
-
-  .notification-plan-action__controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    img {
-      flex: 0 0 43px;
-    }
-  }
-
-  .notification-plan-action__header[aria-expanded='true'] .notification-plan-action__chevron {
-    transform: rotate(180deg);
-  }
-
-  .notification-plan-action__body {
-    display: grid;
-    gap: 14px;
-    padding: 0 12px 12px;
-  }
-
-  .notification-plan-action__choices {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .notification-plan-checkbox {
-    min-height: 46px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    cursor: pointer;
-
-    input {
-      width: 16px;
-      height: 16px;
-      margin: 0;
-      accent-color: var(--PrimaryColor);
-    }
-  }
-
-  .notification-plan-template {
-    display: grid;
-    gap: 10px;
-    padding: 16px;
-    background: var(--success-green-light-std);
-    border-radius: 14px;
-
-    small,
-    .notification-plan-template__label {
-      color: var(--gray-500);
-      font-size: 0.75rem;
-    }
-  }
-
-  .notification-plan-template__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-
-    > span {
-      display: grid;
-      gap: 4px;
-    }
-  }
-
-  .notification-plan-template__edit,
-  .notification-plan-template__save {
-    min-width: 142px;
-    min-height: 38px;
-    padding-inline: 18px;
-    color: var(--PrimaryColor);
-    background: var(--BgWhite);
-    border: 1px solid var(--PrimaryColor);
-    border-radius: var(--radius-full);
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .notification-plan-template__label {
-    margin-top: 8px;
-    font-weight: 600;
-  }
-
-  .notification-plan-template__display {
-    min-height: 52px;
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    color: var(--gray-900);
-    background: var(--BgWhite);
-    border: 1px solid var(--gray-200);
-    border-radius: 10px;
-    font-size: 0.8rem;
-  }
-
-  .notification-plan-template__editor {
-    min-height: 64px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 7px;
-    padding: 10px;
-    background: var(--BgWhite);
-    border: 1px solid var(--gray-200);
-    border-radius: 10px;
-
-    input {
-      min-width: 88px;
-      min-height: 34px;
-      flex: 1 1 105px;
-      padding: 6px 8px;
-      color: var(--gray-900);
-      background: transparent;
-      border: 1px dashed var(--gray-300);
-      border-radius: 6px;
-      outline: none;
-
-      &:focus {
-        border-color: var(--PrimaryColor);
-        box-shadow: 0 0 0 2px var(--PrimaryColor-alpha-12);
-      }
-    }
-
-    .notification-plan-template__short-input {
-      min-width: 54px;
-      flex-basis: 54px;
-    }
-
-    .notification-plan-template__suffix-input {
-      min-width: 210px;
-      flex-grow: 3;
-    }
-  }
-
-  .notification-plan-template__token {
-    min-height: 34px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 7px;
-    color: var(--PrimaryColor);
-    background: var(--success-green-light-std);
-    border: 1px solid var(--PrimaryColor);
-    border-radius: 5px;
-    white-space: nowrap;
-    user-select: none;
-  }
-
-  .notification-plan-template__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 4px;
-  }
-
-  .notification-plan-template__cancel {
-    min-width: 142px;
-    min-height: 38px;
-    padding-inline: 18px;
-    color: var(--gray-900);
-    background: var(--BgWhite);
-    border: 1px solid transparent;
-    border-radius: var(--radius-full);
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .notification-plan-action__empty {
-    margin: 0;
-    padding: 12px;
-    color: var(--gray-500);
-    text-align: center;
-    background: var(--BgWhite);
-    border-radius: 10px;
-    font-size: 0.8rem;
-  }
-
-  .notification-plan-state {
-    gap: 16px;
-  }
-
-  .notification-plan-state__options {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .notification-plan-radio-card {
-    min-height: 68px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 12px 16px;
-    border: 1px solid var(--gray-200);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: var(--transition-fast);
-
-    &.selected {
-      border-color: var(--PrimaryColor);
-    }
-
-    > span {
-      display: grid;
-      gap: 3px;
-    }
-
-    small {
-      color: var(--gray-400);
-      font-size: 0.75rem;
-      font-weight: 400;
-    }
-
-    input {
-      width: 18px;
-      height: 18px;
-      margin: 0;
-      accent-color: var(--PrimaryColor);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .notification-plan-form {
-      gap: 16px;
-    }
-
-    .notification-plan-card {
-      padding: 14px;
-      border-radius: 18px;
-    }
-
-    .notification-plan-state__options {
-      grid-template-columns: 1fr;
-    }
-
-    .notification-plan-action__choices {
-      grid-template-columns: 1fr;
-    }
-
-    .notification-plan-action__header {
-      grid-template-columns: 36px minmax(0, 1fr) auto;
-    }
-
-    .notification-plan-action__number {
-      width: 36px;
-      height: 36px;
-    }
-
-    .notification-plan-template__header {
-      align-items: stretch;
-      flex-direction: column;
-    }
-
-    .notification-plan-template__edit,
-    .notification-plan-template__actions button {
-      width: 100%;
-    }
-
-    .notification-plan-template__actions {
-      flex-direction: column;
-    }
-  }
-</style>

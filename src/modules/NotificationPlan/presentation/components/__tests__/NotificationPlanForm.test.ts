@@ -3,7 +3,8 @@ import { createI18n } from 'vue-i18n';
 import { describe, expect, it } from 'vitest';
 import TitleInterface from '@/base/Data/Models/titleInterface';
 import en from '@/locales/en.json';
-import { NotificationPlanActionEnum } from '../../../core/enums/notification.plan.action.enum';
+import { NotificationPlanActions } from '../../../core/constants/NotificationPlanActions';
+import { NotificationPlanQuestionActionEnum } from '../../../core/enums/notification.plan.question.enum';
 import NotificationPlanModel from '../../../core/models/notification.plan.model';
 import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
 import NotificationPlanForm from '../NotificationPlanForm.vue';
@@ -29,6 +30,20 @@ describe('NotificationPlanForm', () => {
     expect(wrapper.find('h1').text()).toBe('Create notification plan');
     expect(wrapper.find('.notification-plan-card--details').exists()).toBe(true);
     expect(wrapper.find('.notification-plan-triggers').exists()).toBe(true);
+    expect(wrapper.findAll('.notification-plan-feature__header')).toHaveLength(
+      NotificationPlanActions.length,
+    );
+    expect(wrapper.findAll('input[type="checkbox"]')).toHaveLength(
+      NotificationPlanActions[0]?.sub_feature[0]?.actions.length,
+    );
+    expect(wrapper.findAll('.notification-plan-checkbox').map((item) => item.text())).toEqual(
+      expect.arrayContaining([
+        'Add Question',
+        'Approve Question',
+        'Reject Question',
+        'Edit Question',
+      ]),
+    );
     expect(wrapper.findAll('.notification-plan-radio-card')).toHaveLength(2);
   });
 
@@ -66,7 +81,7 @@ describe('NotificationPlanForm', () => {
       employeeIds: [8],
       actionValues: [
         {
-          action: NotificationPlanActionEnum.COURSE_ASSIGEND,
+          action: NotificationPlanQuestionActionEnum.Add_Question,
           sub_action: null,
         },
       ],
@@ -93,7 +108,7 @@ describe('NotificationPlanForm', () => {
     await wrapper.find('.notification-plan-template__save').trigger('click');
 
     expect(wrapper.find('.notification-plan-template__display').text()).toBe(
-      'Alert: Ahmed Hawam has Course Assigned Questions Review it now.',
+      'Alert: Ahmed Hawam has Add Question Questions Review it now.',
     );
   });
 
@@ -105,7 +120,7 @@ describe('NotificationPlanForm', () => {
         is_active: false,
         actions: [
           {
-            value: NotificationPlanActionEnum.COURSE_ASSIGEND,
+            value: NotificationPlanQuestionActionEnum.Add_Question,
             label: 'Add Question',
             displayed_message:
               'Updated: Sara Ali has Add Question Questions. Please review the latest change.',

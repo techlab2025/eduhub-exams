@@ -924,7 +924,11 @@
       "created_at": "تاريخ الإنشاء"
     },
     "actions": {
-      "course_assigend": "إسناد دورة"
+      "course_assigend": "إسناد دورة",
+      "add_question": "إضافة سؤال",
+      "approve_question": "الموافقة على السؤال",
+      "reject_question": "رفض السؤال",
+      "edit_question": "تعديل السؤال"
     },
     "features": {
       "questions": "الأسئلة",
@@ -956,7 +960,7 @@
       "configure_triggers": "إعداد محفزات الإشعارات",
       "reset": "إعادة ضبط",
       "trigger_group": "الأسئلة",
-      "sub_features": "الميزات الفرعية ضمن الأسئلة",
+      "sub_features": "الميزات الفرعية ضمن {feature}",
       "trigger_item_title": "إدارة الأسئلة",
       "trigger_item_description": "اختر الأحداث التي ترسل إشعارات إلى المستلمين المحددين لهذه الخطة.",
       "question_control": "إدارة الأسئلة",
