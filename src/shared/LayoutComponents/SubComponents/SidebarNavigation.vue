@@ -21,6 +21,8 @@
   import Question from '@/shared/icons/question.vue';
   import ArticleIcon from '@/shared/icons/ArticleIcon.vue';
   import { QuestionStatusEnum } from '@/modules/Questions/core/constant/question.status.enum';
+  import { PermissionsEnum, type PermissionCode } from '@/modules/Permission';
+  import PermissionBuilder from '@/shared/HelpersComponents/PermissionBuilder.vue';
 
   const route = useRoute();
   const emit = defineEmits(['clickItem']);
@@ -32,70 +34,221 @@
     hasArrow?: boolean;
     status?: QuestionStatusEnum;
     children?: MenuItem[];
+    permissions: PermissionCode[];
   }
   interface MenuSection {
     group: string;
     items: MenuItem[];
+    permissions: PermissionCode[];
   }
 
   const baseMenu: MenuSection[] = [
     {
       group: 'Overview',
+      permissions: [
+        PermissionsEnum.EDUCATION_CLASSIFICATION_FETCH,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_CREATE,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_UPDATE,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_DELETE,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_TOGGLE_STATUS,
+        PermissionsEnum.EMPLOYEE_ALL,
+        PermissionsEnum.EMPLOYEE_FETCH,
+        PermissionsEnum.EMPLOYEE_CREATE,
+        PermissionsEnum.EMPLOYEE_UPDATE,
+        PermissionsEnum.EMPLOYEE_DELETE,
+        PermissionsEnum.EMPLOYEE_CHANGE_STATUS,
+        PermissionsEnum.ROLE_ALL,
+        PermissionsEnum.ROLE_FETCH,
+        PermissionsEnum.ROLE_CREATE,
+        PermissionsEnum.ROLE_UPDATE,
+        PermissionsEnum.ROLE_DELETE,
+        PermissionsEnum.DOCUMENT_ALL,
+        PermissionsEnum.DOCUMENT_FETCH,
+        PermissionsEnum.DOCUMENT_CREATE,
+        PermissionsEnum.DOCUMENT_UPDATE,
+        PermissionsEnum.DOCUMENT_DELETE,
+        PermissionsEnum.SKILL_ALL,
+        PermissionsEnum.SKILL_FETCH,
+        PermissionsEnum.SKILL_CREATE,
+        PermissionsEnum.SKILL_UPDATE,
+        PermissionsEnum.SKILL_DELETE,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_ALL,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_FETCH,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_CREATE,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_UPDATE,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_DELETE,
+        PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_FETCH_FULL,
+        PermissionsEnum.PLACEMENT_TEST_ALL,
+        PermissionsEnum.PLACEMENT_TEST_FETCH,
+        PermissionsEnum.HIGHLIGHT_BADGE_ALL,
+        PermissionsEnum.HIGHLIGHT_BADGE_FETCH,
+        PermissionsEnum.HIGHLIGHT_BADGE_CREATE,
+        PermissionsEnum.HIGHLIGHT_BADGE_UPDATE,
+        PermissionsEnum.HIGHLIGHT_BADGE_DELETE,
+        PermissionsEnum.ADVICE_ALL,
+        PermissionsEnum.ADVICE_FETCH,
+        PermissionsEnum.ADVICE_CREATE,
+        PermissionsEnum.ADVICE_UPDATE,
+        PermissionsEnum.ADVICE_DELETE,
+        PermissionsEnum.DOCUMENT_INDEX_ALL,
+        PermissionsEnum.DOCUMENT_INDEX_FETCH,
+        PermissionsEnum.DOCUMENT_INDEX_UPDATE,
+        PermissionsEnum.DOCUMENT_INDEX_START,
+        PermissionsEnum.DOCUMENT_INDEX_STATUS,
+        PermissionsEnum.DOCUMENT_INDEX_REFRESH_STATUS,
+        PermissionsEnum.DOCUMENT_INDEX_SAVE,
+        PermissionsEnum.DOCUMENT_INDEX_FETCH_TRANSACTIONS,
+        PermissionsEnum.BLOCK_REASON_ALL,
+        PermissionsEnum.BLOCK_REASON_FETCH,
+        PermissionsEnum.BLOCK_REASON_CREATE,
+        PermissionsEnum.BLOCK_REASON_UPDATE,
+        PermissionsEnum.BLOCK_REASON_DELETE,
+        PermissionsEnum.Generate_Questions,
+        PermissionsEnum.SUBSCRIPTION_PLAN_ALL,
+        PermissionsEnum.SUBSCRIPTION_PLAN_FETCH,
+        PermissionsEnum.SUBSCRIPTION_PLAN_CREATE,
+        PermissionsEnum.SUBSCRIPTION_PLAN_UPDATE,
+        PermissionsEnum.SUBSCRIPTION_PLAN_DELETE,
+        PermissionsEnum.SUBSCRIPTION_PLAN_TOGGLE_FEATURE,
+        PermissionsEnum.SUBSCRIPTION_PLAN_TOGGLE_STATUS,
+        PermissionsEnum.SUBSCRIPTION_PLAN_CHANGE_STATUS,
+        PermissionsEnum.SUBSCRIPTION_ALL,
+        PermissionsEnum.SUBSCRIPTION_FETCH,
+        PermissionsEnum.SUBSCRIPTION_DELETE,
+        PermissionsEnum.SUBSCRIPTION_STATISTICS,
+        PermissionsEnum.STUDENT_ALL,
+        PermissionsEnum.STUDENT_FETCH,
+        PermissionsEnum.STUDENT_STATISTICS,
+        PermissionsEnum.STUDENT_CHANGE_STATUS,
+        PermissionsEnum.STUDENT_FORCE_LOGOUT,
+        PermissionsEnum.STUDENT_ADD_NOTE,
+      ],
       items: [
         {
           link: '/education-classifications',
           name: 'Education configuration',
           icon: EducationClassificationIcon,
+          permissions: [
+            PermissionsEnum.EDUCATION_CLASSIFICATION_ALL,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_FETCH,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_CREATE,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_UPDATE,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_DELETE,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_TOGGLE_STATUS,
+          ],
         },
         {
           link: '/employees',
           name: 'Employees',
           icon: Sidebaremploye,
+          permissions: [
+            PermissionsEnum.EMPLOYEE_ALL,
+            PermissionsEnum.EMPLOYEE_FETCH,
+            PermissionsEnum.EMPLOYEE_CREATE,
+            PermissionsEnum.EMPLOYEE_UPDATE,
+            PermissionsEnum.EMPLOYEE_DELETE,
+            PermissionsEnum.EMPLOYEE_CHANGE_STATUS,
+          ],
         },
-        // {
-        //   link: '/roles',
-        //   name: 'role.title_plural',
-        //   icon: SettingIcon,
-        // },
+        {
+          link: '/roles',
+          name: 'role.title_plural',
+          icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.ROLE_ALL,
+            PermissionsEnum.ROLE_FETCH,
+            PermissionsEnum.ROLE_CREATE,
+            PermissionsEnum.ROLE_UPDATE,
+            PermissionsEnum.ROLE_DELETE,
+          ],
+        },
         {
           link: '/documents',
           name: 'Documents',
           icon: DocumentIcon,
+          permissions: [
+            PermissionsEnum.DOCUMENT_ALL,
+            PermissionsEnum.DOCUMENT_FETCH,
+            PermissionsEnum.DOCUMENT_CREATE,
+            PermissionsEnum.DOCUMENT_UPDATE,
+            PermissionsEnum.DOCUMENT_DELETE,
+          ],
         },
         {
           link: '/skills',
           name: 'Skills',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.SKILL_ALL,
+            PermissionsEnum.SKILL_FETCH,
+            PermissionsEnum.SKILL_CREATE,
+            PermissionsEnum.SKILL_UPDATE,
+            PermissionsEnum.SKILL_DELETE,
+          ],
         },
 
         {
           link: '/subjects',
           name: 'Subjects',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_ALL,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_FETCH,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_CREATE,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_UPDATE,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_DELETE,
+            PermissionsEnum.EDUCATION_CLASSIFICATION_SUBJECT_FETCH_FULL,
+          ],
         },
         {
           link: '/placement-test',
           name: 'Placement Test',
           icon: SettingIcon,
+          permissions: [PermissionsEnum.PLACEMENT_TEST_ALL, PermissionsEnum.PLACEMENT_TEST_FETCH],
         },
         {
           link: '/highlight-badges',
           name: 'highlight_badges',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.HIGHLIGHT_BADGE_ALL,
+            PermissionsEnum.HIGHLIGHT_BADGE_FETCH,
+            PermissionsEnum.HIGHLIGHT_BADGE_CREATE,
+            PermissionsEnum.HIGHLIGHT_BADGE_UPDATE,
+            PermissionsEnum.HIGHLIGHT_BADGE_DELETE,
+          ],
         },
         {
           link: '/advices',
           name: 'advices',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.ADVICE_ALL,
+            PermissionsEnum.ADVICE_FETCH,
+            PermissionsEnum.ADVICE_CREATE,
+            PermissionsEnum.ADVICE_UPDATE,
+            PermissionsEnum.ADVICE_DELETE,
+          ],
         },
         {
           link: '/document-index',
           name: 'document_index.title',
           icon: DocumentIcon,
+          permissions: [
+            PermissionsEnum.DOCUMENT_INDEX_ALL,
+            PermissionsEnum.DOCUMENT_INDEX_FETCH,
+            PermissionsEnum.DOCUMENT_INDEX_UPDATE,
+            PermissionsEnum.DOCUMENT_INDEX_START,
+            PermissionsEnum.DOCUMENT_INDEX_STATUS,
+            PermissionsEnum.DOCUMENT_INDEX_REFRESH_STATUS,
+            PermissionsEnum.DOCUMENT_INDEX_SAVE,
+            PermissionsEnum.DOCUMENT_INDEX_FETCH_TRANSACTIONS,
+          ],
           children: [
             {
               link: '/fetch-document-index-patch',
               name: 'document_index.transactions_sidebar',
+              permissions: [PermissionsEnum.DOCUMENT_INDEX_FETCH_TRANSACTIONS],
             },
           ],
         },
@@ -103,15 +256,24 @@
           link: '/block-reasons',
           name: 'block_reasons',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.BLOCK_REASON_ALL,
+            PermissionsEnum.BLOCK_REASON_FETCH,
+            PermissionsEnum.BLOCK_REASON_CREATE,
+            PermissionsEnum.BLOCK_REASON_UPDATE,
+            PermissionsEnum.BLOCK_REASON_DELETE,
+          ],
         },
         {
           link: '/question-batches',
           name: 'question_batch.title',
           icon: SettingIcon,
+          permissions: [PermissionsEnum.Generate_Questions],
           children: [
             {
               link: '/question-batches/generate',
               name: 'question_batch.generate',
+              permissions: [PermissionsEnum.Generate_Questions],
             },
           ],
         },
@@ -120,10 +282,21 @@
           link: '/plans',
           name: 'plans',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.SUBSCRIPTION_PLAN_ALL,
+            PermissionsEnum.SUBSCRIPTION_PLAN_FETCH,
+            PermissionsEnum.SUBSCRIPTION_PLAN_CREATE,
+            PermissionsEnum.SUBSCRIPTION_PLAN_UPDATE,
+            PermissionsEnum.SUBSCRIPTION_PLAN_DELETE,
+            PermissionsEnum.SUBSCRIPTION_PLAN_TOGGLE_FEATURE,
+            PermissionsEnum.SUBSCRIPTION_PLAN_TOGGLE_STATUS,
+            PermissionsEnum.SUBSCRIPTION_PLAN_CHANGE_STATUS,
+          ],
           children: [
             {
               link: '/plans/add',
               name: 'add plan',
+              permissions: [PermissionsEnum.SUBSCRIPTION_PLAN_CREATE],
             },
           ],
         },
@@ -131,6 +304,12 @@
           link: '/subscriptions',
           name: 'subscriptions',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.SUBSCRIPTION_ALL,
+            PermissionsEnum.SUBSCRIPTION_FETCH,
+            PermissionsEnum.SUBSCRIPTION_DELETE,
+            PermissionsEnum.SUBSCRIPTION_STATISTICS,
+          ],
         },
         {
           link: '/notification-plans',
@@ -147,6 +326,14 @@
           link: '/students',
           name: 'students',
           icon: SettingIcon,
+          permissions: [
+            PermissionsEnum.STUDENT_ALL,
+            PermissionsEnum.STUDENT_FETCH,
+            PermissionsEnum.STUDENT_STATISTICS,
+            PermissionsEnum.STUDENT_CHANGE_STATUS,
+            PermissionsEnum.STUDENT_FORCE_LOGOUT,
+            PermissionsEnum.STUDENT_ADD_NOTE,
+          ],
         },
         // {
         //   link: '/placements/show',
@@ -158,41 +345,65 @@
 
     {
       group: 'Apps Kits',
+      permissions: [
+        PermissionsEnum.QUESTION_ALL,
+        PermissionsEnum.QUESTION_FETCH,
+        PermissionsEnum.QUESTION_CREATE,
+        PermissionsEnum.QUESTION_UPDATE,
+        PermissionsEnum.QUESTION_DELETE,
+        PermissionsEnum.QUESTION_UPDATE_REVIEW_STATUS,
+        PermissionsEnum.QUESTION_FETCH_REVIEW_STATUS_HISTORY,
+      ],
       items: [
         {
           link: '/questions',
           name: 'Questions',
           icon: Question,
+          permissions: [
+            PermissionsEnum.QUESTION_ALL,
+            PermissionsEnum.QUESTION_FETCH,
+            PermissionsEnum.QUESTION_CREATE,
+            PermissionsEnum.QUESTION_UPDATE,
+            PermissionsEnum.QUESTION_DELETE,
+            PermissionsEnum.QUESTION_UPDATE_REVIEW_STATUS,
+            PermissionsEnum.QUESTION_FETCH_REVIEW_STATUS_HISTORY,
+          ],
           children: [
             {
               link: { path: '/questions', query: { status: QuestionStatusEnum.ARCHIVED } },
               name: 'question_status_menu.archived',
               status: QuestionStatusEnum.ARCHIVED,
+              permissions: [PermissionsEnum.QUESTION_ALL, PermissionsEnum.QUESTION_FETCH],
             },
             {
               link: { path: '/questions', query: { status: QuestionStatusEnum.APPROVED } },
               name: 'question_status_menu.approved',
               status: QuestionStatusEnum.APPROVED,
+              permissions: [PermissionsEnum.QUESTION_FETCH],
             },
             {
               link: { path: '/questions', query: { status: QuestionStatusEnum.REJECTED } },
               name: 'question_status_menu.rejected',
               status: QuestionStatusEnum.REJECTED,
+              permissions: [PermissionsEnum.QUESTION_FETCH],
             },
             {
               link: { path: '/questions', query: { status: QuestionStatusEnum.DRAFT } },
               name: 'question_status_menu.draft',
               status: QuestionStatusEnum.DRAFT,
+              permissions: [PermissionsEnum.QUESTION_FETCH],
             },
             {
               link: { path: '/questions', query: { status: QuestionStatusEnum.NOT_REVIEW } },
               name: 'question_status_menu.not_reviewed',
               status: QuestionStatusEnum.NOT_REVIEW,
+              permissions: [PermissionsEnum.QUESTION_FETCH],
             },
             {
               link: { path: '/questions', query: { status: QuestionStatusEnum.REVISION } },
               name: 'question_status_menu.revision',
               status: QuestionStatusEnum.REVISION,
+              permissions: [PermissionsEnum.QUESTION_FETCH],
             },
           ],
         },
@@ -200,41 +411,129 @@
           link: '/articles',
           name: 'Articles',
           icon: ArticleIcon,
+          permissions: [
+            PermissionsEnum.QUESTION_ALL,
+            PermissionsEnum.QUESTION_FETCH,
+            PermissionsEnum.QUESTION_CREATE,
+            PermissionsEnum.QUESTION_UPDATE,
+            PermissionsEnum.QUESTION_DELETE,
+          ],
         },
       ],
     },
     {
       group: 'statics',
+      permissions: [
+        PermissionsEnum.ABOUT_US_ALL,
+        PermissionsEnum.ABOUT_US_FETCH,
+        PermissionsEnum.ABOUT_US_CREATE,
+        PermissionsEnum.ABOUT_US_DELETE,
+        PermissionsEnum.SOCIAL_LINK_ALL,
+        PermissionsEnum.SOCIAL_LINK_UPDATE,
+        PermissionsEnum.SOCIAL_LINK_DELETE,
+        PermissionsEnum.SUPPORT_ALL,
+        PermissionsEnum.SUPPORT_FETCH,
+        PermissionsEnum.SUPPORT_CREATE,
+        PermissionsEnum.SUPPORT_UPDATE,
+        PermissionsEnum.SUPPORT_DELETE,
+        PermissionsEnum.FAQ_ALL,
+        PermissionsEnum.FAQ_FETCH,
+        PermissionsEnum.FAQ_CREATE,
+        PermissionsEnum.FAQ_UPDATE,
+        PermissionsEnum.FAQ_DELETE,
+        PermissionsEnum.PRIVACY_ALL,
+        PermissionsEnum.PRIVACY_FETCH,
+        PermissionsEnum.PRIVACY_CREATE,
+        PermissionsEnum.PRIVACY_UPDATE,
+        PermissionsEnum.PRIVACY_DELETE,
+        PermissionsEnum.TERM_ALL,
+        PermissionsEnum.TERM_FETCH,
+        PermissionsEnum.TERM_CREATE,
+        PermissionsEnum.TERM_UPDATE,
+        PermissionsEnum.TERM_DELETE,
+        PermissionsEnum.DELETE_ACCOUNT_REASON_ALL,
+        PermissionsEnum.DELETE_ACCOUNT_REASON_FETCH,
+        PermissionsEnum.DELETE_ACCOUNT_REASON_CREATE,
+        PermissionsEnum.DELETE_ACCOUNT_REASON_UPDATE,
+        PermissionsEnum.DELETE_ACCOUNT_REASON_DELETE,
+      ],
       items: [
         {
           link: '/about',
           name: 'About',
           icon: AboutIcon,
+          permissions: [
+            PermissionsEnum.ABOUT_US_ALL,
+            PermissionsEnum.ABOUT_US_FETCH,
+            PermissionsEnum.ABOUT_US_CREATE,
+            PermissionsEnum.ABOUT_US_DELETE,
+            PermissionsEnum.SOCIAL_LINK_ALL,
+            PermissionsEnum.SOCIAL_LINK_UPDATE,
+            PermissionsEnum.SOCIAL_LINK_DELETE,
+          ],
         },
         {
           link: '/support',
           name: 'Support',
           icon: SupportIcon,
+          permissions: [
+            PermissionsEnum.SUPPORT_ALL,
+            PermissionsEnum.SUPPORT_FETCH,
+            PermissionsEnum.SUPPORT_CREATE,
+            PermissionsEnum.SUPPORT_UPDATE,
+            PermissionsEnum.SUPPORT_DELETE,
+            PermissionsEnum.SUPPORT_CONTACT_ALL,
+            PermissionsEnum.SUPPORT_CONTACT_UPDATE,
+            PermissionsEnum.SUPPORT_CONTACT_DELETE,
+          ],
         },
         {
           link: '/faqs',
           name: 'Faqs',
           icon: FaqsIcon,
+          permissions: [
+            PermissionsEnum.FAQ_ALL,
+            PermissionsEnum.FAQ_FETCH,
+            PermissionsEnum.FAQ_CREATE,
+            PermissionsEnum.FAQ_UPDATE,
+            PermissionsEnum.FAQ_DELETE,
+          ],
         },
         {
           link: '/privacy',
           name: 'Privacy and policy',
           icon: SidebarPrivecy,
+          permissions: [
+            PermissionsEnum.PRIVACY_ALL,
+            PermissionsEnum.PRIVACY_FETCH,
+            PermissionsEnum.PRIVACY_CREATE,
+            PermissionsEnum.PRIVACY_UPDATE,
+            PermissionsEnum.PRIVACY_DELETE,
+          ],
         },
         {
           link: '/terms-conditions',
           name: 'terms & conditions',
           icon: SidebarTerms,
+          permissions: [
+            PermissionsEnum.TERM_ALL,
+            PermissionsEnum.TERM_FETCH,
+            PermissionsEnum.TERM_CREATE,
+            PermissionsEnum.TERM_UPDATE,
+            PermissionsEnum.TERM_DELETE,
+          ],
         },
         {
           link: '/deleted-accounts',
           name: 'add logout reasons',
           icon: SidebarTerms,
+          permissions: [
+            PermissionsEnum.DELETE_ACCOUNT_REASON_ALL,
+            PermissionsEnum.DELETE_ACCOUNT_REASON_FETCH,
+            PermissionsEnum.DELETE_ACCOUNT_REASON_CREATE,
+            PermissionsEnum.DELETE_ACCOUNT_REASON_UPDATE,
+            PermissionsEnum.DELETE_ACCOUNT_REASON_DELETE,
+          ],
         },
       ],
     },
@@ -285,42 +584,49 @@
       <!-- Menu -->
       <div class="menu">
         <div v-for="(group, gIndex) in menu" :key="gIndex" class="menu-group">
-          <p v-if="group.group" class="group-title">
-            {{ group.group }}
-          </p>
+          
+          <PermissionBuilder :code="group.permissions">
+            <p v-if="group.group" class="group-title">
+              {{ group.group }}
+            </p>
 
-          <div v-for="(item, i) in group.items" :key="i" class="menu-entry">
-            <router-link
-              :to="item.link"
-              class="menu-item"
-              :class="{ active: isMenuItemActive(item) }"
-              @click="emit('clickItem')"
-            >
-              <component :is="item.icon" class="icon" />
+            <div v-for="(item, i) in group.items" :key="i" class="menu-entry">
+              <PermissionBuilder :code="item.permissions">
+                <router-link
+                  :to="item.link"
+                  class="menu-item"
+                  :class="{ active: isMenuItemActive(item) }"
+                  @click="emit('clickItem')"
+                >
+                  <component :is="item.icon" class="icon" />
 
-              <span class="label">{{ $t(item.name) }}</span>
+                  <span class="label">{{ $t(item.name) }}</span>
 
-              <span v-if="item?.badge" class="badge">
-                {{ item?.badge }}
-              </span>
+                  <span v-if="item?.badge" class="badge">
+                    {{ item?.badge }}
+                  </span>
 
-              <span v-if="item?.hasArrow" class="arrow">›</span>
-            </router-link>
+                  <span v-if="item?.hasArrow" class="arrow">›</span>
+                </router-link>
+              </PermissionBuilder>
 
-            <div v-if="item.children" class="submenu">
-              <router-link
-                v-for="child in item.children"
-                :key="child.name"
-                :to="child.link"
-                class="submenu-item"
-                :class="{ active: isMenuItemActive(child) }"
-                @click="emit('clickItem')"
-              >
-                <span class="submenu-dot"></span>
-                <span>{{ $t(child.name) }}</span>
-              </router-link>
+              <div v-if="item.children" class="submenu">
+                <PermissionBuilder :code="item.permissions">
+                  <router-link
+                    v-for="child in item.children"
+                    :key="child.name"
+                    :to="child.link"
+                    class="submenu-item"
+                    :class="{ active: isMenuItemActive(child) }"
+                    @click="emit('clickItem')"
+                  >
+                    <span class="submenu-dot"></span>
+                    <span>{{ $t(child.name) }}</span>
+                  </router-link>
+                </PermissionBuilder>
+              </div>
             </div>
-          </div>
+          </PermissionBuilder>
         </div>
       </div>
 

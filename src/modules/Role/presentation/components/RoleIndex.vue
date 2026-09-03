@@ -14,6 +14,8 @@
   import IndexRoleParams from '../../core/params/index.role.params';
   import DeleteRoleParams from '../../core/params/delete.role.params';
   import type RoleModel from '../../core/models/role.model';
+  import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
+  import DeleteIcon from '@/shared/icons/DocaumentType/DeleteIcon.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -22,15 +24,11 @@
   const state = computed(() => controller.listState.value);
   const word = ref(String(route.query.word ?? ''));
   const perPage = ref(10);
-  const searchInput = ref<HTMLInputElement>();
+  // const searchInput = ref<HTMLInputElement>();
 
   const headers = computed<TableHeader[]>(() => [
-    { key: 'id', label: t('role.table.id'), sortable: true, width: '10%' },
-    { key: 'roleName', label: t('role.table.title'), width: '24%' },
-    { key: 'permissionsCount', label: t('role.table.permissions'), width: '16%' },
-    { key: 'usersCount', label: t('role.table.users'), width: '14%' },
-    { key: 'createdBy', label: t('role.table.created_by'), width: '18%' },
-    { key: 'createdAt', label: t('role.table.created_at'), width: '18%' },
+    { key: 'id', label: t('role.table.id'), sortable: true, width: '40%' },
+    { key: 'title', label: t('role.table.title'), width: '60%' },
   ]);
 
   const fetchRoles = async (page = 1) => {
@@ -42,14 +40,14 @@
     fetchRoles();
   });
 
-  const applyFilter = () => {
-    if (!word.value) {
-      searchInput.value?.focus();
-      return;
-    }
-    word.value = '';
-    search();
-  };
+  // const applyFilter = () => {
+  //   if (!word.value) {
+  //     searchInput.value?.focus();
+  //     return;
+  //   }
+  //   word.value = '';
+  //   search();
+  // };
 
   const changePage = (page: number) => {
     router.replace({ query: { ...route.query, page, word: word.value || undefined } });
@@ -66,9 +64,18 @@
     await fetchRoles(Number(route.query.page ?? 1));
   };
 
-  const displayDate = (value: string) => value?.split('T')[0] || t('role.not_available');
 
   onMounted(() => fetchRoles(Number(route.query.page ?? 1)));
+  const SelectedRow = ref<RoleModel[]>([]);
+  const setSelectef = (items: RoleModel[]) => {
+    SelectedRow.value = items;
+  };
+  const deleteItems = async () => {
+    SelectedRow.value.forEach((item) => {
+      deleteRole(item);
+    });
+    SelectedRow.value = [];
+  };
 </script>
 
 <template>
@@ -98,9 +105,9 @@
             @input="search"
           />
         </label>
-        <button class="role-index-page__filter" type="button" @click="applyFilter">
+        <!-- <button class="role-index-page__filter" type="button" @click="applyFilter">
           {{ $t('role.filter') }}
-        </button>
+        </button> -->
       </div>
 
       <DataStatusBuilder :controller="state" :on-retry="fetchRoles">
@@ -112,26 +119,32 @@
               row-key="id"
               selectable
               hoverable
+              @selection-change="setSelectef"
             >
-              <template #cell-createdAt="{ item }">
-                {{ displayDate(item.createdAt) }}
-              </template>
               <template #actions="{ item }">
                 <div class="role-row-actions">
-                  <router-link :to="{ name: 'Role Details', params: { id: item.id } }">
-                    {{ $t('role.actions.view') }}
-                  </router-link>
                   <router-link :to="{ name: 'Edit Role', params: { id: item.id } }">
-                    {{ $t('role.actions.edit') }}
+                    <!-- {{ $t('role.actions.edit') }} -->
+                    <EditeIcon />
                   </router-link>
                   <DeleteDialog @delete="deleteRole(item)">
                     <template #Dialog>
-                      <button type="button">{{ $t('role.actions.delete') }}</button>
+                      <DeleteIcon />
+                      <!-- <button type="button">{{ $t('role.actions.delete') }}</button> -->
                     </template>
                   </DeleteDialog>
                 </div>
               </template>
             </AppTable>
+          </div>
+
+          <div v-if="SelectedRow.length > 0" class="items-deleted">
+            <div class="num-type">
+              <h6>{{ SelectedRow.length }} rols</h6>
+            </div>
+            <div class="num-deleted" @click="deleteItems">
+              <h6>delete {{ SelectedRow.length }} item</h6>
+            </div>
           </div>
           <Pagination
             v-if="controller.pagination.value"
@@ -158,6 +171,40 @@
 </template>
 
 <style scoped lang="scss">
+  .items-deleted {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-weak);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+
+    .num-type {
+      h6 {
+        font-size: 14px;
+        font-weight: 700;
+        font-family: 'bold';
+        color: var(--table-header-color);
+      }
+    }
+
+    .num-deleted {
+      background-color: var(--btn-red);
+      color: var(--bg-main);
+      padding: 6px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+
+      h6 {
+        font-size: 14px;
+        font-weight: 700;
+        font-family: 'bold';
+      }
+    }
+  }
   .role-index-page {
     display: grid;
     gap: var(--xl-size-base);
@@ -199,7 +246,7 @@
     display: grid;
     gap: var(--sm-size);
     padding: var(--sm-size);
-    border: 1px solid var(--border-weak);
+    // border: 1px solid var(--border-weak);
     border-radius: var(--radius-lg);
     background: var(--bg-card);
   }
@@ -223,7 +270,7 @@
 
   .role-index-page__table {
     overflow: hidden;
-    border: 1px solid var(--border-weak);
+    // border: 1px solid var(--border-weak);
     border-radius: var(--radius-lg);
   }
 

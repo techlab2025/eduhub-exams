@@ -4,6 +4,8 @@ import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
 export default class StoreRoleParams implements Params {
   public readonly title: Record<string, string>;
   public readonly permissions: string[];
+
+  
   public static readonly validation = new ClassValidation().setRules({
     title: { required: true },
   });
@@ -16,7 +18,7 @@ export default class StoreRoleParams implements Params {
   toMap(): Record<string, unknown> {
     return {
       translations: {
-        title: Object.fromEntries(
+        display_name: Object.fromEntries(
           Object.entries(this.title).map(([locale, value]) => [locale, value.trim()]),
         ),
       },

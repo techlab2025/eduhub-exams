@@ -1,114 +1,106 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
-  import { useI18n } from 'vue-i18n';
-  import { useRoute, useRouter } from 'vue-router';
-  import { isDataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import { computed, ref, watch } from 'vue';
+  import { useRoute } from 'vue-router';
   import PermissionSelector from '@/modules/Permission/presentation/components/PermissionSelector.vue';
   import MultiLangInput from '@/shared/MultiLangInput.vue';
-  import RoleController from '../controllers/role.controller';
-  import ShowRoleParams from '../../core/params/show.role.params';
   import StoreRoleParams from '../../core/params/store.role.params';
   import UpdateRoleParams from '../../core/params/update.role.params';
+  import type RoleModel from '../../core/models/role.model';
+  import { TranslationFromLidtToObject } from '@/base/Presentation/Utils/translation_handle_from_list_to_object';
+  import { ValidationHandler } from '@/base/Presentation/Utils/new_validator';
+  import { RoleValidationsHandler } from '../../core/validations/RoleValidations';
+  import ValidationErrorsHandlerComponent from '@/shared/HelpersComponents/ValidationErrorsHandlerComponent.vue';
+  import ValidationErrorScroller, {
+    type ValidationError,
+    type ValidationRefs,
+  } from '@/base/Presentation/Utils/ValidationErrorScroller';
 
-  type RoleFormMode = 'add' | 'edit' | 'show';
-  const props = withDefaults(defineProps<{ mode?: RoleFormMode }>(), { mode: 'add' });
-  const { t } = useI18n();
+  const emit = defineEmits(['update-data']);
+  const props = defineProps<{
+    data?: RoleModel;
+  }>();
+
   const route = useRoute();
-  const router = useRouter();
-  const controller = RoleController.getInstance();
   const roleId = computed(() => Number(route.params.id));
+
+  const titleRef = ref<HTMLElement | null>(null);
+  const permissionsRef = ref<HTMLElement | null>(null);
+
+  const refs: ValidationRefs = {
+    title: {
+      ref: titleRef,
+      block: 'start',
+    },
+
+    permissions: {
+      ref: permissionsRef,
+      block: 'end',
+    },
+  };
+  const errors = ref<ValidationError[]>([]);
   const title = ref<Record<string, string>>({});
   const selectedPermissions = ref<string[]>([]);
   const loading = ref(false);
-  const submitted = ref(false);
-  const isReadonly = computed(() => props.mode === 'show');
-  const pageTitle = computed(() => t(`role.${props.mode}_title`));
-
-  const loadRole = async () => {
-    if (props.mode === 'add' || !roleId.value) return;
-    loading.value = true;
-    const result = await controller.fetchOne(new ShowRoleParams(roleId.value));
-    loading.value = false;
-    if (!isDataSuccess(result) || !result.data) return;
-    title.value =
-      Object.keys(result.data.translations).length > 0
-        ? { ...result.data.translations }
-        : { en: result.data.roleName };
-    selectedPermissions.value = [...result.data.permissions];
-  };
 
   const saveRole = async () => {
-    submitted.value = true;
-    if (!Object.values(title.value).some((value) => value.trim()) || isReadonly.value) return;
-    loading.value = true;
-    const params =
-      props.mode === 'edit'
-        ? new UpdateRoleParams(roleId.value, title.value, selectedPermissions.value)
-        : new StoreRoleParams(title.value, selectedPermissions.value);
-    const result =
-      props.mode === 'edit'
-        ? await controller.update(params, { useJson: true })
-        : await controller.create(params, { useJson: true });
-    loading.value = false;
-    if (result && isDataSuccess(result)) await router.push({ name: 'Roles' });
+    errors.value = ValidationHandler(
+      RoleValidationsHandler(new StoreRoleParams(title.value, selectedPermissions.value)),
+    );
+
+    new ValidationErrorScroller(errors.value, refs).scrollToError();
+
+    const params = route?.params?.id
+      ? new UpdateRoleParams(roleId.value, title.value, selectedPermissions.value)
+      : new StoreRoleParams(title.value, selectedPermissions.value);
+    emit('update-data', params);
   };
 
-  onMounted(loadRole);
+  const permissionsList = computed(() => {
+    return props.data?.permissions;
+  });
+  const updateTitle = (data: Record<string, string>) => {
+    title.value = data;
+    saveRole();
+  };
+  const updatePermission = (data: string[]) => {
+    selectedPermissions.value = data;
+    saveRole();
+  };
+  watch(
+    () => props.data,
+    async (data) => {
+      if (!data) return;
+      title.value = await TranslationFromLidtToObject(
+        props.data?.titleTranslations ?? [],
+        'display_name',
+      );
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>
-  <main class="role-form-page" :aria-busy="loading">
-    <header class="role-form-page__header">
-      <div>
-        <h1>{{ pageTitle }}</h1>
-        <p>{{ $t('role.form_description') }}</p>
-      </div>
-      <router-link class="role-form-page__back" :to="{ name: 'Roles' }">
-        {{ $t('role.back_to_roles') }}
-      </router-link>
-    </header>
-
-    <section
-      class="role-form-page__name-card"
-      :aria-disabled="loading || isReadonly"
-      :inert="loading || isReadonly"
-    >
+  <main class="role-form-page" :aria-busy="loading" ref="titleRef">
+    <section class="role-form-page__name-card" :aria-disabled="loading" :inert="loading">
       <MultiLangInput
         field-key="title"
         :label="$t('role.name')"
         :languages="['en', 'ar']"
         :model-value="title"
         type="title"
-        @update:model-value="title = $event"
+        @update:model-value="updateTitle($event)"
       />
-      <small v-if="submitted && !Object.values(title).some((value) => value.trim())" role="alert">
-        {{ $t('role.name_required') }}
-      </small>
+      <ValidationErrorsHandlerComponent :validations="errors" validationKey="title" />
     </section>
 
-    <section class="role-form-page__permissions-card">
+    <section class="role-form-page__permissions-card" ref="permissionsRef">
       <PermissionSelector
-        :permissions="selectedPermissions"
-        :disabled="loading || isReadonly"
-        @update:permissions="selectedPermissions = $event"
+        :permissions="permissionsList"
+        :disabled="loading"
+        @update:permissions="updatePermission($event)"
       />
+      <ValidationErrorsHandlerComponent :validations="errors" validationKey="permissions" />
     </section>
-
-    <footer class="role-form-page__actions">
-      <router-link class="btn role-form-page__cancel" :to="{ name: 'Roles' }">
-        {{ isReadonly ? $t('role.actions.back') : $t('role.actions.cancel') }}
-      </router-link>
-      <router-link
-        v-if="isReadonly"
-        class="btn btn-primary"
-        :to="{ name: 'Edit Role', params: { id: roleId } }"
-      >
-        {{ $t('role.actions.edit') }}
-      </router-link>
-      <button v-else class="btn btn-primary" type="button" :disabled="loading" @click="saveRole">
-        {{ loading ? $t('role.saving') : $t(`role.${props.mode}_action`) }}
-      </button>
-    </footer>
   </main>
 </template>
 
