@@ -219,15 +219,17 @@
     selectedSubjects.value = mapSelectedSubjects(selectedSubjects.value);
   };
 
-  const fetchRoleOptions = async () => {
-    const result = await roleController.fetchList(new IndexRoleParams('', 1, 100, 0));
-    roleOptions.value = (result.data ?? []).map((role) => role.toOption());
-    if (selectedRole.value) {
-      selectedRole.value =
-        roleOptions.value.find((option) => option.id === selectedRole.value?.id) ??
-        selectedRole.value;
-    }
-  };
+  const indexRoleParams = new IndexRoleParams('', 1, 100, 0);
+
+  // const fetchRoleOptions = async () => {
+  //   const result = await roleController.fetchList(new IndexRoleParams('', 1, 100, 0));
+  //   roleOptions.value = (result.data ?? []).map((role) => role.toOption());
+  //   if (selectedRole.value) {
+  //     selectedRole.value =
+  //       roleOptions.value.find((option) => option.id === selectedRole.value?.id) ??
+  //       selectedRole.value;
+  //   }
+  // };
 
   const draftRef =
     !route.params.id && localStorage.getItem('employee-draft')
@@ -401,7 +403,8 @@
           v-model="selectedRole"
           :label="$t('role.employee_role')"
           :placeholder="$t('role.select_employee_role')"
-          :static-options="roleOptions"
+          :controller="roleController"
+          :params="indexRoleParams"
           required
           :reload="false"
           @update:model-value="handleRoleChange"

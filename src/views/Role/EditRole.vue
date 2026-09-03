@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import RoleForm from '@/modules/Role/presentation/components/RoleForm.vue';
+  import RoleEdit from '@/modules/Role/presentation/components/RoleEdit.vue';
 </script>
 
 <template>
-  <RoleForm mode="edit" />
+  <RoleEdit />
 </template>

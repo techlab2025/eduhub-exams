@@ -1,0 +1,140 @@
+<script setup lang="ts">
+  import { ref } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
+  import RoleController from '../controllers/role.controller';
+  import type StoreRoleParams from '../../core/params/store.role.params';
+  import RoleForm from './RoleForm.vue';
+
+  const controller = RoleController.getInstance();
+  const route = useRoute();
+  const formKey = route.fullPath;
+
+  const params = ref<StoreRoleParams | null>(null);
+  const loading = ref(false);
+  /**
+   * Save new employee
+   */
+  const saveRole = async () => {
+    console.log(params.value, 'ddddddddddddddddd');
+
+    loading.value = true;
+    try {
+      if (!params.value) {
+        console.error('No role parameters to save');
+        return;
+      }
+
+      const result = await controller.create(params.value);
+      if (result?.data) {
+        router.push({ name: 'Roles' });
+        await controller.fetchList();
+      }
+    } catch (error) {
+      console.error('Error saving role:', error);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const updateData = (updatedParams: StoreRoleParams) => {
+    params.value = updatedParams;
+  };
+
+  const router = useRouter();
+</script>
+
+<template>
+  <div class="employee-add-page">
+    <RoleForm ref="RoleFormRef" :form-key="formKey" :loading="loading" @update-data="updateData" />
+
+    <div class="actions">
+      <button class="btn btn-primary w-full" type="submit" @click="saveRole">
+        <span v-if="loading" class="loader"></span>
+        <span v-else>
+          {{ $t('save_role') }}
+        </span>
+      </button>
+      <router-link to="/roles" class="btn btn-cancel">
+        {{ $t(`cancel`) }}
+      </router-link>
+    </div>
+
+    <!-- Error Display -->
+    <div v-if="controller.errorMessage.value" class="error-toast">
+      {{ controller.errorMessage.value }}
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+  .loader {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 8px solid;
+    border-color: #000 #0000;
+    animation: l1 1s infinite;
+  }
+
+  @keyframes l1 {
+    to {
+      transform: rotate(0.5turn);
+    }
+  }
+
+  @keyframes l7 {
+    to {
+      transform: rotate(0.5turn);
+    }
+  }
+
+  .btn-cancel {
+    background-color: var(--background-btn-outline-color);
+    color: var(--danger-color);
+    border: 1px solid rgba(245, 194, 192, 1);
+    border-radius: 50px;
+    width: 20%;
+
+    @media (max-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .btn-draft {
+    background-color: var(--PrimaryColor-alpha-10);
+    color: var(--PrimaryColor);
+    border: 1px solid var(--PrimaryColor-alpha-10);
+    border-radius: 50px;
+    width: 20%;
+
+    @media (max-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .save-emp {
+    width: 60%;
+
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  .actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .error-toast {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background-color: var(--error-light);
+    color: var(--error-dark);
+    border: 1px solid var(--error-border);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+  }
+</style>

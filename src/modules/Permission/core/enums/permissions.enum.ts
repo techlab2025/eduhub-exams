@@ -241,6 +241,12 @@ export const PermissionsEnum = {
   DOCUMENT_INDEX_REFRESH_STATUS: 'DI08',
   DOCUMENT_INDEX_SAVE: 'DI09',
   DOCUMENT_INDEX_FETCH_TRANSACTIONS: 'DI10',
+  ROLE_ALL: 'ROL00',
+  ROLE_FETCH: 'ROL01',
+  ROLE_DETAILS: 'ROL02',
+  ROLE_CREATE: 'ROL03',
+  ROLE_UPDATE: 'ROL04',
+  ROLE_DELETE: 'ROL05',
 } as const;
 
 export type PermissionCode = (typeof PermissionsEnum)[keyof typeof PermissionsEnum];

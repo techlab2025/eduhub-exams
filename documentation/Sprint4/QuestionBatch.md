@@ -54,7 +54,7 @@ export enum QuestionTypeEnum {
           "id": number,
           "title":string,
         }
-      ] 
+      ]
     }
   ],
   "e_c_subject":{
@@ -74,6 +74,7 @@ export enum QuestionTypeEnum {
     "name":string,
   },
   "generation_date":string,
+  "is_applied":boolean,
 }
 ```
 
@@ -87,14 +88,15 @@ export enum QuestionTypeEnum {
 
 ```ts
 {
-  "education_classification_id":number,
   "e_c_subject_id":number,
   "document_id":number,
-  "status":QuestionBatchStatusEnum,
   "number_of_questions_type": NumberOfQuestionTypeEnum,
   "number_of_questions": number,
-  "question_type": QuestionTypeEnum,
-  "question_difficulty": QuestionBatchDifficultyEnum,
+  "question_type": QuestionTypeEnum[],
+  "question_difficulty": QuestionBatchDifficultyEnum[],
+  "custom_question_type":boolean,
+  "custom_question_difficulty":boolean,
+
 
 }
 ```
@@ -103,10 +105,9 @@ export enum QuestionTypeEnum {
 
 ```ts
 {
-  
+  رجع اللى يرجعه الباك اند
 }
 ```
-
 
 ---
 

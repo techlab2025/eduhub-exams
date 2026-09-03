@@ -33,6 +33,9 @@ describe('SidebarNavigation.vue', () => {
         },
         SettingIcon: true,
         DocumentIcon: true,
+        PermissionBuilder: {
+          template: '<slot />',
+        },
       },
       mocks: {
         $t: (msg: string) => msg,
