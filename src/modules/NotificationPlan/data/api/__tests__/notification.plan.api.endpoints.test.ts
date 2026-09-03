@@ -12,10 +12,10 @@ it('registers all notification plan endpoints', () => {
     endpoints.delete,
   ]).toEqual(
     expect.arrayContaining([
-      expect.stringContaining('acreate_notification_plan'),
+      expect.stringContaining('store_notification_plan'),
       expect.stringContaining('fetch_notification_plans'),
-      expect.stringContaining('fetch_notification_plan_details'),
-      expect.stringContaining('update_notification_plan'),
+      expect.stringContaining('show_notification_plan'),
+      expect.stringContaining('edit_notification_plan'),
       expect.stringContaining('change_notification_active_status'),
       expect.stringContaining('delete_notification_plan'),
     ]),

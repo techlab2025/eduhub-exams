@@ -6,6 +6,7 @@ import en from '@/locales/en.json';
 import AppTable from '@/shared/HelpersComponents/AppTable.vue';
 import DropList from '@/shared/HelpersComponents/DropList.vue';
 import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
+import { StatusNotificationPlanEnum } from '../../../core/enums/status.notification.plan.enum';
 import NotificationPlanModel from '../../../core/models/notification.plan.model';
 import NotificationPlanIndex from '../NotificationPlanIndex.vue';
 
@@ -17,12 +18,12 @@ const { deleteMock, fetchListMock, pushMock, toggleStatusMock } = vi.hoisted(() 
 }));
 
 const listItem = NotificationPlanModel.fromJson({
-  notification_plan_id: 7,
+  id: 7,
   title: 'Question Activity Alerts',
-  is_active: true,
-  actions: [{ value: 1 }],
-  employees: [{ id: 2, name: 'Ahmed Hawam' }],
-  created_by: { name: 'Portal Admin' },
+  recipients_number: 3,
+  actions_number: 1,
+  status: StatusNotificationPlanEnum.active,
+  created_by: 'Portal Admin',
   created_at: '2026-09-02T09:20:42.000000Z',
 });
 
@@ -132,12 +133,14 @@ describe('NotificationPlanIndex', () => {
     fetchListMock.mockClear();
 
     expect(wrapper.findAll('.notification-plan-filter__section')).toHaveLength(4);
-    await wrapper.find('input[value="active"]').setValue(true);
+    await wrapper.find(`input[value="${StatusNotificationPlanEnum.active}"]`).setValue(true);
     await wrapper.find('.notification-plan-filter__actions .btn-primary').trigger('click');
     await flushPromises();
 
     expect(fetchListMock).toHaveBeenCalledOnce();
-    expect(fetchListMock.mock.calls[0]?.[0]).toMatchObject({ isActive: true });
+    expect(fetchListMock.mock.calls[0]?.[0]).toMatchObject({
+      status: StatusNotificationPlanEnum.active,
+    });
     expect(wrapper.getComponent(FilterDialog).props('modelValue')).toBe(false);
   });
 
@@ -155,6 +158,7 @@ describe('NotificationPlanIndex', () => {
     ]);
     expect(actions[2]).toMatchObject({ toggleValue: true });
     expect(actions[3]).toMatchObject({ danger: true });
+    expect(actions[0]).toMatchObject({ link: '/notification-plans/7' });
   });
 
   it('requests filtered data after the search debounce', async () => {
@@ -168,8 +172,9 @@ describe('NotificationPlanIndex', () => {
     expect(fetchListMock).toHaveBeenCalledOnce();
     expect(fetchListMock.mock.calls[0]?.[0]).toMatchObject({
       word: 'alerts',
-      pageNumber: 1,
-      perPage: 10,
+      with_pagination: 1,
+      page: 1,
+      per_page: 10,
     });
   });
 

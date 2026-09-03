@@ -5,11 +5,12 @@ import TitleInterface from '@/base/Data/Models/titleInterface';
 import en from '@/locales/en.json';
 import { NotificationPlanActions } from '../../../core/constants/NotificationPlanActions';
 import { NotificationPlanQuestionActionEnum } from '../../../core/enums/notification.plan.question.enum';
-import NotificationPlanModel from '../../../core/models/notification.plan.model';
+import { StatusNotificationPlanEnum } from '../../../core/enums/status.notification.plan.enum';
+import NotificationPlanDetailsModel from '../../../core/models/notification.plan.details.model';
 import UpdatedCustomInputSelect from '@/shared/FormInputs/UpdatedCustomInputSelect.vue';
 import NotificationPlanForm from '../NotificationPlanForm.vue';
 
-const mountForm = (plan?: NotificationPlanModel) =>
+const mountForm = (plan?: NotificationPlanDetailsModel) =>
   shallowMount(NotificationPlanForm, {
     props: { plan },
     global: {
@@ -77,15 +78,16 @@ describe('NotificationPlanForm', () => {
 
     expect((wrapper.vm as unknown as { validate: () => boolean }).validate()).toBe(true);
     expect(wrapper.emitted('updateData')?.at(-1)?.[0]).toMatchObject({
-      title: 'Question activity alerts',
-      employeeIds: [8],
-      actionValues: [
+      plan_title: 'Question activity alerts',
+      employee_ids: [8],
+      action: [
         {
-          action: NotificationPlanQuestionActionEnum.Add_Question,
-          sub_action: null,
+          action_ids: [NotificationPlanQuestionActionEnum.Add_Question],
+          message:
+            'Updated: Ahmed Hawam has Add Question Questions Please review the latest change.',
         },
       ],
-      isActive: true,
+      status: StatusNotificationPlanEnum.active,
     });
     expect(wrapper.find('.notification-plan-template').exists()).toBe(true);
   });
@@ -114,15 +116,14 @@ describe('NotificationPlanForm', () => {
 
   it('uses edit copy and pre-fills an existing plan', async () => {
     const wrapper = mountForm(
-      NotificationPlanModel.fromJson({
-        notification_plan_id: 12,
-        title: 'Document updates',
-        is_active: false,
+      NotificationPlanDetailsModel.fromJson({
+        id: 12,
+        plan_title: 'Document updates',
+        status: StatusNotificationPlanEnum.inactive,
         actions: [
           {
-            value: NotificationPlanQuestionActionEnum.Add_Question,
-            label: 'Add Question',
-            displayed_message:
+            action_ids: [NotificationPlanQuestionActionEnum.Add_Question],
+            message:
               'Updated: Sara Ali has Add Question Questions. Please review the latest change.',
           },
         ],

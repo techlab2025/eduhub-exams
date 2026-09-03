@@ -11,11 +11,12 @@
     NotificationPlanActions,
     type NotificationPlanActionDefinition,
   } from '../../core/constants/NotificationPlanActions';
-  import type NotificationPlanModel from '../../core/models/notification.plan.model';
+  import { StatusNotificationPlanEnum } from '../../core/enums/status.notification.plan.enum';
+  import type NotificationPlanDetailsModel from '../../core/models/notification.plan.details.model';
   import AddNotificationPlanParams from '../../core/params/add.notification.plan.params';
   import EditNotificationPlanParams from '../../core/params/edit.notification.plan.params';
 
-  const props = defineProps<{ plan?: NotificationPlanModel; loading?: boolean }>();
+  const props = defineProps<{ plan?: NotificationPlanDetailsModel; loading?: boolean }>();
   const emit = defineEmits<{
     updateData: [value: AddNotificationPlanParams | EditNotificationPlanParams];
   }>();
@@ -40,11 +41,8 @@
 
   const title = ref('');
   const isActive = ref(true);
-  const recipientType = ref<0 | 1>(0);
   const selectedEmployees = ref<TitleInterface<number>[]>([]);
-  const hierarchyIdsText = ref('');
   const selectedActions = ref<number[]>([]);
-  const subActions = ref<Record<number, number | null>>({});
   const expandedFeature = ref<string | null>(NotificationPlanActions[0]?.id ?? null);
   const expandedSubFeature = ref<string | null>(firstSubFeature?.id ?? null);
   const editingMessage = ref(false);
@@ -68,34 +66,23 @@
   );
 
   const selectedActionContext = computed(() => {
-    const selectedAction = selectedActions.value[0] ?? props.plan?.actions[0]?.value;
+    const selectedAction = selectedActions.value[0] ?? props.plan?.actions[0]?.action_ids[0];
     return actionContexts.find(({ action }) => action.action_id === selectedAction);
   });
 
-  const selectedPlanAction = computed(() => {
-    const selectedAction = selectedActions.value[0] ?? props.plan?.actions[0]?.value;
-    return props.plan?.actions.find(({ value }) => value === selectedAction);
-  });
-
-  const getActionLabel = (action: NotificationPlanActionDefinition) =>
-    props.plan?.actions.find(({ value }) => value === action.action_id)?.label ||
-    t(action.action_title);
+  const getActionLabel = (action: NotificationPlanActionDefinition) => t(action.action_title);
 
   const hasSelectedActions = (actions: readonly NotificationPlanActionDefinition[]) =>
     actions.some(({ action_id }) => selectedActions.value.includes(action_id));
 
   const lockedMessageValues = computed(() => [
-    selectedPlanAction.value?.executorName ||
-      selectedEmployees.value[0]?.title ||
-      t('notification_plan.form.template_executor_value'),
-    selectedPlanAction.value?.label ||
-      (selectedActionContext.value
-        ? t(selectedActionContext.value.action.action_title)
-        : t('notification_plan.form.template_action_value')),
-    selectedPlanAction.value?.featureName ||
-      (selectedActionContext.value
-        ? t(selectedActionContext.value.feature.feature_title)
-        : t('notification_plan.form.template_feature_value')),
+    selectedEmployees.value[0]?.title || t('notification_plan.form.template_executor_value'),
+    selectedActionContext.value
+      ? t(selectedActionContext.value.action.action_title)
+      : t('notification_plan.form.template_action_value'),
+    selectedActionContext.value
+      ? t(selectedActionContext.value.feature.feature_title)
+      : t('notification_plan.form.template_feature_value'),
   ]);
 
   const composeMessage = (segments: MessageSegments) =>
@@ -152,37 +139,26 @@
     savedMessage.value = { ...draftMessage.value };
     returnedMessage.value = '';
     editingMessage.value = false;
+    updateData();
   };
 
   const cancelMessageEdit = () => {
     editingMessage.value = false;
   };
 
-  const hierarchyIds = computed(() =>
-    hierarchyIdsText.value
-      .split(',')
-      .map((value) => Number(value.trim()))
-      .filter((value) => Number.isInteger(value) && value > 0),
-  );
-
-  const getSubActionValue = (value: unknown): number | null => {
-    if (typeof value === 'number') return value;
-    if (value && typeof value === 'object') {
-      const map = value as Record<string, unknown>;
-      const id = Number(map.value ?? map.id);
-      return Number.isFinite(id) ? id : null;
-    }
-    return null;
-  };
-
   const updateData = () => {
-    const values = selectedActions.value.map((action) => ({
-      action,
-      sub_action: subActions.value[action] ?? null,
-    }));
-    const employeeIds =
-      recipientType.value === 0 ? selectedEmployees.value.map(({ id }) => id) : [];
-    const positionIds = recipientType.value === 1 ? hierarchyIds.value : [];
+    const action = NotificationPlanActions.flatMap(({ sub_feature }) => sub_feature)
+      .map((subFeature) => ({
+        action_ids: subFeature.actions
+          .map(({ action_id }) => action_id)
+          .filter((actionId) => selectedActions.value.includes(actionId)),
+        message: displayedMessage.value,
+      }))
+      .filter(({ action_ids }) => action_ids.length > 0);
+    const employee_ids = selectedEmployees.value.map(({ id }) => id);
+    const status = isActive.value
+      ? StatusNotificationPlanEnum.active
+      : StatusNotificationPlanEnum.inactive;
 
     emit(
       'updateData',
@@ -190,20 +166,11 @@
         ? new EditNotificationPlanParams(
             props.plan.id,
             title.value.trim(),
-            values,
-            employeeIds,
-            positionIds,
-            isActive.value,
-            recipientType.value,
+            employee_ids,
+            action,
+            status,
           )
-        : new AddNotificationPlanParams(
-            title.value.trim(),
-            values,
-            employeeIds,
-            positionIds,
-            isActive.value,
-            recipientType.value,
-          ),
+        : new AddNotificationPlanParams(title.value.trim(), employee_ids, action, status),
     );
   };
 
@@ -220,7 +187,6 @@
       draftMessage.value = { ...savedMessage.value };
       returnedMessage.value = '';
     }
-    if (!enabled) subActions.value[action] = null;
     if (!enabled) editingMessage.value = false;
     updateData();
   };
@@ -231,7 +197,6 @@
 
   const resetTriggers = () => {
     selectedActions.value = [];
-    subActions.value = {};
     editingMessage.value = false;
     savedMessage.value = createDefaultMessage();
     draftMessage.value = { ...savedMessage.value };
@@ -244,34 +209,25 @@
   };
 
   const validate = () =>
-    Boolean(
-      title.value.trim() &&
-      selectedActions.value.length &&
-      (recipientType.value === 0 ? selectedEmployees.value.length : hierarchyIds.value.length),
-    );
+    Boolean(title.value.trim() && selectedActions.value.length && selectedEmployees.value.length);
   defineExpose({ validate });
 
   watch(
     () => props.plan,
     (plan) => {
       if (!plan) return;
-      title.value = plan.title;
-      isActive.value = plan.isActive;
-      recipientType.value = plan.heirarchy;
+      title.value = plan.plan_title;
+      isActive.value = plan.status === StatusNotificationPlanEnum.active;
       selectedEmployees.value = plan.employees.map(
-        (employee) => new TitleInterface({ id: employee.id, title: employee.title }),
+        (employee) => new TitleInterface({ id: employee.id, title: employee.name }),
       );
-      hierarchyIdsText.value = plan.hierarchies.map(({ id }) => id).join(', ');
-      selectedActions.value = plan.actions.map(({ value }) => value);
-      subActions.value = Object.fromEntries(
-        plan.actions.map((action) => [action.value, getSubActionValue(action.subAction)]),
-      );
-      returnedMessage.value = plan.actions[0]?.displayedMessage ?? '';
+      selectedActions.value = plan.actions.flatMap(({ action_ids }) => action_ids);
+      returnedMessage.value = plan.actions[0]?.message ?? '';
     },
     { immediate: true },
   );
 
-  watch([title, isActive, recipientType, selectedEmployees, hierarchyIdsText], updateData, {
+  watch([title, isActive, selectedEmployees], updateData, {
     deep: true,
     immediate: true,
   });

@@ -1370,6 +1370,55 @@
       "medium_near_miss": "Medium Is Near Miss",
       "high": "High"
     },
+    "details": {
+      "page_title": "Notification Plan Details",
+      "updated_by": "Updated By {name}",
+      "recipients": {
+        "title": "Recipients",
+        "description": "Individual recipients configured for this plan."
+      },
+      "triggers": {
+        "title": "Configured Triggers & Messages",
+        "description": "Selected actions are grouped by feature, with one message template for each configured feature.",
+        "empty": "No triggers are configured for this notification plan."
+      },
+      "message_template": "Message Template",
+      "record": {
+        "title": "Record Information",
+        "created_by": "Created by :",
+        "created_at": "Created at :",
+        "updated_by": "Updated by :",
+        "updated_at": "Updated at :"
+      }
+    },
+    "dialogs": {
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "delete": {
+        "title": "Are You Sure You Want To Delete This Notification Plan?",
+        "message": "",
+        "warning": "This action cannot be undone. The plan will be permanently deleted, and its configured triggers will become available for other notification plans.",
+        "confirm": "Yes, Delete It"
+      },
+      "activate": {
+        "title": "Activate notification plan?",
+        "message": "Are you sure you want to activate this notification plan?"
+      },
+      "deactivate": {
+        "title": "Deactivate notification plan?",
+        "message": "Are you sure you want to deactivate this notification plan?"
+      },
+      "success": {
+        "title": "Notification Plan added successfully",
+        "message": "The notification plan has been created successfully and is now available in the notification plans list.",
+        "confirm": "Okay, I Understand."
+      },
+      "duplicate": {
+        "title": "Notification plan already exists",
+        "message": "A notification plan with the same configuration already exists. Review the existing plan before creating a new one.",
+        "confirm": "View"
+      }
+    },
     "form": {
       "create_heading": "Create notification plan",
       "edit_heading": "Edit notification plan",

@@ -1,4 +1,4 @@
 export interface NotificationPlanActionValueParam {
-  action: number;
-  sub_action: number | null;
+  action_ids: number[];
+  message: string;
 }

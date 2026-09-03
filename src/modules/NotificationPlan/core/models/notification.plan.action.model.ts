@@ -1,42 +1,20 @@
 export default class NotificationPlanActionModel {
-  public readonly value: number;
-  public readonly name: string;
-  public readonly label: string;
-  public readonly subAction: unknown;
-  public readonly displayedMessage: string;
-  public readonly executorName: string;
-  public readonly featureName: string;
+  public readonly action_ids: readonly number[];
+  public readonly message: string;
 
-  constructor(
-    value: number,
-    name: string,
-    label: string,
-    subAction: unknown = null,
-    displayedMessage = '',
-    executorName = '',
-    featureName = '',
-  ) {
-    this.value = value;
-    this.name = name;
-    this.label = label;
-    this.subAction = subAction;
-    this.displayedMessage = displayedMessage;
-    this.executorName = executorName;
-    this.featureName = featureName;
+  constructor(action_ids: number[], message: string) {
+    this.action_ids = Object.freeze([...action_ids]);
+    this.message = message;
     Object.freeze(this);
   }
 
   static fromJson(data: Record<string, unknown>): NotificationPlanActionModel {
-    return new NotificationPlanActionModel(
-      Number(data.value ?? 0),
-      String(data.name ?? ''),
-      String(data.label ?? ''),
-      data.sub_action ?? null,
-      typeof (data.displayed_message ?? data.message) === 'string'
-        ? String(data.displayed_message ?? data.message)
-        : '',
-      String(data.executor_user_name ?? data.executor_name ?? ''),
-      String(data.feature_name ?? data.feature ?? ''),
-    );
+    const action_ids = Array.isArray(data.action_ids)
+      ? data.action_ids
+          .map((actionId) => Number(actionId))
+          .filter((actionId) => Number.isFinite(actionId))
+      : [];
+
+    return new NotificationPlanActionModel(action_ids, String(data.message ?? ''));
   }
 }

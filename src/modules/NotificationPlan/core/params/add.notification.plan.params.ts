@@ -1,45 +1,39 @@
 import type Params from '@/base/Core/Params/params';
 import { ClassValidation } from '@/base/Presentation/Utils/classValidation';
+import type { StatusNotificationPlanEnum } from '../enums/status.notification.plan.enum';
 import type { NotificationPlanActionValueParam } from './notification.plan.action.value.param';
 
 export default class AddNotificationPlanParams implements Params {
-  public title: string;
-  public actionValues: NotificationPlanActionValueParam[];
-  public employeeIds: number[];
-  public hierarchyIds: number[];
-  public isActive?: boolean;
-  public heirarchy: 0 | 1;
+  public plan_title: string;
+  public employee_ids: number[];
+  public action: NotificationPlanActionValueParam[];
+  public status?: StatusNotificationPlanEnum;
 
   public static readonly validation = new ClassValidation().setRules({
-    title: { required: true },
-    actionValues: { required: true },
+    plan_title: { required: true },
+    employee_ids: { required: true },
+    action: { required: true },
   });
 
   constructor(
-    title: string,
-    actionValues: NotificationPlanActionValueParam[],
-    employeeIds: number[] = [],
-    hierarchyIds: number[] = [],
-    isActive?: boolean,
-    heirarchy: 0 | 1 = 0,
+    plan_title: string,
+    employee_ids: number[],
+    action: NotificationPlanActionValueParam[],
+    status?: StatusNotificationPlanEnum,
   ) {
-    this.title = title;
-    this.actionValues = actionValues;
-    this.employeeIds = employeeIds;
-    this.hierarchyIds = hierarchyIds;
-    this.isActive = isActive;
-    this.heirarchy = heirarchy;
+    this.plan_title = plan_title;
+    this.employee_ids = employee_ids;
+    this.action = action;
+    this.status = status;
   }
 
   toMap(): Record<string, unknown> {
     const data: Record<string, unknown> = {
-      title: this.title,
-      action_values: this.actionValues,
-      heirarchy: this.heirarchy,
+      plan_title: this.plan_title,
+      employee_ids: this.employee_ids,
+      action: this.action,
     };
-    if (this.isActive !== undefined) data.is_active = this.isActive;
-    if (this.employeeIds.length > 0) data.employee_ids = this.employeeIds;
-    if (this.hierarchyIds.length > 0) data.hierarchy_ids = this.hierarchyIds;
+    if (this.status !== undefined) data.status = this.status;
     return data;
   }
 

@@ -176,7 +176,9 @@
 
             <!-- Actions column (if slot provided) -->
             <th v-if="$slots.actions" class="th-actions">
-              <!-- <slot name="actions-header">Actions</slot> -->
+              <div class="th-content">
+                <span><slot name="actions-header"></slot></span>
+              </div>
             </th>
           </tr>
         </thead>

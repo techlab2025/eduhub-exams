@@ -195,9 +195,11 @@ describe('AppTable', () => {
       {},
       {
         actions: '<button>Edit</button>',
+        'actions-header': 'Actions',
       },
     );
     expect(wrapper.find('.th-actions').exists()).toBe(true);
+    expect(wrapper.get('.th-actions').text()).toBe('Actions');
   });
 
   it('applies striped class', () => {

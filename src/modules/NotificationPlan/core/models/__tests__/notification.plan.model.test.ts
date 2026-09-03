@@ -1,29 +1,27 @@
 import { describe, expect, it } from 'vitest';
+import { StatusNotificationPlanEnum } from '../../enums/status.notification.plan.enum';
 import NotificationPlanModel from '../notification.plan.model';
 
 describe('NotificationPlanModel', () => {
-  it('maps identifiers, status, actions, employees, and hierarchies', () => {
+  it('maps the documented fetch response without renaming its fields', () => {
     const model = NotificationPlanModel.fromJson({
-      notification_plan_id: 9,
+      id: 9,
       title: 'Team Leader',
-      is_active: 1,
-      actions: [{ value: 13, name: 'team_added', label: 'Investigation Team Added' }],
-      employees: [{ id: 2, name: 'Employee Two' }],
-      hierarchies: [{ id: 5, title: 'Team Leader' }],
-      created_by: { first_name: 'Portal', last_name: 'Admin' },
+      recipients_number: 12,
+      actions_number: 4,
+      status: StatusNotificationPlanEnum.active,
+      created_by: 'Portal Admin',
       created_at: '2026-09-02T09:20:42.000000Z',
     });
 
     expect(model).toMatchObject({
       id: 9,
       title: 'Team Leader',
-      isActive: true,
-      heirarchy: 1,
-      createdBy: 'Portal Admin',
-      createdAt: '2026-09-02T09:20:42.000000Z',
+      recipients_number: 12,
+      actions_number: 4,
+      status: StatusNotificationPlanEnum.active,
+      created_by: 'Portal Admin',
+      created_at: '2026-09-02T09:20:42.000000Z',
     });
-    expect(model.actions[0]?.value).toBe(13);
-    expect(model.employees[0]?.title).toBe('Employee Two');
-    expect(model.hierarchies[0]?.id).toBe(5);
   });
 });

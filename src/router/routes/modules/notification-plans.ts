@@ -20,4 +20,11 @@ export const notificationPlanRoutes: RouteRecordRaw[] = [
     props: true,
     meta: { breadcrumb: 'notification_plan.edit', parent: 'Notification Plans' },
   },
+  {
+    path: 'notification-plans/:id',
+    name: 'Notification Plan Details',
+    component: () => import('@/views/NotificationPlan/DetailsNotificationPlan.vue'),
+    props: true,
+    meta: { breadcrumb: 'notification_plan.view_title', parent: 'Notification Plans' },
+  },
 ];

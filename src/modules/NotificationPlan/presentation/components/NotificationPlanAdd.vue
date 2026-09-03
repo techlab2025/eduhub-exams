@@ -3,8 +3,10 @@
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
   import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
+  import { ErrorType } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
   import NotificationPlanController from '../controllers/notification.plan.controller';
   import NotificationPlanForm from './NotificationPlanForm.vue';
+  import NotificationPlanDialog from './NotificationPlanDialog.vue';
   import type AddNotificationPlanParams from '../../core/params/add.notification.plan.params';
 
   const router = useRouter();
@@ -13,6 +15,11 @@
   const formRef = ref<InstanceType<typeof NotificationPlanForm>>();
   const params = ref<AddNotificationPlanParams>();
   const loading = ref(false);
+  const successDialogVisible = ref(false);
+  const duplicateDialogVisible = ref(false);
+
+  const isDuplicateError = (message: string, errorType?: number) =>
+    errorType === ErrorType.conflict || /already|exist|duplicate/i.test(message);
 
   const save = async () => {
     if (!params.value || !formRef.value?.validate()) {
@@ -22,10 +29,23 @@
     loading.value = true;
     try {
       const result = await controller.create(params.value);
-      if (result && !result.hasError) await router.push({ name: 'Notification Plans' });
+      if (!result) return;
+      if (result.hasError) {
+        if (isDuplicateError(result.error?.displayMessage ?? '', result.error?.type)) {
+          duplicateDialogVisible.value = true;
+        }
+        return;
+      }
+      successDialogVisible.value = true;
     } finally {
       loading.value = false;
     }
+  };
+
+  const goToIndex = async () => {
+    successDialogVisible.value = false;
+    duplicateDialogVisible.value = false;
+    await router.push({ name: 'Notification Plans' });
   };
 </script>
 
@@ -49,6 +69,12 @@
         {{ $t('notification_plan.form.cancel') }}
       </button>
     </footer>
+    <NotificationPlanDialog v-model="successDialogVisible" variant="success" @confirm="goToIndex" />
+    <NotificationPlanDialog
+      v-model="duplicateDialogVisible"
+      variant="duplicate"
+      @confirm="goToIndex"
+    />
   </section>
 </template>
 

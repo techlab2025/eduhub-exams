@@ -2,17 +2,16 @@
   import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
   import { useRouter } from 'vue-router';
   import { useI18n } from 'vue-i18n';
-  import Dialog from 'primevue/dialog';
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import DataStatusBuilder from '@/shared/DataStatues/DataStatusBuilder.vue';
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
   import NoItemContainer from '@/shared/HelpersComponents/NoItemContainer.vue';
   import DropList from '@/shared/HelpersComponents/DropList.vue';
   import FilterDialog from '@/shared/HelpersComponents/FilterDialog/FilterDialog.vue';
-  import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
-  import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
-  import ShowIcon from '@/shared/icons/ShowIcon.vue';
-  import DeactiveIcon from '@/shared/icons/Plan/DeactiveIcon.vue';
+  import NotificationPlanViewIcon from '@/icons/NotificationPlanActions/NotificationPlanViewIcon.vue';
+  import NotificationPlanEditIcon from '@/icons/NotificationPlanActions/NotificationPlanEditIcon.vue';
+  import NotificationPlanStatusIcon from '@/icons/NotificationPlanActions/NotificationPlanStatusIcon.vue';
+  import NotificationPlanDeleteIcon from '@/icons/NotificationPlanActions/NotificationPlanDeleteIcon.vue';
   import IndexPluseIcon from '@/shared/icons/IndexPluseIcon.vue';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   import ReloadIcon from '@/shared/icons/CustomSelect/ReloadIcon.vue';
@@ -21,7 +20,8 @@
   import EmployeeController from '@/modules/employee/presentation/controllers/employee.controller';
   import IndexEmployeeParams from '@/modules/employee/core/params/index.employee.params';
   import NotificationPlanController from '../controllers/notification.plan.controller';
-  import { NotificationPlanActionEnum } from '../../core/enums/notification.plan.action.enum';
+  import { NotificationPlanActions } from '../../core/constants/NotificationPlanActions';
+  import { StatusNotificationPlanEnum } from '../../core/enums/status.notification.plan.enum';
   import type NotificationPlanModel from '../../core/models/notification.plan.model';
   import IndexNotificationPlanParams from '../../core/params/index.notification.plan.params';
   import DeleteNotificationPlanParams from '../../core/params/delete.notification.plan.params';
@@ -36,16 +36,14 @@
   const questionsFeatureId = 1;
   const documentsFeatureId = 2;
   const filterDialogVisible = ref(false);
-  const viewDialogVisible = ref(false);
-  const selectedPlan = ref<NotificationPlanModel | null>(null);
   const recipientFilter = ref<TitleInterface<number> | null>(null);
   const featureFilter = ref<TitleInterface<number> | null>(null);
   const actionFilter = ref<TitleInterface<number> | null>(null);
-  const statusFilters = ref<Array<'active' | 'inactive'>>([]);
+  const statusFilters = ref<StatusNotificationPlanEnum[]>([]);
   const appliedRecipientFilter = ref<TitleInterface<number> | null>(null);
   const appliedFeatureFilter = ref<TitleInterface<number> | null>(null);
   const appliedActionFilter = ref<TitleInterface<number> | null>(null);
-  const appliedStatusFilters = ref<Array<'active' | 'inactive'>>([]);
+  const appliedStatusFilters = ref<StatusNotificationPlanEnum[]>([]);
   let searchTimer: ReturnType<typeof setTimeout> | undefined;
 
   const employeeController = EmployeeController.getInstance();
@@ -68,73 +66,55 @@
     }),
   ]);
 
-  const actionOptions = computed(() => [
-    new TitleInterface({
-      id: NotificationPlanActionEnum.COURSE_ASSIGEND,
-      title: t('notification_plan.actions.course_assigend'),
-    }),
-  ]);
+  const actionOptions = computed(() =>
+    NotificationPlanActions.flatMap(({ sub_feature }) => sub_feature).flatMap(({ actions }) =>
+      actions.map(
+        ({ action_id, action_title }) =>
+          new TitleInterface({ id: action_id, title: t(action_title) }),
+      ),
+    ),
+  );
 
   const headers = computed<TableHeader[]>(() => [
     {
-      key: 'planId',
+      key: 'id',
       label: t('notification_plan.columns.plan_id'),
       sortable: true,
-      width: '120px',
+      width: '15%',
     },
-    { key: 'title', label: t('notification_plan.columns.title'), width: '220px' },
+    { key: 'title', label: t('notification_plan.columns.title'), width: '15%' },
     {
-      key: 'recipientCount',
+      key: 'recipients_number',
       label: t('notification_plan.columns.recipients_count'),
-      width: '170px',
+      width: '15%',
     },
     {
-      key: 'actionCount',
+      key: 'actions_number',
       label: t('notification_plan.columns.actions_count'),
-      width: '150px',
+      width: '15%',
     },
-    { key: 'status', label: t('notification_plan.columns.status'), width: '120px' },
-    { key: 'createdBy', label: t('notification_plan.columns.created_by'), width: '160px' },
-    { key: 'createdAt', label: t('notification_plan.columns.created_at'), width: '140px' },
+    { key: 'status', label: t('notification_plan.columns.status'), width: '10%' },
+    { key: 'created_by', label: t('notification_plan.columns.created_by'), width: '10%' },
+    { key: 'created_at', label: t('notification_plan.columns.created_at'), width: '10%' },
   ]);
 
   const fetchItems = (page = 1) =>
     controller.fetchList(
-      new IndexNotificationPlanParams(
-        word.value.trim(),
+      new IndexNotificationPlanParams({
+        word: word.value.trim(),
+        with_pagination: 1,
         page,
-        perPage.value,
-        appliedStatusFilters.value.length === 1
-          ? appliedStatusFilters.value[0] === 'active'
-          : undefined,
-      ),
+        per_page: perPage.value,
+        status: appliedStatusFilters.value.length === 1 ? appliedStatusFilters.value[0] : undefined,
+        employee_id: appliedRecipientFilter.value?.id,
+        action: appliedActionFilter.value?.id,
+        feature: appliedFeatureFilter.value?.id,
+      }),
     );
 
-  const filterItems = (items: NotificationPlanModel[]) =>
-    items.filter((item) => {
-      const matchesRecipient =
-        !appliedRecipientFilter.value ||
-        [...item.employees, ...item.hierarchies].some(
-          ({ id }) => id === appliedRecipientFilter.value?.id,
-        );
-      const matchesAction =
-        !appliedActionFilter.value ||
-        item.actions.some(({ value }) => value === appliedActionFilter.value?.id);
-      const matchesFeature =
-        !appliedFeatureFilter.value ||
-        (appliedFeatureFilter.value.id === questionsFeatureId
-          ? item.actions.length > 0
-          : item.actions.length === 0);
-      const matchesStatus =
-        appliedStatusFilters.value.length !== 1 ||
-        item.isActive === (appliedStatusFilters.value[0] === 'active');
-
-      return matchesRecipient && matchesAction && matchesFeature && matchesStatus;
-    });
-
   const planId = (id: number) => `NTP-${String(id).padStart(3, '0')}`;
-  const recipientCount = (item: NotificationPlanModel) =>
-    item.employees.length + item.hierarchies.length;
+  const isPlanActive = (item: NotificationPlanModel) =>
+    item.status === StatusNotificationPlanEnum.active;
   const formatDate = (value: string) => {
     if (!value) return t('notification_plan.not_available');
     const date = new Date(value);
@@ -148,18 +128,20 @@
   };
 
   const changeStatus = async (item: NotificationPlanModel) => {
-    await controller.toggleStatus(new ToggleNotificationPlanStatusParams(item.id, !item.isActive));
+    await controller.toggleStatus(
+      new ToggleNotificationPlanStatusParams(
+        item.id,
+        isPlanActive(item)
+          ? StatusNotificationPlanEnum.inactive
+          : StatusNotificationPlanEnum.active,
+      ),
+    );
     await fetchItems(controller.pagination.value?.currentPage ?? 1);
   };
 
   const remove = async (id: number) => {
     await controller.delete(new DeleteNotificationPlanParams(id));
     await fetchItems();
-  };
-
-  const viewPlan = (item: NotificationPlanModel) => {
-    selectedPlan.value = item;
-    viewDialogVisible.value = true;
   };
 
   const applyFilters = async () => {
@@ -187,23 +169,23 @@
   const actionList = (item: NotificationPlanModel) => [
     {
       text: t('notification_plan.view'),
-      icon: ShowIcon,
-      action: () => viewPlan(item),
+      icon: NotificationPlanViewIcon,
+      link: `/notification-plans/${item.id}`,
     },
     {
       text: t('edit'),
-      icon: EditIcon,
+      icon: NotificationPlanEditIcon,
       link: `/notification-plans/edit/${item.id}`,
     },
     {
-      text: t(item.isActive ? 'notification_plan.deactivate' : 'notification_plan.activate'),
-      icon: DeactiveIcon,
+      text: t(isPlanActive(item) ? 'notification_plan.deactivate' : 'notification_plan.activate'),
+      icon: NotificationPlanStatusIcon,
       action: () => changeStatus(item),
-      toggleValue: item.isActive,
+      toggleValue: isPlanActive(item),
     },
     {
       text: t('delete'),
-      icon: DeletIcon,
+      icon: NotificationPlanDeleteIcon,
       action: () => remove(item.id),
       danger: true,
     },
@@ -330,11 +312,19 @@
               </header>
               <div>
                 <label>
-                  <input v-model="statusFilters" type="checkbox" value="active" />
+                  <input
+                    v-model="statusFilters"
+                    type="checkbox"
+                    :value="StatusNotificationPlanEnum.active"
+                  />
                   <span>{{ $t('notification_plan.active') }}</span>
                 </label>
                 <label>
-                  <input v-model="statusFilters" type="checkbox" value="inactive" />
+                  <input
+                    v-model="statusFilters"
+                    type="checkbox"
+                    :value="StatusNotificationPlanEnum.inactive"
+                  />
                   <span>{{ $t('notification_plan.inactive') }}</span>
                 </label>
               </div>
@@ -366,36 +356,39 @@
         <div class="notification-plan-index__table">
           <AppTable
             :headers="headers"
-            :items="filterItems(data as NotificationPlanModel[])"
+            :items="data as NotificationPlanModel[]"
             selectable
             hoverable
           >
-            <template #cell-planId="{ item }">
+            <template #cell-id="{ item }">
               <span class="notification-plan-index__plan-id">{{ planId(item.id) }}</span>
             </template>
-            <template #cell-recipientCount="{ item }">{{ recipientCount(item) }}</template>
-            <template #cell-actionCount="{ item }">{{ item.actions.length }}</template>
             <template #cell-status="{ item }">
               <button
                 class="notification-plan-index__status"
-                :class="{ active: item.isActive, inactive: !item.isActive }"
+                :class="{ active: isPlanActive(item), inactive: !isPlanActive(item) }"
                 type="button"
                 :aria-label="
                   $t('notification_plan.toggle_status', {
                     status: $t(
-                      item.isActive ? 'notification_plan.inactive' : 'notification_plan.active',
+                      isPlanActive(item)
+                        ? 'notification_plan.inactive'
+                        : 'notification_plan.active',
                     ),
                   })
                 "
                 @click.stop="changeStatus(item)"
               >
-                {{ $t(item.isActive ? 'notification_plan.active' : 'notification_plan.inactive') }}
+                {{
+                  $t(isPlanActive(item) ? 'notification_plan.active' : 'notification_plan.inactive')
+                }}
               </button>
             </template>
-            <template #cell-createdBy="{ item }">
-              {{ item.createdBy || $t('notification_plan.not_available') }}
+            <template #cell-created_by="{ item }">
+              {{ item.created_by || $t('notification_plan.not_available') }}
             </template>
-            <template #cell-createdAt="{ item }">{{ formatDate(item.createdAt) }}</template>
+            <template #cell-created_at="{ item }">{{ formatDate(item.created_at) }}</template>
+            <template #actions-header>{{ $t('notification_plan.columns.actions') }}</template>
             <template #actions="{ item }">
               <DropList :action-list="actionList(item)" variant="notification-plan" />
             </template>
@@ -420,48 +413,6 @@
         />
       </template>
     </DataStatusBuilder>
-
-    <Dialog
-      v-model:visible="viewDialogVisible"
-      modal
-      :header="$t('notification_plan.view_title')"
-      :pt="{ root: 'notification-plan-view-dialog' }"
-    >
-      <dl v-if="selectedPlan" class="notification-plan-view">
-        <div>
-          <dt>{{ $t('notification_plan.columns.plan_id') }}</dt>
-          <dd>{{ planId(selectedPlan.id) }}</dd>
-        </div>
-        <div>
-          <dt>{{ $t('notification_plan.columns.title') }}</dt>
-          <dd>{{ selectedPlan.title }}</dd>
-        </div>
-        <div>
-          <dt>{{ $t('notification_plan.columns.recipients_count') }}</dt>
-          <dd>{{ recipientCount(selectedPlan) }}</dd>
-        </div>
-        <div>
-          <dt>{{ $t('notification_plan.columns.actions_count') }}</dt>
-          <dd>{{ selectedPlan.actions.length }}</dd>
-        </div>
-        <div>
-          <dt>{{ $t('notification_plan.columns.status') }}</dt>
-          <dd :class="{ active: selectedPlan.isActive, inactive: !selectedPlan.isActive }">
-            {{
-              $t(selectedPlan.isActive ? 'notification_plan.active' : 'notification_plan.inactive')
-            }}
-          </dd>
-        </div>
-        <div>
-          <dt>{{ $t('notification_plan.columns.created_by') }}</dt>
-          <dd>{{ selectedPlan.createdBy || $t('notification_plan.not_available') }}</dd>
-        </div>
-        <div>
-          <dt>{{ $t('notification_plan.columns.created_at') }}</dt>
-          <dd>{{ formatDate(selectedPlan.createdAt) }}</dd>
-        </div>
-      </dl>
-    </Dialog>
   </section>
 </template>
 
@@ -551,7 +502,7 @@
 
   .notification-plan-filter__section {
     display: grid;
-    gap: 12px;
+    // gap: 12px;
     padding-block: 18px;
     border-bottom: 1px solid var(--gray-200);
 
@@ -699,38 +650,6 @@
     margin-top: 8px;
   }
 
-  .notification-plan-view {
-    display: grid;
-    gap: 0;
-    margin: 0;
-
-    div {
-      display: grid;
-      grid-template-columns: minmax(120px, 0.65fr) minmax(0, 1fr);
-      gap: 18px;
-      padding-block: 13px;
-      border-bottom: 1px solid var(--gray-200);
-    }
-
-    dt {
-      color: var(--gray-500);
-    }
-
-    dd {
-      margin: 0;
-      color: var(--gray-900);
-      font-weight: 600;
-
-      &.active {
-        color: var(--PrimaryColor);
-      }
-
-      &.inactive {
-        color: var(--warning);
-      }
-    }
-  }
-
   :global(.notification-plan-filter-dialog.p-dialog) {
     max-width: calc(100vw - 24px);
     overflow: hidden;
@@ -760,13 +679,6 @@
   :global(.notification-plan-filter-dialog.p-dialog .p-dialog-footer) {
     padding: 10px 22px 22px;
     background: var(--BgWhite);
-  }
-
-  :global(.notification-plan-view-dialog.p-dialog) {
-    width: min(32rem, calc(100vw - 24px));
-    background: var(--BgWhite) !important;
-    border: 1px solid var(--gray-200);
-    border-radius: 20px;
   }
 
   @media (max-width: 768px) {

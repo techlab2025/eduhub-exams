@@ -1,20 +1,18 @@
 import { expect, it } from 'vitest';
+import { StatusNotificationPlanEnum } from '../../enums/status.notification.plan.enum';
 import AddNotificationPlanParams from '../add.notification.plan.params';
 
 it('maps the create notification plan payload', () => {
   const params = new AddNotificationPlanParams(
     'Observation',
-    [{ action: 4, sub_action: 4 }],
     [2, 3],
-    [],
-    true,
-    0,
+    [{ action_ids: [1, 4], message: 'A question changed.' }],
+    StatusNotificationPlanEnum.active,
   );
   expect(params.toMap()).toEqual({
-    title: 'Observation',
-    action_values: [{ action: 4, sub_action: 4 }],
-    heirarchy: 0,
-    is_active: true,
+    plan_title: 'Observation',
     employee_ids: [2, 3],
+    action: [{ action_ids: [1, 4], message: 'A question changed.' }],
+    status: StatusNotificationPlanEnum.active,
   });
 });

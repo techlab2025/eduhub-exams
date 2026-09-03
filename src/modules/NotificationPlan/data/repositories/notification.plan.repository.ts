@@ -2,10 +2,11 @@ import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositorie
 import type Params from '@/base/Core/Params/params';
 import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import NotificationPlanModel from '../../core/models/notification.plan.model';
+import NotificationPlanDetailsModel from '../../core/models/notification.plan.details.model';
 import NotificationPlanApiService from '../api/notification.plan.api-service';
 
 export default class NotificationPlanRepository extends BaseRepository<
-  NotificationPlanModel,
+  NotificationPlanDetailsModel,
   NotificationPlanModel[]
 > {
   private static instance: NotificationPlanRepository;
@@ -18,8 +19,8 @@ export default class NotificationPlanRepository extends BaseRepository<
     return { hasPagination: true, dataKey: 'data', paginationKey: 'meta' };
   }
 
-  protected get mockItem(): NotificationPlanModel {
-    return NotificationPlanModel.example;
+  protected get mockItem(): NotificationPlanDetailsModel {
+    return NotificationPlanDetailsModel.example;
   }
 
   protected get mockList(): NotificationPlanModel[] {
@@ -31,8 +32,8 @@ export default class NotificationPlanRepository extends BaseRepository<
     return this.instance;
   }
 
-  protected parseItem(data: unknown): NotificationPlanModel {
-    return NotificationPlanModel.fromJson((data ?? {}) as Record<string, unknown>);
+  protected parseItem(data: unknown): NotificationPlanDetailsModel {
+    return NotificationPlanDetailsModel.fromJson((data ?? {}) as Record<string, unknown>);
   }
 
   protected parseList(data: unknown): NotificationPlanModel[] {
@@ -41,7 +42,7 @@ export default class NotificationPlanRepository extends BaseRepository<
       : [];
   }
 
-  toggleStatus(params: Params): Promise<DataState<NotificationPlanModel>> {
+  toggleStatus(params: Params): Promise<DataState<NotificationPlanDetailsModel>> {
     return this.executeCustom(
       () => this.apiService.toggleStatus(params),
       (data) => this.parseItem(data),
