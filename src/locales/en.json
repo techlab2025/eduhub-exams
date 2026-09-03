@@ -1372,6 +1372,7 @@
     },
     "details": {
       "page_title": "Notification Plan Details",
+      "loading": "Loading notification plan details",
       "updated_by": "Updated By {name}",
       "recipients": {
         "title": "Recipients",

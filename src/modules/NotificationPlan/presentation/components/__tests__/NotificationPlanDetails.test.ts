@@ -106,8 +106,14 @@ describe('NotificationPlanDetails', () => {
 
   it('activates and reloads the notification plan', async () => {
     const wrapper = mountDetails();
+    const actions = wrapper.getComponent(DropList).props('actionList');
+    actions[1].action();
+    await nextTick();
 
-    await wrapper.findAllComponents(NotificationPlanDialog)[0]?.vm.$emit('confirm');
+    const statusDialog = wrapper.findAllComponents(NotificationPlanDialog)[0];
+    expect(statusDialog?.props('modelValue')).toBe(true);
+
+    await statusDialog?.vm.$emit('confirm');
     await flushPromises();
 
     expect(toggleStatusMock.mock.calls[0]?.[0]).toMatchObject({
@@ -115,6 +121,7 @@ describe('NotificationPlanDetails', () => {
       status: StatusNotificationPlanEnum.active,
     });
     expect(fetchOneMock).toHaveBeenCalledTimes(2);
+    expect(statusDialog?.props('modelValue')).toBe(false);
   });
 
   it('deletes the plan and returns to the list', async () => {

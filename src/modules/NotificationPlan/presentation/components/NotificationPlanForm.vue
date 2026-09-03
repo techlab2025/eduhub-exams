@@ -46,8 +46,10 @@
   const expandedFeature = ref<string | null>(NotificationPlanActions[0]?.id ?? null);
   const expandedSubFeature = ref<string | null>(firstSubFeature?.id ?? null);
   const editingMessage = ref(false);
+  const editingRawMessage = ref(false);
   const savedMessage = ref<MessageSegments>(createDefaultMessage());
   const draftMessage = ref<MessageSegments>(createDefaultMessage());
+  const rawDraftMessage = ref('');
   const returnedMessage = ref('');
 
   const employeeController = EmployeeController.getInstance();
@@ -103,22 +105,72 @@
     () => returnedMessage.value || composeMessage(savedMessage.value),
   );
 
-  const parseReturnedMessage = (message: string): MessageSegments | null => {
-    let remainder = message;
-    const editableSegments: string[] = [];
+  const indexOfInsensitive = (source: string, value: string, fromIndex = 0) =>
+    source.toLocaleLowerCase().indexOf(value.toLocaleLowerCase(), fromIndex);
 
-    for (const lockedValue of lockedMessageValues.value) {
-      const index = remainder.toLocaleLowerCase().indexOf(lockedValue.toLocaleLowerCase());
-      if (index < 0) return null;
-      editableSegments.push(remainder.slice(0, index).trim());
-      remainder = remainder.slice(index + lockedValue.length);
+  const lastIndexOfInsensitive = (source: string, value: string) =>
+    source.toLocaleLowerCase().lastIndexOf(value.toLocaleLowerCase());
+
+  const parseReturnedMessage = (message: string): MessageSegments | null => {
+    const executorValue = lockedMessageValues.value[0] ?? '';
+    const actionValue = lockedMessageValues.value[1] ?? '';
+    const featureValue = lockedMessageValues.value[2] ?? '';
+    if (!actionValue || !featureValue) return null;
+
+    const actionIndex = indexOfInsensitive(message, actionValue);
+    if (actionIndex < 0) return null;
+
+    const featureIndex = indexOfInsensitive(
+      message,
+      featureValue,
+      actionIndex + actionValue.length,
+    );
+    if (featureIndex < 0) return null;
+
+    const beforeActionWithExecutor = message.slice(0, actionIndex).trim();
+    const executorCandidates = Array.from(
+      new Set(
+        [
+          executorValue,
+          t('notification_plan.form.template_executor'),
+          t('notification_plan.form.template_executor_value'),
+        ].filter(Boolean),
+      ),
+    );
+    const executorMatch = executorCandidates
+      .map((value) => ({ value, index: lastIndexOfInsensitive(beforeActionWithExecutor, value) }))
+      .find(({ index }) => index >= 0);
+
+    let beforeExecutor = '';
+    let beforeAction = '';
+
+    if (executorMatch) {
+      beforeExecutor = beforeActionWithExecutor.slice(0, executorMatch.index).trim();
+      beforeAction = beforeActionWithExecutor
+        .slice(executorMatch.index + executorMatch.value.length)
+        .trim();
+    } else {
+      const connector = t('notification_plan.form.template_has');
+      const connectorIndex = lastIndexOfInsensitive(beforeActionWithExecutor, connector);
+      if (connectorIndex < 0) return null;
+
+      const contentBeforeExecutor = beforeActionWithExecutor.slice(0, connectorIndex).trim();
+      const defaultPrefix = t('notification_plan.form.template_updated');
+      const hasDefaultPrefix = indexOfInsensitive(contentBeforeExecutor, defaultPrefix) === 0;
+      const prefixEnd = hasDefaultPrefix
+        ? defaultPrefix.length
+        : contentBeforeExecutor.lastIndexOf(':') + 1;
+      if (prefixEnd <= 0) return null;
+
+      beforeExecutor = contentBeforeExecutor.slice(0, prefixEnd).trim();
+      beforeAction = beforeActionWithExecutor.slice(connectorIndex).trim();
     }
 
     return {
-      beforeExecutor: editableSegments[0] ?? '',
-      beforeAction: editableSegments[1] ?? '',
-      beforeFeature: editableSegments[2] ?? '',
-      afterFeature: remainder.trim(),
+      beforeExecutor,
+      beforeAction,
+      beforeFeature: message.slice(actionIndex + actionValue.length, featureIndex).trim(),
+      afterFeature: message.slice(featureIndex + featureValue.length).trim(),
     };
   };
 
@@ -131,11 +183,23 @@
   };
 
   const startEditingMessage = () => {
-    draftMessage.value = parseReturnedMessage(returnedMessage.value) ?? { ...savedMessage.value };
+    const backendMessage = returnedMessage.value.trim();
+    const parsedMessage = backendMessage ? parseReturnedMessage(backendMessage) : null;
+    editingRawMessage.value = Boolean(backendMessage && !parsedMessage);
+    rawDraftMessage.value = editingRawMessage.value ? backendMessage : '';
+    draftMessage.value = parsedMessage ?? { ...savedMessage.value };
     editingMessage.value = true;
   };
 
   const saveMessage = () => {
+    if (editingRawMessage.value) {
+      returnedMessage.value = rawDraftMessage.value.trim();
+      editingRawMessage.value = false;
+      editingMessage.value = false;
+      updateData();
+      return;
+    }
+
     savedMessage.value = { ...draftMessage.value };
     returnedMessage.value = '';
     editingMessage.value = false;
@@ -143,6 +207,7 @@
   };
 
   const cancelMessageEdit = () => {
+    editingRawMessage.value = false;
     editingMessage.value = false;
   };
 
@@ -185,6 +250,8 @@
       )?.subFeature.message;
       savedMessage.value = createDefaultMessage(messageKey);
       draftMessage.value = { ...savedMessage.value };
+      editingRawMessage.value = false;
+      rawDraftMessage.value = '';
       returnedMessage.value = '';
     }
     if (!enabled) editingMessage.value = false;
@@ -200,6 +267,8 @@
     editingMessage.value = false;
     savedMessage.value = createDefaultMessage();
     draftMessage.value = { ...savedMessage.value };
+    editingRawMessage.value = false;
+    rawDraftMessage.value = '';
     returnedMessage.value = '';
     updateData();
   };
@@ -222,6 +291,8 @@
         (employee) => new TitleInterface({ id: employee.id, title: employee.name }),
       );
       selectedActions.value = plan.actions.flatMap(({ action_ids }) => action_ids);
+      editingRawMessage.value = false;
+      rawDraftMessage.value = '';
       returnedMessage.value = plan.actions[0]?.message ?? '';
     },
     { immediate: true },
@@ -386,7 +457,17 @@
                     <span class="notification-plan-template__label">
                       {{ $t('notification_plan.form.message_template_label') }}
                     </span>
-                    <div class="notification-plan-template__editor">
+                    <div
+                      v-if="editingRawMessage"
+                      class="notification-plan-template__editor notification-plan-template__editor--raw"
+                    >
+                      <textarea
+                        v-model="rawDraftMessage"
+                        rows="2"
+                        :aria-label="$t('notification_plan.form.message_template_label')"
+                      ></textarea>
+                    </div>
+                    <div v-else class="notification-plan-template__editor">
                       <input
                         v-model="draftMessage.beforeExecutor"
                         type="text"

@@ -1,29 +1,31 @@
 <script setup lang="ts">
   import Breadcrumb from 'primevue/breadcrumb';
-  import { computed, watch } from 'vue';
+  import { computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import { useRoute, useRouter } from 'vue-router';
   import { buildBreadcrumb } from '../LayoutComponents/SubComponents/RouteHelper';
   import FeatureHeader from '@/assets/images/FeatureHeader.jpg';
+
   const route = useRoute();
   const router = useRouter();
+  const { t, te } = useI18n();
 
-  const items = computed(() => {
-    const breadcrumb = buildBreadcrumb(route, router);
-    return breadcrumb;
-  });
+  const translateBreadcrumbLabel = (label: string) => {
+    const translationKey = label.toLocaleLowerCase() === 'home' ? 'home' : label;
+    return te(translationKey) ? t(translationKey) : label;
+  };
 
-  watch(
-    () => route,
-    () => {
-      buildBreadcrumb(route, router);
-    },
-    { immediate: true, deep: true },
+  const items = computed(() =>
+    buildBreadcrumb(route, router).map((item) => ({
+      ...item,
+      label: translateBreadcrumbLabel(item.label),
+    })),
   );
 </script>
 
 <template>
   <div class="feature-header-container">
-    <img class="header-img" :src="FeatureHeader" alt="header" />
+    <img class="header-img" :src="FeatureHeader" alt="" aria-hidden="true" />
     <div class="content">
       <p class="title">
         {{ items[items.length - 1]?.label }}

@@ -367,6 +367,23 @@
   }
 }
 
+.notification-plan-template__editor--raw textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 8px;
+  color: var(--gray-900);
+  background: transparent;
+  border: 1px dashed var(--gray-300);
+  border-radius: 6px;
+  outline: none;
+  resize: vertical;
+
+  &:focus {
+    border-color: var(--PrimaryColor);
+    box-shadow: 0 0 0 2px var(--PrimaryColor-alpha-12);
+  }
+}
+
 .notification-plan-template__token {
   min-height: 34px;
   display: inline-flex;

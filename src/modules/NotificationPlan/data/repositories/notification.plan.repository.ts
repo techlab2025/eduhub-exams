@@ -1,6 +1,11 @@
 import BaseRepository, { type RepositoryConfig } from '@/base/Domain/Repositories/baseRepository';
 import type Params from '@/base/Core/Params/params';
-import type { DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import {
+  DataFailed,
+  type DataState,
+  DataSuccess,
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { ErrorModel, ErrorType } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
 import NotificationPlanModel from '../../core/models/notification.plan.model';
 import NotificationPlanDetailsModel from '../../core/models/notification.plan.details.model';
 import NotificationPlanApiService from '../api/notification.plan.api-service';
@@ -42,10 +47,24 @@ export default class NotificationPlanRepository extends BaseRepository<
       : [];
   }
 
-  toggleStatus(params: Params): Promise<DataState<NotificationPlanDetailsModel>> {
-    return this.executeCustom(
-      () => this.apiService.toggleStatus(params),
-      (data) => this.parseItem(data),
-    );
+  async toggleStatus(params: Params): Promise<DataState<void>> {
+    const retryFn = () => this.toggleStatus(params);
+
+    try {
+      const response = await this.apiService.toggleStatus(params);
+      const responseData = response.data as { status?: boolean; message?: string };
+      const isSuccess =
+        response.statusCode >= 200 && response.statusCode < 300 && (responseData.status ?? true);
+
+      if (isSuccess) {
+        return new DataSuccess<void>({ message: responseData.message });
+      }
+
+      return new DataFailed<void>({
+        error: new ErrorModel(responseData.message ?? 'Unknown error', ErrorType.serviceSide),
+      });
+    } catch (error) {
+      return this.handleError(error, retryFn);
+    }
   }
 }

@@ -16,6 +16,7 @@
   import DeleteNotificationPlanParams from '../../core/params/delete.notification.plan.params';
   import ShowNotificationPlanParams from '../../core/params/show.notification.plan.params';
   import ToggleNotificationPlanStatusParams from '../../core/params/toggle.notification.plan.status.params';
+  import NotificationPlanDetailsSkeleton from './NotificationPlanDetailsSkeleton.vue';
 
   interface ConfiguredFeature {
     id: string;
@@ -161,6 +162,10 @@
     :on-retry="async () => void (await refreshPlan())"
     use-skeleton
   >
+    <template #loader>
+      <NotificationPlanDetailsSkeleton />
+    </template>
+
     <template #success>
       <main v-if="plan" class="notification-plan-details">
         <header class="notification-plan-details__page-heading">

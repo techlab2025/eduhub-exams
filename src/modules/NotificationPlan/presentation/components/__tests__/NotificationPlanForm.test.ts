@@ -149,4 +149,56 @@ describe('NotificationPlanForm', () => {
         .value,
     ).toBe('Updated:');
   });
+
+  it('uses the backend message when its executor differs from the recipients', async () => {
+    const wrapper = mountForm(
+      NotificationPlanDetailsModel.fromJson({
+        id: 13,
+        plan_title: 'Backend message',
+        status: StatusNotificationPlanEnum.active,
+        actions: [
+          {
+            action_ids: [NotificationPlanQuestionActionEnum.Add_Question],
+            message: 'Updated: Isabelle Noel has Add Question Questions Backend-provided ending.',
+          },
+        ],
+        employees: [{ id: 4, name: 'Sara Ali' }],
+      }),
+    );
+    await flushPromises();
+
+    await wrapper.find('.notification-plan-template__edit').trigger('click');
+    const editableInputs = wrapper.findAll('.notification-plan-template__editor input');
+
+    expect(editableInputs).toHaveLength(4);
+    expect((editableInputs[0]?.element as HTMLInputElement).value).toBe('Updated:');
+    expect((editableInputs[3]?.element as HTMLInputElement).value).toBe('Backend-provided ending.');
+  });
+
+  it('keeps an unstructured backend message intact instead of using the default', async () => {
+    const wrapper = mountForm(
+      NotificationPlanDetailsModel.fromJson({
+        id: 14,
+        plan_title: 'Raw backend message',
+        status: StatusNotificationPlanEnum.active,
+        actions: [
+          {
+            action_ids: [NotificationPlanQuestionActionEnum.Add_Question],
+            message: 'This complete message was returned by the backend.',
+          },
+        ],
+        employees: [{ id: 4, name: 'Sara Ali' }],
+      }),
+    );
+    await flushPromises();
+
+    await wrapper.find('.notification-plan-template__edit').trigger('click');
+
+    expect(
+      (
+        wrapper.get('.notification-plan-template__editor--raw textarea')
+          .element as HTMLTextAreaElement
+      ).value,
+    ).toBe('This complete message was returned by the backend.');
+  });
 });

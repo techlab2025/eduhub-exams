@@ -1,5 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createI18n } from 'vue-i18n';
+import ar from '@/locales/ar.json';
+import en from '@/locales/en.json';
 import FeatureHeader from '../FeatureHeader.vue';
 
 vi.mock('vue-router', () => ({
@@ -13,34 +16,48 @@ vi.mock('vue-router', () => ({
   }),
 }));
 
-vi.mock('../LayoutComponents/SubComponents/RouteHelper', () => ({
+vi.mock('../../LayoutComponents/SubComponents/RouteHelper', () => ({
   buildBreadcrumb: vi.fn().mockReturnValue([
     { label: 'Home', url: '/' },
-    { label: 'Feature', url: '/feature' },
+    { label: 'notification_plan.title', url: '/notification-plans' },
+    { label: 'notification_plan.view_title', url: '/notification-plans/7' },
   ]),
 }));
 
-const globalConfig = {
-  stubs: {
-    Breadcrumb: true,
-  },
-};
+const mountHeader = (locale: 'ar' | 'en' = 'en') =>
+  mount(FeatureHeader, {
+    global: {
+      plugins: [
+        createI18n({
+          legacy: false,
+          locale,
+          fallbackLocale: 'en',
+          messages: { ar, en },
+        }),
+      ],
+      stubs: { Breadcrumb: true },
+    },
+  });
 
 describe('FeatureHeader.vue', () => {
   it('renders without crashing', () => {
-    const wrapper = mount(FeatureHeader, { global: globalConfig });
+    const wrapper = mountHeader();
     expect(wrapper.exists()).toBe(true);
   });
 
-  it('renders the header image', () => {
-    const wrapper = mount(FeatureHeader, { global: globalConfig });
-    expect(wrapper.find('img.header-img').exists()).toBe(true);
+  it('renders the header image as decorative content', () => {
+    const wrapper = mountHeader();
+    expect(wrapper.get('img.header-img').attributes()).toMatchObject({
+      alt: '',
+      'aria-hidden': 'true',
+    });
   });
 
-  it('displays the correct breadcrumb title based on items', () => {
-    const wrapper = mount(FeatureHeader, { global: globalConfig });
-    const title = wrapper.find('.title');
-    expect(title.exists()).toBe(true);
-    expect(title.text()).toContain('Home');
+  it.each([
+    ['en', 'Notification Plan Details'],
+    ['ar', 'تفاصيل خطة الإشعارات'],
+  ] as const)('translates the breadcrumb title in %s', (locale, expectedTitle) => {
+    const wrapper = mountHeader(locale);
+    expect(wrapper.get('.title').text()).toBe(expectedTitle);
   });
 });
