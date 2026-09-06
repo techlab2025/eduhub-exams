@@ -9,6 +9,7 @@
     type ValidationError,
   } from '@/base/Presentation/Utils/new_validator.ts';
   import { RoleValidationsHandler } from '../../core/validations/RoleValidations.ts';
+  import RoleFeedbackDialog from './RoleFeedbackDialog.vue';
 
   const controller = RoleController.getInstance();
   const route = useRoute();
@@ -16,15 +17,33 @@
 
   const params = ref<StoreRoleParams | null>(null);
   const loading = ref(false);
+  const dialogVisible = ref(false);
+  const dialogVariant = ref<
+    'title-required' | 'permissions-required' | 'duplicate-title' | 'save-error'
+  >('title-required');
+  const dialogMessage = ref('');
+
+  const showSaveError = (message: string) => {
+    dialogVariant.value = /already|duplicate|taken|موجود|مكرر/i.test(message)
+      ? 'duplicate-title'
+      : 'save-error';
+    dialogMessage.value = message;
+    dialogVisible.value = true;
+  };
+
   /**
-   * Save new employee
+   * Save new role
    */
   const errors = ref<ValidationError[]>([]);
   const saveRole = async () => {
-    errors.value = ValidationHandler(
-      RoleValidationsHandler(new StoreRoleParams(params.value?.title, params.value?.permissions)),
-    );
+    const submittedParams = params.value ?? new StoreRoleParams({}, []);
+    errors.value = ValidationHandler(RoleValidationsHandler(submittedParams));
     if (errors.value.length > 0) {
+      dialogVariant.value = errors.value.some((error) => error.key === 'title')
+        ? 'title-required'
+        : 'permissions-required';
+      dialogMessage.value = '';
+      dialogVisible.value = true;
       return;
     }
 
@@ -36,12 +55,17 @@
       }
 
       const result = await controller.create(params.value);
+      if (result?.hasError) {
+        showSaveError(result.error?.displayMessage ?? '');
+        return;
+      }
       if (result?.data) {
         router.push({ name: 'Roles' });
         await controller.fetchList();
       }
     } catch (error) {
       console.error('Error saving role:', error);
+      showSaveError(error instanceof Error ? error.message : '');
     } finally {
       loading.value = false;
     }
@@ -60,8 +84,8 @@
       ref="RoleFormRef"
       :form-key="formKey"
       :loading="loading"
-      @update-data="updateData"
       :errors="errors"
+      @update-data="updateData"
     />
 
     <div class="actions">
@@ -76,21 +100,17 @@
       </router-link>
     </div>
 
-    <!-- Error Display -->
-    <div v-if="controller.errorMessage.value" class="error-toast">
-      {{ controller.errorMessage.value }}
-    </div>
+    <RoleFeedbackDialog v-model="dialogVisible" :variant="dialogVariant" :message="dialogMessage" />
   </div>
 </template>
 
 <style scoped lang="scss">
-
   .loader {
     width: 35px;
     height: 35px;
     border-radius: 50%;
     border: 8px solid;
-    border-color: #000 #0000;
+    border-color: var(--standard-black) transparent;
     animation: l1 1s infinite;
   }
 
@@ -144,15 +164,5 @@
     display: flex;
     gap: 10px;
     justify-content: flex-end;
-  }
-
-  .error-toast {
-    margin-top: 20px;
-    padding: 12px 16px;
-    background-color: var(--error-light);
-    color: var(--error-dark);
-    border: 1px solid var(--error-border);
-    border-radius: var(--radius-md);
-    font-size: 0.9rem;
   }
 </style>

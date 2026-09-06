@@ -1601,6 +1601,40 @@
     "show_action": "Role Details",
     "employee_role": "Employee Role",
     "select_employee_role": "Select employee role",
+    "selected_count": "{count} roles selected",
+    "delete_selected": "Delete {count} roles",
+    "dialogs": {
+      "cancel": "Cancel",
+      "delete": {
+        "title": "Are you sure you want to delete this role?",
+        "message": "This action will permanently delete the role and cannot be undone.",
+        "confirm": "Delete"
+      },
+      "delete_many": {
+        "title": "Are you sure you want to delete these roles?",
+        "message": "This action will permanently delete {count} roles and cannot be undone."
+      },
+      "delete_error": {
+        "title": "Unable to delete role",
+        "message": "The role could not be deleted. Please try again."
+      },
+      "title_required": {
+        "title": "Role title is empty",
+        "message": "You must enter a role title, ensuring it is not a duplicate."
+      },
+      "duplicate_title": {
+        "title": "Role title already exists",
+        "message": "You must enter a unique role title, making sure it is not duplicated."
+      },
+      "permissions_required": {
+        "title": "No actions selected",
+        "message": "You must select at least one action to save the role."
+      },
+      "save_error": {
+        "title": "Unable to save role",
+        "message": "The role could not be saved. Please try again."
+      }
+    },
     "table": {
       "id": "ID",
       "title": "Role Title",

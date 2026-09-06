@@ -20,7 +20,7 @@ export default class RoleController extends BaseController<RoleModel, RoleModel[
       showSuccessDialog: false,
       showSuccessTosat: true,
       showErrorDialog: false,
-      showErrorTosat: true,
+      showErrorTosat: false,
       autoRetry: false,
     };
   }

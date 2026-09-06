@@ -6,7 +6,6 @@
   import AppTable, { type TableHeader } from '@/shared/HelpersComponents/AppTable.vue';
   import Pagination from '@/shared/HelpersComponents/Pagination.vue';
   import TableSkelaton from '@/shared/HelpersComponents/TableSkelaton.vue';
-  import DeleteDialog from '@/shared/HelpersComponents/dialog/DeleteDialog.vue';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   import IndexPluseIcon from '@/shared/icons/IndexPluseIcon.vue';
   import { debounce } from '@/base/Presentation/Utils/debouced';
@@ -16,6 +15,7 @@
   import type RoleModel from '../../core/models/role.model';
   import EditeIcon from '@/shared/icons/DocaumentType/EditeIcon.vue';
   import DeleteIcon from '@/shared/icons/DocaumentType/DeleteIcon.vue';
+  import RoleFeedbackDialog from './RoleFeedbackDialog.vue';
 
   const { t } = useI18n();
   const router = useRouter();
@@ -24,6 +24,12 @@
   const state = computed(() => controller.listState.value);
   const word = ref(String(route.query.word ?? ''));
   const perPage = ref(10);
+  const selectedRows = ref<RoleModel[]>([]);
+  const pendingDeleteRoles = ref<RoleModel[]>([]);
+  const deleteDialogVisible = ref(false);
+  const deleteDialogVariant = ref<'delete-confirm' | 'delete-error'>('delete-confirm');
+  const deleteErrorMessage = ref('');
+  const deleteLoading = ref(false);
   // const searchInput = ref<HTMLInputElement>();
 
   const headers = computed<TableHeader[]>(() => [
@@ -59,23 +65,41 @@
     fetchRoles();
   };
 
-  const deleteRole = async (role: RoleModel) => {
-    await controller.delete(new DeleteRoleParams(role.id));
+  const requestDelete = (roles: RoleModel[]) => {
+    if (roles.length === 0) return;
+    pendingDeleteRoles.value = [...roles];
+    deleteDialogVariant.value = 'delete-confirm';
+    deleteErrorMessage.value = '';
+    deleteDialogVisible.value = true;
+  };
+
+  const confirmDelete = async () => {
+    if (deleteLoading.value || pendingDeleteRoles.value.length === 0) return;
+
+    deleteLoading.value = true;
+    for (const role of pendingDeleteRoles.value) {
+      const result = await controller.delete(new DeleteRoleParams(role.id));
+      if (!result || result.hasError) {
+        deleteDialogVariant.value = 'delete-error';
+        deleteErrorMessage.value = result?.error?.displayMessage ?? '';
+        deleteLoading.value = false;
+        await fetchRoles(Number(route.query.page ?? 1));
+        return;
+      }
+    }
+
+    deleteDialogVisible.value = false;
+    pendingDeleteRoles.value = [];
+    selectedRows.value = [];
+    deleteLoading.value = false;
     await fetchRoles(Number(route.query.page ?? 1));
   };
 
+  const setSelected = (items: RoleModel[]) => {
+    selectedRows.value = items;
+  };
 
   onMounted(() => fetchRoles(Number(route.query.page ?? 1)));
-  const SelectedRow = ref<RoleModel[]>([]);
-  const setSelectef = (items: RoleModel[]) => {
-    SelectedRow.value = items;
-  };
-  const deleteItems = async () => {
-    SelectedRow.value.forEach((item) => {
-      deleteRole(item);
-    });
-    SelectedRow.value = [];
-  };
 </script>
 
 <template>
@@ -119,32 +143,32 @@
               row-key="id"
               selectable
               hoverable
-              @selection-change="setSelectef"
+              @selection-change="setSelected"
             >
               <template #actions="{ item }">
                 <div class="role-row-actions">
                   <router-link :to="{ name: 'Edit Role', params: { id: item.id } }">
-                    <!-- {{ $t('role.actions.edit') }} -->
                     <EditeIcon />
                   </router-link>
-                  <DeleteDialog @delete="deleteRole(item)">
-                    <template #Dialog>
-                      <DeleteIcon />
-                      <!-- <button type="button">{{ $t('role.actions.delete') }}</button> -->
-                    </template>
-                  </DeleteDialog>
+                  <button
+                    type="button"
+                    :aria-label="$t('role.actions.delete')"
+                    @click="requestDelete([item])"
+                  >
+                    <DeleteIcon />
+                  </button>
                 </div>
               </template>
             </AppTable>
           </div>
 
-          <div v-if="SelectedRow.length > 0" class="items-deleted">
+          <div v-if="selectedRows.length > 0" class="items-deleted">
             <div class="num-type">
-              <h6>{{ SelectedRow.length }} rols</h6>
+              <h6>{{ $t('role.selected_count', { count: selectedRows.length }) }}</h6>
             </div>
-            <div class="num-deleted" @click="deleteItems">
-              <h6>delete {{ SelectedRow.length }} item</h6>
-            </div>
+            <button class="num-deleted" type="button" @click="requestDelete(selectedRows)">
+              {{ $t('role.delete_selected', { count: selectedRows.length }) }}
+            </button>
           </div>
           <Pagination
             v-if="controller.pagination.value"
@@ -167,6 +191,15 @@
         </template>
       </DataStatusBuilder>
     </section>
+
+    <RoleFeedbackDialog
+      v-model="deleteDialogVisible"
+      :variant="deleteDialogVariant"
+      :message="deleteErrorMessage"
+      :count="pendingDeleteRoles.length"
+      :loading="deleteLoading"
+      @confirm="confirmDelete"
+    />
   </main>
 </template>
 
@@ -192,19 +225,18 @@
     }
 
     .num-deleted {
-      background-color: var(--btn-red);
-      color: var(--bg-main);
       padding: 6px 20px;
+      border: 0;
       border-radius: 12px;
+      color: var(--bg-main);
+      background-color: var(--btn-red);
       cursor: pointer;
-
-      h6 {
-        font-size: 14px;
-        font-weight: 700;
-        font-family: 'bold';
-      }
+      font-family: 'bold';
+      font-size: 14px;
+      font-weight: 700;
     }
   }
+
   .role-index-page {
     display: grid;
     gap: var(--xl-size-base);
