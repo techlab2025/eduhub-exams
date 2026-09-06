@@ -11,6 +11,8 @@
   import DialogIconFillter from '@/shared/icons/DialogIconFillter.vue';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
   import { debounce } from '@/base/Presentation/Utils/debouced';
+  import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+  import type ShowQuestionsModel from '@/modules/Questions/core/models/show.questions.model';
   import {
     QuestionBatchStatusEnum,
     type QuestionBatchStatusEnum as QuestionBatchStatus,
@@ -18,7 +20,9 @@
   import type QuestionBatchEducationTypeModel from '../../core/models/question.batch.education.type.model';
   import type QuestionBatchModel from '../../core/models/question.batch.model';
   import IndexQuestionBatchParams from '../../core/params/index.question.batch.params';
+  import ShowQuestionBatchParams from '../../core/params/show.question.batch.params';
   import QuestionBatchController from '../controllers/question.batch.controller';
+  import GeneratedQuestionBatchDialog from './GeneratedQuestionBatchDialog.vue';
   import QuestionBatchActions from './QuestionBatchActions.vue';
   import QuestionBatchDeleteDialog from './QuestionBatchDeleteDialog.vue';
 
@@ -50,6 +54,8 @@
   const selectedStatuses = ref<QuestionBatchStatus[]>([]);
   const selectedBatch = ref<QuestionBatchModel | null>(null);
   const deleteDialogVisible = ref(false);
+  const reviewDialogVisible = ref(false);
+  const viewedQuestions = ref<ShowQuestionsModel[]>([]);
   const loadedBatches = computed(() => state.value.data ?? []);
 
   const statusFilters = computed(() => [
@@ -114,6 +120,14 @@
   const educationPath = (educationType: QuestionBatchEducationTypeModel): string[] =>
     [educationType.title, ...educationType.children.map((child) => child.title)].filter(Boolean);
 
+  const reviewCurriculumPath = computed(() => {
+    if (!selectedBatch.value) return [];
+    return [
+      ...selectedBatch.value.educationType.flatMap(educationPath),
+      selectedBatch.value.eCSubject.title,
+    ].filter(Boolean);
+  });
+
   const formatGenerationDate = (value: string): string => {
     const isoDate = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
     return isoDate ? `${isoDate[3]}-${isoDate[2]}-${isoDate[1]}` : value;
@@ -152,6 +166,15 @@
   const openDeleteDialog = (batch: QuestionBatchModel) => {
     selectedBatch.value = batch;
     deleteDialogVisible.value = true;
+  };
+  const openViewDialog = async (batch: QuestionBatchModel) => {
+    emit('view', batch);
+    const result = await controller.fetchOne(new ShowQuestionBatchParams(batch.id));
+    if (!(result instanceof DataSuccess) || !result.data) return;
+
+    selectedBatch.value = batch;
+    viewedQuestions.value = [...result.data.questions];
+    reviewDialogVisible.value = true;
   };
   const confirmDelete = (batch: QuestionBatchModel) => {
     emit('delete', batch);
@@ -238,7 +261,12 @@
 
     <DataStatusBuilder :controller="state" :on-retry="() => fetchBatches()">
       <template #success>
-        <div class="question-batch-index__table">
+        <div
+          class="question-batch-index__table"
+          role="region"
+          tabindex="0"
+          :aria-label="t('question_batch.title')"
+        >
           <AppTable
             :headers="headers"
             :items="filteredBatches"
@@ -299,7 +327,7 @@
             <template #actions="{ item }">
               <QuestionBatchActions
                 :status="item.status"
-                @view="emit('view', item)"
+                @view="openViewDialog(item)"
                 @approve="emit('approve', item)"
                 @delete="openDeleteDialog(item)"
               />
@@ -328,6 +356,15 @@
       v-model="deleteDialogVisible"
       :batch="selectedBatch"
       @confirm="confirmDelete"
+    />
+    <GeneratedQuestionBatchDialog
+      v-if="selectedBatch"
+      v-model:visible="reviewDialogVisible"
+      :question-batch-id="selectedBatch.id"
+      :questions="viewedQuestions"
+      :curriculum-path="reviewCurriculumPath"
+      :requested-count="selectedBatch.numberOfQuestions"
+      @save="reviewDialogVisible = false"
     />
   </main>
 </template>

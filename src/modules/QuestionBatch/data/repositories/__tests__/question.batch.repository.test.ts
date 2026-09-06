@@ -8,6 +8,7 @@ import { QuestionBatchDifficultyEnum } from '../../../core/constant/question.bat
 import { QuestionBatchStatusEnum } from '../../../core/constant/question.batch.status.enum';
 import { QuestionBatchTypeEnum } from '../../../core/constant/question.batch.type.enum';
 import StoreQuestionBatchParams from '../../../core/params/store.question.batch.params';
+import ShowQuestionBatchParams from '../../../core/params/show.question.batch.params';
 import QuestionBatchApiService from '../../api/question.batch.api-service';
 import QuestionBatchRepository from '../question.batch.repository';
 
@@ -23,6 +24,38 @@ const params = new StoreQuestionBatchParams({
 });
 
 describe('QuestionBatchRepository', () => {
+  it('parses the approved batch returned by show_question_batch', async () => {
+    const params = new ShowQuestionBatchParams(4);
+    const show = vi.spyOn(QuestionBatchApiService.getInstance(), 'show').mockResolvedValue({
+      statusCode: 200,
+      data: {
+        status: true,
+        data: {
+          batch_id: 4,
+          questions: [
+            {
+              question_id: 9,
+              question: 'What is a cell?',
+              topics: [],
+              answers: [],
+              documents: [],
+              explanation: {},
+            },
+          ],
+        },
+      },
+    });
+
+    const result = await QuestionBatchRepository.getInstance().show(params, {
+      useStaticData: false,
+    });
+
+    expect(show).toHaveBeenCalledWith(params, { useStaticData: false }, undefined);
+    expect(result).toBeInstanceOf(DataSuccess);
+    expect(result.data?.batchId).toBe(4);
+    expect(result.data?.questions[0]?.questionTitle).toBe('What is a cell?');
+  });
+
   it('parses generated ShowQuestionsModel rows', async () => {
     vi.spyOn(QuestionBatchApiService.getInstance(), 'generateBatch').mockResolvedValue({
       statusCode: 200,

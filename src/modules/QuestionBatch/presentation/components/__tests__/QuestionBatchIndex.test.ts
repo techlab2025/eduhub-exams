@@ -1,10 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h } from 'vue';
 import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import GeneratedQuestionBatchModel from '../../../core/models/generated.question.batch.model';
 import QuestionBatchModel from '../../../core/models/question.batch.model';
 
 const fetchList = vi.fn().mockResolvedValue(undefined);
+const fetchOne = vi
+  .fn()
+  .mockResolvedValue(new DataSuccess({ data: GeneratedQuestionBatchModel.example }));
 const batches = [
   QuestionBatchModel.example,
   QuestionBatchModel.fromJson({ id: 2, title: 'Batch-Draft', status: '1' }),
@@ -19,6 +23,7 @@ vi.mock('../../controllers/question.batch.controller', () => ({
   default: {
     getInstance: () => ({
       fetchList,
+      fetchOne,
       listState: { value: new DataSuccess({ data: batches }) },
       pagination: { value: null },
     }),
@@ -53,6 +58,7 @@ const mountIndex = () =>
         Popover: PopoverStub,
         QuestionBatchActions: true,
         QuestionBatchDeleteDialog: true,
+        GeneratedQuestionBatchDialog: true,
       },
     },
   });
@@ -60,6 +66,7 @@ const mountIndex = () =>
 describe('QuestionBatchIndex', () => {
   beforeEach(() => {
     fetchList.mockClear();
+    fetchOne.mockClear();
   });
 
   it('renders fields returned by fetch_question_batches', () => {
@@ -106,5 +113,23 @@ describe('QuestionBatchIndex', () => {
     expect(table.text()).toContain('Batch-Draft');
     expect(table.text()).not.toContain('Batch-2026-001');
     expect(table.text()).not.toContain('Batch-Failed');
+  });
+
+  it('sends question_batch_id and opens the review dialog for an approved batch', async () => {
+    const wrapper = mountIndex();
+    const approvedActions = wrapper.findAllComponents({ name: 'QuestionBatchActions' })[0];
+
+    approvedActions?.vm.$emit('view');
+    await flushPromises();
+
+    expect(fetchOne).toHaveBeenCalledOnce();
+    expect(fetchOne.mock.calls[0]?.[0].toMap()).toEqual({ question_batch_id: 1 });
+
+    const dialog = wrapper.getComponent({ name: 'GeneratedQuestionBatchDialog' });
+    expect(dialog.props('visible')).toBe(true);
+    expect(dialog.props('questionBatchId')).toBe(1);
+    expect(dialog.props('questions')).toHaveLength(2);
+    expect(dialog.props('requestedCount')).toBe(20);
+    expect(dialog.props('curriculumPath')).toEqual(['Governmental', 'Primary', 'First', 'Arabic']);
   });
 });

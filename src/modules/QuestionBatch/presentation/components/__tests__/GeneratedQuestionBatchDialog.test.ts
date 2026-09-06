@@ -15,6 +15,7 @@ describe('GeneratedQuestionBatchDialog', () => {
     mount(GeneratedQuestionBatchDialog, {
       props: {
         visible: true,
+        questionBatchId: 17,
         questions: GeneratedQuestionBatchModel.example.questions,
         curriculumPath: ['Governmental', 'Primary', 'Arabic'],
         requestedCount: 10,
@@ -24,12 +25,38 @@ describe('GeneratedQuestionBatchDialog', () => {
 
   it('renders generated questions and emits delete', async () => {
     const wrapper = mountDialog();
+    expect(wrapper.get('.generated-question-batch').attributes('data-question-batch-id')).toBe(
+      '17',
+    );
     expect(wrapper.text()).toContain('What Is The Basic Building Block');
     const deleteButton = wrapper
       .findAll('button')
       .find((button) => button.text() === 'question_batch.delete');
     await deleteButton?.trigger('click');
     expect(wrapper.emitted('delete')?.[0]).toEqual([1]);
+  });
+
+  it('shows every answer and toggles the question details', async () => {
+    const wrapper = mountDialog();
+    const firstCard = wrapper.findAll('.generated-question-card')[0];
+
+    expect(firstCard?.findAll('.generated-question-card__answers > div')).toHaveLength(4);
+    expect(
+      firstCard?.get('.generated-question-card__details-toggle').attributes('aria-expanded'),
+    ).toBe('true');
+
+    await firstCard?.get('.generated-question-card__details-toggle').trigger('click');
+
+    expect(firstCard?.find('.generated-question-card__answers').exists()).toBe(false);
+    expect(firstCard?.text()).toContain('question_batch.show_details');
+    expect(
+      firstCard?.get('.generated-question-card__details-toggle').attributes('aria-expanded'),
+    ).toBe('false');
+
+    await firstCard?.get('.generated-question-card__details-toggle').trigger('click');
+
+    expect(firstCard?.findAll('.generated-question-card__answers > div')).toHaveLength(4);
+    expect(firstCard?.text()).toContain('question_batch.show_less');
   });
 
   it('edits all question fields and emits a replacement immutable model', async () => {

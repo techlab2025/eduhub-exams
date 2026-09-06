@@ -30,7 +30,7 @@ const waitForStaticBatch = (signal?: AbortSignal): Promise<boolean> =>
   });
 
 export default class QuestionBatchRepository extends BaseRepository<
-  QuestionBatchModel,
+  GeneratedQuestionBatchModel,
   QuestionBatchModel[]
 > {
   private static instance: QuestionBatchRepository;
@@ -43,8 +43,8 @@ export default class QuestionBatchRepository extends BaseRepository<
     return { hasPagination: true, dataKey: 'data', paginationKey: 'meta' };
   }
 
-  protected get mockItem(): QuestionBatchModel {
-    return QuestionBatchModel.example;
+  protected get mockItem(): GeneratedQuestionBatchModel {
+    return GeneratedQuestionBatchModel.example;
   }
 
   protected get mockList(): QuestionBatchModel[] {
@@ -58,8 +58,8 @@ export default class QuestionBatchRepository extends BaseRepository<
     return QuestionBatchRepository.instance;
   }
 
-  protected parseItem(data: unknown): QuestionBatchModel {
-    return QuestionBatchModel.fromJson(data);
+  protected parseItem(data: unknown): GeneratedQuestionBatchModel {
+    return GeneratedQuestionBatchModel.fromJson(data);
   }
 
   protected parseList(data: unknown): QuestionBatchModel[] {

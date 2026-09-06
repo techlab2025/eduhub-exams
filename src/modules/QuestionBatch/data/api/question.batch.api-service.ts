@@ -12,7 +12,10 @@ export default class QuestionBatchApiService extends BaseApiService {
   private readonly questionBatchEndpoints = new QuestionBatchEndpoints();
 
   protected get endpoints(): Partial<ApiEndpoints> {
-    return { index: this.questionBatchEndpoints.index };
+    return {
+      index: this.questionBatchEndpoints.index,
+      show: this.questionBatchEndpoints.show,
+    };
   }
 
   static getInstance(): QuestionBatchApiService {

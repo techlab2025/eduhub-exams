@@ -119,7 +119,7 @@ export enum QuestionTypeEnum {
 
 ```ts
 {
-  "batch_id": number,
+  "question_batch_id": number,
 }
 ```
 
