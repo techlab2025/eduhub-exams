@@ -5,4 +5,5 @@ export class QuestionBatchEndpoints extends BaseEndpoints {
 
   readonly index = this.url('fetch_question_batches');
   readonly store = this.url('store_question_batch');
+  readonly show = this.url('show_question_batch');
 }

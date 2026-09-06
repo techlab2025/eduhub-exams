@@ -14,7 +14,7 @@ import type QuestionBatchModel from '../../core/models/question.batch.model';
 import QuestionBatchRepository from '../../data/repositories/question.batch.repository';
 
 export default class QuestionBatchController extends BaseController<
-  QuestionBatchModel,
+  GeneratedQuestionBatchModel,
   QuestionBatchModel[]
 > {
   private static instance: QuestionBatchController;
@@ -52,6 +52,13 @@ export default class QuestionBatchController extends BaseController<
 
   fetchList(params?: Params, options?: ApiCallOptions): Promise<DataState<QuestionBatchModel[]>> {
     return super.fetchList(params, { ...options, useStaticData: true });
+  }
+
+  fetchOne(
+    params: Params,
+    options?: ApiCallOptions,
+  ): Promise<DataState<GeneratedQuestionBatchModel>> {
+    return super.fetchOne(params, { ...options, useStaticData: true });
   }
 
   async generateBatch(

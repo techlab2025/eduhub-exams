@@ -8,6 +8,7 @@ export { default as QuestionBatchModel } from './core/models/question.batch.mode
 export { default as GeneratedQuestionBatchModel } from './core/models/generated.question.batch.model';
 export { default as EditableGeneratedQuestionModel } from './core/models/editable.generated.question.model';
 export { default as IndexQuestionBatchParams } from './core/params/index.question.batch.params';
+export { default as ShowQuestionBatchParams } from './core/params/show.question.batch.params';
 export { default as StoreQuestionBatchParams } from './core/params/store.question.batch.params';
 export { NumberOfQuestionTypeEnum } from './core/constant/number.of.question.type.enum';
 export { QuestionBatchDifficultyEnum } from './core/constant/question.batch.difficulty.enum';

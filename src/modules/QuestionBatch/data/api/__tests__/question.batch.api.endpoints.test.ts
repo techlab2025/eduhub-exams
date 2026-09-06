@@ -6,5 +6,6 @@ describe('QuestionBatchEndpoints', () => {
     const endpoints = new QuestionBatchEndpoints();
     expect(endpoints.index).toContain('fetch_question_batches');
     expect(endpoints.store).toContain('store_question_batch');
+    expect(endpoints.show).toContain('show_question_batch');
   });
 });

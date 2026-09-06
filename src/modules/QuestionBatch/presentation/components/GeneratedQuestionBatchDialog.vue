@@ -8,6 +8,7 @@
   import EditableGeneratedQuestionModel from '../../core/models/editable.generated.question.model';
 
   const props = defineProps<{
+    questionBatchId?: number;
     questions: ShowQuestionsModel[];
     curriculumPath: string[];
     requestedCount: number;
@@ -144,7 +145,11 @@
       content: 'generated-question-batch-dialog__content',
     }"
   >
-    <section class="generated-question-batch" aria-labelledby="generated-question-batch-title">
+    <section
+      class="generated-question-batch"
+      aria-labelledby="generated-question-batch-title"
+      :data-question-batch-id="questionBatchId"
+    >
       <header class="generated-question-batch__header">
         <div>
           <h2 id="generated-question-batch-title">{{ t('question_batch.review_title') }}</h2>
@@ -171,10 +176,10 @@
           </template>
         </div>
         <div>
-          <span
+          <span class="question_batch_background"
             >{{ t('question_batch.requested') }}: <strong>{{ requestedCount }}</strong></span
           >
-          <span
+          <span class="question_batch_background"
             >{{ t('question_batch.generated') }}: <strong>{{ questions.length }}</strong></span
           >
         </div>
@@ -318,7 +323,7 @@
 
           <div v-else class="generated-question-card__question">
             <div class="generated-question-card__meta">
-              <span
+              <span class="generated_question_span"
                 >{{ t('question_batch.question_type') }}:
                 <b>{{ questionType(question.questionType) }}</b></span
               >
@@ -362,6 +367,7 @@
           <button
             type="button"
             class="generated-question-card__details-toggle"
+            :aria-expanded="!isCollapsed(question, index)"
             @click="toggleDetails(question, index)"
           >
             {{
