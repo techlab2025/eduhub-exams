@@ -11,11 +11,11 @@
   import DeletIcon from '@/shared/icons/DropListIcons/DeletIcon.vue';
   import EditIcon from '@/shared/icons/DropListIcons/EditIcon.vue';
   import IndexSearchIcon from '@/shared/icons/IndexSearchIcon.vue';
+  import IndexAddIcon from '@/shared/icons/IndexAddIcon.vue';
   import type AdviceModel from '../../core/models/advice.model';
   import DeleteAdviceParams from '../../core/params/delete.advice.params';
   import IndexAdviceParams from '../../core/params/index.advice.params';
   import AdviceController from '../controllers/advice.controller';
-  import AdviceCategoryDialog from '@/modules/AdviceCategory/presentation/components/AdviceCategoryDialog.vue';
 
   const { t } = useI18n();
   const route = useRoute();
@@ -75,8 +75,11 @@
         />
       </div>
       <div class="header-actions">
-        <AdviceCategoryDialog />
-        <button class="btn btn-primary" @click="router.push('/advices/add')">
+        <button type="button" class="btn btn-primary" @click="router.push('/advices/categories')">
+          <IndexAddIcon />
+          {{ $t('advice_categories') }}
+        </button>
+        <button type="button" class="btn btn-primary" @click="router.push('/advices/add')">
           {{ $t('add_advice') }}
         </button>
       </div>
@@ -91,11 +94,10 @@
     >
       <template #success="{ data }">
         <AppTable :headers="headers" :items="data as AdviceModel[]" show-index>
-         
-         <template #cell-advice_category="{ item }">
-           {{ item.adviceCategory?.title }}
-         </template>
-         <template #actions="{ item }">
+          <template #cell-advice_category="{ item }">
+            {{ item.adviceCategory?.title }}
+          </template>
+          <template #actions="{ item }">
             <div class="row-actions">
               <DropList
                 :action-list="actionList(item)"

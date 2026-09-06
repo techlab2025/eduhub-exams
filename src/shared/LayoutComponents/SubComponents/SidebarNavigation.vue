@@ -90,6 +90,12 @@
         PermissionsEnum.ADVICE_CREATE,
         PermissionsEnum.ADVICE_UPDATE,
         PermissionsEnum.ADVICE_DELETE,
+        PermissionsEnum.ADVICE_CATEGORY_ALL,
+        PermissionsEnum.ADVICE_CATEGORY_FETCH,
+        PermissionsEnum.ADVICE_CATEGORY_DETAILS,
+        PermissionsEnum.ADVICE_CATEGORY_CREATE,
+        PermissionsEnum.ADVICE_CATEGORY_UPDATE,
+        PermissionsEnum.ADVICE_CATEGORY_DELETE,
         PermissionsEnum.DOCUMENT_INDEX_ALL,
         PermissionsEnum.DOCUMENT_INDEX_FETCH,
         PermissionsEnum.DOCUMENT_INDEX_UPDATE,
@@ -228,6 +234,26 @@
             PermissionsEnum.ADVICE_CREATE,
             PermissionsEnum.ADVICE_UPDATE,
             PermissionsEnum.ADVICE_DELETE,
+            PermissionsEnum.ADVICE_CATEGORY_ALL,
+            PermissionsEnum.ADVICE_CATEGORY_FETCH,
+            PermissionsEnum.ADVICE_CATEGORY_DETAILS,
+            PermissionsEnum.ADVICE_CATEGORY_CREATE,
+            PermissionsEnum.ADVICE_CATEGORY_UPDATE,
+            PermissionsEnum.ADVICE_CATEGORY_DELETE,
+          ],
+          children: [
+            {
+              link: '/advices/categories',
+              name: 'advice_categories',
+              permissions: [
+                PermissionsEnum.ADVICE_CATEGORY_ALL,
+                PermissionsEnum.ADVICE_CATEGORY_FETCH,
+                PermissionsEnum.ADVICE_CATEGORY_DETAILS,
+                PermissionsEnum.ADVICE_CATEGORY_CREATE,
+                PermissionsEnum.ADVICE_CATEGORY_UPDATE,
+                PermissionsEnum.ADVICE_CATEGORY_DELETE,
+              ],
+            },
           ],
         },
         {
@@ -584,7 +610,6 @@
       <!-- Menu -->
       <div class="menu">
         <div v-for="(group, gIndex) in menu" :key="gIndex" class="menu-group">
-          
           <PermissionBuilder :code="group.permissions">
             <p v-if="group.group" class="group-title">
               {{ group.group }}

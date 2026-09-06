@@ -14,6 +14,12 @@ export const adviceRoutes: RouteRecordRaw[] = [
     meta: { breadcrumb: 'add advice', parent: 'Advices' },
   },
   {
+    path: 'advices/categories',
+    name: 'Advice Categories',
+    component: () => import('@/views/Advices/IndexAdviceCategory.vue'),
+    meta: { breadcrumb: 'advice_categories', parent: 'Advices' },
+  },
+  {
     path: 'advices/edit/:id',
     name: 'Edit Advice',
     component: () => import('@/views/Advices/EditAdvice.vue'),

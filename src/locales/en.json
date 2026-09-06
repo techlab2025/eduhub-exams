@@ -851,6 +851,39 @@
   "delete_advice_category_message": "This advice category will be permanently deleted.",
   "no_advice_categories_found": "No advice categories found",
   "select_advice_category": "Select an advice category",
+  "advice_category_page": {
+    "add": "Add Category",
+    "category": "Category",
+    "category_placeholder": "Enter Category",
+    "save": "Save",
+    "title_required": "Enter a category title before saving.",
+    "table": {
+      "id": "Id",
+      "category": "Category",
+      "added_date": "Added Date",
+      "status": "Status"
+    },
+    "empty_title": "No Categories Added Yet",
+    "empty_description": "Create categories to group advice based on when or where students may need them.",
+    "load_error_title": "Categories could not be loaded",
+    "retry": "Try Again",
+    "edit": {
+      "title": "Edit category title",
+      "description": "This change does not affect the advice related to this category.",
+      "save": "Save Changes"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to remove this category?",
+        "description": "This action will permanently delete this category.",
+        "confirm": "Yes, Delete It"
+      },
+      "delete_error": {
+        "title": "This category contains advice",
+        "description": "This category cannot be deleted because it contains associated advice. Delete the advice or move it to another category first."
+      }
+    }
+  },
   "block_reasons": "Block Reasons",
   "add_block_reason": "Add Block Reason",
   "edit_block_reason": "Edit Block Reason",
@@ -1759,5 +1792,5 @@
   "Activate Notification Plan?": "Activate Notification Plan",
   "Are you sure you want to activate this notification plan?": "Are you sure you want to activate this notification plan?",
   "save_role": "Save Role",
-  "notification_plan.form.GENERATE_QUESTION_ALL":"Generate Questions"
+  "notification_plan.form.GENERATE_QUESTION_ALL": "Generate Questions"
 }

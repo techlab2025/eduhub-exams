@@ -15,7 +15,7 @@ describe('AdviceCategoryEndpoints', () => {
         expect.stringContaining('fetch_advice_categories'),
         expect.stringContaining('store_advice_category'),
         expect.stringContaining('show_advice_category'),
-        expect.stringContaining('edit_advice_category'),
+        expect.stringContaining('update_advice_category'),
         expect.stringContaining('delete_advice_category'),
       ]),
     );

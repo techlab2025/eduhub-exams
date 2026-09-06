@@ -4,11 +4,21 @@ export default class AdviceCategoryModel {
   public readonly id: number;
   public readonly title: string;
   public readonly translations: Record<string, string>;
+  public readonly createdAt: string;
+  public readonly status: boolean | null;
 
-  constructor(data: { id: number; title: string; translations: Record<string, string> }) {
+  constructor(data: {
+    id: number;
+    title: string;
+    translations: Record<string, string>;
+    createdAt?: string;
+    status?: boolean | null;
+  }) {
     this.id = data.id;
     this.title = data.title;
     this.translations = data.translations;
+    this.createdAt = data.createdAt ?? '';
+    this.status = data.status ?? null;
     Object.freeze(this);
   }
 
@@ -18,7 +28,15 @@ export default class AdviceCategoryModel {
       id: Number(json.id ?? json.advice_category_id),
       title: this.resolveTitle(rawTitle),
       translations: this.mapTranslations(rawTitle),
+      createdAt: String(json.created_at ?? json.added_date ?? json.createdAt ?? ''),
+      status: this.resolveStatus(json.status ?? json.is_active ?? json.active),
     });
+  }
+
+  private static resolveStatus(status: unknown): boolean | null {
+    if (status === true || status === 1 || status === '1' || status === 'active') return true;
+    if (status === false || status === 0 || status === '0' || status === 'inactive') return false;
+    return null;
   }
 
   private static resolveTitle(title: AdviceCategoryTitle): string {

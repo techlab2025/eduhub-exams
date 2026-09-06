@@ -34,10 +34,10 @@ export default class AdviceCategoryController extends BaseController<
     return this.instance;
   }
 
-  async delete(params: Params, options?: ApiCallOptions) {
+  async delete(params: Params, options?: ApiCallOptions, showErrorToast = true) {
     const result = await super.delete(params, options);
-    if (result?.error?.title) {
-      dialogManager.toastError(result?.error?.title);
+    if (showErrorToast && result?.error) {
+      dialogManager.toastError(result.error.displayMessage);
     }
     return result;
   }
