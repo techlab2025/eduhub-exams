@@ -5,16 +5,17 @@ import type DocumentModel from '../../core/models/document.model';
 import DocumentRepository from '../../data/repositories/document.repository';
 import type Params from '@/base/Core/Params/params';
 import type { ApiCallOptions } from '@/base/Data/ApiService/baseApiService';
-import { DataSuccess, type DataState } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import {
+  DataSuccess,
+  type DataState,
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
 import router from '@/router';
 import { useFormsStore } from '@/stores/formsStore';
 import type DocumentShowModel from '../../core/models/document.show.model';
 import type ShowDocumentParams from '../../core/params/show.document.params';
+import { dialogManager } from '@/base/Presentation/Dialogs/dialog.manager';
 
-export default class DocumentController extends BaseController<
-  DocumentShowModel,
-  DocumentModel[]
-> {
+export default class DocumentController extends BaseController<DocumentShowModel, DocumentModel[]> {
   private static instance: DocumentController;
 
   protected get repository() {
@@ -82,5 +83,13 @@ export default class DocumentController extends BaseController<
         'Accept-Language': (params as ShowDocumentParams).allLocales ? '*' : 'en',
       },
     });
+  }
+
+  async delete(params: Params, options?: ApiCallOptions) {
+    const result = await super.delete(params, options);
+    if (result?.error) {
+      dialogManager.toastError(result.error.displayMessage);
+    }
+    return result;
   }
 }

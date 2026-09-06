@@ -829,6 +829,12 @@
   "edit_advice": "Edit Advice",
   "save_advice": "Save Advice",
   "update_advice": "Update Advice",
+  "advice_unsaved_dialog": {
+    "title": "Discard changes?",
+    "description": "Your changes haven't been saved. Are you sure you want to leave?",
+    "continue_editing": "Continue Editing",
+    "discard_changes": "Discard Changes"
+  },
   "delete_advice_message": "This advice will be permanently deleted.",
   "advice_confirm_delete": "Permanently delete this advice?",
   "no_advices_found": "No advices found",
@@ -1659,7 +1665,7 @@
     "select_all": "Select all",
     "clear_all": "Clear all",
     "selected_count": "{count} permissions selected",
-    "group_selected_count": "{count} selected",
+    "group_selected_count": "{count} of {total} selected",
     "configure": "Configure Permissions",
     "configure_description": "Select the features and actions this role can access.",
     "actions_label": "Actions",
@@ -1673,7 +1679,12 @@
     "modules": {
       "settings": "Settings",
       "organization": "Organization",
-      "question_bank": "Question Bank"
+      "question_bank": "Question Bank",
+      "questions": "Questions",
+      "documents": "Documents",
+      "configuration": "Configuration",
+      "students_management": "Students Management",
+      "plans_packages": "Plans And Packages"
     },
     "groups": {
       "employees": "Employees",
@@ -1747,5 +1758,6 @@
   "Upload_and_assign_a_document_to_this_subject_to_start_indexing": "Upload and assign a document to this subject to start indexing",
   "Activate Notification Plan?": "Activate Notification Plan",
   "Are you sure you want to activate this notification plan?": "Are you sure you want to activate this notification plan?",
-  "save_role": "Save Role"
+  "save_role": "Save Role",
+  "notification_plan.form.GENERATE_QUESTION_ALL":"Generate Questions"
 }

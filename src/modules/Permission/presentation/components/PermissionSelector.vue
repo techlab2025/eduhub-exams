@@ -5,17 +5,103 @@
   import type {
     PermissionActionItem,
     PermissionGroupItem,
-    PermissionModuleItem,
   } from '../../core/models/permission.item';
   import type { PermissionCode } from '../../core/enums/permissions.enum';
+
+  type PermissionSectionCode =
+    | 'questions'
+    | 'documents'
+    | 'configuration'
+    | 'students-management'
+    | 'plans-packages';
+
+  interface PermissionSection {
+    code: PermissionSectionCode;
+    labelKey: string;
+    permissions: PermissionGroupItem[];
+  }
+
+  const sectionDefinitions: Array<{
+    code: PermissionSectionCode;
+    labelKey: string;
+    groupLabelKeys?: string[];
+  }> = [
+    {
+      code: 'questions',
+      labelKey: 'permission.modules.questions',
+      groupLabelKeys: [
+        'permission.groups.questions',
+        'permission.groups.GENERATE_QUESTION_ALL',
+        'permission.groups.exams',
+        'permission.groups.exam_units',
+        'permission.groups.flash_card_groups',
+        'permission.groups.flash_cards',
+      ],
+    },
+    {
+      code: 'documents',
+      labelKey: 'permission.modules.documents',
+      groupLabelKeys: [
+        'permission.groups.document_types',
+        'permission.groups.documents',
+        'permission.groups.document_index',
+      ],
+    },
+    {
+      code: 'configuration',
+      labelKey: 'permission.modules.configuration',
+    },
+    {
+      code: 'students-management',
+      labelKey: 'permission.modules.students_management',
+      groupLabelKeys: [
+        'permission.groups.students',
+        'permission.groups.subscriptions',
+        'permission.groups.placement_tests',
+        'permission.groups.employees',
+        'permission.groups.delete_account_reasons',
+        'permission.groups.block_reasons',
+        'permission.groups.advice_categories',
+        'permission.groups.advices',
+      ],
+    },
+    {
+      code: 'plans-packages',
+      labelKey: 'permission.modules.plans_packages',
+      groupLabelKeys: [
+        'permission.groups.subscription_plans',
+        'permission.groups.highlight_badges',
+        'permission.groups.plan_features',
+      ],
+    },
+  ];
+
+  const createPermissionSections = (): PermissionSection[] => {
+    const groups = createAdminPermissions().flatMap((module) => module.permissions);
+    const categorizedGroupKeys = new Set(
+      sectionDefinitions.flatMap(({ groupLabelKeys = [] }) => groupLabelKeys),
+    );
+
+    return sectionDefinitions.map(({ code, labelKey, groupLabelKeys }) => ({
+      code,
+      labelKey,
+      permissions: groupLabelKeys
+        ? groupLabelKeys.flatMap((groupLabelKey) =>
+            groups.filter((group) => group.labelKey === groupLabelKey),
+          )
+        : groups.filter((group) => !categorizedGroupKeys.has(group.labelKey)),
+    }));
+  };
 
   const props = withDefaults(defineProps<{ permissions?: string[]; disabled?: boolean }>(), {
     permissions: () => [],
     disabled: false,
   });
   const emit = defineEmits<{ 'update:permissions': [value: PermissionCode[]] }>();
-  const permissionModules = ref(createAdminPermissions());
-  const collapsedModules = ref(new Set<string>());
+  const permissionModules = ref(createPermissionSections());
+  const activeModuleCode = ref<PermissionSectionCode | null>(
+    permissionModules.value[0]?.code ?? null,
+  );
   const collapsedGroups = ref(new Set<string>());
 
   const getSelectedPermissions = (): PermissionCode[] =>
@@ -41,11 +127,11 @@
   };
   watch(() => props.permissions, applyCheckedPermissions, { immediate: true });
 
-  const isModuleFullyChecked = (module: PermissionModuleItem) =>
+  const isModuleFullyChecked = (module: PermissionSection) =>
     module.permissions.every(
       (group) => group.checked && group.permissions.every(({ checked }) => checked),
     );
-  const isModulePartiallyChecked = (module: PermissionModuleItem) =>
+  const isModulePartiallyChecked = (module: PermissionSection) =>
     module.permissions.some(
       (group) => group.checked || group.permissions.some(({ checked }) => checked),
     ) && !isModuleFullyChecked(module);
@@ -57,7 +143,7 @@
     group.permissions.forEach((permission) => (permission.checked = checked));
     emitSelection();
   };
-  const toggleModule = (module: PermissionModuleItem, checked: boolean) => {
+  const toggleModule = (module: PermissionSection, checked: boolean) => {
     module.permissions.forEach((group) => {
       group.checked = checked;
       group.permissions.forEach((permission) => (permission.checked = checked));
@@ -74,10 +160,8 @@
     next.has(code) ? next.delete(code) : next.add(code);
     collapsedGroups.value = next;
   };
-  const toggleModuleCollapsed = (code: string) => {
-    const next = new Set(collapsedModules.value);
-    next.has(code) ? next.delete(code) : next.add(code);
-    collapsedModules.value = next;
+  const toggleModuleCollapsed = (code: PermissionSectionCode) => {
+    activeModuleCode.value = activeModuleCode.value === code ? null : code;
   };
 </script>
 
@@ -115,25 +199,46 @@
             type="button"
             class="permission-module__chevron"
             :aria-label="$t('permission.toggle_group')"
-            :aria-expanded="!collapsedModules.has(module.code)"
+            :aria-expanded="activeModuleCode === module.code"
+            :aria-controls="`permission-section-${module.code}`"
             @click="toggleModuleCollapsed(module.code)"
           >
             <IconArrowDown />
           </button>
         </header>
 
-        <div v-show="!collapsedModules.has(module.code)" class="permission-groups">
-          <article v-for="group in module.permissions" :key="group.code" class="permission-group">
+        <div
+          v-show="activeModuleCode === module.code"
+          :id="`permission-section-${module.code}`"
+          class="permission-groups"
+          role="region"
+          :aria-label="$t(module.labelKey)"
+        >
+          <article
+            v-for="(group, groupIndex) in module.permissions"
+            :key="group.code"
+            class="permission-group"
+            :data-permission-group="group.code"
+          >
             <header class="permission-group__header">
               <button
                 type="button"
                 class="permission-group__toggle"
                 :aria-expanded="!collapsedGroups.has(group.code)"
+                :aria-controls="`permission-group-${group.code}`"
                 @click="toggleGroup(group.code)"
               >
-                <span>{{ $t(group.labelKey) }}</span>
+                <span>
+                  <b>{{ moduleIndex + 1 }}.{{ groupIndex + 1 }}</b>
+                  {{ $t(group.labelKey) }}
+                </span>
                 <small>
-                  {{ $t('permission.group_selected_count', { count: groupSelectedCount(group) }) }}
+                  {{
+                    $t('permission.group_selected_count', {
+                      count: groupSelectedCount(group),
+                      total: group.permissions.length,
+                    })
+                  }}
                 </small>
               </button>
               <div class="permission-group__bulk-actions">
@@ -147,6 +252,8 @@
                   class="permission-group__chevron"
                   type="button"
                   :aria-label="$t('permission.toggle_group')"
+                  :aria-expanded="!collapsedGroups.has(group.code)"
+                  :aria-controls="`permission-group-${group.code}`"
                   @click="toggleGroup(group.code)"
                 >
                   <IconArrowDown :class="{ collapsed: collapsedGroups.has(group.code) }" />
@@ -154,7 +261,13 @@
               </div>
             </header>
 
-            <div v-show="!collapsedGroups.has(group.code)" class="permission-group__body">
+            <div
+              v-show="!collapsedGroups.has(group.code)"
+              :id="`permission-group-${group.code}`"
+              class="permission-group__body"
+              role="region"
+              :aria-label="$t(group.labelKey)"
+            >
               <span class="permission-group__actions-label">
                 {{ $t('permission.actions_label') }}
               </span>
@@ -165,6 +278,7 @@
                 class="permission-pill"
                 :class="{ 'permission-pill--selected': permission.checked }"
                 :disabled="disabled"
+                :data-permission-code="permission.code"
                 role="checkbox"
                 :aria-checked="permission.checked"
                 @click="togglePermission(group, permission)"
@@ -362,6 +476,10 @@
       font-size: 18px;
       font-weight: 600;
       line-height: 1;
+
+      b {
+        font: inherit;
+      }
     }
 
     small {

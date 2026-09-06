@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import DocumentController from '../document.controller';
-import { DataSuccess } from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import {
+  DataFailed,
+  DataSuccess,
+} from '@/base/Core/NetworkStructure/Resources/dataState/dataState';
+import { ErrorModel, ErrorType } from '@/base/Core/NetworkStructure/Resources/errors/errorModel';
 import router from '@/router';
+import DeleteDocumentParams from '../../../core/params/delete.document.params';
 
 vi.mock('../../data/repositories/document.repository', () => ({
   default: {
@@ -19,6 +24,16 @@ const { mockClearFormData } = vi.hoisted(() => ({
   mockClearFormData: vi.fn(),
 }));
 
+const { mockToastError } = vi.hoisted(() => ({
+  mockToastError: vi.fn(),
+}));
+
+vi.mock('@/base/Presentation/Dialogs/dialog.manager', () => ({
+  dialogManager: {
+    toastError: mockToastError,
+  },
+}));
+
 vi.mock('@/stores/formsStore', () => ({
   useFormsStore: vi.fn(() => ({
     clearFormData: mockClearFormData,
@@ -26,11 +41,14 @@ vi.mock('@/stores/formsStore', () => ({
 }));
 
 // Mocking BaseController to control what super methods return
-const { mockSuperCreate, mockSuperUpdate, mockSuperFetchList } = vi.hoisted(() => ({
-  mockSuperCreate: vi.fn(),
-  mockSuperUpdate: vi.fn(),
-  mockSuperFetchList: vi.fn(),
-}));
+const { mockSuperCreate, mockSuperDelete, mockSuperUpdate, mockSuperFetchList } = vi.hoisted(
+  () => ({
+    mockSuperCreate: vi.fn(),
+    mockSuperDelete: vi.fn(),
+    mockSuperUpdate: vi.fn(),
+    mockSuperFetchList: vi.fn(),
+  }),
+);
 
 vi.mock('@/base/Presentation/Controller/baseController', () => {
   return {
@@ -40,6 +58,9 @@ vi.mock('@/base/Presentation/Controller/baseController', () => {
       }
       async update(...args: any[]) {
         return mockSuperUpdate(...args);
+      }
+      async delete(...args: any[]) {
+        return mockSuperDelete(...args);
       }
       async fetchList(...args: any[]) {
         return mockSuperFetchList(...args);
@@ -102,6 +123,24 @@ describe('DocumentController', () => {
       await controller.fetchList(params);
 
       expect(mockSuperFetchList).toHaveBeenCalled();
+    });
+  });
+
+  describe('delete', () => {
+    it('shows the backend error message when deletion fails', async () => {
+      const controller = DocumentController.getInstance();
+      const backendMessage = 'Cannot delete document because it is currently in use.';
+      const mockResult = new DataFailed<void>({
+        error: new ErrorModel(backendMessage, ErrorType.badRequest),
+      });
+      const params = new DeleteDocumentParams({ document_id: 4 });
+      mockSuperDelete.mockResolvedValue(mockResult);
+
+      const result = await controller.delete(params);
+
+      expect(result).toBe(mockResult);
+      expect(mockSuperDelete).toHaveBeenCalledWith(params, undefined);
+      expect(mockToastError).toHaveBeenCalledWith(backendMessage);
     });
   });
 });

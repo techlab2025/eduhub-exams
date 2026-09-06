@@ -318,6 +318,12 @@
   "edit_advice": "تعديل النصيحة",
   "save_advice": "حفظ النصيحة",
   "update_advice": "تحديث النصيحة",
+  "advice_unsaved_dialog": {
+    "title": "هل تريد تجاهل التغييرات؟",
+    "description": "لم يتم حفظ تغييراتك. هل أنت متأكد من رغبتك في المغادرة؟",
+    "continue_editing": "متابعة التعديل",
+    "discard_changes": "تجاهل التغييرات"
+  },
   "delete_advice_message": "سيتم حذف هذه النصيحة نهائيًا.",
   "advice_confirm_delete": "هل تريد حذف هذه النصيحة نهائيًا؟",
   "no_advices_found": "لا توجد نصائح",
@@ -1237,7 +1243,7 @@
     "select_all": "تحديد الكل",
     "clear_all": "إلغاء تحديد الكل",
     "selected_count": "تم تحديد {count} صلاحية",
-    "group_selected_count": "تم تحديد {count}",
+    "group_selected_count": "تم تحديد {count} من {total}",
     "configure": "إعداد الصلاحيات",
     "configure_description": "اختر الميزات والإجراءات التي يمكن لهذا الدور الوصول إليها.",
     "actions_label": "الإجراءات",
@@ -1251,12 +1257,18 @@
     "modules": {
       "settings": "الإعدادات",
       "organization": "المنظمة",
-      "question_bank": "بنك الأسئلة"
+      "question_bank": "بنك الأسئلة",
+      "questions": "الأسئلة",
+      "documents": "المستندات",
+      "configuration": "الإعدادات",
+      "students_management": "إدارة الطلاب",
+      "plans_packages": "الخطط والباقات"
     },
     "groups": {
       "employees": "الموظفون",
       "notification_plans": "خطط الإشعارات",
       "generate_questions": "توليد الأسئلة",
+      "GENERATE_QUESTION_ALL": "توليد الأسئلة",
       "admins": "المسؤولون",
       "countries": "الدول",
       "delete_account_reasons": "أسباب حذف الحساب",
