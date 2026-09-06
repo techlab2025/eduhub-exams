@@ -2,8 +2,13 @@
   import { ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import RoleController from '../controllers/role.controller';
-  import type StoreRoleParams from '../../core/params/store.role.params';
+  import StoreRoleParams from '../../core/params/store.role.params';
   import RoleForm from './RoleForm.vue';
+  import {
+    ValidationHandler,
+    type ValidationError,
+  } from '@/base/Presentation/Utils/new_validator.ts';
+  import { RoleValidationsHandler } from '../../core/validations/RoleValidations.ts';
 
   const controller = RoleController.getInstance();
   const route = useRoute();
@@ -14,8 +19,14 @@
   /**
    * Save new employee
    */
+  const errors = ref<ValidationError[]>([]);
   const saveRole = async () => {
-    console.log(params.value, 'ddddddddddddddddd');
+    errors.value = ValidationHandler(
+      RoleValidationsHandler(new StoreRoleParams(params.value?.title, params.value?.permissions)),
+    );
+    if (errors.value.length > 0) {
+      return;
+    }
 
     loading.value = true;
     try {
@@ -45,7 +56,13 @@
 
 <template>
   <div class="employee-add-page">
-    <RoleForm ref="RoleFormRef" :form-key="formKey" :loading="loading" @update-data="updateData" />
+    <RoleForm
+      ref="RoleFormRef"
+      :form-key="formKey"
+      :loading="loading"
+      @update-data="updateData"
+      :errors="errors"
+    />
 
     <div class="actions">
       <button class="btn btn-primary w-full" type="submit" @click="saveRole">
@@ -67,6 +84,7 @@
 </template>
 
 <style scoped lang="scss">
+
   .loader {
     width: 35px;
     height: 35px;

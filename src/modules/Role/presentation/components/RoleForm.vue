@@ -7,8 +7,8 @@
   import UpdateRoleParams from '../../core/params/update.role.params';
   import type RoleModel from '../../core/models/role.model';
   import { TranslationFromLidtToObject } from '@/base/Presentation/Utils/translation_handle_from_list_to_object';
-  import { ValidationHandler } from '@/base/Presentation/Utils/new_validator';
-  import { RoleValidationsHandler } from '../../core/validations/RoleValidations';
+  // import { ValidationHandler } from '@/base/Presentation/Utils/new_validator';
+  // import { RoleValidationsHandler } from '../../core/validations/RoleValidations';
   import ValidationErrorsHandlerComponent from '@/shared/HelpersComponents/ValidationErrorsHandlerComponent.vue';
   import ValidationErrorScroller, {
     type ValidationError,
@@ -18,6 +18,7 @@
   const emit = defineEmits(['update-data']);
   const props = defineProps<{
     data?: RoleModel;
+    errors: ValidationError[];
   }>();
 
   const route = useRoute();
@@ -37,18 +38,12 @@
       block: 'end',
     },
   };
-  const errors = ref<ValidationError[]>([]);
+  const errors = ref<ValidationError[]>(props.errors);
   const title = ref<Record<string, string>>({});
   const selectedPermissions = ref<string[]>([]);
   const loading = ref(false);
 
   const saveRole = async () => {
-    errors.value = ValidationHandler(
-      RoleValidationsHandler(new StoreRoleParams(title.value, selectedPermissions.value)),
-    );
-
-    new ValidationErrorScroller(errors.value, refs).scrollToError();
-
     const params = route?.params?.id
       ? new UpdateRoleParams(roleId.value, title.value, selectedPermissions.value)
       : new StoreRoleParams(title.value, selectedPermissions.value);
@@ -76,6 +71,14 @@
       );
     },
     { immediate: true },
+  );
+
+  watch(
+    () => props.errors,
+    (val) => {
+      errors.value = val;
+      new ValidationErrorScroller(errors.value, refs).scrollToError();
+    },
   );
 </script>
 

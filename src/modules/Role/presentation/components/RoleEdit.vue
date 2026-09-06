@@ -2,9 +2,14 @@
   import { computed, onMounted, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import RoleController from '../controllers/role.controller';
-  import type StoreRoleParams from '../../core/params/store.role.params';
+  import StoreRoleParams from '../../core/params/store.role.params';
   import RoleForm from './RoleForm.vue';
   import ShowRoleParams from '../../core/params/show.role.params.ts';
+  import {
+    ValidationHandler,
+    type ValidationError,
+  } from '@/base/Presentation/Utils/new_validator.ts';
+  import { RoleValidationsHandler } from '../../core/validations/RoleValidations.ts';
 
   const controller = RoleController.getInstance();
   const route = useRoute();
@@ -12,11 +17,19 @@
   const roleId = computed(() => Number(route.params.id));
   const params = ref<StoreRoleParams | null>(null);
   const loading = ref(false);
-  const RoleFormRef = ref<{ validate: () => boolean | Promise<boolean> } | null>(null);
+  // const RoleFormRef = ref<{ validate: () => boolean | Promise<boolean> } | null>(null);
+  const errors = ref<ValidationError[]>([]);
 
   const saveRole = async () => {
-    const isFormValid = await RoleFormRef.value?.validate?.();
-    if (isFormValid === false) return;
+    // const isFormValid = await RoleFormRef.value?.validate?.();
+    // if (isFormValid === false) return;
+
+    errors.value = ValidationHandler(
+      RoleValidationsHandler(new StoreRoleParams(params.value?.title, params.value?.permissions)),
+    );
+    if (errors.value.length > 0) {
+      return;
+    }
 
     loading.value = true;
     try {
@@ -58,6 +71,7 @@
       @update-data="updateData"
       @save-role="saveRole"
       :data="controller.itemState.value?.data!"
+      :errors="errors"
     />
 
     <div class="actions">
