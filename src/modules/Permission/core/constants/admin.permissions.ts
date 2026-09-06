@@ -1200,12 +1200,12 @@ export const createAdminPermissions = (): PermissionModuleItem[] => [
     labelKey: 'permission.modules.question_bank',
     permissions: [
       {
-        code: PermissionsEnum.Generate_Questions,
-        labelKey: 'permission.groups.generate_questions',
+        code: PermissionsEnum.GENERATE_QUESTION_ALL,
+        labelKey: 'permission.groups.GENERATE_QUESTION_ALL',
         checked: false,
         permissions: [
           {
-            code: PermissionsEnum.Generate_Questions,
+            code: PermissionsEnum.GENERATE_QUESTION_ALL,
             labelKey: 'permission.actions.create',
             checked: false,
           },

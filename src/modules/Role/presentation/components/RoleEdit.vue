@@ -87,10 +87,10 @@
       ref="RoleFormRef"
       :form-key="formKey"
       :loading="loading"
-      :data="controller.itemState.value?.data!"
-      :errors="errors"
       @update-data="updateData"
       @save-role="saveRole"
+      :data="controller.itemState.value?.data!"
+      :errors="errors"
     />
 
     <div class="actions">
@@ -115,7 +115,7 @@
     height: 35px;
     border-radius: 50%;
     border: 8px solid;
-    border-color: var(--standard-black) transparent;
+    border-color: #000 #0000;
     animation: l1 1s infinite;
   }
 

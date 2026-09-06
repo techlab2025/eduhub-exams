@@ -1678,7 +1678,7 @@
     "groups": {
       "employees": "Employees",
       "notification_plans": "Notification Plans",
-      "generate_questions": "Generate Questions",
+      "GENERATE_QUESTION_ALL": "Generate Questions",
       "admins": "Admins",
       "countries": "Countries",
       "delete_account_reasons": "Delete Account Reasons",
@@ -1745,6 +1745,7 @@
   "No_Documents_Found": "No documents found",
   "There_are_no_documents_linked_to_this_subject_yet": "There are no documents linked to this subject yet",
   "Upload_and_assign_a_document_to_this_subject_to_start_indexing": "Upload and assign a document to this subject to start indexing",
-  "Activate Notification Plan?":"Activate Notification Plan",
-  "Are you sure you want to activate this notification plan?" : "Are you sure you want to activate this notification plan?"
+  "Activate Notification Plan?": "Activate Notification Plan",
+  "Are you sure you want to activate this notification plan?": "Are you sure you want to activate this notification plan?",
+  "save_role": "Save Role"
 }

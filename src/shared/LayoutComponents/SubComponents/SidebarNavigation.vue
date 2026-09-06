@@ -103,7 +103,7 @@
         PermissionsEnum.BLOCK_REASON_CREATE,
         PermissionsEnum.BLOCK_REASON_UPDATE,
         PermissionsEnum.BLOCK_REASON_DELETE,
-        PermissionsEnum.Generate_Questions,
+        PermissionsEnum.GENERATE_QUESTION_ALL,
         PermissionsEnum.SUBSCRIPTION_PLAN_ALL,
         PermissionsEnum.SUBSCRIPTION_PLAN_FETCH,
         PermissionsEnum.SUBSCRIPTION_PLAN_CREATE,
@@ -268,12 +268,12 @@
           link: '/question-batches',
           name: 'question_batch.title',
           icon: SettingIcon,
-          permissions: [PermissionsEnum.Generate_Questions],
+          permissions: [PermissionsEnum.GENERATE_QUESTION_ALL],
           children: [
             {
               link: '/question-batches/generate',
               name: 'question_batch.generate',
-              permissions: [PermissionsEnum.Generate_Questions],
+              permissions: [PermissionsEnum.GENERATE_QUESTION_ALL],
             },
           ],
         },

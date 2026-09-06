@@ -236,7 +236,6 @@
       font-weight: 700;
     }
   }
-
   .role-index-page {
     display: grid;
     gap: var(--xl-size-base);

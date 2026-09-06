@@ -31,7 +31,7 @@ export const NotificationPlanActions = [
       },
       {
         id: 'generate-questions',
-        sub_feature_title: 'notification_plan.form.generate_questions',
+        sub_feature_title: 'notification_plan.form.GENERATE_QUESTION_ALL',
         sub_feature_description: 'notification_plan.form.trigger_item_description',
         message: 'notification_plan.form.template_suffix',
         actions: [],
