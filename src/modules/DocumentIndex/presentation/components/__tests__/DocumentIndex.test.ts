@@ -298,6 +298,34 @@ describe('DocumentIndex', () => {
     expect(images[1]?.attributes('src')).toBe('default-document-cover.png');
   });
 
+  it('shows the PDF icon beside an available document source file', async () => {
+    documentListData.value = [
+      {
+        id: 17,
+        title: 'Arabic student book',
+        RefNumber: 'DOC-17',
+        doecumentType: { id: 1, title: 'Book' },
+        description: 'Student book',
+        image: '',
+        file: '/Arabic_student_book.pdf',
+        indexFile: '',
+        hasIndex: false,
+        tranaslations: {},
+      },
+    ];
+    const wrapper = mountDocumentIndex();
+    await flushPromises();
+    await selectCurriculumAndShowResults(wrapper);
+
+    const sourceFile = wrapper.get('.document-index-page__source-file');
+    expect(sourceFile.get('.document-index-page__source-file-icon').attributes()).toMatchObject({
+      width: '20',
+      height: '20',
+      'aria-hidden': 'true',
+    });
+    expect(sourceFile.text()).toContain('Arabic_student_book.pdf');
+  });
+
   it('replaces the subject filter with the selected subject configuration', async () => {
     const wrapper = mountDocumentIndex();
     await flushPromises();

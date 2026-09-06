@@ -34,6 +34,7 @@
   import IndexDocumentParams from '@/modules/document/core/params/index.document.params';
   import NorCurriculumIcon from '@/shared/icons/DocuecmntIndex/NorCurriculumIcon.vue';
   import DocIndex from '@/shared/icons/DocIndex.vue';
+  import PdfDocumentIcon from '@/icons/DocumentIndex/PdfDocumentIcon.vue';
   import defaultDocumentCover from '@/assets/images/Book Cover Design 1.png';
   import GeneratedDocumentIndexDialog from './GeneratedDocumentIndexDialog.vue';
 
@@ -533,6 +534,7 @@
               "
               class="document-index-page__source-file"
             >
+              <PdfDocumentIcon class="document-index-page__source-file-icon" />
               <span :title="fileName(documentSourceFile(document))">
                 {{ fileName(documentSourceFile(document)) }}
               </span>
