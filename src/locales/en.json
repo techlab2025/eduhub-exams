@@ -1710,5 +1710,7 @@
   },
   "No_Documents_Found": "No documents found",
   "There_are_no_documents_linked_to_this_subject_yet": "There are no documents linked to this subject yet",
-  "Upload_and_assign_a_document_to_this_subject_to_start_indexing": "Upload and assign a document to this subject to start indexing"
+  "Upload_and_assign_a_document_to_this_subject_to_start_indexing": "Upload and assign a document to this subject to start indexing",
+  "Activate Notification Plan?":"Activate Notification Plan",
+  "Are you sure you want to activate this notification plan?" : "Are you sure you want to activate this notification plan?"
 }

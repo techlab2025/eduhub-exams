@@ -1,0 +1,22 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins/flex' as *;
+
+.active-deavtive-notification-plan-dialog {
+  .p-dialog-content.dialog-body {
+    @include flex-column(nowrap, center, center);
+    .dialog-content{
+        text-align: center;
+        h2 , p{
+
+        }
+    }
+    .actions {
+      width: 100%;
+      @include flex-row(nowrap, space-between, center);
+      button {
+        width: 50%;
+      }
+    }
+  }
+}
+

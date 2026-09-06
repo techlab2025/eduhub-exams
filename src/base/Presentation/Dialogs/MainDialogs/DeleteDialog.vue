@@ -12,10 +12,12 @@
     title = 'delete',
     message = 'delete_message',
     hasbtn,
+    deleteDialogClass,
   } = defineProps<{
     title?: string;
     message?: string;
     hasbtn?: boolean;
+    deleteDialogClass?: string;
   }>();
 </script>
 
@@ -39,7 +41,7 @@
     v-model:visible="visible"
     :modal="true"
     :pt="{
-      root: 'delete-dialog',
+      root: `delete-dialog ${deleteDialogClass ? deleteDialogClass : ``}`,
       header: 'dialog-header',
       content: 'dialog-body',
     }"

@@ -57,6 +57,8 @@
     deleteDialogTitle?: string;
     deleteDialogMessage?: string;
     variant?: 'default' | 'student' | 'notification-plan';
+    deleteDialogClass?: string;
+
   }>();
 </script>
 
@@ -134,6 +136,7 @@
             hasbtn
             :title="deleteDialogTitle"
             :message="deleteDialogMessage"
+            :deleteDialogClass="deleteDialogClass!"
             @delete="action.action"
           >
             <template #btn>
